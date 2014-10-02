@@ -1,0 +1,15 @@
+  - permettre modification de vitesse, couleur et saut
+  - debugger speed dans /zh info
+  - arrondir jump dans /zh info
+  - multilangues
+  - ajouter indice à toutes les commandes
+  - gérer %nom%
+  - gérer vente
+  - logger la mort des chevaux
+  - ne pas afficher "belongs to" si aucun effet -> clic droit sur un cheval déjà monté
+  - empêcher de mettre en laisse un cheval monté et en mode normal
+  - normaliser les indexs dans locale.yml
+  - ajouter la possibilité de faire /zh help <commande>
+  - ajouter la possibilité de changer le nom d'une subcommande (ex: /zh apprivoiser)
+  - avec /zh give, il ne devrait pas falloir give.admin pour utiliser -i/-t
+  - ajouter un reçu de cheval pour celui qui receptionne /zh give
