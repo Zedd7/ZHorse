@@ -1,0 +1,79 @@
+ main: eu.reborn_minecraft.zhorse.ZHorse
+ name: ZHorse
+ version: 2.0
+ description: This plugin provides enhanced management of horses
+ author: Z3ddicus
+ 
+ commands:
+   zhorse:
+      description: Main ZHorse command
+      usage: /<command> [arguments]
+      aliases: [zh]
+      
+ permissions:
+    zh.*:
+        description: Grants full access to ZHorse
+        default: op
+        children:
+            zh.use: true
+            zh.*.admin: true
+            zh.*.free: true
+            zh.reload: true
+            zh.tame: true
+    zh.use:
+        description: Grants access to all player commands
+        children:
+            zh.claim: true
+            zh.give: true
+            zh.free: true
+            zh.heal: true
+            zh.info: true
+            zh.kill: true
+            zh.help: true
+            zh.here: true
+            zh.list: true
+            zh.lock: true
+            zh.protect: true
+            zh.rename: true
+            zh.share: true
+            zh.tp: true
+        
+    zh.*.admin:
+        description: Grants access to all admin commands
+        children:
+            zh.claim.admin: true
+            zh.free.admin: true
+            zh.give.admin: true
+            zh.heal.admin: true
+            zh.help.admin: true
+            zh.here.admin: true
+            zh.info.admin: true
+            zh.kill.admin: true
+            zh.list.admin: true
+            zh.lock.admin: true
+            zh.protect.admin: true
+            zh.reload.admon: true
+            zh.rename.admin: true
+            zh.share.admin: true
+            zh.tame.admin: true
+            zh.tp.admin: true
+            
+    zh.*.free :
+        description: Grants free access to all commands
+        children:
+            zh.claim.free: true
+            zh.free.free: true
+            zh.give.free: true
+            zh.heal.free: true
+            zh.help.free: true
+            zh.here.free: true
+            zh.info.free: true
+            zh.kill.free: true
+            zh.list.free: true
+            zh.lock.free: true
+            zh.protect.free: true
+            zh.reload.free: true
+            zh.rename.free: true
+            zh.share.free: true
+            zh.tame.free: true
+            zh.tp.free: true  

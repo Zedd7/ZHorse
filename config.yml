@@ -1,0 +1,28 @@
+Settings:
+  defaultLanguage: EN
+  minimumHorsenameLength: 0
+  maximumHorsenameLength: 30
+  muteConsole: false
+  activeWorlds:
+Economy:
+Horsenames:
+- Arod
+- Ashufel
+- Grispoil
+- Pegase
+- Ponyta
+- Tonnerre
+- Tornado
+Groups:
+  default:
+    color: WHITE
+    maximumClaims: 0
+  users:
+    color: AQUA
+    maximumClaims: 1
+  vip:
+    color: MAGIC
+    maximumClaims: 10
+  admin:
+    color: RED
+    maximumClaims: -1

@@ -1,0 +1,11 @@
+  - permettre modification de vitesse, couleur et saut
+  - debugger speed dans /zh info
+  - arrondir jump dans /zh info
+  - multilangues
+  - gérer %nom%
+  - gérer vente
+  - logger la mort des chevaux
+  - normaliser les indexs dans locale.yml
+  - ajouter _EN à locale.yml
+  - permettre d'utiliser certaines commande depuis la console (consoleMode)
+  - liste contenant les commandes pour lesquelles le -a est automatiquement ajouté si permission
