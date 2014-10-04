@@ -7,8 +7,10 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 
 public class ZFree extends Command {
 
-	public ZFree(ZHorse zh, String[] a, CommandSender s) {
+	public ZFree(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, a, s);
+		idAllow = true;
+		targetAllow = false;
 		if (isPlayer()) {
 			if (analyseArguments()) {
 				if (hasPermission()) {
@@ -23,13 +25,17 @@ public class ZFree extends Command {
 							if (idMode) {
 								if (zh.getUM().isRegistered(targetUUID, userID)) {
 									horse = zh.getUM().getHorse(targetUUID, userID);
-									execute();
-								}
-								else {
+									if (horse != null) {
+										execute();
+									}
+									else if (displayConsole) {
+										s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseNotFound), zh.getUM().getHorseName(horse)));
+									}								}
+								else if (displayConsole) {
 									sendUnknownHorseMessage(targetName);
 								}
 							}
-							else if (displayError){
+							else if (displayConsole){
 								sendCommandUsage();
 							}
 						}
@@ -40,17 +46,20 @@ public class ZFree extends Command {
 	}
 
 	private void execute() {
-		if (isOwner()) {
-			if (zh.getEM().isReadyToPay(p, command)) {
-				horseName = zh.getUM().getHorseName(horse);
-				if (zh.getUM().remove(horse)) {
-					horse.setCustomName(null);
-					horse.setCustomNameVisible(false);
-					s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseFreed), horseName));
-					zh.getEM().payCommand(p, command);
+		if (isRegistered()) {
+			if (isOwner()) {
+				if (zh.getEM().isReadyToPay(p, command)) {
+					if (zh.getUM().remove(horse)) {
+						horse.setCustomName(null);
+						horse.setCustomNameVisible(false);
+						if (displayConsole) {
+							s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseFreed), horseName));
+						}
+						zh.getEM().payCommand(p, command);
+					}
 				}
 			}
-		}
+		}		
 	}
 
 }

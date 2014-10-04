@@ -8,13 +8,15 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 
 public class ZGive extends Command {
 
-	public ZGive(ZHorse zh, String[] a, CommandSender s) {
+	public ZGive(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, a, s);
+		idAllow = true;
+		targetAllow = true;
 		if (isPlayer()) {
 			if (analyseArguments()) {
 				if (hasPermission()) {
 					if (isWorldEnabled()) {
-						if (!hasReachedMaxClaims()) {
+						if (!hasReachedMaxClaims(targetUUID)) {
 							if (targetMode) {
 								if (!idMode) {
 									if (isOnHorse()) {
@@ -25,14 +27,19 @@ public class ZGive extends Command {
 								else {
 									if (zh.getUM().isRegistered(p.getUniqueId(), userID)) {
 										horse = zh.getUM().getHorse(p.getUniqueId(), userID);
-										execute();
+										if (horse != null) {
+											execute();
+										}
+										else if (displayConsole) {
+											s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseNotFound), zh.getUM().getHorseName(horse)));
+										}
 									}
-									else {
+									else if (displayConsole) {
 										sendUnknownHorseMessage(p.getName(), true);
 									}
 								}
 							}
-							else if (displayError) {
+							else if (displayConsole) {
 								sendCommandUsage();
 							}
 						}						
@@ -43,16 +50,21 @@ public class ZGive extends Command {
 	}
 	
 	private void execute() {
-		if (isOwner()) {
-			if (zh.getEM().isReadyToPay(p, command)) {
-				horseName = zh.getUM().getHorseName(horse);
-				if (!samePlayer || adminMode) {
-					if (zh.getUM().remove(horse)) {
-						if (zh.getUM().registerHorse(targetUUID, p.getUniqueId(), horseName, horse)) {
+		if (isRegistered()) {
+			if (isOwner()) {
+				if (zh.getEM().isReadyToPay(p, command)) {
+					horseName = zh.getUM().getHorseName(horse);
+					if (!samePlayer || adminMode) {
+						if (zh.getUM().registerHorse(targetUUID, horseName, horse)) {
 							ChatColor cc = zh.getCM().getChatColor(targetUUID);
 							horse.setCustomName(cc + horseName);
 							zh.getEM().payCommand(p, command);
-							s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseGiven), horseName, targetName));
+							if (displayConsole) {
+								s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseGiven), horseName, targetName));
+								if (isPlayerOnline(targetUUID)) {
+									zh.getServer().getPlayer(targetUUID).sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseReceived), targetName, horseName));
+								}
+							}
 						}
 						else {
 							zh.getLogger().severe(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseNotRegistered, true), horseName, horse.getUniqueId().toString()));

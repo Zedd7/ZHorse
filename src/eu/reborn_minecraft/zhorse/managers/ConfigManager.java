@@ -46,7 +46,7 @@ public class ConfigManager {
 
 	
 	public ChatColor getChatColor(String groupName) {
-        String color = zh.getConfig().getString("groups." + groupName + ".color");
+        String color = zh.getConfig().getString("Groups." + groupName + ".color");
         if (color != null) {
         	for (ChatColor cc : ChatColor.values()) {
             	if (cc.name().equalsIgnoreCase(color) || cc.toString().equalsIgnoreCase(color)) {
@@ -59,7 +59,7 @@ public class ConfigManager {
 	
 	public int getCommandCost(String command) {
 		int value = 0;
-		String commandCost = zh.getConfig().getString("economy." + command);
+		String commandCost = zh.getConfig().getString("Economy." + command);
 		if (commandCost != null) {
 			value = Integer.parseInt(commandCost);
 			if (value < 0) {
@@ -70,7 +70,7 @@ public class ConfigManager {
 	}
 	
 	public String getDefaultLanguage() {
-		String defaultLanguage = zh.getConfig().getString("settings.default-language");
+		String defaultLanguage = zh.getConfig().getString("Settings.defaultLanguage");
 		if (defaultLanguage == null) {
 			defaultLanguage = "EN";
 		}
@@ -101,7 +101,7 @@ public class ConfigManager {
 	public int getMaximumClaims(String groupName) {
 		int value = 0;
 		if (groupName != null) {
-			String maximumClaims = zh.getConfig().getString("groups." + groupName + ".maximum-claims");
+			String maximumClaims = zh.getConfig().getString("Groups." + groupName + ".maximumClaims");
 			if (maximumClaims != null) {
 				value = Integer.parseInt(maximumClaims);
 				if (value < 0 && value != -1) {
@@ -114,7 +114,7 @@ public class ConfigManager {
 	
 	public int getMaximumHorseNameLength() {
 		int value = -1;
-		String maximumHorseNameLength = zh.getConfig().getString("settings.maximum-horsename-length");
+		String maximumHorseNameLength = zh.getConfig().getString("Settings.maximumHorsenameLength");
 		if (maximumHorseNameLength != null) {
 			value = Integer.parseInt(maximumHorseNameLength);
 			if (value < 0 && value != -1) {
@@ -126,7 +126,7 @@ public class ConfigManager {
 	
 	public int getMinimumHorseNameLength() {
 		int value = 0;
-		String minimumHorseNameLength = zh.getConfig().getString("settings.minimum-horsename-length");
+		String minimumHorseNameLength = zh.getConfig().getString("Settings.minimumHorsenameLength");
 		if (minimumHorseNameLength != null) {
 			value = Integer.parseInt(minimumHorseNameLength);
 			if (value < 0) {
@@ -139,7 +139,7 @@ public class ConfigManager {
 	public String getRandomName() {
 		String randomName = null;
 		Random random = new Random();
-		List<String> randomNamesList = zh.getConfig().getStringList("horsenames");
+		List<String> randomNamesList = zh.getConfig().getStringList("Horsenames");
 		if (!(randomNamesList == null || randomNamesList.size() == 0)) {
 			randomName = randomNamesList.get(random.nextInt(randomNamesList.size()));
 		}
@@ -149,7 +149,7 @@ public class ConfigManager {
 	private void initEconomy() {
 		List<String> commandList = zh.getCmdM().getCommandList();
 		for (String cmd : commandList) {
-			zh.getConfig().set("economy." + cmd, 0);
+			zh.getConfig().set("Economy." + cmd, 0);
 		}
 	}
 	
@@ -159,11 +159,11 @@ public class ConfigManager {
 		for (World world : worlds) {
 			worldsList.add(world.getName());
 		}
-		zh.getConfig().set("settings.active-worlds", worldsList);
+		zh.getConfig().set("Settings.activeWorlds", worldsList);
 	}
 	
 	public boolean isConsoleMuted() {
-		return (zh.getConfig().getBoolean("settings.mute-console", false));
+		return (zh.getConfig().getBoolean("Settings.muteConsole", false));
 	}
 	
 	public boolean isHorseNameAllowed() {
@@ -175,7 +175,7 @@ public class ConfigManager {
 	}
 	
 	public boolean isWorldEnabled(World world) {
-		List<String> worlds = zh.getConfig().getStringList("settings.active-worlds");
+		List<String> worlds = zh.getConfig().getStringList("Settings.activeWorlds");
 		if (!(worlds == null || worlds.size() == 0)) {
 			return worlds.contains(world.getName());
 		}
@@ -204,10 +204,10 @@ public class ConfigManager {
 	
 	private boolean checkCommandsIntegrity() {
 		boolean integrity = true;
-		ConfigurationSection cs = zh.getConfig().getConfigurationSection("economy");
+		ConfigurationSection cs = zh.getConfig().getConfigurationSection("Economy");
 		if (cs != null) {
 			for (String command : cs.getKeys(false)) {
-				String commandCost = zh.getConfig().getString("economy." + command);
+				String commandCost = zh.getConfig().getString("Economy." + command);
 				if (commandCost != null) {
 					int value = Integer.parseInt(commandCost);
 					if (value < 0) {
@@ -218,7 +218,7 @@ public class ConfigManager {
 			}
 		}
 		else {
-			zh.getLogger().severe("The \"economy\" section is missing from config !");
+			zh.getLogger().severe("The \"Economy\" section is missing from config !");
 			integrity = false;
 		}
 		return integrity;
@@ -226,10 +226,10 @@ public class ConfigManager {
 	
 	private boolean checkColorsIntegrity() {
 		boolean integrity = true;
-		ConfigurationSection cs = zh.getConfig().getConfigurationSection("groups");
+		ConfigurationSection cs = zh.getConfig().getConfigurationSection("Groups");
 		if (cs != null) {
 			for (String groupName : cs.getKeys(false)) {
-				String color = zh.getConfig().getString("groups." + groupName + ".color");
+				String color = zh.getConfig().getString("Groups." + groupName + ".color");
 		        if (color != null) {
 					boolean match = false;
 		        	for (ChatColor cc : ChatColor.values()) {
@@ -245,7 +245,7 @@ public class ConfigManager {
 			}
 		}
 		else {
-			zh.getLogger().severe("The \"groups\" section is missing from config !");
+			zh.getLogger().severe("The \"Groups\" section is missing from config !");
 			integrity = false;
 		}
 		return integrity;
@@ -253,21 +253,21 @@ public class ConfigManager {
 	
 	private boolean checkMaximumClaimsIntegrity() {
 		boolean integrity = true;
-		ConfigurationSection cs = zh.getConfig().getConfigurationSection("groups");
+		ConfigurationSection cs = zh.getConfig().getConfigurationSection("Groups");
 		if (cs != null) {
 			for (String groupName : cs.getKeys(false)) {
-				String maximumClaims = zh.getConfig().getString("groups." + groupName + ".maximum-claims");
+				String maximumClaims = zh.getConfig().getString("Groups." + groupName + ".maximumClaims");
 				if (maximumClaims != null) {
 					int value = Integer.parseInt(maximumClaims);
 					if (value < 0 && value != -1) {
-						zh.getLogger().severe("The \"maximum-claims\" value of group \"" + groupName + "\" must be positive or -1 !");
+						zh.getLogger().severe("The \"maximumClaims\" value of group \"" + groupName + "\" must be positive or -1 !");
 						integrity = false;
 					}
 				}
 			}
 		}
 		else {
-			zh.getLogger().severe("The \"groups\" section is missing from config !");
+			zh.getLogger().severe("The \"Groups\" section is missing from config !");
 			integrity = false;
 		}
 		return integrity;
@@ -275,19 +275,19 @@ public class ConfigManager {
 	
 	private boolean checkHorseNameRangeIntegrity() {
 		boolean integrity = true;
-		String maximumHorseNameLength = zh.getConfig().getString("settings.maximum-horsename-length");
-		String minimumHorseNameLength = zh.getConfig().getString("settings.minimum-horsename-length");
+		String maximumHorseNameLength = zh.getConfig().getString("Settings.maximumHorsenameLength");
+		String minimumHorseNameLength = zh.getConfig().getString("Settings.minimumHorsenameLength");
 		if (maximumHorseNameLength != null) {
 			int value = Integer.parseInt(maximumHorseNameLength);
 			if (value < 0 && value != -1) {
-				zh.getLogger().severe("The \"maximum-horsename-length\" value must be positive or -1 !");
+				zh.getLogger().severe("The \"maximumHorsenameLength\" value must be positive or -1 !");
 				integrity = false;
 			}
 		}
 		if (minimumHorseNameLength != null) {
 			int value = Integer.parseInt(minimumHorseNameLength);
 			if (value < 0) {
-				zh.getLogger().severe("The \"minimum-horsename-length\" value must be positive !");
+				zh.getLogger().severe("The \"minimumHorsenameLength\" value must be positive !");
 				integrity = false;
 			}
 		}
@@ -296,9 +296,9 @@ public class ConfigManager {
 	
 	private boolean checkWorldsIntegrity() {
 		boolean integrity = true;
-		List<String> worlds = zh.getConfig().getStringList("settings.active-worlds");
+		List<String> worlds = zh.getConfig().getStringList("Settings.activeWorlds");
 		if (worlds == null || worlds.size() == 0) {
-			zh.getLogger().severe("The \"active-worlds\" section is missing from config !");
+			zh.getLogger().severe("The \"activeWorlds\" section is missing from config !");
 			integrity = false;
 		}
 		return integrity;

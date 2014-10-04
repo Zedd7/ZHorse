@@ -1,5 +1,7 @@
 package eu.reborn_minecraft.zhorse.managers;
 
+import java.util.UUID;
+
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.entity.Player;
@@ -24,10 +26,27 @@ public class EconomyManager {
 		return false;
 	}
 	
+	public boolean isCommandFree(UUID playerUUID, String command) {
+		if (isPlayerOnline(playerUUID)) {
+			Player p = zh.getServer().getPlayer(playerUUID);
+			return isCommandFree(p, command);
+		}
+		return false;
+	}
+	
 	public boolean isCommandFree(Player p, String command) {
 		int cost = zh.getCM().getCommandCost(command);
-		if (cost == 0 || zh.getPerms().has(p, command + ".free")) {
+		if (cost == 0 || zh.getPerms().has(p, command + zh.getLM().commandFree)) {
 			return true;
+		}
+		return false;
+	}
+	
+	private boolean isPlayerOnline(UUID playerUUID) {
+		for (Player p : zh.getServer().getOnlinePlayers()) {
+			if (p.getUniqueId().equals(playerUUID)) {
+				return true;
+			}
 		}
 		return false;
 	}

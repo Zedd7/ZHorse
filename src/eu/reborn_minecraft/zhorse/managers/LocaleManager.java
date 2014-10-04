@@ -4,6 +4,7 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 
 public class LocaleManager {
 	public String admin = ".admin";
+	public String commandFree = ".free";
 	public String bypass = ".bypass";
 	public String multiworld = ".multiworld";
 	public String others = ".others";
@@ -41,6 +42,7 @@ public class LocaleManager {
 	public String horseNotRegistered = "horseNotRegistered";
 	public String horseNotTamed = "horseNotTamed";
 	public String horseProtected = "horseProtected";
+	public String horseReceived = "horseReceived";
 	public String horseRenamed = "horseRenamed";
 	public String horseShared = "horseShared";
 	public String horseTamed = "horseTamed";
@@ -57,6 +59,7 @@ public class LocaleManager {
 	public String notOnHorse = "notOnHorse";
 	public String playerCommand = "playerCommand";
 	public String playerNotRegistered = "playerNotRegistered";
+	public String playerOffline = "playerOffline";
 	public String pluginReloaded = "pluginReloaded";
 	public String remainingClaims = "remainingClaims";
 	public String teleportedToHorse = "teleportedToHorse";
@@ -73,6 +76,10 @@ public class LocaleManager {
 	public String health = "health";
 	public String id = "id";
 	public String jump = "jump";
+	public String modeLocked = "modeLocked";
+	public String modeNone = "modeNone";
+	public String modeProtected = "modeProtected";
+	public String modeShared = "modeShared";
 	public String name = "name";
 	public String owner = "owner";
 	public String speed = "speed";
@@ -142,7 +149,7 @@ public class LocaleManager {
 	}
 	
 	public String getInformationMessage(String index) {
-		return getInformationMessage(index, false);
+		return getInformationMessage(index, true);
 	}
 	
 	public String getInformationMessage(String index, boolean hidePrefix) {
@@ -158,7 +165,7 @@ public class LocaleManager {
         if (hidePrefix) {
         	return text;
         }
-        return zh.getLocale().getString("Headers.pluginPrefix") + " " + text;
+        return getHeaderMessage(pluginPrefix) + " " + text;
 	}
 
 }

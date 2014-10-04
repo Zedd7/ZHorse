@@ -8,8 +8,10 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 
@@ -38,12 +40,18 @@ public class UsersManager {
 			if (!chunk.isLoaded()) {
 				chunk.load();
 			}
+			for (Entity entity : chunk.getEntities()) {
+				if (entity.getUniqueId().equals(horseUUID)) {
+					return (Horse)entity;
+				}
+			}
+			chunk.unload(true, true);
 			List<World> worlds = zh.getServer().getWorlds();
 			for (World world : worlds) {
 				List<LivingEntity> livingEntities = world.getLivingEntities();
 				for (LivingEntity livingEntity : livingEntities) {
 					if (livingEntity.getUniqueId().equals(horseUUID)) {
-						return (Horse) livingEntity;
+						return (Horse)livingEntity;
 					}
 				}
 			}
@@ -197,6 +205,11 @@ public class UsersManager {
 		return zh.getUsers().getBoolean(getPlayerPath(playerUUID, path));
 	}
 	
+	public String getUserID(Horse horse) {
+		UUID playerUUID = getPlayerUUID(horse);
+		return getUserID(playerUUID, horse);
+	}
+	
 	public String getUserID(UUID playerUUID, Horse horse) {
 		if (isRegistered(playerUUID)) {
 			ConfigurationSection cs = zh.getUsers().getConfigurationSection(getPlayerPath(playerUUID, "Horses"));
@@ -292,17 +305,13 @@ public class UsersManager {
 	}
 	
 	public boolean registerHorse(UUID playerUUID, String horseName, Horse horse) {
-		return registerHorse(playerUUID, playerUUID, horseName, horse);
-	}
-	
-	public boolean registerHorse(UUID playerUUID, UUID targetUUID, String horseName, Horse horse) {
 		if (!isRegistered(playerUUID)) {
 			if (!registerPlayer(playerUUID)) {
 				return false;
 			}
 		}
 		if (isRegistered(horse)) {
-			remove(targetUUID, horse);
+			remove(horse);
 		}
 		if (horse != null) {
 			String userID = getNextUserID(playerUUID);
@@ -318,7 +327,7 @@ public class UsersManager {
 		return false;
 	}
 	
-	public boolean 	registerPlayer(UUID playerUUID) {
+	public boolean registerPlayer(UUID playerUUID) {
 		String playerName = zh.getServer().getOfflinePlayer(playerUUID).getName();
 		String language = zh.getCM().getDefaultLanguage();
 		if (playerName != null && language != null) {
@@ -430,11 +439,8 @@ public class UsersManager {
         setHorseData(playerUUID, userID, "Shared", shared);
 	}
 	
-	public void updatePlayer(UUID playerUUID, String playerName) {
-		if (playerName == null) {
-			playerName = zh.getServer().getOfflinePlayer(playerUUID).getName();
-		}
-		setPlayerData(playerUUID, "Name", playerName);
+	public void updatePlayer(Player p) {
+		setPlayerData(p.getUniqueId(), "Name", p.getName());
 	}
 	
 }

@@ -53,33 +53,33 @@ public class CommandManager implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(CommandSender s, Command c, String l, String[] a) {
-		String subCommand = "";
+		String subCommand;
 		if (a.length == 0) {
 			subCommand = zh.getLM().help;
 		}
 		else {
 			subCommand = a[0];
 		}
-		if (subCommand.equalsIgnoreCase(zh.getLM().help)) {
-			new ZHelp(s, c, a, zh, commandList);
-		}
-		else if (subCommand.equalsIgnoreCase(zh.getLM().claim)) {
-			new ZClaim(zh, a, s);
+		if (subCommand.equalsIgnoreCase(zh.getLM().claim)) {
+			new ZClaim(zh, s, a);
 		}
 		else if (subCommand.equalsIgnoreCase(zh.getLM().free)) {
-			new ZFree(zh, a, s);
+			new ZFree(zh, s, a);
 		}
 		else if (subCommand.equalsIgnoreCase(zh.getLM().give)) {
-			new ZGive(zh, a ,s);
+			new ZGive(zh, s ,a);
 		}
 		else if (subCommand.equalsIgnoreCase(zh.getLM().heal)) {
-			new ZHeal(s, a, zh);
+			new ZHeal(zh, s, a);
+		}
+		else if (subCommand.equalsIgnoreCase(zh.getLM().help)) {
+			new ZHelp(zh, s, a);
 		}
 		else if (subCommand.equalsIgnoreCase(zh.getLM().here)) {
-			new ZHere(s, a, zh);
+			new ZHere(zh, s, a);
 		}
 		else if (subCommand.equalsIgnoreCase(zh.getLM().info)) {
-			new ZInfo(s, a, zh);
+			new ZInfo(zh, s, a);
 		}
 		else if (subCommand.equalsIgnoreCase(zh.getLM().kill)) {
 			new ZKill(s, a, zh);
@@ -106,7 +106,7 @@ public class CommandManager implements CommandExecutor {
 			new ZTame(s, a, zh);
 		}
 		else if (subCommand.equalsIgnoreCase(zh.getLM().tp)) {
-			new ZTp(s, a, zh);
+			new ZTp(zh, s, a);
 		}
 		else {
 			s.sendMessage(zh.getLM().getCommandAnswer(zh.getLM().unknownCommand));

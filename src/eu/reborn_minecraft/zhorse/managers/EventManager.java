@@ -24,10 +24,12 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 
 public class EventManager implements Listener {
 	private ZHorse zh;
+	private boolean displayConsole;
 	private Chunk lastChunk = null;
 
 	public EventManager(ZHorse zh) {
 		this.zh = zh;
+		this.displayConsole = !(zh.getCM().isConsoleMuted());
 	}
 	
 	@EventHandler
@@ -66,9 +68,7 @@ public class EventManager implements Listener {
 				else if (damageCause.equals(DamageCause.THORNS)) {
 					cancel = true;
 				}
-				if (cancel) {
-					e.setCancelled(true);
-				}
+				e.setCancelled(cancel);
 			}
 		}
 	}
@@ -79,10 +79,12 @@ public class EventManager implements Listener {
 		if (isHorseClaimed(entity)) {
 			Horse horse = (Horse)entity;
 			UUID ownerUUID = zh.getUM().getPlayerUUID(horse);
-			for (Player player : zh.getServer().getOnlinePlayers()) {
-				if (player.getUniqueId().equals(ownerUUID)) {
-					String horseName = zh.getUM().getHorseName(ownerUUID, horse);
-					player.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseDied), horseName));
+			for (Player p : zh.getServer().getOnlinePlayers()) {
+				if (p.getUniqueId().equals(ownerUUID)) {
+					if (displayConsole) {
+						String horseName = zh.getUM().getHorseName(ownerUUID, horse);
+						p.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseDied), horseName));
+					}
 				}
 			}
 			zh.getUM().remove(horse);
@@ -92,29 +94,31 @@ public class EventManager implements Listener {
 	@EventHandler
 	public void onHorseTame(EntityTameEvent e) {
 		if (e.getEntity() instanceof Horse && e.getOwner() instanceof Player) {
-			Player p = (Player) e.getOwner();
-			p.sendMessage(zh.getLM().getCommandAnswer(zh.getLM().horseManuallyTamed));
+			if (displayConsole) {
+				Player p = (Player)e.getOwner();
+				p.sendMessage(zh.getLM().getCommandAnswer(zh.getLM().horseManuallyTamed));
+			}
 		}
 	}
 	
 	@EventHandler
 	public void onPlayerClickHorse(PlayerInteractEntityEvent e) {
-		e.setCancelled(canPlayerInteractHorse(e.getPlayer(), e.getRightClicked()));
+		e.setCancelled(!canPlayerInteractHorse(e.getPlayer(), e.getRightClicked()));
 	}
 	
 	@EventHandler
 	public void onPlayerDamageHorse(EntityDamageByEntityEvent e) {
-		Entity entityHorse = e.getEntity();
-		if (isHorseClaimed(entityHorse)) {
-			Horse horse = (Horse)entityHorse;
+		if (isHorseClaimed(e.getEntity())) {
+			Horse horse = (Horse)e.getEntity();
 			if (zh.getUM().isProtected(horse)) {
-				Entity damagerEntity = e.getDamager();
-				if (damagerEntity instanceof Player) {
-					Player p = (Player) damagerEntity;
-					if (!(zh.getUM().isClaimedBy(p.getUniqueId(), horse) || zh.getPerms().has(p, "zh."+ zh.getLM().protect + zh.getLM().bypass))) {
+				if (e.getDamager() instanceof Player) {
+					Player p = (Player)e.getDamager();
+					if (!(zh.getUM().isClaimedBy(p.getUniqueId(), horse) || zh.getPerms().has(p, "zh."+ zh.getLM().protect + zh.getLM().admin))) {
+						if (displayConsole) {
+							String horseName = zh.getUM().getHorseName(horse);
+							p.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseIsProtected), horseName));
+						}
 						e.setCancelled(true);
-						String horseName = zh.getUM().getHorseName(horse);
-						p.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseIsProtected), horseName));
 					}
 				}
 			}
@@ -131,25 +135,27 @@ public class EventManager implements Listener {
 		}
 		else {
 			if (!p.getName().equalsIgnoreCase(zh.getUM().getPlayerName(p.getUniqueId()))) {
-				zh.getUM().updatePlayer(p.getUniqueId(), null);
+				zh.getUM().updatePlayer(p);
 			}
 		}
 	}
 	
 	@EventHandler
 	public void onPlayerLeashHorse(PlayerLeashEntityEvent e) {
-		e.setCancelled(canPlayerInteractHorse(e.getPlayer(), e.getEntity()));
+		e.setCancelled(!canPlayerInteractHorse(e.getPlayer(), e.getEntity()));
 	}
 	
 	@EventHandler
 	public void onPlayerOpenIntentory(InventoryOpenEvent e) {
-		Player p = (Player) e.getPlayer();
-		if (p.isInsideVehicle() && p.getVehicle() instanceof Horse) {
-			Horse horse = (Horse)p.getVehicle();
-			if (isHorseClaimed(horse)) {
-				if (!((zh.getUM().isClaimedBy(p.getUniqueId(), horse)) || zh.getUM().isShared(horse) || zh.getPerms().has(p, "zh." + zh.getLM().lock + zh.getLM().bypass))) {
-					String ownerName = zh.getUM().getPlayerName(horse);
-					p.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseBelongsTo), ownerName));
+		Player p = (Player)e.getPlayer();
+		if (p.isInsideVehicle()) {
+			if (isHorseClaimed(p.getVehicle())) {
+				Horse horse = (Horse)p.getVehicle();
+				if (!((zh.getUM().isClaimedBy(p.getUniqueId(), horse)) || zh.getUM().isShared(horse) || zh.getPerms().has(p, "zh." + zh.getLM().lock + zh.getLM().admin))) {
+					if (displayConsole) {
+						String ownerName = zh.getUM().getPlayerName(horse);
+						p.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseBelongsTo), ownerName));
+					}
 					e.setCancelled(true);
 				}
 			}
@@ -158,21 +164,23 @@ public class EventManager implements Listener {
 	
 	@EventHandler
 	public void onPlayerUnleashHorse(PlayerUnleashEntityEvent e) {
-		e.setCancelled(canPlayerInteractHorse(e.getPlayer(), e.getEntity()));
+		e.setCancelled(!canPlayerInteractHorse(e.getPlayer(), e.getEntity()));
 	}
 	
 	private boolean canPlayerInteractHorse(Player p, Entity entity) {
 		if (isHorseClaimed(entity)) {
-			Horse horse = (Horse) entity;
-			if (zh.getUM().isLocked(horse)) {
-				if (!(zh.getUM().isClaimedBy(p.getUniqueId(), horse) || zh.getPerms().has(p, "zh." + zh.getLM().lock + zh.getLM().bypass))) {
-					String ownerName = zh.getUM().getPlayerName(horse);
-					p.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseBelongsTo), ownerName));
-					return true;
+			Horse horse = (Horse)entity;
+			if (!(zh.getUM().isClaimedBy(p.getUniqueId(), horse) || zh.getPerms().has(p, "zh." + zh.getLM().lock + zh.getLM().admin))) {
+				if (zh.getUM().isLocked(horse) || !(horse.isEmpty() || zh.getUM().isShared(horse))) {
+					if (displayConsole) {
+						String ownerName = zh.getUM().getPlayerName(horse);
+						p.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseBelongsTo), ownerName));
+					}
+					return false;
 				}
 			}
 		}
-		return false;
+		return true;
 	}
 	
 	private boolean isHorseClaimed(Entity entity) {

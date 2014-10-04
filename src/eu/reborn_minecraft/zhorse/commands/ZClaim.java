@@ -8,13 +8,15 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 
 public class ZClaim extends Command {
 	
-	public ZClaim(ZHorse zh, String[] a, CommandSender s) {
+	public ZClaim(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, a, s);
+		idAllow = false;
+		targetAllow = false;
 		if (isPlayer()) {
 			if (analyseArguments()) {
 				if (hasPermission()) {
 					if (isWorldEnabled()) {
-						if (!hasReachedMaxClaims()) {
+						if (!hasReachedMaxClaims(p.getUniqueId())) {
 							if (!(idMode || targetMode)) {
 								if (isOnHorse()) {
 									horse = (Horse)p.getVehicle();
@@ -25,13 +27,18 @@ public class ZClaim extends Command {
 								if (idMode) {
 									if (zh.getUM().isRegistered(targetUUID, userID)) {
 										horse = zh.getUM().getHorse(targetUUID, userID);
-										execute();
+										if (horse != null) {
+											execute();
+										}
+										else if (displayConsole) {
+											s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseNotFound), zh.getUM().getHorseName(horse)));
+										}
 									}
-									else {
+									else if (displayConsole) {
 										sendUnknownHorseMessage(targetName);
 									}
 								}
-								else if (displayError){
+								else if (displayConsole) {
 									sendCommandUsage();
 								}
 							}
@@ -46,13 +53,15 @@ public class ZClaim extends Command {
 		if (craftHorseName()) {
 			if (isClaimable()) {
 				if (zh.getEM().isReadyToPay(p, command)) {
-					if (zh.getUM().registerHorse(p.getUniqueId(), targetUUID, horseName, horse)) {
+					if (zh.getUM().registerHorse(p.getUniqueId(), horseName, horse)) {
 						ChatColor cc = zh.getCM().getChatColor(zh.getPerms().getPrimaryGroup(p));
 						horse.setCustomName(cc + horseName);
 						horse.setCustomNameVisible(true);
 						horse.setTamed(true);
+						if (displayConsole) {
+							s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseClaimed), horseName));
+						}
 						zh.getEM().payCommand(p, command);
-						s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseClaimed), horseName));
 					}
 					else {
 						zh.getLogger().severe(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseNotRegistered, true), horseName, horse.getUniqueId().toString()));
@@ -60,5 +69,5 @@ public class ZClaim extends Command {
 				}
 			}
 		}
-	}
+	}	
 }
