@@ -82,28 +82,28 @@ public class CommandManager implements CommandExecutor {
 			new ZInfo(zh, s, a);
 		}
 		else if (subCommand.equalsIgnoreCase(zh.getLM().kill)) {
-			new ZKill(s, a, zh);
+			new ZKill(zh, s, a);
 		}
 		else if (subCommand.equalsIgnoreCase(zh.getLM().list)) {
-			new ZList(s, a, zh);
+			new ZList(zh, s, a);
 		}
 		else if (subCommand.equalsIgnoreCase(zh.getLM().lock)) {
-			new ZLock(s, a, zh);
+			new ZLock(zh, s, a);
 		}
 		else if (subCommand.equalsIgnoreCase(zh.getLM().rename)) {
-			new ZRename(s, a, zh);
+			new ZRename(zh, s, a);
 		}
 		else if (subCommand.equalsIgnoreCase(zh.getLM().protect)) {
-			new ZProtect(s, a, zh);
+			new ZProtect(zh, s, a);
 		}
 		else if (subCommand.equalsIgnoreCase(zh.getLM().reload)) {
-			new ZReload(s, a, zh);
+			new ZReload(zh, s, a);
 		}
 		else if (subCommand.equalsIgnoreCase(zh.getLM().share)) {
-			new ZShare(s, a, zh);
+			new ZShare(zh, s, a);
 		}
 		else if (subCommand.equalsIgnoreCase(zh.getLM().tame)) {
-			new ZTame(s, a, zh);
+			new ZTame(zh, s, a);
 		}
 		else if (subCommand.equalsIgnoreCase(zh.getLM().tp)) {
 			new ZTp(zh, s, a);

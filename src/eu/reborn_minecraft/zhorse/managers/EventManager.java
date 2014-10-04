@@ -41,7 +41,7 @@ public class EventManager implements Listener {
 			Entity[] entities = chunk.getEntities();
 			for (Entity entity : entities) {
 				if (isHorseClaimed(entity)) {
-					zh.getUM().saveLocation((Horse) entity);
+					zh.getUM().saveLocation((Horse)entity);
 				}
 			}
 			chunk.unload(true, true);
@@ -113,7 +113,7 @@ public class EventManager implements Listener {
 			if (zh.getUM().isProtected(horse)) {
 				if (e.getDamager() instanceof Player) {
 					Player p = (Player)e.getDamager();
-					if (!(zh.getUM().isClaimedBy(p.getUniqueId(), horse) || zh.getPerms().has(p, "zh."+ zh.getLM().protect + zh.getLM().admin))) {
+					if (!(zh.getUM().isClaimedBy(p.getUniqueId(), horse) || zh.getPerms().has(p, zh.getLM().zhPrefix + zh.getLM().protect + zh.getLM().adminSuffix))) {
 						if (displayConsole) {
 							String horseName = zh.getUM().getHorseName(horse);
 							p.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseIsProtected), horseName));
@@ -151,7 +151,7 @@ public class EventManager implements Listener {
 		if (p.isInsideVehicle()) {
 			if (isHorseClaimed(p.getVehicle())) {
 				Horse horse = (Horse)p.getVehicle();
-				if (!((zh.getUM().isClaimedBy(p.getUniqueId(), horse)) || zh.getUM().isShared(horse) || zh.getPerms().has(p, "zh." + zh.getLM().lock + zh.getLM().admin))) {
+				if (!((zh.getUM().isClaimedBy(p.getUniqueId(), horse)) || zh.getUM().isShared(horse) || zh.getPerms().has(p, zh.getLM().zhPrefix + zh.getLM().lock + zh.getLM().adminSuffix))) {
 					if (displayConsole) {
 						String ownerName = zh.getUM().getPlayerName(horse);
 						p.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseBelongsTo), ownerName));
@@ -170,7 +170,7 @@ public class EventManager implements Listener {
 	private boolean canPlayerInteractHorse(Player p, Entity entity) {
 		if (isHorseClaimed(entity)) {
 			Horse horse = (Horse)entity;
-			if (!(zh.getUM().isClaimedBy(p.getUniqueId(), horse) || zh.getPerms().has(p, "zh." + zh.getLM().lock + zh.getLM().admin))) {
+			if (!(zh.getUM().isClaimedBy(p.getUniqueId(), horse) || zh.getPerms().has(p, zh.getLM().zhPrefix + zh.getLM().lock + zh.getLM().adminSuffix))) {
 				if (zh.getUM().isLocked(horse) || !(horse.isEmpty() || zh.getUM().isShared(horse))) {
 					if (displayConsole) {
 						String ownerName = zh.getUM().getPlayerName(horse);

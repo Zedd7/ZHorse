@@ -22,6 +22,7 @@ public class Command {
 	protected boolean targetMode;
 	protected boolean idAllow;
 	protected boolean targetAllow;
+	protected boolean playerCommand;
 	protected String userID;
 	protected String targetName;
 	protected UUID targetUUID;
@@ -82,16 +83,23 @@ public class Command {
 			}
 		}
 		if (targetName == null) {
-			targetName = p.getName();
-			targetUUID = p.getUniqueId();
+			targetName = s.getName();
+			if (playerCommand) {
+				targetUUID = p.getUniqueId();
+			}
 			samePlayer = true;
 		}
 		else {
 			targetName = zh.getUM().getPlayerName(targetName);
 			targetUUID = getPlayerUUID(targetName);
-			samePlayer = p.getUniqueId().equals(targetUUID);
+			if (playerCommand) {
+				samePlayer = p.getUniqueId().equals(targetUUID);
+			}
+			else {
+				samePlayer = false;
+			}
 		}
-		if (targetUUID == null) {
+		if (targetUUID == null && playerCommand) {
 			s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().unknownPlayer), targetName));
 			return false;
 		}
@@ -192,7 +200,7 @@ public class Command {
 			return false;
 		}
 		else if (displayConsole) {
-			if (p.getUniqueId().equals(playerUUID)) {
+			if (samePlayer) {
 				s.sendMessage(zh.getLM().getCommandAnswer(zh.getLM().maximumClaimsReached));
 			}
 			else {
@@ -203,30 +211,41 @@ public class Command {
 	}
 	
 	protected boolean hasPermission() {
-    	return (hasPermission(p, command, false, false));
+    	return (hasPermission(s, command, false));
 	}
 	
-	protected boolean hasPermission(UUID playerUUID, String command, boolean ignoreModes, boolean hideConsole) {
-		if (isPlayerOnline(playerUUID)) {
+	protected boolean hasPermission(UUID playerUUID, String command, boolean ignoreModes) {
+		if (isPlayerOnline(playerUUID, false)) {
     		Player target = zh.getServer().getPlayer(playerUUID);
-    		return hasPermission(target, command, ignoreModes, hideConsole);
-    	}
-    	else if (displayConsole) {
-    		s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().playerOffline), zh.getUM().getPlayerName(playerUUID)));
+    		return hasPermission(target, command, ignoreModes);
     	}
     	return false;
 	}
 	
-	protected boolean hasPermission(Player p, String command, boolean ignoreModes, boolean hideConsole) {
-		String perm = "zh." + command;
+	protected boolean hasPermission(CommandSender s, String command, boolean ignoreModes) {
+		String perm = zh.getLM().zhPrefix + command;
     	if ((adminMode || (idMode && !idAllow) || (targetMode && !targetAllow)) && !ignoreModes) {
-    		perm += zh.getLM().admin;
+    		perm += zh.getLM().adminSuffix;
+    	}
+    	if (zh.getPerms().has(s, perm)) {
+    		return true;
+    	}
+    	else if (displayConsole) {
+    		s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().missingPermission), perm));
+    	}
+    	return false;
+	}
+	
+	protected boolean hasPermission(Player p, String command, boolean ignoreModes) {
+		String perm = zh.getLM().zhPrefix + command;
+    	if ((adminMode || (idMode && !idAllow) || (targetMode && !targetAllow)) && !ignoreModes) {
+    		perm += zh.getLM().adminSuffix;
     	}
     	if (zh.getPerms().has(p, perm)) {
     		return true;
     	}
-    	else if (displayConsole && !hideConsole) {
-    		s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().missingPermission), perm));
+    	else if (displayConsole) {
+    		s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().missingPermissionOther), p.getName(), perm));
     	}
     	return false;
 	}
@@ -283,6 +302,16 @@ public class Command {
 		return false;
 	}
 	
+	protected boolean isHorseLoaded() {
+		if (horse != null) {
+			return true;
+		}
+		else if (displayConsole) {
+			s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseNotFound), zh.getUM().getHorseName(targetUUID, userID)));
+		}
+		return false;
+	}
+	
 	protected boolean isNotOnHorse() {
 		if (adminMode) {
 			return true;
@@ -323,14 +352,14 @@ public class Command {
 		return isOwner(false);
 	}
 	
-	protected boolean isOwner(boolean hideErrorMessage) {
+	protected boolean isOwner(boolean hideConsole) {
 		if (adminMode) {
 			return true;
 		}
 		if (zh.getUM().isClaimedBy(p.getUniqueId(), horse)) {
 			return true;
 		}
-		else if (displayConsole) {
+		else if (displayConsole && !hideConsole) {
 			String ownerName = zh.getUM().getPlayerName(horse);
 			s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseBelongsTo), ownerName));
 		}
@@ -338,22 +367,31 @@ public class Command {
 	}
 	
 	protected boolean isPlayer() {
-		if (s instanceof Player) {
-			p = (Player)s;
-			return true;
-		}
-		else if (displayConsole) {
-			s.sendMessage(zh.getLM().getCommandAnswer(zh.getLM().playerCommand));
-		}
-		return false;
+		return isPlayer(true);
 	}
 	
-	protected boolean isPlayerOnline(UUID playerUUID) {
+	protected boolean isPlayer(boolean sendErrorMessage) {
+		if (s instanceof Player) {
+			p = (Player)s;
+			playerCommand = true;
+			return true;
+		}
+		else if (displayConsole && sendErrorMessage) {
+			s.sendMessage(zh.getLM().getCommandAnswer(zh.getLM().playerCommand));
+		}
+		playerCommand = false;
+		return playerCommand;
+	}
+	
+	protected boolean isPlayerOnline(UUID playerUUID, boolean hideConsole) {
 		for (Player p : zh.getServer().getOnlinePlayers()) {
 			if (p.getUniqueId().equals(playerUUID)) {
 				return true;
 			}
 		}
+    	if (displayConsole && !hideConsole) {
+    		s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().playerOffline), zh.getUM().getPlayerName(playerUUID)));
+    	}
 		return false;
 	}
 	
@@ -364,6 +402,21 @@ public class Command {
 		}
 		else if (displayConsole) {
 			s.sendMessage(zh.getLM().getCommandAnswer(zh.getLM().horseNotClaimed));
+		}
+		return false;
+	}
+	
+	protected boolean isRegistered(UUID targetUUID, String userID) {
+		return isRegistered(targetUUID, userID, false);
+	}
+	
+	protected boolean isRegistered(UUID targetUUID, String userID, boolean playerHorse) {
+		if (zh.getUM().isRegistered(targetUUID, userID)) {
+			horseName = zh.getUM().getHorseName(targetUUID, userID);
+			return true;
+		}
+		else if (displayConsole) {
+			sendUnknownHorseMessage(targetName, playerHorse);
 		}
 		return false;
 	}

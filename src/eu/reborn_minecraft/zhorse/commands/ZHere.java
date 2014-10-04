@@ -17,17 +17,11 @@ public class ZHere extends Command {
 				if (hasPermission()) {
 					if (isWorldEnabled()) {
 						if (idMode) {
-							if (zh.getUM().isRegistered(targetUUID, userID)) {
+							if (isRegistered(targetUUID, userID)) {
 								horse = zh.getUM().getHorse(targetUUID, userID);
-								if (horse != null) {
+								if (isHorseLoaded()) {
 									execute();
 								}
-								else if (displayConsole) {
-									s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseNotFound), zh.getUM().getHorseName(horse)));
-								}
-							}
-							else if (displayConsole) {
-								sendUnknownHorseMessage(targetName);
 							}
 						}
 						else if (displayConsole) {
@@ -40,15 +34,18 @@ public class ZHere extends Command {
 	}
 	
 	private void execute() {
-		horseName = zh.getUM().getHorseName(horse);
-		if (zh.getEM().isReadyToPay(p, command)) {
+		if (isOwner()) {
 			if (isOnSameWorld()) {
 				if (isNotOnHorse()) {
 					if (isHorseEmpty()) {
-						Block block = p.getWorld().getHighestBlockAt(p.getLocation());
-						horse.teleport(new Location(p.getWorld(), block.getX(), block.getY(), block.getZ()));
-						s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseTeleported), horseName));
-						zh.getEM().payCommand(p, command);
+						if (zh.getEM().isReadyToPay(p, command)) {
+							Block block = p.getWorld().getHighestBlockAt(p.getLocation());
+							horse.teleport(new Location(p.getWorld(), block.getX(), block.getY(), block.getZ()));
+							if (displayConsole) {
+								s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseTeleported), horseName));
+							}
+							zh.getEM().payCommand(p, command);
+						}
 					}
 				}
 			}

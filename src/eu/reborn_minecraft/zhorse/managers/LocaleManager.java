@@ -3,11 +3,9 @@ package eu.reborn_minecraft.zhorse.managers;
 import eu.reborn_minecraft.zhorse.ZHorse;
 
 public class LocaleManager {
-	public String admin = ".admin";
-	public String commandFree = ".free";
-	public String bypass = ".bypass";
-	public String multiworld = ".multiworld";
-	public String others = ".others";
+	public String adminSuffix = ".admin";
+	public String freeSuffix = ".free";
+	public String zhPrefix = "zh.";
 	
 	public String pluginPrefix = "pluginPrefix";
 	public String headerFormat = "headerFormat";
@@ -54,6 +52,7 @@ public class LocaleManager {
 	public String maximumClaimsReached = "maximumClaimsReached";
 	public String maximumClaimsReachedOther = "maximumClaimsReachedOther";
 	public String missingPermission = "missingPermission";
+	public String missingPermissionOther = "missingPermissionOther";
 	public String noHorseOwned = "noHorseOwned";
 	public String noHorseOwnedOther = "noHorseOwnedOther";
 	public String notOnHorse = "notOnHorse";

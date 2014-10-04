@@ -18,11 +18,13 @@ public class EconomyManager {
 	}
 	
 	public boolean isReadyToPay(Player p, String command) {
-		int amount = zh.getCM().getCommandCost(command);
-		if (isCommandFree(p, command) || econ.has(zh.getServer().getOfflinePlayer(p.getUniqueId()), amount)) {
-			return true;
+		if (p != null) {
+			int amount = zh.getCM().getCommandCost(command);
+			if (isCommandFree(p, command) || econ.has(zh.getServer().getOfflinePlayer(p.getUniqueId()), amount)) {
+				return true;
+			}
+			p.sendMessage(String.format(zh.getLM().getEconomyAnswer(zh.getLM().notEnoughMoney), amount));
 		}
-		p.sendMessage(String.format(zh.getLM().getEconomyAnswer(zh.getLM().notEnoughMoney), amount));
 		return false;
 	}
 	
@@ -36,7 +38,7 @@ public class EconomyManager {
 	
 	public boolean isCommandFree(Player p, String command) {
 		int cost = zh.getCM().getCommandCost(command);
-		if (cost == 0 || zh.getPerms().has(p, command + zh.getLM().commandFree)) {
+		if (cost == 0 || zh.getPerms().has(p, zh.getLM().zhPrefix + command + zh.getLM().freeSuffix)) {
 			return true;
 		}
 		return false;

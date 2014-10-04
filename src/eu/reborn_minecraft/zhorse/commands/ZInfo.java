@@ -21,22 +21,18 @@ public class ZInfo extends Command {
 						if (!(idMode || targetMode)) {
 							if (isOnHorse()) {
 								horse = (Horse)p.getVehicle();
-								execute();
+								if (isRegistered()) {
+									execute();
+								}
 							}
 						}
 						else {
 							if (idMode) {
-								if (zh.getUM().isRegistered(targetUUID, userID)) {
+								if (isRegistered(targetUUID, userID)) {
 									horse = zh.getUM().getHorse(targetUUID, userID);
-									if (horse != null) {
+									if (isHorseLoaded()) {
 										execute();
 									}
-									else if (displayConsole) {
-										s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseNotFound), zh.getUM().getHorseName(horse)));
-									}
-								}
-								else if (displayConsole) {
-									sendUnknownHorseMessage(targetName);
 								}
 							}
 							else if (displayConsole){
@@ -50,42 +46,40 @@ public class ZInfo extends Command {
 	}
 
 	private void execute() {
-		if (isRegistered()) {
-			if (zh.getEM().isReadyToPay(p, command)) {
-				Damageable d = horse;
-				UUID ownerUUID = zh.getUM().getPlayerUUID(horse);
-				String ownerName = zh.getUM().getPlayerName(ownerUUID);
-				String userID = zh.getUM().getUserID(ownerUUID, horse);
-				String horseName = zh.getUM().getHorseName(ownerUUID, userID);
-				String health = Integer.toString(((Number) d.getHealth()).intValue());
-				String maxHealth = Integer.toString(((Number) d.getMaxHealth()).intValue());						
-				s.sendMessage(String.format(zh.getLM().getHeaderMessage(zh.getLM().headerFormat), zh.getLM().getHeaderMessage(zh.getLM().horseInfoHeader)));
-				if (isOwner(true)) {
-					s.sendMessage(" " + String.format(zh.getLM().getInformationMessage(zh.getLM().id, true), userID));
-				}
-				s.sendMessage(" " + String.format(zh.getLM().getInformationMessage(zh.getLM().owner, true), ownerName));
-				s.sendMessage(" " + String.format(zh.getLM().getInformationMessage(zh.getLM().name, true), horseName));
-				s.sendMessage(" " + String.format(zh.getLM().getInformationMessage(zh.getLM().health, true), health, maxHealth));
-				String status = "";
-				boolean normal = true;
-				if (zh.getUM().isProtected(ownerUUID, userID)) {
-					status += " " + zh.getLM().getInformationMessage(zh.getLM().modeProtected);
-					normal = false;
-				}
-				if (zh.getUM().isLocked(ownerUUID, userID)) {
-					status += " " + zh.getLM().getInformationMessage(zh.getLM().modeLocked);
-					normal = false;
-				}
-				else if (zh.getUM().isShared(ownerUUID, userID)) {
-					status += " " + zh.getLM().getInformationMessage(zh.getLM().modeShared);
-					normal = false;
-				}
-				if (normal) {
-					status += " " + zh.getLM().getInformationMessage(zh.getLM().modeNone);
-				}
-				s.sendMessage(" " + String.format(zh.getLM().getInformationMessage(zh.getLM().status), status));
-				zh.getEM().payCommand(p, command);
+		if (zh.getEM().isReadyToPay(p, command)) {
+			Damageable d = horse;
+			UUID ownerUUID = zh.getUM().getPlayerUUID(horse);
+			String ownerName = zh.getUM().getPlayerName(ownerUUID);
+			String userID = zh.getUM().getUserID(ownerUUID, horse);
+			String horseName = zh.getUM().getHorseName(ownerUUID, userID);
+			String health = Integer.toString(((Number) d.getHealth()).intValue());
+			String maxHealth = Integer.toString(((Number) d.getMaxHealth()).intValue());						
+			s.sendMessage(String.format(zh.getLM().getHeaderMessage(zh.getLM().headerFormat), zh.getLM().getHeaderMessage(zh.getLM().horseInfoHeader)));
+			if (isOwner(true)) {
+				s.sendMessage(" " + String.format(zh.getLM().getInformationMessage(zh.getLM().id, true), userID));
 			}
+			s.sendMessage(" " + String.format(zh.getLM().getInformationMessage(zh.getLM().owner, true), ownerName));
+			s.sendMessage(" " + String.format(zh.getLM().getInformationMessage(zh.getLM().name, true), horseName));
+			s.sendMessage(" " + String.format(zh.getLM().getInformationMessage(zh.getLM().health, true), health, maxHealth));
+			String status = "";
+			boolean normal = true;
+			if (zh.getUM().isProtected(ownerUUID, userID)) {
+				status += " " + zh.getLM().getInformationMessage(zh.getLM().modeProtected);
+				normal = false;
+			}
+			if (zh.getUM().isLocked(ownerUUID, userID)) {
+				status += " " + zh.getLM().getInformationMessage(zh.getLM().modeLocked);
+				normal = false;
+			}
+			else if (zh.getUM().isShared(ownerUUID, userID)) {
+				status += " " + zh.getLM().getInformationMessage(zh.getLM().modeShared);
+				normal = false;
+			}
+			if (normal) {
+				status += " " + zh.getLM().getInformationMessage(zh.getLM().modeNone);
+			}
+			s.sendMessage(" " + String.format(zh.getLM().getInformationMessage(zh.getLM().status), status));
+			zh.getEM().payCommand(p, command);
 		}
 	}
 

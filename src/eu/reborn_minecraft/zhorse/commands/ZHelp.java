@@ -15,9 +15,11 @@ public class ZHelp extends Command {
 				if (hasPermission()) {
 					if (isWorldEnabled()) {
 						if (!idMode) {
-							execute();
+							if (!targetMode || isPlayerOnline(targetUUID, false)) {
+								execute();
+							}
 						}
-						else {
+						else if (displayConsole) {
 							sendCommandUsage(true);
 						}
 					}
@@ -39,7 +41,9 @@ public class ZHelp extends Command {
 					sendErrorMessage = false;
 				}
 				if (zh.getCmdM().getCommandList().contains(command)) {
-					sendCommandUsage(sendErrorMessage);
+					if (displayConsole) {
+						sendCommandUsage(sendErrorMessage);
+					}
 					zh.getEM().payCommand(p, command);
 				}
 				else if (displayConsole) {
@@ -50,14 +54,18 @@ public class ZHelp extends Command {
 	}
 
 	private void displayCommandList() {
-		s.sendMessage(String.format(zh.getLM().getHeaderMessage(zh.getLM().headerFormat), zh.getLM().getHeaderMessage(zh.getLM().commandListHeader)));
-		for (String command : zh.getCmdM().getCommandList()) {
-			if (hasPermission(targetUUID, command, true, true)) {
-				String message = " " + zh.getLM().getCommandDescription(command);
-				if (!zh.getEM().isCommandFree(targetUUID, command)) {
-					message += " " + String.format(zh.getLM().getEconomyAnswer(zh.getLM().commandCost, true), zh.getCM().getCommandCost(command));
+		if (displayConsole) {
+			s.sendMessage(String.format(zh.getLM().getHeaderMessage(zh.getLM().headerFormat), zh.getLM().getHeaderMessage(zh.getLM().commandListHeader)));
+			for (String command : zh.getCmdM().getCommandList()) {
+				displayConsole = false;
+				if (hasPermission(targetUUID, command, true)) {
+					String message = " " + zh.getLM().getCommandDescription(command);
+					String cost = "";
+					if (!zh.getEM().isCommandFree(targetUUID, command)) {
+						cost = " " + String.format(zh.getLM().getEconomyAnswer(zh.getLM().commandCost, true), zh.getCM().getCommandCost(command));
+					}
+					s.sendMessage(message + cost);
 				}
-				s.sendMessage(message);
 			}
 		}
 	}

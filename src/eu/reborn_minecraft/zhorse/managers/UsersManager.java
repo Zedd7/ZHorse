@@ -35,17 +35,21 @@ public class UsersManager {
 	public Horse getHorse(UUID playerUUID, String userID) {
 		UUID horseUUID = getHorseUUID(playerUUID, userID);
 		if (horseUUID != null) {
-			Location location = zh.getUM().getLocation(playerUUID, userID);
-			Chunk chunk = location.getWorld().getChunkAt(location);
-			if (!chunk.isLoaded()) {
-				chunk.load();
+			Location location = getLocation(playerUUID, userID);
+			Chunk chunk = location.getChunk();
+			Horse horse = getHorseInChunk(chunk, horseUUID);
+			if (horse != null) {
+				return horse;
 			}
-			for (Entity entity : chunk.getEntities()) {
-				if (entity.getUniqueId().equals(horseUUID)) {
-					return (Horse)entity;
+			else {
+				List<Chunk> neighboringChunks = getNeighboringChunks(location);
+				for (Chunk neighboringChunk : neighboringChunks) {
+					horse = getHorseInChunk(neighboringChunk, horseUUID);
+					if (horse != null) {
+						return horse;
+					}
 				}
 			}
-			chunk.unload(true, true);
 			List<World> worlds = zh.getServer().getWorlds();
 			for (World world : worlds) {
 				List<LivingEntity> livingEntities = world.getLivingEntities();
@@ -54,6 +58,31 @@ public class UsersManager {
 						return (Horse)livingEntity;
 					}
 				}
+				List<Entity> entities = world.getEntities();
+				for (Entity entity : entities) {
+					if (entity.getUniqueId().equals(horseUUID)) {
+						return (Horse)entity;
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	public Horse getHorseInChunk(Chunk chunk, UUID horseUUID) {
+		if (horseUUID != null) {
+			boolean chunkLoaded = false;
+			if (!chunk.isLoaded()) {
+				chunk.load();
+				chunkLoaded = true;
+			}
+			for (Entity entity : chunk.getEntities()) {
+				if (entity.getUniqueId().equals(horseUUID)) {
+					return (Horse)entity;
+				}
+			}
+			if (chunkLoaded) {
+				chunk.unload(true, true);
 			}
 		}
 		return null;
@@ -108,12 +137,29 @@ public class UsersManager {
 	}
 	
 	public Location getLocation(UUID playerUUID, String userID) {
-		World world = zh.getServer().getWorld(getHorseStringData(playerUUID, userID, "Location.World", null));
-		double x = Double.parseDouble(getHorseStringData(playerUUID, userID, "Location.X", null));
-		double y = Double.parseDouble(getHorseStringData(playerUUID, userID, "Location.Y", null));
-		double z = Double.parseDouble(getHorseStringData(playerUUID, userID, "Location.Z", null));
-		return new Location(world, x, y, z);
-		
+		String worldName = getHorseStringData(playerUUID, userID, "Location.World", null);
+		World world = zh.getServer().getWorld(worldName);
+		if (world != null) {
+			double x = Double.parseDouble(getHorseStringData(playerUUID, userID, "Location.X", null));
+			double y = Double.parseDouble(getHorseStringData(playerUUID, userID, "Location.Y", null));
+			double z = Double.parseDouble(getHorseStringData(playerUUID, userID, "Location.Z", null));
+			return new Location(world, x, y, z);
+		}
+		zh.getLogger().severe("The world \"" + worldName + "\" does not exist !");
+		return null;
+	}
+	
+	private List<Chunk> getNeighboringChunks(Location loc) {
+		List<Chunk> neighboringChunks = new ArrayList<Chunk>();
+		neighboringChunks.add(loc.getWorld().getChunkAt(loc.add(0, 0, -16)));
+		neighboringChunks.add(loc.getWorld().getChunkAt(loc.add(-16, 0, 0)));
+		neighboringChunks.add(loc.getWorld().getChunkAt(loc.add(0, 0, 16)));
+		neighboringChunks.add(loc.getWorld().getChunkAt(loc.add(0, 0, 16)));
+		neighboringChunks.add(loc.getWorld().getChunkAt(loc.add(16, 0, 0)));
+		neighboringChunks.add(loc.getWorld().getChunkAt(loc.add(16, 0, 0)));
+		neighboringChunks.add(loc.getWorld().getChunkAt(loc.add(0, 0, -16)));
+		neighboringChunks.add(loc.getWorld().getChunkAt(loc.add(0, 0, -16)));
+		return neighboringChunks;
 	}
 	
 	public String getNextUserID(UUID playerUUID) {
@@ -234,8 +280,12 @@ public class UsersManager {
 	
 	public boolean isLocked(Horse horse) {
 		UUID playerUUID = getPlayerUUID(horse);
+        return isLocked(playerUUID, horse);
+	}
+	
+	public boolean isLocked(UUID playerUUID, Horse horse) {
         String userID = getUserID(playerUUID, horse);
-        return isLocked(playerUUID, userID);
+        return getHorseBooleanData(playerUUID, userID, "Locked", false);
 	}
 	
 	public boolean isLocked(UUID playerUUID, String userID) { 
@@ -244,6 +294,10 @@ public class UsersManager {
 	
 	public boolean isProtected(Horse horse) {
 		UUID playerUUID = getPlayerUUID(horse);
+        return isProtected(playerUUID, horse);
+	}
+	
+	public boolean isProtected(UUID playerUUID, Horse horse) {
         String userID = getUserID(playerUUID, horse);
         return isProtected(playerUUID, userID);
 	}
@@ -282,6 +336,10 @@ public class UsersManager {
 	
 	public boolean isShared(Horse horse) {
 		UUID playerUUID = getPlayerUUID(horse);
+		return isShared(playerUUID, horse);
+	}
+	
+	public boolean isShared(UUID playerUUID, Horse horse) {
         String userID = getUserID(playerUUID, horse);
 		return isShared(playerUUID, userID);
 	}
@@ -294,14 +352,24 @@ public class UsersManager {
 		return getHorse(playerUUID, userID) != null;
 	}
 	
-	public void lock(UUID playerUUID, Horse horse, boolean lock) {
+	public void lock(UUID playerUUID, Horse horse) {
         String userId = getUserID(playerUUID, horse);
-        setHorseData(playerUUID, userId, "Locked", lock);
+        setHorseData(playerUUID, userId, "Locked", true);
 	}
 	
-	public void protect(UUID playerUUID, Horse horse, boolean protect) {
+	public void unLock(UUID playerUUID, Horse horse) {
+        String userId = getUserID(playerUUID, horse);
+        setHorseData(playerUUID, userId, "Locked", false);
+	}
+	
+	public void protect(UUID playerUUID, Horse horse) {
         String userID = getUserID(playerUUID, horse);
-        setHorseData(playerUUID, userID, "Protected", protect);
+        setHorseData(playerUUID, userID, "Protected", true);
+	}
+	
+	public void unProtect(UUID playerUUID, Horse horse) {
+        String userID = getUserID(playerUUID, horse);
+        setHorseData(playerUUID, userID, "Protected", false);
 	}
 	
 	public boolean registerHorse(UUID playerUUID, String horseName, Horse horse) {
@@ -434,9 +502,14 @@ public class UsersManager {
 		zh.saveUsers();
 	}
 	
-	public void share(UUID playerUUID, Horse horse, boolean shared) {
+	public void share(UUID playerUUID, Horse horse) {
         String userID = getUserID(playerUUID, horse);
-        setHorseData(playerUUID, userID, "Shared", shared);
+        setHorseData(playerUUID, userID, "Shared", true);
+	}
+	
+	public void unShare(UUID playerUUID, Horse horse) {
+        String userID = getUserID(playerUUID, horse);
+        setHorseData(playerUUID, userID, "Shared", false);
 	}
 	
 	public void updatePlayer(Player p) {

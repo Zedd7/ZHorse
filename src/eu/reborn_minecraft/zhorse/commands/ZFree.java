@@ -18,21 +18,18 @@ public class ZFree extends Command {
 						if (!(idMode || targetMode)) {
 							if (isOnHorse()) {
 								horse = (Horse)p.getVehicle();
-								execute();
+								if (isRegistered()) {
+									execute();
+								}
 							}
 						}
 						else {
 							if (idMode) {
-								if (zh.getUM().isRegistered(targetUUID, userID)) {
+								if (isRegistered(targetUUID, userID)) {
 									horse = zh.getUM().getHorse(targetUUID, userID);
-									if (horse != null) {
+									if (isHorseLoaded()) {
 										execute();
 									}
-									else if (displayConsole) {
-										s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseNotFound), zh.getUM().getHorseName(horse)));
-									}								}
-								else if (displayConsole) {
-									sendUnknownHorseMessage(targetName);
 								}
 							}
 							else if (displayConsole){
@@ -46,20 +43,18 @@ public class ZFree extends Command {
 	}
 
 	private void execute() {
-		if (isRegistered()) {
-			if (isOwner()) {
-				if (zh.getEM().isReadyToPay(p, command)) {
-					if (zh.getUM().remove(horse)) {
-						horse.setCustomName(null);
-						horse.setCustomNameVisible(false);
-						if (displayConsole) {
-							s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseFreed), horseName));
-						}
-						zh.getEM().payCommand(p, command);
+		if (isOwner()) {
+			if (zh.getEM().isReadyToPay(p, command)) {
+				if (zh.getUM().remove(horse)) {
+					horse.setCustomName(null);
+					horse.setCustomNameVisible(false);
+					if (displayConsole) {
+						s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseFreed), horseName));
 					}
+					zh.getEM().payCommand(p, command);
 				}
 			}
-		}		
+		}	
 	}
 
 }

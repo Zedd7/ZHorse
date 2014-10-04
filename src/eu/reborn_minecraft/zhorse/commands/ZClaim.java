@@ -25,17 +25,11 @@ public class ZClaim extends Command {
 							}
 							else {
 								if (idMode) {
-									if (zh.getUM().isRegistered(targetUUID, userID)) {
+									if (isRegistered(targetUUID, userID)) {
 										horse = zh.getUM().getHorse(targetUUID, userID);
-										if (horse != null) {
+										if (isHorseLoaded()) {
 											execute();
 										}
-										else if (displayConsole) {
-											s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseNotFound), zh.getUM().getHorseName(horse)));
-										}
-									}
-									else if (displayConsole) {
-										sendUnknownHorseMessage(targetName);
 									}
 								}
 								else if (displayConsole) {
