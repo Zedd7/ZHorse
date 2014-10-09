@@ -1,38 +1,38 @@
-V1.0
+V1.0.0
   - Initial release
   
-V1.1
+V1.1.0
   - Improved horse protection
   
-V1.2
+V1.2.0
   - Added /zhorse public command
 
-V1.3
+V1.3.0
   - Added /zhorse info command
 
-V1.4
+V1.4.0
   - Added jump and speed to /zh info
   - Added promo message when taming wild horse
   
-V1.5
+V1.5.0
   - Added /zhorse give command
 
-V1.6
+V1.6.0
   - Renamed /zhorse public to /zhorse share
   - Unified writers and readers to managers
   - Enabled configs loading from files
   - Added userID to /zhorse info
 
-V1.7
+V1.7.0
   - Added UUID support for player
   - Huge managers rework
   - Reduced CPU load
 
-V1.8
+V1.8.0
   - New players automatic registration
   - AutoUpdate on premium player renaming
   
-V2.0
+V2.0.0
   - Huge command handling rework
   - Added admin mode to each command
   - Added support for all colors in any format
