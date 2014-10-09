@@ -35,12 +35,19 @@ public class ZHere extends Command {
 	
 	private void execute() {
 		if (isOwner()) {
-			if (isOnSameWorld()) {
+			if (isWorldCompatible()) {
 				if (isNotOnHorse()) {
 					if (isHorseEmpty()) {
 						if (zh.getEM().isReadyToPay(p, command)) {
-							Block block = p.getWorld().getHighestBlockAt(p.getLocation());
-							horse.teleport(new Location(p.getWorld(), block.getX(), block.getY(), block.getZ()));
+							Location location;
+							if (!p.isFlying()) {
+								location = p.getLocation();
+							}
+							else {
+								Block block = p.getWorld().getHighestBlockAt(p.getLocation());
+								location = new Location(p.getWorld(), block.getX(), block.getY(), block.getZ());
+							}
+							horse.teleport(location);
 							if (displayConsole) {
 								s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseTeleported), horseName));
 							}

@@ -158,7 +158,7 @@ public class LocaleManager {
 	public String getLocaleData(String fullIndex, boolean hidePrefix) {
         String text = zh.getLocale().getString(fullIndex);
         if (text == null) {
-        	zh.getLogger().severe("No value found in \"locale.yml\" for index \"" + fullIndex + "\" !");
+        	zh.getLogger().severe("No value found in \"locale.yml\" at index \"" + fullIndex + "\" !");
         	text = fullIndex + " NULL";
         }
         if (hidePrefix) {

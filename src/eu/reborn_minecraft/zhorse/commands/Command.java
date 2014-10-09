@@ -335,19 +335,6 @@ public class Command {
 		return false;
 	}
 	
-	protected boolean isOnSameWorld() {
-		if (adminMode) {
-			return true;
-		}
-		if (p.getWorld().equals(horse.getLocation().getWorld())) {
-			return true;
-		}
-		else if (displayConsole) {
-			s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().differentWorld), horseName));
-		}
-		return false;
-	}
-	
 	protected boolean isOwner() {
 		return isOwner(false);
 	}
@@ -417,6 +404,22 @@ public class Command {
 		}
 		else if (displayConsole) {
 			sendUnknownHorseMessage(targetName, playerHorse);
+		}
+		return false;
+	}
+	
+	protected boolean isWorldCompatible() {
+		if (adminMode) {
+			return true;
+		}
+		if (zh.getCM().isWorldCrossingAllowed()) {
+			return true;
+		}
+		if (p.getWorld().equals(horse.getLocation().getWorld())) {
+			return true;
+		}
+		else if (displayConsole) {
+			s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().differentWorld), horseName));
 		}
 		return false;
 	}

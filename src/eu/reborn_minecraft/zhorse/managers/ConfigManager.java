@@ -174,6 +174,10 @@ public class ConfigManager {
 		return (getMinimumHorseNameLength() > 0);
 	}
 	
+	public boolean isWorldCrossingAllowed() {
+		return (zh.getConfig().getBoolean("Settings.worldCrossing", false));
+	}
+	
 	public boolean isWorldEnabled(World world) {
 		List<String> worlds = zh.getConfig().getStringList("Settings.activeWorlds");
 		if (!(worlds == null || worlds.size() == 0)) {

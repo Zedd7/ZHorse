@@ -1,8 +1,9 @@
  main: eu.reborn_minecraft.zhorse.ZHorse
  name: ZHorse
- version: 2.0
- description: This plugin provides enhanced management of horses
- author: Z3ddicus
+ version: 1.0.2
+ depend: [Vault]
+ description: This plugin provides an enhanced management of horses
+ author: Z3dd7
  
  commands:
    zhorse:
@@ -13,7 +14,6 @@
  permissions:
     zh.*:
         description: Grants full access to ZHorse
-        default: op
         children:
             zh.use: true
             zh.*.admin: true
@@ -52,7 +52,7 @@
             zh.list.admin: true
             zh.lock.admin: true
             zh.protect.admin: true
-            zh.reload.admon: true
+            zh.reload.admin: true
             zh.rename.admin: true
             zh.share.admin: true
             zh.tame.admin: true

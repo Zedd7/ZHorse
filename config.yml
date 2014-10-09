@@ -3,6 +3,7 @@ Settings:
   minimumHorsenameLength: 0
   maximumHorsenameLength: 30
   muteConsole: false
+  worldCrossing: true
   activeWorlds:
 Economy:
 Horsenames:
