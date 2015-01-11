@@ -18,6 +18,7 @@ import eu.reborn_minecraft.zhorse.managers.EconomyManager;
 import eu.reborn_minecraft.zhorse.managers.EventManager;
 import eu.reborn_minecraft.zhorse.managers.LocaleManager;
 import eu.reborn_minecraft.zhorse.managers.UsersManager;
+import eu.reborn_minecraft.zhorse.metrics.Metrics;
 
 public class ZHorse extends JavaPlugin {
 	private static String configSuffix = "config.yml";
@@ -47,6 +48,7 @@ public class ZHorse extends JavaPlugin {
 		initPermissions();
 		initEconomy();
 		initManagers();
+		initMetrics();
 		getCommand("zhorse").setExecutor(commandManager);
 		getServer().getPluginManager().registerEvents(new EventManager(this), this);
 	}
@@ -64,7 +66,7 @@ public class ZHorse extends JavaPlugin {
 			getServer().getPluginManager().enablePlugin(vault);
 		}
 		else if (vault == null) {
-			getLogger().severe(String.format("%s disabled because Vault is missing !", getDescription().getName()));
+			getLogger().severe(String.format("Vault is missing ! Disabling %s...", getDescription().getName()));
 			getServer().getPluginManager().disablePlugin(this);
 		}
 	}
@@ -112,6 +114,15 @@ public class ZHorse extends JavaPlugin {
 		usersManager = new UsersManager(this, usersExist);
 		economyManager = new EconomyManager(this);
 	}
+    
+    private void initMetrics() {
+    	try {
+            Metrics metrics = new Metrics(this);
+            metrics.start();
+        } catch (IOException e) {
+        	getLogger().severe("Failed to start Metrics !");
+        }
+    }
     
 	public void reload() {
 		initManagers();

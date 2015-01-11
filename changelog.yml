@@ -59,3 +59,9 @@ V1.0.1
 V1.0.2
   - Changed horse teleportation behaviour toward flying
   - Added option to allow crossworld horse teleportation
+
+V1.0.3
+  - Updated to 1.8.0
+
+V1.0.4
+  - Added Metrics
