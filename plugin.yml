@@ -4,7 +4,7 @@
  depend: [Vault]
  description: This plugin provides an enhanced management of horses
  author: Z3dd7
- 
+
  commands:
    zhorse:
       description: Main ZHorse command
