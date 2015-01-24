@@ -19,6 +19,7 @@ public class ConfigManager {
 	public ConfigManager(ZHorse zh, boolean configExist) {
 		this.zh = zh;
 		if (!configExist) {
+			initLanguages();
 			initEconomy();
 			initWorlds();
 			zh.saveConfig();
@@ -26,6 +27,15 @@ public class ConfigManager {
 		if (!checkIntegrity()) {
 			zh.getLogger().severe("This can be fixed by deleting \"config.yml\" and reloading ZHorse.");
 		}
+	}
+	
+	public List<String> getAvailableLanguages() {
+		List<String> availableLanguages = zh.getConfig().getStringList("Settings.availableLanguages");
+		if (availableLanguages == null || availableLanguages.size() < 1) {
+			availableLanguages = new ArrayList<String>();
+			availableLanguages.add(zh.getDebugLanguage());
+		}
+		return availableLanguages;
 	}
 	
 	public ChatColor getChatColor(UUID playerUUID) {
@@ -146,6 +156,14 @@ public class ConfigManager {
 		return randomName;
 	}
 	
+	private void initLanguages() {
+		List<String> providedLanguages = new ArrayList<String>();
+		for (String language : zh.getProvidedLanguages()) {
+			providedLanguages.add(language);
+		}
+		zh.getConfig().set("Settings.availableLanguages", providedLanguages);
+	}
+	
 	private void initEconomy() {
 		List<String> commandList = zh.getCmdM().getCommandList();
 		for (String cmd : commandList) {
@@ -174,6 +192,10 @@ public class ConfigManager {
 		return (getMinimumHorseNameLength() > 0);
 	}
 	
+	public boolean isLanguageAvailable(String language) {
+		return getAvailableLanguages().contains(language);
+	}
+	
 	public boolean isWorldCrossingAllowed() {
 		return (zh.getConfig().getBoolean("Settings.worldCrossing", false));
 	}
@@ -194,6 +216,9 @@ public class ConfigManager {
 		if (!checkCommandsIntegrity()) {
 			integrity = false;
 		}
+		if (!checkLanguagesIntegrity()) {
+			integrity = false;
+		}
 		if (!checkMaximumClaimsIntegrity()) {
 			integrity = false;
 		}
@@ -201,28 +226,6 @@ public class ConfigManager {
 			integrity = false;
 		}
 		if (!checkWorldsIntegrity()) {
-			integrity = false;
-		}
-		return integrity;
-	}
-	
-	private boolean checkCommandsIntegrity() {
-		boolean integrity = true;
-		ConfigurationSection cs = zh.getConfig().getConfigurationSection("Economy");
-		if (cs != null) {
-			for (String command : cs.getKeys(false)) {
-				String commandCost = zh.getConfig().getString("Economy." + command);
-				if (commandCost != null) {
-					int value = Integer.parseInt(commandCost);
-					if (value < 0) {
-						zh.getLogger().severe("The cost of command \"" + command + "\" must be positive !");
-						integrity = false;
-					}
-				}
-			}
-		}
-		else {
-			zh.getLogger().severe("The \"Economy\" section is missing from config !");
 			integrity = false;
 		}
 		return integrity;
@@ -250,6 +253,42 @@ public class ConfigManager {
 		}
 		else {
 			zh.getLogger().severe("The \"Groups\" section is missing from config !");
+			integrity = false;
+		}
+		return integrity;
+	}
+	
+	private boolean checkCommandsIntegrity() {
+		boolean integrity = true;
+		ConfigurationSection cs = zh.getConfig().getConfigurationSection("Economy");
+		if (cs != null) {
+			for (String command : cs.getKeys(false)) {
+				String commandCost = zh.getConfig().getString("Economy." + command);
+				if (commandCost != null) {
+					int value = Integer.parseInt(commandCost);
+					if (value < 0) {
+						zh.getLogger().severe("The cost of command \"" + command + "\" must be positive !");
+						integrity = false;
+					}
+				}
+			}
+		}
+		else {
+			zh.getLogger().severe("The \"Economy\" section is missing from config !");
+			integrity = false;
+		}
+		return integrity;
+	}
+	
+	private boolean checkLanguagesIntegrity() {
+		boolean integrity = true;
+		List<String> languages = zh.getConfig().getStringList("Settings.availableLanguages");
+		if (languages == null || languages.size() == 0) {
+			zh.getLogger().severe("The \"availableLanguages\" section is missing from config !");
+			integrity = false;
+		}
+		else if (!languages.contains(getDefaultLanguage())) {
+			zh.getLogger().severe("The \"availableLanguages\" section must contains the default language !");
 			integrity = false;
 		}
 		return integrity;

@@ -52,7 +52,7 @@ public class ZRename extends Command {
 					horse.setCustomNameVisible(true);
 					zh.getUM().rename(targetUUID, horseName, horse);
 					if (displayConsole) {
-						s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseRenamed), horseName));
+						s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().horseRenamed), horseName));
 					}
 					zh.getEM().payCommand(p, command);
 				}

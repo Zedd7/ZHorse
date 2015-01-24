@@ -49,7 +49,7 @@ public class ZFree extends Command {
 					horse.setCustomName(null);
 					horse.setCustomNameVisible(false);
 					if (displayConsole) {
-						s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseFreed), horseName));
+						s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().horseFreed), horseName));
 					}
 					zh.getEM().payCommand(p, command);
 				}

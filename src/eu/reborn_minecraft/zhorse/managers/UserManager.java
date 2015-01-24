@@ -15,10 +15,10 @@ import org.bukkit.entity.Player;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 
-public class UsersManager {
+public class UserManager {
 	private ZHorse zh;
 	
-	public UsersManager(ZHorse zh, boolean init) {
+	public UserManager(ZHorse zh, boolean usersExist) {
 		this.zh = zh;
 	}
 	
@@ -173,6 +173,14 @@ public class UsersManager {
 			}
 		}
 		return Integer.toString(userID);
+	}
+	
+	public String getPlayerLanguage(UUID playerUUID) {
+		String language = getPlayerStringData(playerUUID, "Language");
+		if (language == null) {
+			language = zh.getDebugLanguage();
+		}
+		return language;
 	}
 	
 	public String getPlayerName(String targetName) {
@@ -449,6 +457,10 @@ public class UsersManager {
 	public void rename(UUID playerUUID, String horseName, Horse horse) {
         String userID = getUserID(playerUUID, horse);
         setHorseData(playerUUID, userID, "Name", horseName);
+	}
+	
+	public void saveLanguage(UUID playerUUID, String language) {
+		setPlayerData(playerUUID, "Language", language);
 	}
 	
 	public void saveLocation(Horse horse) {

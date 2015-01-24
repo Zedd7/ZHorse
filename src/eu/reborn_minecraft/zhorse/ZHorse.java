@@ -2,6 +2,8 @@ package eu.reborn_minecraft.zhorse;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -17,25 +19,27 @@ import eu.reborn_minecraft.zhorse.managers.ConfigManager;
 import eu.reborn_minecraft.zhorse.managers.EconomyManager;
 import eu.reborn_minecraft.zhorse.managers.EventManager;
 import eu.reborn_minecraft.zhorse.managers.LocaleManager;
-import eu.reborn_minecraft.zhorse.managers.UsersManager;
+import eu.reborn_minecraft.zhorse.managers.UserManager;
 import eu.reborn_minecraft.zhorse.metrics.Metrics;
 
 public class ZHorse extends JavaPlugin {
 	private static String configSuffix = "config.yml";
 	private static String usersSuffix = "users.yml";
-	private static String localeSuffix = "locale.yml";
-	public static String mainPath;
-	public static String configPath;
-	public static String usersPath;
-	public static String localePath;
+	private static String localeSuffix = "locale_%s.yml";
+	private static String debugLanguage = "EN";
+	private static String[] providedLanguages = {"EN", "FR"};
+	public static String mainPath; // passer en private
+	public static String configPath; // passer en private
+	public static String usersPath; // passer en private
+	public static String localePath; // passer en private
 	private Permission perms;
 	private Economy econ;
 	private FileConfiguration config;
 	private FileConfiguration users;
-	private FileConfiguration locale;
+	private Map<String,FileConfiguration> locales;
 	private CommandManager commandManager;
 	private ConfigManager configManager;
-	private UsersManager usersManager;
+	private UserManager userManager;
 	private LocaleManager localeManager;
 	private EconomyManager economyManager;
 	
@@ -57,7 +61,7 @@ public class ZHorse extends JavaPlugin {
     public void onDisable() {
     	saveConfig();
     	saveUsers();
-    	saveLocale();
+    	saveLocales();
     }
 	
 	private void initDependencies() {
@@ -93,26 +97,30 @@ public class ZHorse extends JavaPlugin {
     	if (!new File(configPath).exists()) {
 			getLogger().info(configSuffix + " is missing... Creating it.");
 			configExist = false;
-			saveResource("config.yml", false);
+			saveResource(configSuffix, false);
 		}
 		if (!new File(usersPath).exists()) {
 			getLogger().info(usersSuffix + " is missing... Creating it.");
 			usersExist = false;
-			saveResource("users.yml", false);
+			saveResource(usersSuffix, false);
 		}
-		if (!new File(localePath).exists()) {
-			getLogger().info(localeSuffix + " is missing... Creating it.");
-			localeExist = false;
-			saveResource("locale.yml", false);
+		for (String language : providedLanguages) {
+			if (!new File(String.format(localePath, language)).exists()) {
+				getLogger().info(String.format(localeSuffix, language) + " is missing... Creating it.");
+				if (getDebugLanguage().equals(language)) {
+					localeExist = false;
+				}
+				saveResource(String.format(localeSuffix, language), false);
+			}
 		}
 		updateConfig();
 		updateUsers();
-		updateLocale();
 		localeManager = new LocaleManager(this, localeExist);
 		commandManager = new CommandManager(this);
 		configManager = new ConfigManager(this, configExist);
-		usersManager = new UsersManager(this, usersExist);
+		userManager = new UserManager(this, usersExist);
 		economyManager = new EconomyManager(this);
+		updateLocales();
 	}
     
     private void initMetrics() {
@@ -128,6 +136,14 @@ public class ZHorse extends JavaPlugin {
 		initManagers();
 	}
 	
+	public String getDebugLanguage() {
+		return debugLanguage;
+	}
+	
+	public String[] getProvidedLanguages() {
+		return providedLanguages;
+	}
+	
     public FileConfiguration getConfig() {
     	return config;
     }
@@ -136,8 +152,17 @@ public class ZHorse extends JavaPlugin {
     	return users;
     }
     
-    public FileConfiguration getLocale() {
-    	return locale;
+    public Map<String,FileConfiguration> getLocales() {
+    	return locales;
+    }
+    
+    public FileConfiguration getLocale(String language) {
+    	if (locales.containsKey(language)) {
+    		return locales.get(language);
+    	}
+    	getLogger().severe("A player is using an unknow language : \"" + language + "\" !");
+    	getLogger().severe("Please fix or delete \"users.yml\"");
+    	return locales.get(getDebugLanguage());
     }
     
 	public void updateConfig() {
@@ -148,8 +173,20 @@ public class ZHorse extends JavaPlugin {
 		users = YamlConfiguration.loadConfiguration(new File(usersPath));
 	}
 	
-	public void updateLocale() {
-		locale = YamlConfiguration.loadConfiguration(new File(localePath));
+	public void updateLocales() {
+		locales = new HashMap<String, FileConfiguration>();
+		for (String language : getCM().getAvailableLanguages()) {
+			if (new File(String.format(localePath, language)).exists()) {
+				FileConfiguration locale = YamlConfiguration.loadConfiguration(new File(String.format(localePath,language)));
+				locales.put(language, locale);
+			}
+			else {
+				getLogger().info(String.format(localeSuffix, language) + " is missing... Creating it.");
+				FileConfiguration locale = YamlConfiguration.loadConfiguration(new File(String.format(localePath, getDebugLanguage())));
+				saveLocale(locale, language);
+				locales.put(language, locale);
+			}
+		}
 	}
 	
 	public void saveConfig () {
@@ -176,13 +213,15 @@ public class ZHorse extends JavaPlugin {
 		}
 	}
 	
-	public void saveLocale () {
-        saveLocale(getLocale());
+	public void saveLocales () {
+        for (String language : locales.keySet()) {
+        	saveLocale(locales.get(language), language);
+        }
 	}
 	
-	public void saveLocale(FileConfiguration locale) {
+	public void saveLocale(FileConfiguration locale, String language) {
         try {
-			locale.save(localePath);
+			locale.save(String.format(localePath, language));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -204,8 +243,8 @@ public class ZHorse extends JavaPlugin {
     	return configManager;
     }
     
-    public UsersManager getUM() {
-    	return usersManager;
+    public UserManager getUM() {
+    	return userManager;
     }
     
     public LocaleManager getLM() {

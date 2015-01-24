@@ -65,3 +65,8 @@ V1.0.3
 
 V1.0.4
   - Added Metrics
+
+V1.1.0
+  - Added multilang support
+  - Added option to define available languages
+  - Added /zhorse settings command

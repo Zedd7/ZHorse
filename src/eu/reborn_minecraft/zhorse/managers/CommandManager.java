@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.commands.ZClaim;
@@ -21,6 +22,7 @@ import eu.reborn_minecraft.zhorse.commands.ZLock;
 import eu.reborn_minecraft.zhorse.commands.ZProtect;
 import eu.reborn_minecraft.zhorse.commands.ZReload;
 import eu.reborn_minecraft.zhorse.commands.ZRename;
+import eu.reborn_minecraft.zhorse.commands.ZSettings;
 import eu.reborn_minecraft.zhorse.commands.ZShare;
 import eu.reborn_minecraft.zhorse.commands.ZTame;
 import eu.reborn_minecraft.zhorse.commands.ZTp;
@@ -28,6 +30,7 @@ import eu.reborn_minecraft.zhorse.commands.ZTp;
 public class CommandManager implements CommandExecutor {
 	ZHorse zh;
 	List<String> commandList;
+	List<String> settingsCommandList;
 	
 	public CommandManager(ZHorse zh) {
 		this.zh = zh;
@@ -45,9 +48,13 @@ public class CommandManager implements CommandExecutor {
 		commandList.add(zh.getLM().rename);
 		commandList.add(zh.getLM().protect);
 		commandList.add(zh.getLM().reload);
+		commandList.add(zh.getLM().settings);
 		commandList.add(zh.getLM().share);
 		commandList.add(zh.getLM().tame);
 		commandList.add(zh.getLM().tp);
+		
+		settingsCommandList = new ArrayList<String>();
+		settingsCommandList.add(zh.getLM().language);
 		//Map<String,Class> m; // remplacer tous les if par un for sur une map
 	}
 
@@ -99,6 +106,9 @@ public class CommandManager implements CommandExecutor {
 		else if (subCommand.equalsIgnoreCase(zh.getLM().reload)) {
 			new ZReload(zh, s, a);
 		}
+		else if (subCommand.equalsIgnoreCase(zh.getLM().settings)) {
+			new ZSettings(zh, s, a);
+		}
 		else if (subCommand.equalsIgnoreCase(zh.getLM().share)) {
 			new ZShare(zh, s, a);
 		}
@@ -109,13 +119,21 @@ public class CommandManager implements CommandExecutor {
 			new ZTp(zh, s, a);
 		}
 		else {
-			s.sendMessage(zh.getLM().getCommandAnswer(zh.getLM().unknownCommand));
+			String language = zh.getDebugLanguage();
+			if (s instanceof Player) {
+				language = zh.getUM().getPlayerLanguage(((Player)s).getUniqueId());
+			}
+			s.sendMessage(zh.getLM().getCommandAnswer(language, zh.getLM().unknownCommand));
 		}
 		return true;
 	}
 	
 	public List<String> getCommandList() {
 		return commandList;
+	}
+	
+	public List<String> getSettingsCommandList() {
+		return settingsCommandList;
 	}
 	
 }

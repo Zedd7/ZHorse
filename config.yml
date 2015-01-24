@@ -1,5 +1,6 @@
 Settings:
   defaultLanguage: EN
+  availableLanguages:
   minimumHorsenameLength: 0
   maximumHorsenameLength: 30
   muteConsole: false

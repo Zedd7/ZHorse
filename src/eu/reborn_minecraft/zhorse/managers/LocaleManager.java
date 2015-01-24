@@ -3,6 +3,7 @@ package eu.reborn_minecraft.zhorse.managers;
 import eu.reborn_minecraft.zhorse.ZHorse;
 
 public class LocaleManager {
+	// déplacer liste ailleurs
 	public String adminSuffix = ".admin";
 	public String freeSuffix = ".free";
 	public String zhPrefix = "zh.";
@@ -11,6 +12,7 @@ public class LocaleManager {
 	public String headerFormat = "headerFormat";
 	public String commandListHeader = "commandListHeader";
 	public String commandUsageHeader = "commandUsageHeader";
+	public String settingsCommandListHeader = "settingsCommandListHeader";
 	public String horseInfoHeader = "horseInfoHeader";
 	public String horseListHeader = "horseListHeader";
 	public String horseListOtherHeader = "horseListOtherHeader";
@@ -49,8 +51,11 @@ public class LocaleManager {
 	public String horseUnProtected = "horseUnProtected";
 	public String horseUnShared = "horseUnShared";
 	public String horseUnTamed = "horseUnTamed";
+	public String languageEdited = "languageEdited";
+	public String languageEditedOther = "languageEditedOther";
 	public String maximumClaimsReached = "maximumClaimsReached";
 	public String maximumClaimsReachedOther = "maximumClaimsReachedOther";
+	public String missingLanguage = "missingLanguage";
 	public String missingPermission = "missingPermission";
 	public String missingPermissionOther = "missingPermissionOther";
 	public String noHorseOwned = "noHorseOwned";
@@ -65,7 +70,9 @@ public class LocaleManager {
 	public String unknownCommand = "unknownCommand";
 	public String unknownHorseId = "unknownHorseId";
 	public String unknownHorseIdOther = "unknownHorseIdOther";
+	public String unknownLanguage = "unknownLanguage";
 	public String unknownPlayer = "unknownPlayer";
+	public String unknownSettingsCommand = "unknownSettingsCommand";
 	public String worldDisabled = "worldDisabled";
 	
 	public String commandCost = "commandCost";
@@ -97,74 +104,91 @@ public class LocaleManager {
 	public String rename = "rename";
 	public String protect = "protect";
 	public String reload = "reload";
+	public String settings = "settings";
 	public String share = "share";
 	public String tame = "tame";
 	public String tp = "tp";
 	
+	public String language = "language";
+	
 	private ZHorse zh;
 	
-	public LocaleManager(ZHorse zh, boolean init) {
+	public LocaleManager(ZHorse zh, boolean localeExist) {
 		this.zh = zh;
 	}
 	
-	public String getCommandAnswer(String index) {
-		return getCommandAnswer(index, false);
+	public String getCommandAnswer(String language, String index) {
+		return getCommandAnswer(language, index, false);
 	}
 	
-	public String getCommandAnswer(String index, boolean hidePrefix) {
-		return getLocaleData("Messages." + index, hidePrefix);
+	public String getCommandAnswer(String language, String index, boolean hidePrefix) {
+		return getLocaleData(language, "Messages." + index, hidePrefix);
 	}
 	
-	public String getCommandDescription(String index) {
-		return getCommandDescription(index, true);
+	public String getCommandDescription(String language, String index) {
+		return getCommandDescription(language, index, true);
 	}
 	
-	public String getCommandDescription(String index, boolean hidePrefix) {
-		return getLocaleData("Command descriptions." + index, hidePrefix);
+	public String getCommandDescription(String language, String index, boolean hidePrefix) {
+		return getLocaleData(language, "Command descriptions." + index, hidePrefix);
 	}
 	
-	public String getCommandUsage(String index) {
-		return getCommandUsage(index, true);
+	public String getCommandUsage(String language, String index) {
+		return getCommandUsage(language, index, true);
 	}
 	
-	public String getCommandUsage(String index, boolean hidePrefix) {
-		return getLocaleData("Command usages." + index, hidePrefix);
+	public String getCommandUsage(String language, String index, boolean hidePrefix) {
+		return getLocaleData(language, "Command usages." + index, hidePrefix);
 	}
 	
-	public String getEconomyAnswer(String index) {
-		return getEconomyAnswer(index, false);
+	public String getEconomyAnswer(String language, String index) {
+		return getEconomyAnswer(language, index, false);
 	}
 	
-	public String getEconomyAnswer(String index, boolean hidePrefix) {
-		return getLocaleData("Economy." + index, hidePrefix);
+	public String getEconomyAnswer(String language, String index, boolean hidePrefix) {
+		return getLocaleData(language, "Economy." + index, hidePrefix);
 	}
 	
-	public String getHeaderMessage(String index) {
-		return getHeaderMessage(index, true);
+	public String getHeaderMessage(String language, String index) {
+		return getHeaderMessage(language, index, true);
 	}
 	
-	public String getHeaderMessage(String index, boolean hidePrefix) {
-		return getLocaleData("Headers." + index, hidePrefix);
+	public String getHeaderMessage(String language, String index, boolean hidePrefix) {
+		return getLocaleData(language, "Headers." + index, hidePrefix);
 	}
 	
-	public String getInformationMessage(String index) {
-		return getInformationMessage(index, true);
+	public String getInformationMessage(String language, String index) {
+		return getInformationMessage(language, index, true);
 	}
 	
-	public String getInformationMessage(String index, boolean hidePrefix) {
-		return getLocaleData("Horse informations." + index, hidePrefix);
+	public String getInformationMessage(String language, String index, boolean hidePrefix) {
+		return getLocaleData(language, "Horse informations." + index, hidePrefix);
 	}
 	
-	public String getLocaleData(String fullIndex, boolean hidePrefix) {
-        String text = zh.getLocale().getString(fullIndex);
+	public String getSettingsCommandDescription(String language, String index) {
+		return getSettingsCommandDescription(language, index, true);
+	}
+	
+	public String getSettingsCommandDescription(String language, String index, boolean hidePrefix) {
+		return getLocaleData(language, "Settings command descriptions." + index, hidePrefix);
+	}
+	
+	public String getLocaleData(String language, String fullIndex, boolean hidePrefix) {
+		if (language == null) {
+			return ("Unknown language, please contact an administrator");
+		}
+        String text = zh.getLocale(language).getString(fullIndex);
         if (text == null) {
-        	zh.getLogger().severe("No value found in \"locale.yml\" at index \"" + fullIndex + "\" !");
-        	text = fullIndex + " NULL";
+        	zh.getLogger().severe("No value found in \"locale_" + language + ".yml\" at index \"" + fullIndex + "\" !");
+        	if (!language.equals(zh.getDebugLanguage())) {
+        		return getLocaleData(zh.getDebugLanguage(), fullIndex, hidePrefix);
+        	}
+        	return ("No text found at : " + fullIndex);
         }
         if (hidePrefix) {
         	return text;
         }
-        return getHeaderMessage(pluginPrefix) + " " + text;
+        return getHeaderMessage(language, pluginPrefix) + " " + text;
 	}
 
 }

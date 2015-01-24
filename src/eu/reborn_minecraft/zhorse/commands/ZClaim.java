@@ -53,12 +53,12 @@ public class ZClaim extends Command {
 						horse.setCustomNameVisible(true);
 						horse.setTamed(true);
 						if (displayConsole) {
-							s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseClaimed), horseName));
+							s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().horseClaimed), horseName));
 						}
 						zh.getEM().payCommand(p, command);
 					}
 					else {
-						zh.getLogger().severe(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseNotRegistered, true), horseName, horse.getUniqueId().toString()));
+						zh.getLogger().severe(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().horseNotRegistered, true), horseName, horse.getUniqueId().toString()));
 					}
 				}
 			}

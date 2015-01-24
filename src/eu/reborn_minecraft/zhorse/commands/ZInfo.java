@@ -54,31 +54,31 @@ public class ZInfo extends Command {
 			String horseName = zh.getUM().getHorseName(ownerUUID, userID);
 			String health = Integer.toString(((Number) d.getHealth()).intValue());
 			String maxHealth = Integer.toString(((Number) d.getMaxHealth()).intValue());						
-			s.sendMessage(String.format(zh.getLM().getHeaderMessage(zh.getLM().headerFormat), zh.getLM().getHeaderMessage(zh.getLM().horseInfoHeader)));
+			s.sendMessage(String.format(zh.getLM().getHeaderMessage(language, zh.getLM().headerFormat), zh.getLM().getHeaderMessage(language, zh.getLM().horseInfoHeader)));
 			if (isOwner(true)) {
-				s.sendMessage(" " + String.format(zh.getLM().getInformationMessage(zh.getLM().id, true), userID));
+				s.sendMessage(" " + String.format(zh.getLM().getInformationMessage(language, zh.getLM().id, true), userID));
 			}
-			s.sendMessage(" " + String.format(zh.getLM().getInformationMessage(zh.getLM().owner, true), ownerName));
-			s.sendMessage(" " + String.format(zh.getLM().getInformationMessage(zh.getLM().name, true), horseName));
-			s.sendMessage(" " + String.format(zh.getLM().getInformationMessage(zh.getLM().health, true), health, maxHealth));
+			s.sendMessage(" " + String.format(zh.getLM().getInformationMessage(language, zh.getLM().owner, true), ownerName));
+			s.sendMessage(" " + String.format(zh.getLM().getInformationMessage(language, zh.getLM().name, true), horseName));
+			s.sendMessage(" " + String.format(zh.getLM().getInformationMessage(language, zh.getLM().health, true), health, maxHealth));
 			String status = "";
 			boolean normal = true;
 			if (zh.getUM().isProtected(ownerUUID, userID)) {
-				status += " " + zh.getLM().getInformationMessage(zh.getLM().modeProtected);
+				status += " " + zh.getLM().getInformationMessage(language, zh.getLM().modeProtected);
 				normal = false;
 			}
 			if (zh.getUM().isLocked(ownerUUID, userID)) {
-				status += " " + zh.getLM().getInformationMessage(zh.getLM().modeLocked);
+				status += " " + zh.getLM().getInformationMessage(language, zh.getLM().modeLocked);
 				normal = false;
 			}
 			else if (zh.getUM().isShared(ownerUUID, userID)) {
-				status += " " + zh.getLM().getInformationMessage(zh.getLM().modeShared);
+				status += " " + zh.getLM().getInformationMessage(language, zh.getLM().modeShared);
 				normal = false;
 			}
 			if (normal) {
-				status += " " + zh.getLM().getInformationMessage(zh.getLM().modeNone);
+				status += " " + zh.getLM().getInformationMessage(language, zh.getLM().modeNone);
 			}
-			s.sendMessage(" " + String.format(zh.getLM().getInformationMessage(zh.getLM().status), status));
+			s.sendMessage(" " + String.format(zh.getLM().getInformationMessage(language, zh.getLM().status), status));
 			zh.getEM().payCommand(p, command);
 		}
 	}

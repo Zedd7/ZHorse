@@ -55,14 +55,14 @@ public class ZGive extends Command {
 						horse.setCustomName(cc + horseName);
 						zh.getEM().payCommand(p, command);
 						if (displayConsole) {
-							s.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseGiven), horseName, targetName));
+							s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().horseGiven), horseName, targetName));
 							if (isPlayerOnline(targetUUID, true)) {
-								zh.getServer().getPlayer(targetUUID).sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseReceived), targetName, horseName));
+								zh.getServer().getPlayer(targetUUID).sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().horseReceived), targetName, horseName));
 							}
 						}
 					}
 					else {
-						zh.getLogger().severe(String.format(zh.getLM().getCommandAnswer(zh.getLM().horseNotRegistered, true), horseName, horse.getUniqueId().toString()));
+						zh.getLogger().severe(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().horseNotRegistered, true), horseName, horse.getUniqueId().toString()));
 					}
 				}
 			}
