@@ -45,7 +45,7 @@ public class ZList extends Command {
 					for (int i=1; i<=horseList.size(); i++) {
 						String userID = Integer.toString(i);
 						String horseName = horseList.get(i-1);
-						String message = " " + String.format(zh.getLM().getCommandAnswer(language, zh.getLM().horseListFormat, true), userID, horseName);
+						String message = " " + String.format(zh.getLM().getHeaderMessage(language, zh.getLM().horseListFormat, true), userID, horseName);
 						String status = "";
 						if (zh.getUM().isProtected(targetUUID, userID)) {
 							status += " " + zh.getLM().getInformationMessage(language, zh.getLM().modeProtected);
@@ -76,7 +76,7 @@ public class ZList extends Command {
 		String message = "";
 		if (samePlayer || isPlayerOnline(targetUUID, true)) {
 			int maxClaims = zh.getCM().getMaximumClaims(zh.getServer().getPlayer(targetUUID));
-			message = " " + String.format(zh.getLM().getCommandAnswer(language, zh.getLM().remainingClaims, true), horseList.size(), maxClaims);
+			message = " " + String.format(zh.getLM().getHeaderMessage(language, zh.getLM().remainingClaimsFormat, true), horseList.size(), maxClaims);
 		}
 		return message;
 	}

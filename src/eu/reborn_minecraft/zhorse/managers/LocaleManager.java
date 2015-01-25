@@ -14,8 +14,10 @@ public class LocaleManager {
 	public String commandUsageHeader = "commandUsageHeader";
 	public String settingsCommandListHeader = "settingsCommandListHeader";
 	public String horseInfoHeader = "horseInfoHeader";
+	public String horseListFormat = "horseListFormat";
 	public String horseListHeader = "horseListHeader";
 	public String horseListOtherHeader = "horseListOtherHeader";
+	public String remainingClaimsFormat = "remainingClaimsFormat";
 	
 	public String commandIncorrect = "commandIncorrect";
 	public String commandUsage = "commandUsage";
@@ -28,7 +30,6 @@ public class LocaleManager {
 	public String horseGiven = "horseGiven";
 	public String horseHealed = "horseHealed";
 	public String horseIsProtected = "horseIsProtected";
-	public String horseListFormat = "horseListFormat";
 	public String horseLocked = "horseLocked";
 	public String horseManuallyTamed = "horseManuallyTamed";
 	public String horseMounted = "horseMounted";
@@ -65,7 +66,6 @@ public class LocaleManager {
 	public String playerNotRegistered = "playerNotRegistered";
 	public String playerOffline = "playerOffline";
 	public String pluginReloaded = "pluginReloaded";
-	public String remainingClaims = "remainingClaims";
 	public String teleportedToHorse = "teleportedToHorse";
 	public String unknownCommand = "unknownCommand";
 	public String unknownHorseId = "unknownHorseId";
