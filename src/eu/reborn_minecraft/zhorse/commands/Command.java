@@ -177,7 +177,7 @@ public class Command {
 		return false;
 	}
 	
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings("deprecation")	
 	protected UUID getPlayerUUID(String playerName) {
 		if (zh.getUM().isRegistered(playerName)) {
 			return zh.getUM().getPlayerUUID(playerName);
@@ -213,32 +213,32 @@ public class Command {
 	}
 	
 	protected boolean hasPermission() {
-    	return (hasPermission(s, command, false));
+    	return (hasPermission(s, command, false, false));
 	}
 	
-	protected boolean hasPermission(UUID playerUUID, String command, boolean ignoreModes) {
+	protected boolean hasPermission(UUID playerUUID, String command, boolean ignoreModes, boolean hideConsole) {
 		if (isPlayerOnline(playerUUID, false)) {
     		Player target = zh.getServer().getPlayer(playerUUID);
-    		return hasPermission(target, command, ignoreModes);
+    		return hasPermission(target, command, ignoreModes, hideConsole);
     	}
     	return false;
 	}
 	
-	protected boolean hasPermission(CommandSender s, String command, boolean ignoreModes) {
+	protected boolean hasPermission(CommandSender s, String command, boolean ignoreModes, boolean hideConsole) {
 		String perm = zh.getLM().zhPrefix + command;
-    	if ((adminMode || (idMode && !idAllow) || (targetMode && !targetAllow)) && !ignoreModes) {
+    	if (!ignoreModes && (adminMode || (idMode && !idAllow) || (targetMode && !targetAllow)) ) {
     		perm += zh.getLM().adminSuffix;
     	}
     	if (zh.getPerms().has(s, perm)) {
     		return true;
     	}
-    	else if (displayConsole) {
+    	else if (displayConsole && !hideConsole) {
     		s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().missingPermission), perm));
     	}
     	return false;
 	}
 	
-	protected boolean hasPermission(Player p, String command, boolean ignoreModes) {
+	protected boolean hasPermission(Player p, String command, boolean ignoreModes, boolean hideConsole) {
 		String perm = zh.getLM().zhPrefix + command;
     	if ((adminMode || (idMode && !idAllow) || (targetMode && !targetAllow)) && !ignoreModes) {
     		perm += zh.getLM().adminSuffix;

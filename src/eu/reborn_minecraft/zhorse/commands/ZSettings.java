@@ -3,6 +3,7 @@ package eu.reborn_minecraft.zhorse.commands;
 import java.util.List;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 
@@ -12,7 +13,7 @@ public class ZSettings extends Command {
 	public ZSettings(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, a, s);
 		idAllow = false;
-		targetAllow = true;
+		targetAllow = false;
 		if (isPlayer(playerOnly)) {
 			if (analyseArguments()) {
 				if (hasPermission()) {
@@ -49,9 +50,8 @@ public class ZSettings extends Command {
 	private void displaySettingsCommands() {
 		s.sendMessage(String.format(zh.getLM().getHeaderMessage(language, zh.getLM().headerFormat), zh.getLM().getHeaderMessage(language, zh.getLM().settingsCommandListHeader)));
 		for (String subCommand : zh.getCmdM().getSettingsCommandList()) {
-			displayConsole = false; //sert à quoi ?
 			String fullCommand = command + "." + subCommand;
-			if (hasPermission(targetUUID, fullCommand, true)) {
+			if (hasPermission(targetUUID, fullCommand, true, true)) {
 				String message = " " + zh.getLM().getSettingsCommandDescription(language, subCommand);
 				String cost = "";
 				if (!zh.getEM().isCommandFree(targetUUID, command)) {
@@ -72,6 +72,11 @@ public class ZSettings extends Command {
 				}
 				else {
 					s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().languageEditedOther), targetName, language));
+					if (isPlayerOnline(targetUUID, true)) {
+						Player target = zh.getServer().getPlayer(targetUUID);
+						String targetLanguage = zh.getUM().getPlayerLanguage(targetUUID);
+						target.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().languageEdited), targetLanguage));
+					}
 				}
 			}
 			else if (displayConsole) {

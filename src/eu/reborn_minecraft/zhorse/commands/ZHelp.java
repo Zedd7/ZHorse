@@ -57,8 +57,7 @@ public class ZHelp extends Command {
 		if (displayConsole) {
 			s.sendMessage(String.format(zh.getLM().getHeaderMessage(language, zh.getLM().headerFormat), zh.getLM().getHeaderMessage(language, zh.getLM().commandListHeader)));
 			for (String command : zh.getCmdM().getCommandList()) {
-				displayConsole = false;
-				if (hasPermission(targetUUID, command, true)) {
+				if (hasPermission(targetUUID, command, true, true)) {
 					String message = " " + zh.getLM().getCommandDescription(language, command);
 					String cost = "";
 					if (!zh.getEM().isCommandFree(targetUUID, command)) {
