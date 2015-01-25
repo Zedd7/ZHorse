@@ -71,11 +71,11 @@ public class ZSettings extends Command {
 					s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().languageEdited), language));
 				}
 				else {
-					s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().languageEditedOther), targetName, language));
+					String playerLanguage = zh.getUM().getPlayerLanguage(p.getUniqueId());
+					s.sendMessage(String.format(zh.getLM().getCommandAnswer(playerLanguage, zh.getLM().languageEditedOther), targetName, language));
 					if (isPlayerOnline(targetUUID, true)) {
 						Player target = zh.getServer().getPlayer(targetUUID);
-						String targetLanguage = zh.getUM().getPlayerLanguage(targetUUID);
-						target.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().languageEdited), targetLanguage));
+						target.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().languageEdited), language));
 					}
 				}
 			}
