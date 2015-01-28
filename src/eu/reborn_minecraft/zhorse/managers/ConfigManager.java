@@ -16,9 +16,9 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 public class ConfigManager {
 	private ZHorse zh;
 	
-	public ConfigManager(ZHorse zh, boolean configExist) {
+	public ConfigManager(ZHorse zh, boolean initConfig) {
 		this.zh = zh;
-		if (!configExist) {
+		if (initConfig) {
 			initLanguages();
 			initEconomy();
 			initWorlds();
@@ -31,9 +31,9 @@ public class ConfigManager {
 	
 	public List<String> getAvailableLanguages() {
 		List<String> availableLanguages = zh.getConfig().getStringList("Settings.availableLanguages");
-		if (availableLanguages == null || availableLanguages.size() < 1) {
+		if (availableLanguages == null || availableLanguages.isEmpty()) {
 			availableLanguages = new ArrayList<String>();
-			availableLanguages.add(zh.getDebugLanguage());
+			availableLanguages.add(getDefaultLanguage());
 		}
 		return availableLanguages;
 	}

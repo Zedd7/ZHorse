@@ -113,7 +113,7 @@ public class LocaleManager {
 	
 	private ZHorse zh;
 	
-	public LocaleManager(ZHorse zh, boolean localeExist) {
+	public LocaleManager(ZHorse zh) {
 		this.zh = zh;
 	}
 	
@@ -175,13 +175,13 @@ public class LocaleManager {
 	
 	public String getLocaleData(String language, String fullIndex, boolean hidePrefix) {
 		if (language == null) {
-			return ("Unknown language, please contact an administrator");
+			return ("Unknown language, please report this to an administrator");
 		}
         String text = zh.getLocale(language).getString(fullIndex);
         if (text == null) {
         	zh.getLogger().severe("No value found in \"locale_" + language + ".yml\" at index \"" + fullIndex + "\" !");
-        	if (!language.equals(zh.getDebugLanguage())) {
-        		return getLocaleData(zh.getDebugLanguage(), fullIndex, hidePrefix);
+        	if (!language.equals(zh.getCM().getDefaultLanguage())) {
+        		return getLocaleData(zh.getCM().getDefaultLanguage(), fullIndex, hidePrefix);
         	}
         	return ("No text found at : " + fullIndex);
         }

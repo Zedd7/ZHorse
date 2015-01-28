@@ -119,7 +119,7 @@ public class CommandManager implements CommandExecutor {
 			new ZTp(zh, s, a);
 		}
 		else {
-			String language = zh.getDebugLanguage();
+			String language = zh.getCM().getDefaultLanguage();
 			if (s instanceof Player) {
 				language = zh.getUM().getPlayerLanguage(((Player)s).getUniqueId());
 			}
