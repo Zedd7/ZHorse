@@ -10,8 +10,10 @@ public class LocaleManager {
 	
 	public String pluginPrefix = "pluginPrefix";
 	public String headerFormat = "headerFormat";
+	public String availableLanguageFormat = "availableLanguageFormat";
 	public String commandListHeader = "commandListHeader";
 	public String commandUsageHeader = "commandUsageHeader";
+	public String commandUsageFormat = "commandUsageFormat";
 	public String settingsCommandListHeader = "settingsCommandListHeader";
 	public String horseInfoHeader = "horseInfoHeader";
 	public String horseListFormat = "horseListFormat";
@@ -20,7 +22,6 @@ public class LocaleManager {
 	public String remainingClaimsFormat = "remainingClaimsFormat";
 	
 	public String commandIncorrect = "commandIncorrect";
-	public String commandUsage = "commandUsage";
 	public String differentWorld = "differentWorld";
 	public String horseAlreadyClaimed = "horseAlreadyClaimed";
 	public String horseBelongsTo = "horseBelongsTo";
@@ -81,14 +82,12 @@ public class LocaleManager {
 	
 	public String health = "health";
 	public String id = "id";
-	public String jump = "jump";
 	public String modeLocked = "modeLocked";
 	public String modeNone = "modeNone";
 	public String modeProtected = "modeProtected";
 	public String modeShared = "modeShared";
 	public String name = "name";
 	public String owner = "owner";
-	public String speed = "speed";
 	public String status = "status";
 	
 	public String help = "help";
@@ -113,7 +112,7 @@ public class LocaleManager {
 	
 	private ZHorse zh;
 	
-	public LocaleManager(ZHorse zh, boolean localeExist) {
+	public LocaleManager(ZHorse zh) {
 		this.zh = zh;
 	}
 	
@@ -175,13 +174,13 @@ public class LocaleManager {
 	
 	public String getLocaleData(String language, String fullIndex, boolean hidePrefix) {
 		if (language == null) {
-			return ("Unknown language, please contact an administrator");
+			return ("Unknown language, please report this to an administrator");
 		}
         String text = zh.getLocale(language).getString(fullIndex);
         if (text == null) {
         	zh.getLogger().severe("No value found in \"locale_" + language + ".yml\" at index \"" + fullIndex + "\" !");
-        	if (!language.equals(zh.getDebugLanguage())) {
-        		return getLocaleData(zh.getDebugLanguage(), fullIndex, hidePrefix);
+        	if (!language.equals(zh.getCM().getDefaultLanguage())) {
+        		return getLocaleData(zh.getCM().getDefaultLanguage(), fullIndex, hidePrefix);
         	}
         	return ("No text found at : " + fullIndex);
         }

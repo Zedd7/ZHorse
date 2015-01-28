@@ -47,7 +47,7 @@ public class ZHelp extends Command {
 					zh.getEM().payCommand(p, command);
 				}
 				else if (displayConsole) {
-					s.sendMessage(zh.getLM().getCommandAnswer(language, zh.getLM().unknownCommand));
+					s.sendMessage(zh.getMM().getMessage(language, zh.getLM().unknownCommand));
 				}
 			}
 		}
@@ -55,15 +55,16 @@ public class ZHelp extends Command {
 
 	private void displayCommandList() {
 		if (displayConsole) {
-			s.sendMessage(String.format(zh.getLM().getHeaderMessage(language, zh.getLM().headerFormat), zh.getLM().getHeaderMessage(language, zh.getLM().commandListHeader)));
+			s.sendMessage(zh.getMM().getHeaderContent(language, zh.getLM().headerFormat, zh.getLM().commandListHeader, true));
 			for (String command : zh.getCmdM().getCommandList()) {
 				if (hasPermission(targetUUID, command, true, true)) {
-					String message = " " + zh.getLM().getCommandDescription(language, command);
-					String cost = "";
-					if (!zh.getEM().isCommandFree(targetUUID, command)) {
-						cost = " " + String.format(zh.getLM().getEconomyAnswer(language, zh.getLM().commandCost, true), zh.getCM().getCommandCost(command));
+					if (zh.getEM().isCommandFree(targetUUID, command)) {
+						s.sendMessage(zh.getMM().getCommandDescription(language, " ", command, true));
 					}
-					s.sendMessage(message + cost);
+					else {
+						String cost = Integer.toString(zh.getCM().getCommandCost(command));
+						s.sendMessage(zh.getMM().getCommandDescriptionCost(language, " ", command, zh.getLM().commandCost, cost, true));
+					}
 				}
 			}
 		}

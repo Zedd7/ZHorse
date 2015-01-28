@@ -2,6 +2,8 @@ package eu.reborn_minecraft.zhorse.commands;
 
 import java.util.List;
 
+import net.md_5.bungee.api.ChatColor;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -36,7 +38,7 @@ public class ZSettings extends Command {
 					editLanguage();
 				}
 				else if (displayConsole) {
-					s.sendMessage(zh.getLM().getCommandAnswer(language, zh.getLM().unknownSettingsCommand));
+					s.sendMessage(zh.getMM().getMessage(language, zh.getLM().unknownSettingsCommand));
 					displaySettingsCommands();
 				}
 			}
@@ -48,16 +50,17 @@ public class ZSettings extends Command {
 	}
 
 	private void displaySettingsCommands() {
-		s.sendMessage(String.format(zh.getLM().getHeaderMessage(language, zh.getLM().headerFormat), zh.getLM().getHeaderMessage(language, zh.getLM().settingsCommandListHeader)));
+		s.sendMessage(zh.getMM().getHeaderContent(language, zh.getLM().headerFormat, zh.getLM().settingsCommandListHeader, true));
 		for (String subCommand : zh.getCmdM().getSettingsCommandList()) {
 			String fullCommand = command + "." + subCommand;
 			if (hasPermission(targetUUID, fullCommand, true, true)) {
-				String message = " " + zh.getLM().getSettingsCommandDescription(language, subCommand);
-				String cost = "";
-				if (!zh.getEM().isCommandFree(targetUUID, command)) {
-					cost = " " + String.format(zh.getLM().getEconomyAnswer(language, zh.getLM().commandCost, true), zh.getCM().getCommandCost(command));
+				if (zh.getEM().isCommandFree(targetUUID, command)) {
+					s.sendMessage(zh.getMM().getSettingsCommandDescription(language, " ", subCommand, true));
 				}
-				s.sendMessage(message + cost);
+				else {
+					String cost = Integer.toString(zh.getCM().getCommandCost(command));
+					s.sendMessage(zh.getMM().getCommandDescriptionCost(language, " ", command, zh.getLM().commandCost, cost, true));
+				}
 			}
 		}
 	}
@@ -68,14 +71,14 @@ public class ZSettings extends Command {
 			if (zh.getCM().isLanguageAvailable(language)) {
 				zh.getUM().saveLanguage(targetUUID, language);
 				if (samePlayer) {
-					s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().languageEdited), language));
+					s.sendMessage(zh.getMM().getMessageLang(language, zh.getLM().languageEdited, language));
 				}
 				else {
 					String playerLanguage = zh.getUM().getPlayerLanguage(p.getUniqueId());
-					s.sendMessage(String.format(zh.getLM().getCommandAnswer(playerLanguage, zh.getLM().languageEditedOther), targetName, language));
+					s.sendMessage(zh.getMM().getMessagePlayerLang(playerLanguage, zh.getLM().languageEditedOther, targetName, language));
 					if (isPlayerOnline(targetUUID, true)) {
 						Player target = zh.getServer().getPlayer(targetUUID);
-						target.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().languageEdited), language));
+						target.sendMessage(zh.getMM().getMessageLang(language, zh.getLM().languageEdited, language));
 					}
 				}
 			}
@@ -93,12 +96,13 @@ public class ZSettings extends Command {
 		List<String> availableLanguages = zh.getCM().getAvailableLanguages();
 		String availableLanguagesMessage = "";
 		for (int i=0; i<availableLanguages.size(); i++) {
-			availableLanguagesMessage += "§6" + availableLanguages.get(i);
+			availableLanguagesMessage += zh.getMM().getHeaderLang(language, zh.getLM().availableLanguageFormat, availableLanguages.get(i), true);
 			if (i < availableLanguages.size()-1) {
-				availableLanguagesMessage += "§e, ";
+				availableLanguagesMessage += ", ";
 			}
 		}
-		s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, index), availableLanguagesMessage));
+		availableLanguagesMessage += ChatColor.RESET;
+		s.sendMessage(zh.getMM().getMessageLang(language, index, availableLanguagesMessage));
 	}
 
 }

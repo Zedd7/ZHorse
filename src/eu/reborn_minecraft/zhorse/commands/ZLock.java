@@ -49,18 +49,18 @@ public class ZLock extends Command {
 					if (zh.getUM().isShared(horse)) {
 						zh.getUM().unShare(targetUUID, horse);
 						if (displayConsole) {
-							s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().horseUnShared), horseName));
+							s.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().horseUnShared, horseName));
 						}
 					}
 					zh.getUM().lock(targetUUID, horse);
 					if (displayConsole) {
-						s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().horseLocked), horseName));
+						s.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().horseLocked, horseName));
 					}
 				}
 				else {
 					zh.getUM().unLock(targetUUID, horse);
 					if (displayConsole) {
-						s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().horseUnLocked), horseName));
+						s.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().horseUnLocked, horseName));
 					}
 				}
 				zh.getEM().payCommand(p, command);

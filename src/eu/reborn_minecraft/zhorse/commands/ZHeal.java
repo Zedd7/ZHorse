@@ -49,7 +49,7 @@ public class ZHeal extends Command {
 				Damageable dm = horse;
 				dm.setHealth(dm.getMaxHealth());
 				if (displayConsole) {
-					s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().horseHealed), horseName));
+					s.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().horseHealed, horseName));
 				}
 				zh.getEM().payCommand(p, command);
 			}

@@ -35,6 +35,7 @@ public class CommandManager implements CommandExecutor {
 	public CommandManager(ZHorse zh) {
 		this.zh = zh;
 		commandList = new ArrayList<String>();
+		settingsCommandList = new ArrayList<String>();
 		commandList.add(zh.getLM().help);
 		commandList.add(zh.getLM().claim);
 		commandList.add(zh.getLM().free);
@@ -52,10 +53,7 @@ public class CommandManager implements CommandExecutor {
 		commandList.add(zh.getLM().share);
 		commandList.add(zh.getLM().tame);
 		commandList.add(zh.getLM().tp);
-		
-		settingsCommandList = new ArrayList<String>();
 		settingsCommandList.add(zh.getLM().language);
-		//Map<String,Class> m; // remplacer tous les if par un for sur une map
 	}
 
 	@Override
@@ -119,11 +117,11 @@ public class CommandManager implements CommandExecutor {
 			new ZTp(zh, s, a);
 		}
 		else {
-			String language = zh.getDebugLanguage();
+			String language = zh.getCM().getDefaultLanguage();
 			if (s instanceof Player) {
-				language = zh.getUM().getPlayerLanguage(((Player)s).getUniqueId());
+				language = zh.getUM().getPlayerLanguage(((Player) s).getUniqueId());
 			}
-			s.sendMessage(zh.getLM().getCommandAnswer(language, zh.getLM().unknownCommand));
+			s.sendMessage(zh.getMM().getMessage(language, zh.getLM().unknownCommand));
 		}
 		return true;
 	}

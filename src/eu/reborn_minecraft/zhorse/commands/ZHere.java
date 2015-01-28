@@ -49,7 +49,7 @@ public class ZHere extends Command {
 							}
 							horse.teleport(location);
 							if (displayConsole) {
-								s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().horseTeleported), horseName));
+								s.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().horseTeleported, horseName));
 							}
 							zh.getEM().payCommand(p, command);
 						}

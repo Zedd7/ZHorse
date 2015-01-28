@@ -55,20 +55,18 @@ public class EventManager implements Listener {
 			Horse horse = (Horse)entityHorse;
 			if (zh.getUM().isProtected(horse)) {
 				DamageCause damageCause = e.getCause();
-				boolean cancel = false;
 				if (damageCause.equals(DamageCause.MAGIC)) {
-					cancel = true;
+					e.setCancelled(true);
 				}
 				else if (damageCause.equals(DamageCause.POISON)) {
-					cancel = true;
+					e.setCancelled(true);
 				}
 				else if (damageCause.equals(DamageCause.PROJECTILE)) {
-					cancel = true;
+					e.setCancelled(true);
 				}
 				else if (damageCause.equals(DamageCause.THORNS)) {
-					cancel = true;
+					e.setCancelled(true);
 				}
-				e.setCancelled(cancel);
 			}
 		}
 	}
@@ -83,7 +81,8 @@ public class EventManager implements Listener {
 				if (p.getUniqueId().equals(ownerUUID)) {
 					if (displayConsole) {
 						String horseName = zh.getUM().getHorseName(ownerUUID, horse);
-						p.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getUM().getPlayerLanguage(p.getUniqueId()), zh.getLM().horseDied), horseName));
+						String language = zh.getUM().getPlayerLanguage(p.getUniqueId());
+						p.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().horseDied, horseName));
 					}
 				}
 			}
@@ -96,7 +95,8 @@ public class EventManager implements Listener {
 		if (e.getEntity() instanceof Horse && e.getOwner() instanceof Player) {
 			if (displayConsole) {
 				Player p = (Player)e.getOwner();
-				p.sendMessage(zh.getLM().getCommandAnswer(zh.getUM().getPlayerLanguage(p.getUniqueId()), zh.getLM().horseManuallyTamed));
+				String language = zh.getUM().getPlayerLanguage(p.getUniqueId());
+				p.sendMessage(zh.getMM().getMessage(language, zh.getLM().horseManuallyTamed));
 			}
 		}
 	}
@@ -116,7 +116,8 @@ public class EventManager implements Listener {
 					if (!(zh.getUM().isClaimedBy(p.getUniqueId(), horse) || zh.getPerms().has(p, zh.getLM().zhPrefix + zh.getLM().protect + zh.getLM().adminSuffix))) {
 						if (displayConsole) {
 							String horseName = zh.getUM().getHorseName(horse);
-							p.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getUM().getPlayerLanguage(p.getUniqueId()), zh.getLM().horseIsProtected), horseName));
+							String language = zh.getUM().getPlayerLanguage(p.getUniqueId());
+							p.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().horseIsProtected, horseName));
 						}
 						e.setCancelled(true);
 					}
@@ -154,7 +155,8 @@ public class EventManager implements Listener {
 				if (!((zh.getUM().isClaimedBy(p.getUniqueId(), horse)) || zh.getUM().isShared(horse) || zh.getPerms().has(p, zh.getLM().zhPrefix + zh.getLM().lock + zh.getLM().adminSuffix))) {
 					if (displayConsole) {
 						String ownerName = zh.getUM().getPlayerName(horse);
-						p.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getUM().getPlayerLanguage(p.getUniqueId()), zh.getLM().horseBelongsTo), ownerName));
+						String language = zh.getUM().getPlayerLanguage(p.getUniqueId());
+						p.sendMessage(zh.getMM().getMessagePlayer(language, zh.getLM().horseBelongsTo, ownerName));
 					}
 					e.setCancelled(true);
 				}
@@ -174,7 +176,8 @@ public class EventManager implements Listener {
 				if (zh.getUM().isLocked(horse) || !(horse.isEmpty() || zh.getUM().isShared(horse))) {
 					if (displayConsole) {
 						String ownerName = zh.getUM().getPlayerName(horse);
-						p.sendMessage(String.format(zh.getLM().getCommandAnswer(zh.getUM().getPlayerLanguage(p.getUniqueId()), zh.getLM().horseBelongsTo), ownerName));
+						String language = zh.getUM().getPlayerLanguage(p.getUniqueId());
+						p.sendMessage(zh.getMM().getMessagePlayer(language, zh.getLM().horseBelongsTo, ownerName));
 					}
 					return false;
 				}

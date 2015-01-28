@@ -13,18 +13,19 @@ Horsenames:
 - Grispoil
 - Pegase
 - Ponyta
+- Thunderstorm
 - Tonnerre
 - Tornado
 Groups:
   default:
-    color: WHITE
+    color: <white>
     maximumClaims: 0
-  users:
-    color: AQUA
-    maximumClaims: 1
+  player:
+    color: dark_aqua
+    maximumClaims: 5
   vip:
-    color: MAGIC
+    color: BOLD
     maximumClaims: 10
   admin:
-    color: RED
+    color: <c>
     maximumClaims: -1

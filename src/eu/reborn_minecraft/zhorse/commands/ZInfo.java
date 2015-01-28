@@ -54,31 +54,31 @@ public class ZInfo extends Command {
 			String horseName = zh.getUM().getHorseName(ownerUUID, userID);
 			String health = Integer.toString(((Number) d.getHealth()).intValue());
 			String maxHealth = Integer.toString(((Number) d.getMaxHealth()).intValue());						
-			s.sendMessage(String.format(zh.getLM().getHeaderMessage(language, zh.getLM().headerFormat), zh.getLM().getHeaderMessage(language, zh.getLM().horseInfoHeader)));
+			s.sendMessage(zh.getMM().getHeaderContent(language, zh.getLM().headerFormat, zh.getLM().horseInfoHeader, true));
 			if (isOwner(true)) {
-				s.sendMessage(" " + String.format(zh.getLM().getInformationMessage(language, zh.getLM().id, true), userID));
+				s.sendMessage(zh.getMM().getInfoUserID(language, zh.getLM().id, " ", userID, true));
 			}
-			s.sendMessage(" " + String.format(zh.getLM().getInformationMessage(language, zh.getLM().owner, true), ownerName));
-			s.sendMessage(" " + String.format(zh.getLM().getInformationMessage(language, zh.getLM().name, true), horseName));
-			s.sendMessage(" " + String.format(zh.getLM().getInformationMessage(language, zh.getLM().health, true), health, maxHealth));
+			s.sendMessage(zh.getMM().getInfoPlayer(language, zh.getLM().owner, " ", ownerName, true));
+			s.sendMessage(zh.getMM().getInfoHorse(language, zh.getLM().name, " ", horseName, true));
+			s.sendMessage(zh.getMM().getInfoAmountMax(language, zh.getLM().health, " ", health, maxHealth, true));
 			String status = "";
 			boolean normal = true;
 			if (zh.getUM().isProtected(ownerUUID, userID)) {
-				status += " " + zh.getLM().getInformationMessage(language, zh.getLM().modeProtected);
+				status += zh.getMM().getInfo(language, zh.getLM().modeProtected, " ", true);
 				normal = false;
 			}
 			if (zh.getUM().isLocked(ownerUUID, userID)) {
-				status += " " + zh.getLM().getInformationMessage(language, zh.getLM().modeLocked);
+				status += zh.getMM().getInfo(language, zh.getLM().modeLocked, " ", true);
 				normal = false;
 			}
 			else if (zh.getUM().isShared(ownerUUID, userID)) {
-				status += " " + zh.getLM().getInformationMessage(language, zh.getLM().modeShared);
+				status += zh.getMM().getInfo(language, zh.getLM().modeShared, " ", true);
 				normal = false;
 			}
 			if (normal) {
-				status += " " + zh.getLM().getInformationMessage(language, zh.getLM().modeNone);
+				status += zh.getMM().getInfo(language, zh.getLM().modeNone, " ", true);
 			}
-			s.sendMessage(" " + String.format(zh.getLM().getInformationMessage(language, zh.getLM().status), status));
+			s.sendMessage(zh.getMM().getInfoValue(language, zh.getLM().status, " ", status, true));
 			zh.getEM().payCommand(p, command);
 		}
 	}

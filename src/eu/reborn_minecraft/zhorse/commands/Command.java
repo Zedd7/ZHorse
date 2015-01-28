@@ -102,7 +102,7 @@ public class Command {
 			}
 		}
 		if (targetUUID == null && playerCommand) {
-			s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().unknownPlayer), targetName));
+			s.sendMessage(zh.getMM().getMessagePlayer(language, zh.getLM().unknownPlayer, targetName));
 			return false;
 		}
 		cleanArgs();
@@ -144,15 +144,15 @@ public class Command {
 				}
 				else if (displayConsole) {
 					if (l < minLength) {
-						s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().horseNameTooShort), minLength));
+						s.sendMessage(zh.getMM().getMessageAmount(language, zh.getLM().horseNameTooShort, Integer.toString(minLength)));
 					}
 					else if (l > maxLength) {
-						s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().horseNameTooLong), maxLength));
+						s.sendMessage(zh.getMM().getMessageAmount(language, zh.getLM().horseNameTooLong, Integer.toString(maxLength)));
 					}
 				}
 			}
 			else if (displayConsole) {
-				s.sendMessage(zh.getLM().getCommandAnswer(language, zh.getLM().horseNameForbidden));
+				s.sendMessage(zh.getMM().getMessage(language, zh.getLM().horseNameForbidden));
 			}
 		}
 		else {
@@ -171,7 +171,7 @@ public class Command {
 				}
 			}
 			else if (displayConsole) {
-				s.sendMessage(zh.getLM().getCommandAnswer(language, zh.getLM().horseNameMandatory));
+				s.sendMessage(zh.getMM().getMessage(language, zh.getLM().horseNameMandatory));
 			}
 		}
 		return false;
@@ -203,10 +203,10 @@ public class Command {
 		}
 		else if (displayConsole) {
 			if (samePlayer) {
-				s.sendMessage(zh.getLM().getCommandAnswer(language, zh.getLM().maximumClaimsReached));
+				s.sendMessage(zh.getMM().getMessage(language, zh.getLM().maximumClaimsReached));
 			}
 			else {
-				s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().maximumClaimsReachedOther), targetName));
+				s.sendMessage(zh.getMM().getMessagePlayer(language, zh.getLM().maximumClaimsReachedOther, targetName));
 			}
 		}
 		return true;
@@ -233,7 +233,7 @@ public class Command {
     		return true;
     	}
     	else if (displayConsole && !hideConsole) {
-    		s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().missingPermission), perm));
+    		s.sendMessage(zh.getMM().getMessagePerm(language, zh.getLM().missingPermission, perm));
     	}
     	return false;
 	}
@@ -247,7 +247,7 @@ public class Command {
     		return true;
     	}
     	else if (displayConsole && !hideConsole) {
-    		s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().missingPermissionOther), p.getName(), perm));
+    		s.sendMessage(zh.getMM().getMessagePlayerPerm(language, zh.getLM().missingPermissionOther, p.getName(), perm));
     	}
     	return false;
 	}
@@ -263,26 +263,26 @@ public class Command {
 				}
 				else if (displayConsole) {
 					if (zh.getUM().isClaimedBy(p.getUniqueId(), horse)) {
-						s.sendMessage(zh.getLM().getCommandAnswer(language, zh.getLM().horseAlreadyClaimed));
+						s.sendMessage(zh.getMM().getMessage(language, zh.getLM().horseAlreadyClaimed));
 					}
 					else {
 						if (!targetMode) {
 							targetName = zh.getUM().getPlayerName(horse);
 						}
-						s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().horseBelongsTo), targetName));
+						s.sendMessage(zh.getMM().getMessagePlayer(language, zh.getLM().horseBelongsTo, targetName));
 					}
 				}
 			}
 			else if (displayConsole) {
-				s.sendMessage(zh.getLM().getCommandAnswer(language, zh.getLM().horseNotTamed));
+				s.sendMessage(zh.getMM().getMessage(language, zh.getLM().horseNotTamed));
 			}
 		}
 		else if (displayConsole) {
 			if (idMode && !targetMode) {
-				s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().unknownHorseId), userID));
+				s.sendMessage(zh.getMM().getMessageUserID(language, zh.getLM().unknownHorseId, userID));
 			}
 			else if (idMode && targetMode) {
-				s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().unknownHorseIdOther), targetName, userID));
+				s.sendMessage(zh.getMM().getMessagePlayerUserID(language, zh.getLM().unknownHorseIdOther, targetName, userID));
 			}
 		}
 		return false;
@@ -299,7 +299,7 @@ public class Command {
 		}
 		else if (displayConsole) {
 			String passengerName = ((Player)passenger).getName();
-			s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().horseMountedBy), horseName, passengerName));
+			s.sendMessage(zh.getMM().getMessagePlayerHorse(language, zh.getLM().horseMountedBy, passengerName, horseName));
 		}
 		return false;
 	}
@@ -309,7 +309,7 @@ public class Command {
 			return true;
 		}
 		else if (displayConsole) {
-			s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().horseNotFound), zh.getUM().getHorseName(targetUUID, userID)));
+			s.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().horseNotFound, zh.getUM().getHorseName(targetUUID, userID)));
 		}
 		return false;
 	}
@@ -322,7 +322,7 @@ public class Command {
 			return true;
 		}
 		else if (displayConsole) {
-			s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().horseMounted), horseName));
+			s.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().horseMounted, horseName));
 		}
 		return false;
 	}
@@ -332,7 +332,7 @@ public class Command {
 			return true;
 		}
 		else if (displayConsole) {
-			s.sendMessage(zh.getLM().getCommandAnswer(language, zh.getLM().notOnHorse));
+			s.sendMessage(zh.getMM().getMessage(language, zh.getLM().notOnHorse));
 		}
 		return false;
 	}
@@ -350,7 +350,7 @@ public class Command {
 		}
 		else if (displayConsole && !hideConsole) {
 			String ownerName = zh.getUM().getPlayerName(horse);
-			s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().horseBelongsTo), ownerName));
+			s.sendMessage(zh.getMM().getMessagePlayer(language, zh.getLM().horseBelongsTo, ownerName));
 		}
 		return false;
 	}
@@ -367,7 +367,7 @@ public class Command {
 			return true;
 		}
 		else if (displayConsole && sendErrorMessage) {
-			s.sendMessage(zh.getLM().getCommandAnswer(language, zh.getLM().playerCommand));
+			s.sendMessage(zh.getMM().getMessage(language, zh.getLM().playerCommand));
 		}
 		playerCommand = false;
 		return playerCommand;
@@ -380,7 +380,7 @@ public class Command {
 			}
 		}
     	if (displayConsole && !hideConsole) {
-    		s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().playerOffline), zh.getUM().getPlayerName(playerUUID)));
+    		s.sendMessage(zh.getMM().getMessagePlayer(language, zh.getLM().playerOffline, zh.getUM().getPlayerName(playerUUID)));
     	}
 		return false;
 	}
@@ -391,7 +391,7 @@ public class Command {
 			return true;
 		}
 		else if (displayConsole) {
-			s.sendMessage(zh.getLM().getCommandAnswer(language, zh.getLM().horseNotClaimed));
+			s.sendMessage(zh.getMM().getMessage(language, zh.getLM().horseNotClaimed));
 		}
 		return false;
 	}
@@ -422,7 +422,7 @@ public class Command {
 			return true;
 		}
 		else if (displayConsole) {
-			s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().differentWorld), horseName));
+			s.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().differentWorld, horseName));
 		}
 		return false;
 	}
@@ -435,7 +435,7 @@ public class Command {
 			return true;
 		}
 		else if (displayConsole) {
-			s.sendMessage(zh.getLM().getCommandAnswer(language, zh.getLM().worldDisabled));
+			s.sendMessage(zh.getMM().getMessage(language, zh.getLM().worldDisabled));
 		}
 		return false;
 	}
@@ -446,10 +446,10 @@ public class Command {
 	
 	protected void sendCommandUsage(boolean sendErrorMessage) {
 		if (sendErrorMessage) {
-			s.sendMessage(zh.getLM().getCommandAnswer(language, zh.getLM().commandIncorrect));
+			s.sendMessage(zh.getMM().getMessage(language, zh.getLM().commandIncorrect));
 		}
-		s.sendMessage(" " + zh.getLM().getHeaderMessage(language, zh.getLM().commandUsageHeader));
-		s.sendMessage(" " + String.format(zh.getLM().getCommandAnswer(language, zh.getLM().commandUsage, true), zh.getLM().getCommandUsage(language, command)));
+		s.sendMessage(zh.getMM().getHeader(language, zh.getLM().commandUsageHeader, " ", true));
+		s.sendMessage(zh.getMM().getCommandUsage(language, zh.getLM().commandUsageFormat, " ", command, true));
 	}
 	
 	protected void sendUnknownHorseMessage(String playerName) {
@@ -459,10 +459,10 @@ public class Command {
 	protected void sendUnknownHorseMessage(String playerName, boolean playerHorse) {
 		if (displayConsole) {
 			if (samePlayer || playerHorse) {
-				s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().unknownHorseId), userID));
+				s.sendMessage(zh.getMM().getMessageUserID(language, zh.getLM().unknownHorseId, userID));
 			}
 			else {
-				s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().unknownHorseIdOther), playerName, userID));
+				s.sendMessage(zh.getMM().getMessagePlayerUserID(language, zh.getLM().unknownHorseIdOther, playerName, userID));
 			}
 		}
 	}

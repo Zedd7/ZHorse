@@ -49,13 +49,13 @@ public class ZTame extends Command {
 				if (!tamed) {
 					horse.setTamed(true);
 					if (displayConsole) {
-						s.sendMessage(zh.getLM().getCommandAnswer(language, zh.getLM().horseTamed));
+						s.sendMessage(zh.getMM().getMessage(language, zh.getLM().horseTamed));
 					}
 				}
 				else {
 					horse.setTamed(false);
 					if (displayConsole) {
-						s.sendMessage(zh.getLM().getCommandAnswer(language, zh.getLM().horseUnTamed));
+						s.sendMessage(zh.getMM().getMessage(language, zh.getLM().horseUnTamed));
 					}
 				}
 				zh.getEM().payCommand(p, command);

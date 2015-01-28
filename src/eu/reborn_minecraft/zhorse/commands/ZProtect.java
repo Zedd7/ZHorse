@@ -48,13 +48,13 @@ public class ZProtect extends Command {
 				if (!zh.getUM().isProtected(horse)) {
 					zh.getUM().protect(targetUUID, horse);
 					if (displayConsole) {
-						s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().horseProtected), horseName));
+						s.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().horseProtected, horseName));
 					}
 				}
 				else {
 					zh.getUM().unProtect(targetUUID, horse);
 					if (displayConsole) {
-						s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().horseUnProtected), horseName));
+						s.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().horseUnProtected, horseName));
 					}
 				}
 				zh.getEM().payCommand(p, command);

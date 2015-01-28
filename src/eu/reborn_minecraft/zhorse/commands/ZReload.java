@@ -41,7 +41,7 @@ public class ZReload extends Command {
 		if (zh.getEM().isReadyToPay(p, command)) {
 			zh.reload();
 			if (displayConsole) {
-				s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().pluginReloaded), zh.getDescription().getName()));
+				s.sendMessage(zh.getMM().getMessageValue(language, zh.getLM().pluginReloaded, zh.getDescription().getFullName()));
 			}
 			zh.getEM().payCommand(p, command);
 		}
@@ -50,7 +50,7 @@ public class ZReload extends Command {
 	private void executeConsole() {
 		zh.reload();
 		if (displayConsole) {
-			s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().pluginReloaded), zh.getDescription().getName()));
+			s.sendMessage(zh.getMM().getMessageValue(language, zh.getLM().pluginReloaded, zh.getDescription().getFullName()));
 		}
 	}
 

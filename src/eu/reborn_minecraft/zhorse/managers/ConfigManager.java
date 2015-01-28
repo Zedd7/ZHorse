@@ -16,9 +16,9 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 public class ConfigManager {
 	private ZHorse zh;
 	
-	public ConfigManager(ZHorse zh, boolean configExist) {
+	public ConfigManager(ZHorse zh, boolean initConfig) {
 		this.zh = zh;
-		if (!configExist) {
+		if (initConfig) {
 			initLanguages();
 			initEconomy();
 			initWorlds();
@@ -31,38 +31,51 @@ public class ConfigManager {
 	
 	public List<String> getAvailableLanguages() {
 		List<String> availableLanguages = zh.getConfig().getStringList("Settings.availableLanguages");
-		if (availableLanguages == null || availableLanguages.size() < 1) {
+		if (availableLanguages == null || availableLanguages.isEmpty()) {
 			availableLanguages = new ArrayList<String>();
-			availableLanguages.add(zh.getDebugLanguage());
+			availableLanguages.add(getDefaultLanguage());
 		}
 		return availableLanguages;
 	}
 	
 	public ChatColor getChatColor(UUID playerUUID) {
+		ChatColor cc = ChatColor.WHITE;
+		boolean playerOnline = false;
 		for (Player p : zh.getServer().getOnlinePlayers()) {
 			if (playerUUID.equals(p.getUniqueId())) {
-				return getChatColor(zh.getPerms().getPrimaryGroup(p));
+				playerOnline = true;
+				String groupName = zh.getPerms().getPrimaryGroup(p);
+				if (groupName != null) {
+					cc = getChatColor(groupName);
+				}
+				else {
+					zh.getLogger().severe("Vault could not retrieve the primary group of \"" + p.getName() + "\" !");
+					zh.getLogger().severe("Please make sure taht this group is defined.");
+				}				
 			}
 		}
-		ChatColor cc = ChatColor.WHITE;
-		OfflinePlayer op = zh.getServer().getOfflinePlayer(playerUUID);
-		if (op.hasPlayedBefore()) {
-			String world = zh.getServer().getWorlds().get(0).getName();
-			String groupName = zh.getPerms().getPrimaryGroup(world, op);
-			cc = getChatColor(groupName);
+		if (!playerOnline) {
+			OfflinePlayer op = zh.getServer().getOfflinePlayer(playerUUID);
+			if (op.hasPlayedBefore()) {
+				String world = zh.getServer().getWorlds().get(0).getName();
+				String groupName = zh.getPerms().getPrimaryGroup(world, op);
+				if (groupName != null) {
+					cc = getChatColor(groupName);
+				}				
+				else {
+					zh.getLogger().severe("Vault could not retrieve the primary group of \"" + op.getName() + "\" !");
+					zh.getLogger().severe("Please make sure taht this group is defined.");
+				}
+			}
 		}
 		return cc;
 	}
-
 	
 	public ChatColor getChatColor(String groupName) {
-        String color = zh.getConfig().getString("Groups." + groupName + ".color");
+		String exactGroupName = getExactGroupName(groupName);
+		String color = zh.getConfig().getString("Groups." + exactGroupName + ".color");
         if (color != null) {
-        	for (ChatColor cc : ChatColor.values()) {
-            	if (cc.name().equalsIgnoreCase(color) || cc.toString().equalsIgnoreCase(color)) {
-            		return cc;
-            	}
-            }
+        	return zh.getMM().getColor(color);
         }
         return ChatColor.WHITE;
 	}
@@ -87,6 +100,18 @@ public class ConfigManager {
 		return defaultLanguage;
 	}
 	
+	private String getExactGroupName(String groupName) {
+		ConfigurationSection cs = zh.getConfig().getConfigurationSection("Groups");
+		if (cs != null) {
+			for (String exactGroupName : cs.getKeys(false)) {
+				if (groupName.equalsIgnoreCase(exactGroupName)) {
+					return exactGroupName;
+				}
+			}
+		}
+		return groupName;
+	}
+	
 	public int getMaximumClaims(UUID playerUUID) {
 		for (Player p : zh.getServer().getOnlinePlayers()) {
 			if (playerUUID.equals(p.getUniqueId())) {
@@ -98,6 +123,11 @@ public class ConfigManager {
 		if (op.hasPlayedBefore()) {
 			String world = zh.getServer().getWorlds().get(0).getName();
 			String groupName = zh.getPerms().getPrimaryGroup(world, op);
+			if (groupName == null) {
+				zh.getLogger().severe("Vault could not retrieve the primary group of \"" + op.getName() + "\" !");
+				zh.getLogger().severe("Please make sure taht this group is defined.");
+				return 0;
+			}
 			return getMaximumClaims(groupName);
 		}
 		return value;
@@ -105,19 +135,26 @@ public class ConfigManager {
 	
 	public int getMaximumClaims(Player p) {
 		String groupName = zh.getPerms().getPrimaryGroup(p);
+		if (groupName == null) {
+			zh.getLogger().severe("Vault could not retrieve the primary group of \"" + p.getName() + "\" !");
+			zh.getLogger().severe("Please make sure taht this group is defined.");
+			return 0;
+		}
 		return getMaximumClaims(groupName);
 	}
 	
 	public int getMaximumClaims(String groupName) {
 		int value = 0;
-		if (groupName != null) {
-			String maximumClaims = zh.getConfig().getString("Groups." + groupName + ".maximumClaims");
-			if (maximumClaims != null) {
-				value = Integer.parseInt(maximumClaims);
-				if (value < 0 && value != -1) {
-					value = 0;
-				}
+		String exactGroupName = getExactGroupName(groupName);
+		String maximumClaims = zh.getConfig().getString("Groups." + exactGroupName + ".maximumClaims");
+		if (maximumClaims != null) {
+			value = Integer.parseInt(maximumClaims);
+			if (value < 0 && value != -1) {
+				value = 0;
 			}
+		}
+		else {
+			zh.getLogger().warning("The group \""+groupName+"\" is not listed in config !");
 		}
 		return value;
 	}
@@ -238,14 +275,8 @@ public class ConfigManager {
 			for (String groupName : cs.getKeys(false)) {
 				String color = zh.getConfig().getString("Groups." + groupName + ".color");
 		        if (color != null) {
-					boolean match = false;
-		        	for (ChatColor cc : ChatColor.values()) {
-		            	if (cc.name().equalsIgnoreCase(color) || cc.toString().equalsIgnoreCase(color)) {
-		            		match = true;
-		            	}
-		            }
-		        	if (!match) {
-		        		zh.getLogger().severe("The color \"" + color + "\" attributed to the group \"" + groupName + "\" is incorrect !");
+					if (!zh.getMM().isColor(color)) {
+		        		zh.getLogger().severe("The color \"" + color + "\" attributed to the group \"" + groupName + "\" is misspelled !");
 		        		integrity = false;
 		        	}
 		        }

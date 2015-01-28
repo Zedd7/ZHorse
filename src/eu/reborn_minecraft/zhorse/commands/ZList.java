@@ -33,28 +33,28 @@ public class ZList extends Command {
 			List<String> horseList = zh.getUM().getHorseList(targetUUID);
 			String remainingClaimsMessage = getRemainingClaimsMessage(horseList);
 			if (!horseList.isEmpty()) {
-				String horseListHeader;
+				String horseListHeader = "";
 				if (samePlayer) {
-					horseListHeader = zh.getLM().getHeaderMessage(language, zh.getLM().horseListHeader);
+					horseListHeader = zh.getMM().getHeaderAmount(language, zh.getLM().horseListHeader, remainingClaimsMessage, true);
 				}
 				else {
-					horseListHeader = String.format(zh.getLM().getHeaderMessage(language, zh.getLM().horseListOtherHeader), targetName);
+					horseListHeader = zh.getMM().getHeaderPlayerAmount(language, zh.getLM().horseListOtherHeader, targetName, remainingClaimsMessage, true);
 				}
 				if (displayConsole) {
-					s.sendMessage(String.format(zh.getLM().getHeaderMessage(language, zh.getLM().headerFormat), horseListHeader + remainingClaimsMessage));
+					s.sendMessage(zh.getMM().getHeaderValue(language, zh.getLM().headerFormat, horseListHeader, true));
 					for (int i=1; i<=horseList.size(); i++) {
 						String userID = Integer.toString(i);
 						String horseName = horseList.get(i-1);
-						String message = " " + String.format(zh.getLM().getHeaderMessage(language, zh.getLM().horseListFormat, true), userID, horseName);
+						String message = zh.getMM().getHeaderHorseUserID(language, zh.getLM().horseListFormat, " ", horseName, userID, true);
 						String status = "";
 						if (zh.getUM().isProtected(targetUUID, userID)) {
-							status += " " + zh.getLM().getInformationMessage(language, zh.getLM().modeProtected);
+							status += zh.getMM().getInfo(language, zh.getLM().modeProtected, " ", true);
 						}
 						if (zh.getUM().isLocked(targetUUID, userID)) {
-							status += " " + zh.getLM().getInformationMessage(language, zh.getLM().modeLocked);
+							status += zh.getMM().getInfo(language, zh.getLM().modeLocked, " ", true);
 						}
 						else if (zh.getUM().isShared(targetUUID, userID)) {
-							status += " " + zh.getLM().getInformationMessage(language, zh.getLM().modeShared);
+							status += zh.getMM().getInfo(language, zh.getLM().modeShared, " ", true);
 						}
 						s.sendMessage(message + status);
 					}
@@ -62,10 +62,10 @@ public class ZList extends Command {
 			}
 			else if (displayConsole) {
 				if (samePlayer) {
-					s.sendMessage(zh.getLM().getCommandAnswer(language, zh.getLM().noHorseOwned) + remainingClaimsMessage);
+					s.sendMessage(zh.getMM().getMessageAmount(language, zh.getLM().noHorseOwned, remainingClaimsMessage));
 				}
 				else {
-					s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().noHorseOwnedOther), targetName) + remainingClaimsMessage);
+					s.sendMessage(zh.getMM().getMessagePlayerAmount(language, zh.getLM().noHorseOwnedOther, targetName, remainingClaimsMessage));
 				}
 			}
 			zh.getEM().payCommand(p, command);
@@ -76,7 +76,7 @@ public class ZList extends Command {
 		String message = "";
 		if (samePlayer || isPlayerOnline(targetUUID, true)) {
 			int maxClaims = zh.getCM().getMaximumClaims(zh.getServer().getPlayer(targetUUID));
-			message = " " + String.format(zh.getLM().getHeaderMessage(language, zh.getLM().remainingClaimsFormat, true), horseList.size(), maxClaims);
+			message = zh.getMM().getHeaderAmountMax(language, zh.getLM().remainingClaimsFormat, Integer.toString(horseList.size()), Integer.toString(maxClaims), true);
 		}
 		return message;
 	}

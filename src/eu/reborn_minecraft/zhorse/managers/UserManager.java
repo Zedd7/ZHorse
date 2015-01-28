@@ -18,7 +18,7 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 public class UserManager {
 	private ZHorse zh;
 	
-	public UserManager(ZHorse zh, boolean usersExist) {
+	public UserManager(ZHorse zh) {
 		this.zh = zh;
 	}
 	
@@ -178,7 +178,7 @@ public class UserManager {
 	public String getPlayerLanguage(UUID playerUUID) {
 		String language = getPlayerStringData(playerUUID, "Language");
 		if (language == null) {
-			language = zh.getDebugLanguage();
+			language = zh.getCM().getDefaultLanguage();
 		}
 		return language;
 	}

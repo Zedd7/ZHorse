@@ -49,18 +49,18 @@ public class ZShare extends Command {
 					if (zh.getUM().isLocked(horse)) {
 						zh.getUM().unLock(targetUUID, horse);
 						if (displayConsole) {
-							s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().horseUnLocked), horseName));
+							s.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().horseUnLocked, horseName));
 						}
 					}
 					zh.getUM().share(targetUUID, horse);
 					if (displayConsole) {
-						s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().horseShared), horseName));
+						s.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().horseShared, horseName));
 					}
 				}
 				else {
 					zh.getUM().unShare(targetUUID, horse);
 					if (displayConsole) {
-						s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().horseUnShared), horseName));
+						s.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().horseUnShared, horseName));
 					}
 				}
 				zh.getEM().payCommand(p, command);

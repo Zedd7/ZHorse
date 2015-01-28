@@ -19,6 +19,7 @@ import eu.reborn_minecraft.zhorse.managers.ConfigManager;
 import eu.reborn_minecraft.zhorse.managers.EconomyManager;
 import eu.reborn_minecraft.zhorse.managers.EventManager;
 import eu.reborn_minecraft.zhorse.managers.LocaleManager;
+import eu.reborn_minecraft.zhorse.managers.MessageManager;
 import eu.reborn_minecraft.zhorse.managers.UserManager;
 import eu.reborn_minecraft.zhorse.metrics.Metrics;
 
@@ -26,7 +27,6 @@ public class ZHorse extends JavaPlugin {
 	private static String configPath = "config.yml";
 	private static String usersPath = "users.yml";
 	private static String localePath = "locale_%s.yml";
-	private static String debugLanguage = "EN"; // s'en passer
 	private static String[] providedLanguages = {"EN", "FR"};
 	private static File configFile;
 	private static File usersFile;
@@ -35,10 +35,11 @@ public class ZHorse extends JavaPlugin {
 	private FileConfiguration config;
 	private FileConfiguration users;
 	private Map<String,FileConfiguration> locales;
-	private CommandManager commandManager;
 	private ConfigManager configManager;
 	private UserManager userManager;
 	private LocaleManager localeManager;
+	private CommandManager commandManager;
+	private MessageManager messageManager;
 	private EconomyManager economyManager;
 	
 	public void onEnable() {
@@ -47,9 +48,9 @@ public class ZHorse extends JavaPlugin {
 		initDependencies();
 		initPermissions();
 		initEconomy();
-		initManagers();
 		initMetrics();
-		getCommand("zhorse").setExecutor(commandManager);
+		initManagers();
+		getCommand(this.getName().toLowerCase()).setExecutor(commandManager);
 		getServer().getPluginManager().registerEvents(new EventManager(this), this);
 	}
 
@@ -86,40 +87,6 @@ public class ZHorse extends JavaPlugin {
         return econ != null;
     }
     
-    private void initManagers() {
-    	boolean configExist = true;
-    	boolean usersExist = true;
-    	boolean localeExist = true;
-    	if (!configFile.exists()) {
-			getLogger().info(configPath + " is missing... Creating it.");
-			configExist = false;
-			saveResource(configPath, false);
-		}
-		if (!usersFile.exists()) {
-			getLogger().info(usersPath + " is missing... Creating it.");
-			usersExist = false;
-			saveResource(usersPath, false);
-		}
-		for (String language : providedLanguages) {
-			String exactLocalePath = String.format(localePath, language);
-			if (!new File(getDataFolder(), exactLocalePath).exists()) {
-				getLogger().info(exactLocalePath + " is missing... Creating it.");
-				if (getDebugLanguage().equals(language)) {
-					localeExist = false;
-				}
-				saveResource(exactLocalePath, false);
-			}
-		}
-		updateConfig();
-		updateUsers();
-		localeManager = new LocaleManager(this, localeExist);
-		commandManager = new CommandManager(this);
-		configManager = new ConfigManager(this, configExist);
-		userManager = new UserManager(this, usersExist);
-		economyManager = new EconomyManager(this);
-		updateLocales();
-	}
-    
     private void initMetrics() {
     	try {
             Metrics metrics = new Metrics(this);
@@ -129,12 +96,37 @@ public class ZHorse extends JavaPlugin {
         }
     }
     
+    private void initManagers() {
+    	boolean initConfig = false;
+    	if (!configFile.exists()) {
+			getLogger().info(configPath + " is missing... Creating it.");
+			initConfig = true;
+			saveResource(configPath, false);
+		}
+		if (!usersFile.exists()) {
+			getLogger().info(usersPath + " is missing... Creating it.");
+			saveResource(usersPath, false);			
+		}
+		for (String language : providedLanguages) {
+			String exactLocalePath = String.format(localePath, language);
+			if (!new File(getDataFolder(), exactLocalePath).exists()) {
+				getLogger().info(exactLocalePath + " is missing... Creating it.");
+				saveResource(exactLocalePath, false);
+			}
+		}
+		updateConfig();
+		updateUsers();
+		localeManager = new LocaleManager(this);
+		commandManager = new CommandManager(this);
+		messageManager = new MessageManager(this);
+		configManager = new ConfigManager(this, initConfig);
+		userManager = new UserManager(this);
+		economyManager = new EconomyManager(this);
+		updateLocales();
+	}
+    
 	public void reload() {
 		initManagers();
-	}
-	
-	public String getDebugLanguage() {
-		return debugLanguage;
 	}
 	
 	public String[] getProvidedLanguages() {
@@ -157,9 +149,9 @@ public class ZHorse extends JavaPlugin {
     	if (locales.containsKey(language)) {
     		return locales.get(language);
     	}
-    	getLogger().severe("A player is using an unknow language : \"" + language + "\" !");
-    	getLogger().severe("Please fix or delete \"users.yml\"");
-    	return locales.get(getDebugLanguage());
+    	getLogger().severe("A player is using an unavailable language : \"" + language + "\" !");
+    	getLogger().severe("Please make it available or fix \"users.yml\"");
+    	return locales.get(getCM().getDefaultLanguage());
     }
     
 	public void updateConfig() {
@@ -181,7 +173,7 @@ public class ZHorse extends JavaPlugin {
 			}
 			else {
 				getLogger().info(exactLocalePath + " is missing... Creating it.");
-				exactLocalePath = String.format(localePath, getDebugLanguage());
+				exactLocalePath = String.format(localePath, getCM().getDefaultLanguage());
 				localeFile = new File(getDataFolder(), exactLocalePath);
 				FileConfiguration locale = YamlConfiguration.loadConfiguration(localeFile);
 				saveLocale(locale, language);
@@ -232,6 +224,10 @@ public class ZHorse extends JavaPlugin {
 	
 	public CommandManager getCmdM() {
 		return commandManager;
+	}
+	
+	public MessageManager getMM() {
+		return messageManager;
 	}
 	
     public Permission getPerms() {

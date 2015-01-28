@@ -38,7 +38,7 @@ public class ZTp extends Command {
 					if (zh.getEM().isReadyToPay(p, command)) {
 						p.teleport(horse);
 						if (displayConsole) {
-							s.sendMessage(String.format(zh.getLM().getCommandAnswer(language, zh.getLM().teleportedToHorse), horseName));
+							s.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().teleportedToHorse, horseName));
 						}
 						zh.getEM().payCommand(p, command);
 					}
