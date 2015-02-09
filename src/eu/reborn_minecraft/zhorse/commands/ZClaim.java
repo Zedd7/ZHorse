@@ -9,7 +9,7 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 public class ZClaim extends Command {
 	
 	public ZClaim(ZHorse zh, CommandSender s, String[] a) {
-		super(zh, a, s);
+		super(zh, s, a);
 		idAllow = false;
 		targetAllow = false;
 		if (isPlayer()) {
@@ -49,7 +49,7 @@ public class ZClaim extends Command {
 				if (zh.getEM().isReadyToPay(p, command)) {
 					if (zh.getUM().registerHorse(p.getUniqueId(), horseName, horse)) {
 						ChatColor cc = zh.getCM().getChatColor(zh.getPerms().getPrimaryGroup(p));
-						horse.setCustomName(cc + horseName);
+						horse.setCustomName(cc + horseName + ChatColor.RESET);
 						horse.setCustomNameVisible(true);
 						horse.setTamed(true);
 						if (displayConsole) {

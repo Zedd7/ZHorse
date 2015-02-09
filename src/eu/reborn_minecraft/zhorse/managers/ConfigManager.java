@@ -245,6 +245,10 @@ public class ConfigManager {
         return false;
 	}
 	
+	public boolean shouldClaimOnTame() {
+		return (zh.getConfig().getBoolean("Settings.claimOnTame", false));
+	}
+	
 	private boolean checkIntegrity() {
 		boolean integrity = true;
 		if (!checkColorsIntegrity()) {

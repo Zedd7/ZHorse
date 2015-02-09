@@ -8,7 +8,7 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 public class ZTame extends Command {
 
 	public ZTame(ZHorse zh, CommandSender s, String[] a) {
-		super(zh, a, s);
+		super(zh, s, a);
 		idAllow = true;
 		targetAllow = false;
 		if (isPlayer()) {

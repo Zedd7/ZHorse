@@ -9,7 +9,7 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 public class ZList extends Command {
 
 	public ZList(ZHorse zh, CommandSender s, String[] a) {
-		super(zh, a, s);
+		super(zh, s, a);
 		idAllow = false;
 		targetAllow = false;
 		if (isPlayer()) {

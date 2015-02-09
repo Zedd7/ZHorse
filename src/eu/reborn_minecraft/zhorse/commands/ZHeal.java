@@ -9,7 +9,7 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 public class ZHeal extends Command {
 
 	public ZHeal(ZHorse zh, CommandSender s, String[] a) {
-		super(zh, a, s);
+		super(zh, s, a);
 		idAllow = true;
 		targetAllow = false;
 		if (isPlayer()) {

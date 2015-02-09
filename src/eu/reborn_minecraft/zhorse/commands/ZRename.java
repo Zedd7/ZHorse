@@ -9,7 +9,7 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 public class ZRename extends Command {
 
 	public ZRename(ZHorse zh, CommandSender s, String[] a) {
-		super(zh, a, s);
+		super(zh, s, a);
 		idAllow = true;
 		targetAllow = false;
 		if (isPlayer()) {
@@ -48,7 +48,7 @@ public class ZRename extends Command {
 			if (craftHorseName()) {
 				if (zh.getEM().isReadyToPay(p, command)) {
 					ChatColor cc = zh.getCM().getChatColor(targetUUID);
-					horse.setCustomName(cc + horseName);
+					horse.setCustomName(cc + horseName + ChatColor.RESET);
 					horse.setCustomNameVisible(true);
 					zh.getUM().rename(targetUUID, horseName, horse);
 					if (displayConsole) {

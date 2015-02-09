@@ -5,6 +5,7 @@ Settings:
   maximumHorsenameLength: 30
   muteConsole: false
   worldCrossing: true
+  claimOnTame: false
   activeWorlds:
 Economy:
 Horsenames:
@@ -23,9 +24,12 @@ Groups:
   player:
     color: dark_aqua
     maximumClaims: 5
-  vip:
+  vip1:
     color: BOLD
     maximumClaims: 10
+  vip2:
+    color: <ITALIC>
+    maximumClaims: 15
   admin:
     color: <c>
     maximumClaims: -1

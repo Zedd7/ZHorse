@@ -9,7 +9,7 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 public class ZGive extends Command {
 
 	public ZGive(ZHorse zh, CommandSender s, String[] a) {
-		super(zh, a, s);
+		super(zh, s, a);
 		idAllow = true;
 		targetAllow = true;
 		if (isPlayer()) {
@@ -52,7 +52,7 @@ public class ZGive extends Command {
 				if (!samePlayer || adminMode) {
 					if (zh.getUM().registerHorse(targetUUID, horseName, horse)) {
 						ChatColor cc = zh.getCM().getChatColor(targetUUID);
-						horse.setCustomName(cc + horseName);
+						horse.setCustomName(cc + horseName + ChatColor.RESET);
 						zh.getEM().payCommand(p, command);
 						if (displayConsole) {
 							s.sendMessage(zh.getMM().getMessagePlayerHorse(language, zh.getLM().horseGiven,targetName, horseName));

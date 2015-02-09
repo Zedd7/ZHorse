@@ -32,7 +32,7 @@ public class Command {
 	protected String horseName;
 	protected boolean samePlayer;
 	
-	public Command(ZHorse zh, String[] a, CommandSender s) {
+	public Command(ZHorse zh, CommandSender s, String[] a) {
 		this.zh = zh;
 		this.a = a;
 		this.s = s;

@@ -3,6 +3,7 @@ package eu.reborn_minecraft.zhorse.managers;
 import java.util.UUID;
 
 import org.bukkit.Chunk;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
@@ -21,6 +22,7 @@ import org.bukkit.event.player.PlayerUnleashEntityEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.commands.ZClaim;
 
 public class EventManager implements Listener {
 	private ZHorse zh;
@@ -93,10 +95,17 @@ public class EventManager implements Listener {
 	@EventHandler
 	public void onHorseTame(EntityTameEvent e) {
 		if (e.getEntity() instanceof Horse && e.getOwner() instanceof Player) {
-			if (displayConsole) {
-				Player p = (Player)e.getOwner();
-				String language = zh.getUM().getPlayerLanguage(p.getUniqueId());
-				p.sendMessage(zh.getMM().getMessage(language, zh.getLM().horseManuallyTamed));
+			if (zh.getCM().shouldClaimOnTame()) {
+				((Horse)e.getEntity()).setTamed(true);
+				String[] a = {"claim"};
+				new ZClaim(zh, (CommandSender) e.getOwner(), a);
+			}
+			else {
+				if (displayConsole) {
+					Player p = (Player)e.getOwner();
+					String language = zh.getUM().getPlayerLanguage(p.getUniqueId());
+					p.sendMessage(zh.getMM().getMessage(language, zh.getLM().horseManuallyTamed));
+				}
 			}
 		}
 	}

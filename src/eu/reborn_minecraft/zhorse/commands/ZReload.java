@@ -8,7 +8,7 @@ public class ZReload extends Command {
 	private static boolean playerOnly = false;
 
 	public ZReload(ZHorse zh, CommandSender s, String[] a) {
-		super(zh, a, s);
+		super(zh, s, a);
 		idAllow = false;
 		targetAllow = false;
 		if (isPlayer(playerOnly)) {
