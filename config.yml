@@ -21,9 +21,11 @@ Groups:
   default:
     color: <white>
     maximumClaims: 0
+    permission: zh.group.default
   player:
     color: dark_aqua
     maximumClaims: 5
+    permission: zh.whateveryouwant
   vip1:
     color: BOLD
     maximumClaims: 10

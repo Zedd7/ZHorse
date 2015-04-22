@@ -75,7 +75,7 @@ public class ZList extends Command {
 	private String getRemainingClaimsMessage(List<String> horseList) {
 		String message = "";
 		if (samePlayer || isPlayerOnline(targetUUID, true)) {
-			int maxClaims = zh.getCM().getMaximumClaims(zh.getServer().getPlayer(targetUUID));
+			int maxClaims = zh.getCM().getMaximumClaims(targetUUID);
 			message = zh.getMM().getHeaderAmountMax(language, zh.getLM().remainingClaimsFormat, Integer.toString(horseList.size()), Integer.toString(maxClaims), true);
 		}
 		return message;

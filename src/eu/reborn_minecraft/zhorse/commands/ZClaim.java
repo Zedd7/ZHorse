@@ -48,7 +48,7 @@ public class ZClaim extends Command {
 			if (isClaimable()) {
 				if (zh.getEM().isReadyToPay(p, command)) {
 					if (zh.getUM().registerHorse(p.getUniqueId(), horseName, horse)) {
-						ChatColor cc = zh.getCM().getChatColor(zh.getPerms().getPrimaryGroup(p));
+						ChatColor cc = zh.getCM().getChatColor(p.getUniqueId());
 						horse.setCustomName(cc + horseName + ChatColor.RESET);
 						horse.setCustomNameVisible(true);
 						horse.setTamed(true);

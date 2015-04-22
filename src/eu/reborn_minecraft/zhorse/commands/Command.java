@@ -374,10 +374,8 @@ public class Command {
 	}
 	
 	protected boolean isPlayerOnline(UUID playerUUID, boolean hideConsole) {
-		for (Player p : zh.getServer().getOnlinePlayers()) {
-			if (p.getUniqueId().equals(playerUUID)) {
-				return true;
-			}
+		if (zh.getServer().getPlayer(playerUUID) != null) {
+			return true;
 		}
     	if (displayConsole && !hideConsole) {
     		s.sendMessage(zh.getMM().getMessagePlayer(language, zh.getLM().playerOffline, zh.getUM().getPlayerName(playerUUID)));
