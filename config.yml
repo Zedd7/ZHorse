@@ -6,7 +6,9 @@ Settings:
   muteConsole: false
   worldCrossing: true
   claimOnTame: false
-  activeWorlds:
+  lockOnClaim: false
+  protectOnClaim: false
+ActiveWorlds:
 Economy:
 Horsenames:
 - Arod
