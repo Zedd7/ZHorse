@@ -56,6 +56,14 @@ public class ZClaim extends Command {
 							s.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().horseClaimed, horseName));
 						}
 						zh.getEM().payCommand(p, command);
+						if (zh.getCM().shouldLockOnClaim()) {
+							String[] a = {"lock"};
+							new ZLock(zh, s, a);
+						}
+						if (zh.getCM().shouldProtectOnClaim()) {
+							String[] a = {"protect"};
+							new ZProtect(zh, s, a);
+						}
 					}
 					else {
 						zh.getLogger().severe(zh.getMM().getMessageHorseValue(language, zh.getLM().horseNotRegistered, horseName, horse.getUniqueId().toString()));

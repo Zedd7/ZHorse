@@ -224,6 +224,14 @@ public class ConfigManager {
 		return zh.getConfig().getBoolean("Settings.claimOnTame", false);
 	}
 	
+	public boolean shouldLockOnClaim() {
+		return zh.getConfig().getBoolean("Settings.lockOnClaim", false);
+	}
+	
+	public boolean shouldProtectOnClaim() {
+		return zh.getConfig().getBoolean("Settings.protectOnClaim", false);
+	}
+	
 	private boolean checkIntegrity() {
 		boolean integrity = true;
 		if (!checkColorsIntegrity()) {
