@@ -213,8 +213,8 @@ public class ConfigManager {
 	}
 	
 	public boolean isWorldEnabled(World world) {
-		List<String> worlds = zh.getConfig().getStringList("Settings.activeWorlds");
-		if (!(worlds == null || worlds.size() == 0)) {
+		List<String> worlds = zh.getConfig().getStringList("ActiveWorlds");
+		if (worlds != null && worlds.size() != 0) {
 			return worlds.contains(world.getName());
 		}
         return false;
