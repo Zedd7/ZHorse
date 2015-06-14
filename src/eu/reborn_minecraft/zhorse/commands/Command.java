@@ -62,7 +62,7 @@ public class Command {
 				}
 			}
 			else if (a[i].equals("-i")) {
-				checkSuccess = (idModeCount == 0 && i != a.length-1 && !(a[i+1].equals("-a") || a[i+1].equals("-i") || a[i+1].equals("-t")));
+				checkSuccess = (idModeCount == 0 && i != a.length-1 && !a[i+1].startsWith("-"));
 				if (checkSuccess) {
 					idMode = true;
 					userID = a[i+1];
@@ -70,7 +70,7 @@ public class Command {
 				}
 			}
 			else if (a[i].equals("-t")) {
-				checkSuccess = (targetModeCount == 0 && i != a.length-1 && !(a[i+1].equals("-a") || a[i+1].equals("-i") || a[i+1].equals("-t")));
+				checkSuccess = (targetModeCount == 0 && i != a.length-1 && !a[i+1].startsWith("-"));
 				if (checkSuccess) {
 					targetMode = true;
 					targetName = a[i+1];
@@ -94,12 +94,7 @@ public class Command {
 		else {
 			targetName = zh.getUM().getPlayerName(targetName);
 			targetUUID = getPlayerUUID(targetName);
-			if (playerCommand) {
-				samePlayer = p.getUniqueId().equals(targetUUID);
-			}
-			else {
-				samePlayer = false;
-			}
+			samePlayer = playerCommand && p.getUniqueId().equals(targetUUID);
 		}
 		if (targetUUID == null && playerCommand) {
 			s.sendMessage(zh.getMM().getMessagePlayer(language, zh.getLM().unknownPlayer, targetName));

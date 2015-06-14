@@ -21,19 +21,16 @@ Horsenames:
 - Tornado
 Groups:
   default:
-    color: <white>
+    color: <f>
     maximumClaims: 0
     permission: zh.group.default
   player:
-    color: dark_aqua
+    color: <dark_aqua>
     maximumClaims: 5
     permission: zh.whateveryouwant
-  vip1:
-    color: BOLD
+  vip:
+    color: <BOLD>
     maximumClaims: 10
-  vip2:
-    color: <ITALIC>
-    maximumClaims: 15
   admin:
-    color: <c>
+    color: §c
     maximumClaims: -1

@@ -87,7 +87,7 @@ public class ConfigManager {
 	private String getGroupName(UUID playerUUID) {
 		String groupName = null;
 		Player p = zh.getServer().getPlayer(playerUUID);
-		if (p != null) {
+		if (p != null && p.hasPlayedBefore()) {
 			groupName = zh.getPerms().getPrimaryGroup(p);
 		}
 		else {
@@ -97,7 +97,7 @@ public class ConfigManager {
 				groupName = zh.getPerms().getPrimaryGroup(world, op);
 			}
 		}
-		if (groupName == null || (!zh.getConfig().contains("Groups." + groupName) && p != null)) {
+		if (p != null && p.hasPlayedBefore() && (groupName == null || !zh.getConfig().contains("Groups." + groupName))) {
 			groupName = getSurrogateGroupName(p);
 		}
 		else {

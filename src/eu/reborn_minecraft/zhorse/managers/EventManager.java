@@ -2,7 +2,6 @@ package eu.reborn_minecraft.zhorse.managers;
 
 import java.util.UUID;
 
-import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Horse;
@@ -27,7 +26,6 @@ import eu.reborn_minecraft.zhorse.commands.ZClaim;
 public class EventManager implements Listener {
 	private ZHorse zh;
 	private boolean displayConsole;
-	private Chunk lastChunk = null;
 
 	public EventManager(ZHorse zh) {
 		this.zh = zh;
@@ -36,17 +34,10 @@ public class EventManager implements Listener {
 	
 	@EventHandler
 	public void onChunkUnload(ChunkUnloadEvent e) {
-		Chunk chunk = e.getChunk();
-		if (lastChunk == null || !lastChunk.equals(chunk)) {
-			lastChunk = chunk;
-			e.setCancelled(true);
-			Entity[] entities = chunk.getEntities();
-			for (Entity entity : entities) {
-				if (isHorseClaimed(entity)) {
-					zh.getUM().saveLocation((Horse)entity);
-				}
+		for (Entity entity : e.getChunk().getEntities()) {
+			if (isHorseClaimed(entity)) {
+				zh.getUM().saveLocation((Horse)entity);
 			}
-			chunk.unload(true, true);
 		}
 	}
 	
