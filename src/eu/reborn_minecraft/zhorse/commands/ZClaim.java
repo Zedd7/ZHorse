@@ -47,7 +47,10 @@ public class ZClaim extends Command {
 		if (craftHorseName()) {
 			if (isClaimable()) {
 				if (zh.getEM().isReadyToPay(p, command)) {
-					if (zh.getUM().registerHorse(p.getUniqueId(), horseName, horse)) {
+					boolean lock = zh.getCM().shouldLockOnClaim();
+					boolean protect = zh.getCM().shouldProtectOnClaim();
+					boolean share = zh.getCM().shouldShareOnClaim();
+					if (zh.getUM().registerHorse(p.getUniqueId(), horse, horseName, lock, protect, share)) {
 						ChatColor cc = zh.getCM().getChatColor(p.getUniqueId());
 						horse.setCustomName(cc + horseName + ChatColor.RESET);
 						horse.setCustomNameVisible(true);
@@ -56,14 +59,6 @@ public class ZClaim extends Command {
 							s.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().horseClaimed, horseName));
 						}
 						zh.getEM().payCommand(p, command);
-						if (zh.getCM().shouldLockOnClaim()) {
-							String[] a = {"lock"};
-							new ZLock(zh, s, a);
-						}
-						if (zh.getCM().shouldProtectOnClaim()) {
-							String[] a = {"protect"};
-							new ZProtect(zh, s, a);
-						}
 					}
 					else {
 						zh.getLogger().severe(zh.getMM().getMessageHorseValue(language, zh.getLM().horseNotRegistered, horseName, horse.getUniqueId().toString()));

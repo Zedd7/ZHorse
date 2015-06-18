@@ -375,7 +375,7 @@ public class UserManager {
         setHorseData(playerUUID, userID, "Protected", false, true);
 	}
 	
-	public boolean registerHorse(UUID playerUUID, String horseName, Horse horse) {
+	public boolean registerHorse(UUID playerUUID, Horse horse, String horseName, boolean lock, boolean protect, boolean share) {
 		if (!isRegistered(playerUUID)) {
 			if (!registerPlayer(playerUUID)) {
 				return false;
@@ -388,11 +388,11 @@ public class UserManager {
 			String userID = getNextUserID(playerUUID);
 			UUID horseUUID = horse.getUniqueId();
 			setHorseData(playerUUID, userID, "Name", horseName, false);
-			setHorseData(playerUUID, userID, "Locked", false, false);
-			setHorseData(playerUUID, userID, "Protected", false, false);
-			setHorseData(playerUUID, userID, "Shared", false, false);
+			setHorseData(playerUUID, userID, "Locked", lock, false);
+			setHorseData(playerUUID, userID, "Protected", protect, false);
+			setHorseData(playerUUID, userID, "Shared", share, false);
 			setHorseData(playerUUID, userID, "UUID", horseUUID.toString(), false);
-			saveLocation(playerUUID, userID, horse);
+			saveLocation(playerUUID, horse, userID);
 			return true;
 		}
 		return false;
@@ -450,7 +450,7 @@ public class UserManager {
 		return true;
 	}
 	
-	public void rename(UUID playerUUID, String horseName, Horse horse) {
+	public void rename(UUID playerUUID, Horse horse, String horseName) {
         String userID = getUserID(playerUUID, horse);
         setHorseData(playerUUID, userID, "Name", horseName, true);
 	}
@@ -462,10 +462,10 @@ public class UserManager {
 	public void saveLocation(Horse horse) {
 		UUID playerUUID = getPlayerUUID(horse);
 		String userID = getUserID(playerUUID, horse);
-		saveLocation(playerUUID, userID, horse);
+		saveLocation(playerUUID, horse, userID);
 	}
 	
-	public void saveLocation(UUID playerUUID, String userID, Horse horse) {
+	public void saveLocation(UUID playerUUID, Horse horse, String userID) {
 		String world = horse.getWorld().getName();
 		Double xLoc = horse.getLocation().getX();
 		Double yLoc = horse.getLocation().getY();

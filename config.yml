@@ -8,6 +8,7 @@ Settings:
   claimOnTame: false
   lockOnClaim: false
   protectOnClaim: false
+  shareOnClaim: false
 ActiveWorlds:
 Economy:
 Horsenames:
@@ -32,5 +33,5 @@ Groups:
     color: <BOLD>
     maximumClaims: 10
   admin:
-    color: §c
+    color: ^c
     maximumClaims: -1

@@ -189,7 +189,7 @@ public class ConfigManager {
 		for (World world : worlds) {
 			worldsList.add(world.getName());
 		}
-		zh.getConfig().set("Settings.activeWorlds", worldsList);
+		zh.getConfig().set("ActiveWorlds", worldsList);
 	}
 	
 	public boolean isConsoleMuted() {
@@ -232,6 +232,10 @@ public class ConfigManager {
 		return zh.getConfig().getBoolean("Settings.protectOnClaim", false);
 	}
 	
+	public boolean shouldShareOnClaim() {
+		return zh.getConfig().getBoolean("Settings.shareOnClaim", false);
+	}
+	
 	private boolean checkIntegrity() {
 		boolean integrity = true;
 		if (!checkColorsIntegrity()) {
@@ -241,6 +245,9 @@ public class ConfigManager {
 			integrity = false;
 		}
 		if (!checkLanguagesIntegrity()) {
+			integrity = false;
+		}
+		if (!checkLockIntegrity()) {
 			integrity = false;
 		}
 		if (!checkMaximumClaimsIntegrity()) {
@@ -312,6 +319,17 @@ public class ConfigManager {
 		return integrity;
 	}
 	
+	private boolean checkLockIntegrity() {
+		boolean integrity = true;
+		boolean lockOnClaim = zh.getConfig().getBoolean("Settings.lockOnClaim");
+		boolean shareOnClaim = zh.getConfig().getBoolean("Settings.shareOnClaim");
+		if (lockOnClaim && shareOnClaim) {
+			zh.getLogger().severe("The values of \"lockOnClaim\" and \"shareOnClaim\" cannot be both \"true\" !");
+			integrity = false;
+		}
+		return integrity;
+	}
+	
 	private boolean checkMaximumClaimsIntegrity() {
 		boolean integrity = true;
 		ConfigurationSection cs = zh.getConfig().getConfigurationSection("Groups");
@@ -357,9 +375,9 @@ public class ConfigManager {
 	
 	private boolean checkWorldsIntegrity() {
 		boolean integrity = true;
-		List<String> worlds = zh.getConfig().getStringList("Settings.activeWorlds");
+		List<String> worlds = zh.getConfig().getStringList("ActiveWorlds");
 		if (worlds == null || worlds.size() == 0) {
-			zh.getLogger().severe("The \"activeWorlds\" section is missing from config !");
+			zh.getLogger().severe("The \"ActiveWorlds\" section is missing from config !");
 			integrity = false;
 		}
 		return integrity;

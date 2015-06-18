@@ -50,7 +50,7 @@ public class ZRename extends Command {
 					ChatColor cc = zh.getCM().getChatColor(targetUUID);
 					horse.setCustomName(cc + horseName + ChatColor.RESET);
 					horse.setCustomNameVisible(true);
-					zh.getUM().rename(targetUUID, horseName, horse);
+					zh.getUM().rename(targetUUID, horse, horseName);
 					if (displayConsole) {
 						s.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().horseRenamed, horseName));
 					}

@@ -1,7 +1,9 @@
 package eu.reborn_minecraft.zhorse.commands;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Horse;
+import org.bukkit.entity.Player;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 
@@ -53,6 +55,13 @@ public class ZLock extends Command {
 						}
 					}
 					zh.getUM().lock(targetUUID, horse);
+					Entity passenger = horse.getPassenger();
+					if (passenger != null && passenger instanceof Player) {
+						targetUUID = ((Player)passenger).getUniqueId();
+						if (!hasPermissionAdmin(targetUUID, true)) {
+							horse.eject();
+						}
+					}
 					if (displayConsole) {
 						s.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().horseLocked, horseName));
 					}

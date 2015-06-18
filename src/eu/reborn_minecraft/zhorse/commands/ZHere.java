@@ -37,7 +37,7 @@ public class ZHere extends Command {
 		if (isOwner()) {
 			if (isWorldCompatible()) {
 				if (isNotOnHorse()) {
-					if (isHorseEmpty()) {
+					if (isHorseEmpty(true)) {
 						if (zh.getEM().isReadyToPay(p, command)) {
 							Location location;
 							if (!p.isFlying()) {

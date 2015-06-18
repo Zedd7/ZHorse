@@ -211,10 +211,42 @@ public class Command {
     	return (hasPermissionSender(s, command, false, false));
 	}
 	
+	protected boolean hasPermissionAdmin(UUID playerUUID, boolean hideConsole) {
+    	return hasPermissionAdmin(playerUUID, command, hideConsole);
+	}
+	
+	protected boolean hasPermissionAdmin(UUID playerUUID, String command, boolean hideConsole) {
+		String perm = zh.getLM().zhPrefix + command + zh.getLM().adminSuffix;
+		if (isPlayerOnline(playerUUID, false)) {
+    		Player target = zh.getServer().getPlayer(playerUUID);
+        	if (zh.getPerms().has(target, perm)) {
+        		return true;
+        	}
+		}
+        else if (displayConsole && !hideConsole) {
+        	s.sendMessage(zh.getMM().getMessagePerm(language, zh.getLM().missingPermission, perm));
+        }
+    	return false;
+	}
+	
 	protected boolean hasPermission(UUID playerUUID, String command, boolean ignoreModes, boolean hideConsole) {
 		if (isPlayerOnline(playerUUID, false)) {
     		Player target = zh.getServer().getPlayer(playerUUID);
     		return hasPermissionPlayer(target, command, ignoreModes, hideConsole);
+    	}
+    	return false;
+	}
+	
+	protected boolean hasPermissionPlayer(Player target, String command, boolean ignoreModes, boolean hideConsole) {
+		String perm = zh.getLM().zhPrefix + command;
+    	if ((adminMode || (idMode && !idAllow) || (targetMode && !targetAllow)) && !ignoreModes) {
+    		perm += zh.getLM().adminSuffix;
+    	}
+    	if (zh.getPerms().has(target, perm)) {
+    		return true;
+    	}
+    	else if (displayConsole && !hideConsole) {
+    		s.sendMessage(zh.getMM().getMessagePlayerPerm(language, zh.getLM().missingPermissionOther, target.getName(), perm));
     	}
     	return false;
 	}
@@ -229,20 +261,6 @@ public class Command {
     	}
     	else if (displayConsole && !hideConsole) {
     		s.sendMessage(zh.getMM().getMessagePerm(language, zh.getLM().missingPermission, perm));
-    	}
-    	return false;
-	}
-	
-	protected boolean hasPermissionPlayer(Player p, String command, boolean ignoreModes, boolean hideConsole) {
-		String perm = zh.getLM().zhPrefix + command;
-    	if ((adminMode || (idMode && !idAllow) || (targetMode && !targetAllow)) && !ignoreModes) {
-    		perm += zh.getLM().adminSuffix;
-    	}
-    	if (zh.getPerms().has(p, perm)) {
-    		return true;
-    	}
-    	else if (displayConsole && !hideConsole) {
-    		s.sendMessage(zh.getMM().getMessagePlayerPerm(language, zh.getLM().missingPermissionOther, p.getName(), perm));
     	}
     	return false;
 	}
@@ -283,8 +301,8 @@ public class Command {
 		return false;
 	}
 	
-	protected boolean isHorseEmpty() {
-		if (adminMode) {
+	protected boolean isHorseEmpty(boolean eject) {
+		if (adminMode && eject) {
 			horse.eject();
 			return true;
 		}
