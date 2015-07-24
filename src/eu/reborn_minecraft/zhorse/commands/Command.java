@@ -121,28 +121,33 @@ public class Command {
 		a = a3;
 	}
 	
-	protected boolean craftHorseName() {
+	protected boolean craftHorseName(boolean keepPreviousName) {
 		if (a.length != 0) {
-			horseName = "";
 			if (zh.getCM().isHorseNameAllowed() || adminMode) {
+				horseName = "";
 				for (int i=0; i<a.length; i++) {
 					horseName += a[i];
 					if (i+1 < a.length) {
 						horseName += " ";
 					}
 				}
-				int maxLength = zh.getCM().getMaximumHorseNameLength();
-				int minLength = zh.getCM().getMinimumHorseNameLength();
-				int l = horseName.length();
-				if ((l >= minLength && (l <= maxLength || maxLength == -1)) || adminMode) {
-					return true;
+				int maximumLength = zh.getCM().getMaximumHorseNameLength();
+				int minimumLength = zh.getCM().getMinimumHorseNameLength();
+				int length = horseName.length();
+				if ((length >= minimumLength && (length <= maximumLength || maximumLength == -1)) || adminMode) {
+					if (!zh.getCM().isHorseNameBanned(horseName) || adminMode) {
+						return true;
+					}
+					else if (displayConsole) {
+						s.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().horseNameBanned, horseName));
+					}
 				}
 				else if (displayConsole) {
-					if (l < minLength) {
-						s.sendMessage(zh.getMM().getMessageAmount(language, zh.getLM().horseNameTooShort, Integer.toString(minLength)));
+					if (length < minimumLength) {
+						s.sendMessage(zh.getMM().getMessageAmount(language, zh.getLM().horseNameTooShort, Integer.toString(minimumLength)));
 					}
-					else if (l > maxLength) {
-						s.sendMessage(zh.getMM().getMessageAmount(language, zh.getLM().horseNameTooLong, Integer.toString(maxLength)));
+					else if (length > maximumLength) {
+						s.sendMessage(zh.getMM().getMessageAmount(language, zh.getLM().horseNameTooLong, Integer.toString(maximumLength)));
 					}
 				}
 			}
@@ -152,17 +157,18 @@ public class Command {
 		}
 		else {
 			if (!zh.getCM().isHorseNameRequired() || adminMode) {
-				if (zh.getUM().isRegistered(horse)) {
+				if (keepPreviousName && zh.getUM().isRegistered(horse)) {
 					horseName = zh.getUM().getHorseName(horse);
 					return true;
 				}
 				else {
-					horseName = zh.getCM().getRandomName();
-					if (horseName != null) {
-						return true;
+					if (zh.getCM().isRandomHorseNameEnabled()) {
+						horseName = zh.getCM().getRandomHorseName();
 					}
-					String errorMessage = "\"horsenames\" list in config is empty ! Please add one name in it or increment \"minimum-horsename-length\".";
-					zh.getLogger().severe(errorMessage);
+					else {
+						horseName = zh.getCM().getDefaultHorseName();
+					}
+					return true;
 				}
 			}
 			else if (displayConsole) {
@@ -192,7 +198,7 @@ public class Command {
 		int claimsAmount;
 		int maxClaims;
 		claimsAmount = zh.getUM().getClaimsAmount(playerUUID);
-		maxClaims = zh.getCM().getMaximumClaims(playerUUID);
+		maxClaims = zh.getCM().getClaimsLimit(playerUUID);
 		if (claimsAmount < maxClaims || maxClaims == -1) {
 			return false;
 		}
@@ -301,22 +307,6 @@ public class Command {
 		return false;
 	}
 	
-	protected boolean isHorseEmpty(boolean eject) {
-		if (adminMode && eject) {
-			horse.eject();
-			return true;
-		}
-		Entity passenger = horse.getPassenger();
-		if (passenger == null) {
-			return true;
-		}
-		else if (displayConsole) {
-			String passengerName = ((Player)passenger).getName();
-			s.sendMessage(zh.getMM().getMessagePlayerHorse(language, zh.getLM().horseMountedBy, passengerName, horseName));
-		}
-		return false;
-	}
-	
 	protected boolean isHorseLoaded() {
 		if (horse != null) {
 			return true;
@@ -327,11 +317,33 @@ public class Command {
 		return false;
 	}
 	
-	protected boolean isNotOnHorse() {
+	protected boolean isHorseMounted() {
 		if (adminMode) {
+			horse.eject();
+		}
+		Entity passenger = horse.getPassenger();
+		if (passenger == null) {
+			return false;
+		}
+		else if (displayConsole) {
+			String passengerName = ((Player)passenger).getName();
+			s.sendMessage(zh.getMM().getMessagePlayerHorse(language, zh.getLM().horseMountedBy, passengerName, horseName));
+		}
+		return false;
+	}
+	
+	protected boolean isHorseReachable() {
+		if ((zh.getCM().isWorldCrossable(p.getWorld()) && zh.getCM().isWorldCrossable(horse.getWorld())) || adminMode) {
 			return true;
 		}
-		if (p.getVehicle() != horse) {
+		else if (displayConsole) {
+			s.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().worldUnreachable, horseName));
+		}
+		return false;
+	}
+	
+	protected boolean isNotOnHorse() {
+		if (p.getVehicle() != horse || adminMode) {
 			return true;
 		}
 		else if (displayConsole) {
@@ -355,10 +367,7 @@ public class Command {
 	}
 	
 	protected boolean isOwner(boolean hideConsole) {
-		if (adminMode) {
-			return true;
-		}
-		if (zh.getUM().isClaimedBy(p.getUniqueId(), horse)) {
+		if (zh.getUM().isClaimedBy(p.getUniqueId(), horse) || adminMode) {
 			return true;
 		}
 		else if (displayConsole && !hideConsole) {
@@ -422,27 +431,8 @@ public class Command {
 		return false;
 	}
 	
-	protected boolean isWorldCompatible() {
-		if (adminMode) {
-			return true;
-		}
-		if (zh.getCM().isWorldCrossingAllowed()) {
-			return true;
-		}
-		if (p.getWorld().equals(horse.getLocation().getWorld())) {
-			return true;
-		}
-		else if (displayConsole) {
-			s.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().differentWorld, horseName));
-		}
-		return false;
-	}
-	
 	protected boolean isWorldEnabled() {
-		if (adminMode) {
-			return true;
-		}
-		if (zh.getCM().isWorldEnabled(p.getWorld())) {
+		if (zh.getCM().isWorldEnabled(p.getWorld()) || adminMode) {
 			return true;
 		}
 		else if (displayConsole) {

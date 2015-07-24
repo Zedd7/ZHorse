@@ -53,13 +53,6 @@ public class ZHorse extends JavaPlugin {
 		getCommand(this.getName().toLowerCase()).setExecutor(commandManager);
 		getServer().getPluginManager().registerEvents(new EventManager(this), this);
 	}
-
-	@Override
-    public void onDisable() {
-    	saveConfig();
-    	saveUsers();
-    	saveLocales();
-    }
 	
 	private void initDependencies() {
 		Plugin vault = getServer().getPluginManager().getPlugin("Vault");
@@ -89,7 +82,7 @@ public class ZHorse extends JavaPlugin {
     
     private void initMetrics() {
     	try {
-            Metrics metrics = new Metrics(this);
+			Metrics metrics = new Metrics(this);
             metrics.start();
         } catch (IOException e) {
         	getLogger().severe("Failed to start Metrics !");
@@ -97,10 +90,8 @@ public class ZHorse extends JavaPlugin {
     }
     
     private void initManagers() {
-    	boolean initConfig = false;
     	if (!configFile.exists()) {
 			getLogger().info(configPath + " is missing... Creating it.");
-			initConfig = true;
 			saveResource(configPath, false);
 		}
 		if (!usersFile.exists()) {
@@ -114,23 +105,19 @@ public class ZHorse extends JavaPlugin {
 				saveResource(exactLocalePath, false);
 			}
 		}
-		updateConfig();
-		updateUsers();
+		loadConfig();
+		loadUsers();
+		messageManager = new MessageManager(this);
 		localeManager = new LocaleManager(this);
 		commandManager = new CommandManager(this);
-		messageManager = new MessageManager(this);
-		configManager = new ConfigManager(this, initConfig);
+		configManager = new ConfigManager(this);
 		userManager = new UserManager(this);
 		economyManager = new EconomyManager(this);
-		updateLocales();
+		loadLocales();
 	}
     
 	public void reload() {
 		initManagers();
-	}
-	
-	public String[] getProvidedLanguages() {
-		return providedLanguages;
 	}
 	
     public FileConfiguration getConfig() {
@@ -150,19 +137,18 @@ public class ZHorse extends JavaPlugin {
     		return locales.get(language);
     	}
     	getLogger().severe("A player is using an unavailable language : \"" + language + "\" !");
-    	getLogger().severe("Please make it available or fix \"users.yml\"");
     	return locales.get(getCM().getDefaultLanguage());
     }
     
-	public void updateConfig() {
+	public void loadConfig() {
 		config = YamlConfiguration.loadConfiguration(configFile);
 	}
 	
-	public void updateUsers() {
+	public void loadUsers() {
 		users = YamlConfiguration.loadConfiguration(usersFile);
 	}
 	
-	public void updateLocales() {
+	public void loadLocales() {
 		locales = new HashMap<String, FileConfiguration>();
 		for (String language : getCM().getAvailableLanguages()) {
 			String exactLocalePath = String.format(localePath, language);
@@ -182,11 +168,11 @@ public class ZHorse extends JavaPlugin {
 		}
 	}
 	
-	public void saveConfig () {
+	public void saveConfig() {
         saveConfig(getConfig());
 	}
 	
-	public void saveConfig (FileConfiguration config) {
+	public void saveConfig(FileConfiguration config) {
         try {
 			config.save(configFile);
 		} catch (IOException e) {
@@ -194,7 +180,7 @@ public class ZHorse extends JavaPlugin {
 		}
 	}
 	
-	public void saveUsers () {
+	public void saveUsers() {
         saveUsers(getUsers());
 	}
 	
@@ -206,10 +192,8 @@ public class ZHorse extends JavaPlugin {
 		}
 	}
 	
-	public void saveLocales () {
-        for (String language : locales.keySet()) {
-        	saveLocale(locales.get(language), language);
-        }
+	public void saveLocale(String language) {
+		saveLocale(locales.get(language), language);
 	}
 	
 	public void saveLocale(FileConfiguration locale, String language) {

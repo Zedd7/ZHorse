@@ -14,7 +14,6 @@ Headers:
 
 Messages:
   commandIncorrect: "<yellow>Incorrect number of arguments. Do as follows :"
-  differentWorld: "<gold><horse> <yellow>is not on the same world as you."
   horseAlreadyClaimed: "<yellow>You have already claimed this horse."
   horseBelongsTo: "<yellow>This horse belongs to <gold><player><yellow>."
   horseClaimed: "<gold><horse><yellow> was successfully claimed."
@@ -27,6 +26,7 @@ Messages:
   horseManuallyTamed: "<yellow>Congratulation ! You can now use <gold>/zh claim (name)<yellow> if you want."
   horseMounted: "<yellow>You are already mounting <gold><horse><yellow>."
   horseMountedBy: "<gold><horse><yellow> is currently mounted by <gold><player><yellow>."
+  horseNameBanned: "<yellow>The name <gold><horse><yellow> is banned."
   horseNameForbidden: "<yellow>You are not allowed to give this horse a name."
   horseNameMandatory: "<yellow>You must give a name to this horse."
   horseNameTooLong: "<yellow>This horse's name can't exeed <gold><amount><yellow> characters."
@@ -49,7 +49,7 @@ Messages:
   languageEditedOther: "<gold><player> <yellow>is now using the language <gold><lang><yellow>."
   maximumClaimsReached: "<yellow>You have reached the maximum of horses you can claim."
   maximumClaimsReachedOther: "<gold><player><yellow> has reached the maximum of horses (s)he can claim."
-  missingLanguage: "<yellow>You must provide a language, please use one the following : <lang><yellow>."
+  missingLanguage: "<yellow>You must provide a language, please use one the followings : <lang><yellow>."
   missingPermission: "<yellow>You don't have the <gold><perm><yellow> permission."
   missingPermissionOther: "<gold><player><yellow> doesn't have the <gold><perm><yellow> permission."
   noHorseOwned: "<yellow>You don't own any horse. <amount>"
@@ -67,11 +67,12 @@ Messages:
   unknownPlayer: "<gold><player><yellow> is not registered."
   unknownSettingsCommand: "<yellow>This is not a ZHorse's settings command."
   worldDisabled: "<gold>ZHorse<yellow> is disabled on this world."
+  worldUnreachable: "<yellow>Your world and <gold><horse><yellow>'s world are not connected."
 
 Economy:
   commandCost: "<green>($<amount>)"
   commandPaid: "<yellow>This command cost you <gold>$<amount><yellow>."
-  notEnoughMoney: "<yellow>You don't have <gold>$<amount><yellow> on your account."
+  notEnoughMoney: "<yellow>You don't have <gold>$<amount><yellow>."
 
 Horse informations:
   health: "<yellow>Health : <gold><amount><yellow>/<gold><max>"
@@ -85,26 +86,26 @@ Horse informations:
   status: "<yellow>Status :<gold><value>"
 
 Command descriptions:
-  claim: "<gold>/zh claim : <yellow>Claim the targeted horse."
-  free: "<gold>/zh free : <yellow>Give freedom to the targeted horse."
-  give: "<gold>/zh give : <yellow>Give the targeted horse to another player."
-  heal: "<gold>/zh heal : <yellow>Fully heal the targeted horse."
-  help: "<gold>/zh help : <yellow>Display available commands."
-  here: "<gold>/zh here : <yellow>Teleport the targeted horse to you."
-  info: "<gold>/zh info : <yellow>Display informations about the targeted horse."
-  kill: "<gold>/zh kill : <yellow>Kill the targeted horse."
-  list: "<gold>/zh list : <yellow>Display a list of claimed horses."
-  lock: "<gold>/zh lock : <yellow>(un)Protect the targeted horse against stealing."
-  rename: "<gold>/zh rename : <yellow>Rename the targeted horse."
-  protect: "<gold>/zh protect : <yellow>(un)Protect the targeted horse against PvP."
-  reload: "<gold>/zh reload : <yellow>Reload ZHorse."
-  settings: "<gold>/zh settings : <yellow>Edit ZHorse's settings."
-  share: "<gold>/zh share : <yellow>(un)Share the targeted horse with other players."
-  tame: "<gold>/zh tame : <yellow>(un)Tame the targeted horse."
-  tp: "<gold>/zh tp : <yellow>Teleport you to the targeted horse."
+  claim: "<gold>/zh claim<gray>: <yellow>Claims the horse."
+  free: "<gold>/zh free<gray>: <yellow>Releases the horse."
+  give: "<gold>/zh give<gray>: <yellow>Gives the horse to another player."
+  heal: "<gold>/zh heal<gray>: <yellow>Heals the horse."
+  help: "<gold>/zh help<gray>: <yellow>Displays the available commands."
+  here: "<gold>/zh here<gray>: <yellow>Teleports the horse to you."
+  info: "<gold>/zh info<gray>: <yellow>Displays informations about the horse."
+  kill: "<gold>/zh kill<gray>: <yellow>Kills the horse."
+  list: "<gold>/zh list<gray>: <yellow>Displays the list of claimed horses."
+  lock: "<gold>/zh lock<gray>: <yellow>Protects the horse against theft."
+  rename: "<gold>/zh rename<gray>: <yellow>Renames the horse."
+  protect: "<gold>/zh protect<gray>: <yellow>Prevents the horse from being hurt."
+  reload: "<gold>/zh reload<gray>: <yellow>Reloads all ZHorse's files."
+  settings: "<gold>/zh settings<gray>: <yellow>Ajusts personal settings."
+  share: "<gold>/zh share<gray>: <yellow>Shares the horse with other players."
+  tame: "<gold>/zh tame<gray>: <yellow>Tames the horse."
+  tp: "<gold>/zh tp<gray>: <yellow>Teleports you to the horse."
 
 Settings command descriptions:
-  language: "<gold>/zh settings language : <yellow>Edit ZHorse's language."
+  language: "<gold>/zh settings language [lang]<gray>: <yellow>Sets ZHorse's language."
 
 Command usages:
   claim: "<gold>/zh claim<yellow> (horseName) (-i horseID) (-t playerName) (-a)"

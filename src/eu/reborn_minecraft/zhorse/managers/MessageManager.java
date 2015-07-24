@@ -49,7 +49,7 @@ public class MessageManager {
 		String[] dark_purple = {"<5>", "^5", "§5", "<dark_purple>", "<darkpurple>"};
 		String[] dark_red = {"<4>", "^4", "§4", "<dark_red>", "<darkred>"};
 		String[] gold = {"<6>", "^6", "§6", "<gold>"};
-		String[] gray = {"<7>", "^7", "§7", "<gray>"};
+		String[] gray = {"<7>", "^7", "§7", "<gray>", "<grey>"};
 		String[] green = {"<a>", "^a", "§a", "<green>"};
 		String[] italic = {"<o>", "^o", "§o", "<italic>"};
 		String[] light_purple = {"<d>", "^d", "§d", "<light_purple>", "<lightpurple>"};

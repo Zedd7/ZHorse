@@ -44,14 +44,14 @@ public class ZClaim extends Command {
 	}
 	
 	private void execute() {
-		if (craftHorseName()) {
+		if (craftHorseName(true)) {
 			if (isClaimable()) {
 				if (zh.getEM().isReadyToPay(p, command)) {
 					boolean lock = zh.getCM().shouldLockOnClaim();
 					boolean protect = zh.getCM().shouldProtectOnClaim();
 					boolean share = zh.getCM().shouldShareOnClaim();
 					if (zh.getUM().registerHorse(p.getUniqueId(), horse, horseName, lock, protect, share)) {
-						ChatColor cc = zh.getCM().getChatColor(p.getUniqueId());
+						ChatColor cc = zh.getCM().getGroupColor(p.getUniqueId());
 						horse.setCustomName(cc + horseName + ChatColor.RESET);
 						horse.setCustomNameVisible(true);
 						horse.setTamed(true);

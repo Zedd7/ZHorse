@@ -3,7 +3,6 @@ package eu.reborn_minecraft.zhorse.managers;
 import eu.reborn_minecraft.zhorse.ZHorse;
 
 public class LocaleManager {
-	// déplacer liste ailleurs
 	public String adminSuffix = ".admin";
 	public String freeSuffix = ".free";
 	public String zhPrefix = "zh.";
@@ -22,7 +21,6 @@ public class LocaleManager {
 	public String remainingClaimsFormat = "remainingClaimsFormat";
 	
 	public String commandIncorrect = "commandIncorrect";
-	public String differentWorld = "differentWorld";
 	public String horseAlreadyClaimed = "horseAlreadyClaimed";
 	public String horseBelongsTo = "horseBelongsTo";
 	public String horseClaimed = "horseClaimed";
@@ -35,6 +33,7 @@ public class LocaleManager {
 	public String horseManuallyTamed = "horseManuallyTamed";
 	public String horseMounted = "horseMounted";
 	public String horseMountedBy = "horseMountedBy";
+	public String horseNameBanned = "horseNameBanned";
 	public String horseNameForbidden = "horseNameForbidden";
 	public String horseNameMandatory = "horseNameMandatory";
 	public String horseNameTooLong = "horseNameTooLong";
@@ -75,6 +74,7 @@ public class LocaleManager {
 	public String unknownPlayer = "unknownPlayer";
 	public String unknownSettingsCommand = "unknownSettingsCommand";
 	public String worldDisabled = "worldDisabled";
+	public String worldUnreachable = "worldUnreachable";
 	
 	public String commandCost = "commandCost";
 	public String commandPaid = "commandPaid";

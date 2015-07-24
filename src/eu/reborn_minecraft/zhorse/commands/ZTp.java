@@ -33,7 +33,7 @@ public class ZTp extends Command {
 	
 	private void execute() {
 		if (isOwner()) {
-			if (isWorldCompatible()) {
+			if (isHorseReachable()) {
 				if (isNotOnHorse()) {
 					if (zh.getEM().isReadyToPay(p, command)) {
 						p.teleport(horse);

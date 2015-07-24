@@ -14,7 +14,6 @@ Headers:
 
 Messages:
   commandIncorrect: "<yellow>Nombre d'arguments incorrect. Faites comme suit :"
-  differentWorld: "<gold><horse> <yellow>n'est pas dans le même monde que vous."
   horseAlreadyClaimed: "<yellow>Vous avez déjà revendiqué ce cheval."
   horseBelongsTo: "<yellow>Ce cheval appartient à <gold><player><yellow>."
   horseClaimed: "<gold><horse><yellow> a été revendiqué avec succès."
@@ -27,6 +26,7 @@ Messages:
   horseManuallyTamed: "<yellow>Félicitations ! Vous pouvez à présent utiliser <gold>/zh claim (nom)<yellow>."
   horseMounted: "<yellow>Vous montez déjà <gold><horse><yellow>."
   horseMountedBy: "<gold><horse><yellow> est actuellement monté par <gold><player><yellow>."
+  horseNameBanned: "<yellow>Le nom <gold><horse><yellow> est banni."
   horseNameForbidden: "<yellow>Vous n'êtes pas autorisé à choisir le nom du cheval."
   horseNameMandatory: "<yellow>Vous devez donner un nom au cheval."
   horseNameTooLong: "<yellow>Le nom du cheval ne peut pas dépasser les <gold><amount><yellow> caractères."
@@ -67,11 +67,12 @@ Messages:
   unknownPlayer: "<gold><player><yellow> n'est pas enregistré."
   unknownSettingsCommand: "<yellow>Ce n'est pas une commande de ZHorse settings."
   worldDisabled: "<gold>ZHorse<yellow> est désactivé sur ce monde."
+  worldUnreachable: "<yellow>Votre monde et celui de <gold><horse><yellow> ne sont pas connectés."
 
 Economy:
   commandCost: "<green>(<amount>€)"
-  commandPaid: "<yellow>Cette commande vous a coutée <gold><amount>€<yellow>."
-  notEnoughMoney: "<yellow>Vous n'avez pas <gold><amount>€<yellow> sur votre compte."
+  commandPaid: "<yellow>Cette commande vous a couté <gold><amount>€<yellow>."
+  notEnoughMoney: "<yellow>Vous ne possédez pas <gold><amount>€<yellow>."
 
 Horse informations:
   health: "<yellow>Santé : <gold><amount><yellow>/<gold><max>"
@@ -85,26 +86,26 @@ Horse informations:
   status: "<yellow>Statut :<gold><value>"
 
 Command descriptions:
-  claim: "<gold>/zh claim : <yellow>Revendique le cheval ciblé."
-  free: "<gold>/zh free : <yellow>Libère le cheval ciblé."
-  give: "<gold>/zh give : <yellow>Offre le cheval ciblé à un autre joueur."
-  heal: "<gold>/zh heal : <yellow>Soigne complètement le cheval ciblé."
-  help: "<gold>/zh help : <yellow>Affiche les commandes disponibles."
-  here: "<gold>/zh here : <yellow>Téléporte le cheval ciblé à vous."
-  info: "<gold>/zh info : <yellow>Affiche des informations sur le cheval ciblé."
-  kill: "<gold>/zh kill : <yellow>Tue le cheval ciblé."
-  list: "<gold>/zh list : <yellow>Affiche la liste des chevaux revendiqués."
-  lock: "<gold>/zh lock : <yellow>(dé)Protège le cheval ciblé contre le vol."
-  rename: "<gold>/zh rename : <yellow>Renomme le cheval ciblé."
-  protect: "<gold>/zh protect : <yellow>(dé)/Protège le cheval ciblé contre le PvP."
-  reload: "<gold>/zh reload : <yellow>Recharge ZHorse."
-  settings: "<gold>/zh settings : <yellow>Edite les paramètres de ZHorse."
-  share: "<gold>/zh share : <yellow>Privatise/Partage le cheval sélectionné."
-  tame: "<gold>/zh tame : <yellow>Affranchi/Dompte le cheval ciblé."
-  tp: "<gold>/zh tp : <yellow>Vous téléporte au cheval ciblé."
+  claim: "<gold>/zh claim<gray>: <yellow>Revendique le cheval."
+  free: "<gold>/zh free<gray>: <yellow>Relâche le cheval."
+  give: "<gold>/zh give<gray>: <yellow>Donne le cheval à un autre joueur."
+  heal: "<gold>/zh heal<gray>: <yellow>Soigne le cheval."
+  help: "<gold>/zh help<gray>: <yellow>Affiche les commandes disponibles."
+  here: "<gold>/zh here<gray>: <yellow>Téléporte le cheval à vous."
+  info: "<gold>/zh info<gray>: <yellow>Affiche des informations sur le cheval."
+  kill: "<gold>/zh kill<gray>: <yellow>Tue le cheval."
+  list: "<gold>/zh list<gray>: <yellow>Affiche la liste des chevaux revendiqués."
+  lock: "<gold>/zh lock<gray>: <yellow>Protège le cheval contre le vol."
+  rename: "<gold>/zh rename<gray>: <yellow>Renomme le cheval."
+  protect: "<gold>/zh protect<gray>: <yellow>Empêche le cheval d'être blessé."
+  reload: "<gold>/zh reload<gray>: <yellow>Recharge les fichiers de ZHorse."
+  settings: "<gold>/zh settings<gray>: <yellow>Ajuste les paramètres personnels."
+  share: "<gold>/zh share<gray>: <yellow>Partage le cheval avec les autres joueurs."
+  tame: "<gold>/zh tame<gray>: <yellow>Dompte le cheval."
+  tp: "<gold>/zh tp<gray>: <yellow>Vous téléporte au cheval."
 
 Settings command descriptions:
-  language: "<gold>/zh settings language : <yellow>Edite la langue de ZHorse."
+  language: "<gold>/zh settings language [lang]<gray>: <yellow>Défini la langue de ZHorse."
 
 Command usages:
   claim: "<gold>/zh claim<yellow> (nomCheval) (-i chevalID) (-t nomJoueur) (-a)"

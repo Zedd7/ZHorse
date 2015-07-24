@@ -36,11 +36,11 @@ public class CommandManager implements CommandExecutor {
 		this.zh = zh;
 		commandList = new ArrayList<String>();
 		settingsCommandList = new ArrayList<String>();
-		commandList.add(zh.getLM().help);
 		commandList.add(zh.getLM().claim);
 		commandList.add(zh.getLM().free);
 		commandList.add(zh.getLM().give);
 		commandList.add(zh.getLM().heal);
+		commandList.add(zh.getLM().help);
 		commandList.add(zh.getLM().here);
 	    commandList.add(zh.getLM().info);
 		commandList.add(zh.getLM().kill);
@@ -117,11 +117,16 @@ public class CommandManager implements CommandExecutor {
 			new ZTp(zh, s, a);
 		}
 		else {
-			String language = zh.getCM().getDefaultLanguage();
-			if (s instanceof Player) {
-				language = zh.getUM().getPlayerLanguage(((Player) s).getUniqueId());
+			if (!zh.getCM().isConsoleMuted()) {
+				String language;
+				if (s instanceof Player) {
+					language = zh.getUM().getPlayerLanguage(((Player) s).getUniqueId());
+				}
+				else {
+					language = zh.getCM().getDefaultLanguage();
+				}
+				s.sendMessage(zh.getMM().getMessage(language, zh.getLM().unknownCommand));
 			}
-			s.sendMessage(zh.getMM().getMessage(language, zh.getLM().unknownCommand));
 		}
 		return true;
 	}

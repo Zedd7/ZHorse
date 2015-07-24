@@ -1,37 +1,153 @@
-Settings:
-  defaultLanguage: EN
-  availableLanguages:
-  minimumHorsenameLength: 0
-  maximumHorsenameLength: 30
-  muteConsole: false
-  worldCrossing: true
-  claimOnTame: false
-  lockOnClaim: false
-  protectOnClaim: false
-  shareOnClaim: false
-ActiveWorlds:
-Economy:
-Horsenames:
-- Arod
-- Ashufel
-- Grispoil
-- Pegase
-- Ponyta
-- Thunderstorm
-- Tonnerre
-- Tornado
+Commands:
+
+  # The list of ZHorse's commands. Don't remove anything from here !
+  # The value of cost defines how much will be charged per execution.
+
+  claim:
+    cost: 0
+  free:
+    cost: 0
+  give:
+    cost: 0
+  heal:
+    cost: 0
+  help:
+    cost: 0
+  here:
+    cost: 0
+  info:
+    cost: 0
+  kill:
+    cost: 0
+  list:
+    cost: 0
+  lock:
+    cost: 0
+  rename:
+    cost: 0
+  protect:
+    cost: 0
+  reload:
+    cost: 0
+  settings:
+    cost: 0
+  share:
+    cost: 0
+  tame:
+    cost: 0
+  tp:
+    cost: 0
+
 Groups:
+
+  # The list of groups with which ZHorse tries to bind.
+  # The value of color is applied before the horse's name.
+  # Following formats can be used : <4>, ^4, §4, <dark_red>, <darkred>
+  # The value of claims-limit defines how much horses a player can claim.
+  # The permission is optional if the group is defined in a groups plugin.
+  # Membership of the group is simulated for whoever owns the permission.
+  
   default:
     color: <f>
-    maximumClaims: 0
+    claims-limit: 0
     permission: zh.group.default
   player:
     color: <dark_aqua>
-    maximumClaims: 5
-    permission: zh.whateveryouwant
+    claims-limit: 5
+    permission: zh.what.ever.you.want
   vip:
     color: <BOLD>
-    maximumClaims: 10
+    claims-limit: 10
+    permission: prefix.zh.is.not.required
   admin:
     color: ^c
-    maximumClaims: -1
+    claims-limit: -1
+    permission: you.may.delete.this.line
+
+HorseNames:
+
+  # The default name given to horses if random naming is disabled.
+  default-name: DefaultHorseName
+
+  # Set to false to disable random naming.
+  give-random-names: true
+
+  # The maximum lenght of a horse's name.
+  # If set to more than 0, length of horse's name is limited.
+  # If set to 0, horse naming is forbbiden.
+  # If set to -1, horse naming is unrestricted.
+  maximum-length: 30
+
+  # The minimum lenght of a horse's name.
+  # If set to more than 0, horse naming is mandatory.
+  # If set to 0, horse naming is unrestricted.
+  minimum-length: 0
+
+  # The list of words that can't be inserted in horse's names.
+  banned-names:
+  - ExampleName
+
+  # The list of names that are given randomly if random naming is enabled.
+  random-names:
+  - Arod
+  - Ashufel
+  - Grispoil
+  - Eclair
+  - Lightning
+  - Pegase
+  - Ponyta
+  - Thunderstorm
+  - Tonnerre
+  - Tornado
+
+Languages:
+
+  # The language ZHorse will use for new players.
+  # It will be used if a locale file is incomplete or corrupted.
+  default: EN
+
+  # The list of languages in which players can display ZHorse.
+  available:
+  - EN
+  - FR
+
+Protections:
+
+  # The list of damage types that /zh protect will block.
+  # Set enabled to false to disable the protection.
+
+  TEMP:
+    enabled: true
+
+Settings:
+
+  # Set to true to hide all ZHorse messages in player's chat.
+  mute-console: false
+
+  # Set to true to make players execute /zh claim when taming a horse.
+  claim-on-tame: false
+
+  # Set to true to make players execute /zh lock when claiming a horse.
+  lock-on-claim: false
+
+  # Set to true to make players execute /zh protect when claiming a horse.
+  protect-on-claim: false
+
+  # Set to true to make players execute /zh share when claiming a horse.
+  share-on-claim: false
+
+Worlds:
+
+  # The list of worlds that ZHorse can interact with.
+  # Set enabled to false to disable ZHorse in that world.
+  # Set crossable to false to disable /zh tp and /zh here in that world.
+
+  world:
+    enabled: true
+    crossable: true
+  world_nether:
+    enabled: false
+    crossable: false
+  world_the_end:
+    enabled: false
+    crossable: false

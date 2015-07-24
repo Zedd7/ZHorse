@@ -54,7 +54,7 @@ public class ZGive extends Command {
 					boolean protect = zh.getUM().isProtected(p.getUniqueId(), horse);
 					boolean shared = zh.getUM().isShared(p.getUniqueId(), horse);
 					if (zh.getUM().registerHorse(targetUUID, horse, horseName, locked, protect, shared)) {
-						ChatColor cc = zh.getCM().getChatColor(targetUUID);
+						ChatColor cc = zh.getCM().getGroupColor(targetUUID);
 						horse.setCustomName(cc + horseName + ChatColor.RESET);
 						zh.getEM().payCommand(p, command);
 						if (displayConsole) {
