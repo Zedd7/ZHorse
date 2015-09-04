@@ -46,7 +46,7 @@ public class ZLock extends Command {
 
 	private void execute() {
 		if (isOwner()) {
-			if (zh.getEM().isReadyToPay(p, command)) {
+			if (zh.getEM().canAffordCommand(p, command)) {
 				if (!zh.getUM().isLocked(horse)) {
 					if (zh.getUM().isShared(horse)) {
 						zh.getUM().unShare(targetUUID, horse);

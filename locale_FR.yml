@@ -1,3 +1,8 @@
+# Vous pouvez employer n'importe lequel de ces formats pour les balises de couleur : <4>, ^4, §4, <dark_red>, <darkred>
+# Vous pouvez modifier n'importe quelle ligne dans ce fichier, mais n'ajoutez/retirez AUCUNE balise qui ne soit pas une balise de couleur !
+# Cependant, vous pouvez échanger deux balises ou plus dans la même ligne. C'est pour ça qu'elles sont là.
+# Exemple:  "<player> vous a offert <horse>" or "<horse> vous a été offert par <player>".
+
 Headers:
   pluginPrefix: "<green>[ZHorse]"
   headerFormat: "<green>-+- <value>  <green>-+-"
@@ -13,15 +18,16 @@ Headers:
   remainingClaimsFormat: "<yellow>(<gold><amount><yellow>/<gold><max><yellow>)"
 
 Messages:
-  commandIncorrect: "<yellow>Nombre d'arguments incorrect. Faites comme suit :"
+  claimsLimitReached: "<yellow>Vous avez atteint le nombre maximal de chevaux revendicables."
+  claimsLimitReachedOther: "<gold><player><yellow> a atteint le nombre maximal de chevaux revendicables."
   horseAlreadyClaimed: "<yellow>Vous avez déjà revendiqué ce cheval."
   horseBelongsTo: "<yellow>Ce cheval appartient à <gold><player><yellow>."
   horseClaimed: "<gold><horse><yellow> a été revendiqué avec succès."
-  horseDied: "<gold><horse><yellow> est mort dans d'horribles souffrances."
+  horseDied: "<gold><horse><yellow> est mort dans d'atroces souffrances."
   horseFreed: "<yellow>Sa liberté a été rendue à <gold><horse><yellow>."
   horseGiven: "<yellow>Vous avez offert <gold><horse><yellow> à <gold><player><yellow>."
   horseHealed: "<gold><horse><yellow> a été totalement soigné."
-  horseIsProtected: "<gold><horse><yellow> est protégé contre le PvP."
+  horseIsProtected: "<gold><horse><yellow> est protégé contre les attaques de joueurs."
   horseLocked: "<gold><horse><yellow> est à présent protégé du vol."
   horseManuallyTamed: "<yellow>Félicitations ! Vous pouvez à présent utiliser <gold>/zh claim (nom)<yellow>."
   horseMounted: "<yellow>Vous montez déjà <gold><horse><yellow>."
@@ -35,20 +41,19 @@ Messages:
   horseNotFound: "<gold><horse><yellow> n'a pas pu être trouvé sur ce serveur."
   horseNotRegistered: "Le cheval suivant n'a pas pu être enregistré : <horse> d'UUID <value>"
   horseNotTamed: "<yellow>Vous devez d'abord dompter ce cheval."
-  horseProtected: "<gold><horse><yellow> est à présent protégé contre le PvP."
+  horseProtected: "<gold><horse><yellow> est à présent protégé contre certains types de dégâts."
   horseReceived: "<gold><player><yellow> vous a offert <gold><horse> <yellow>!"
   horseRenamed: "<yellow>Ce cheval s'appelle à présent <gold><horse><yellow>."
   horseShared: "<gold><horse><yellow> est maintenant libre d'utilisation pour les autres joueurs."
   horseTamed: "<yellow>Vous avez dompté ce cheval avec succès."
   horseTeleported: "<gold><horse> <yellow>a été téléporté vers vous."
   horseUnLocked: "<gold><horse><yellow> n'est plus protégé contre le vol."
-  horseUnProtected: "<gold><horse><yellow> n'est plus protégé contre le PvP."
+  horseUnProtected: "<gold><horse><yellow> n'est plus protégé contre les dégâts."
   horseUnShared: "<gold><horse><yellow> n'est plus libre d'utilisation pour les autres joueurs."
   horseUnTamed: "<yellow>Ce cheval est revenu à la vie sauvage."
   languageEdited: "<yellow>Vous utilisez maintenant la langue <gold><lang><yellow>."
   languageEditedOther: "<gold><player> <yellow>utilise maintenant la langue <gold><lang><yellow>."
-  maximumClaimsReached: "<yellow>Vous avez atteint le nombre maximal de chevaux revendicables."
-  maximumClaimsReachedOther: "<gold><player><yellow> a atteint le nombre maximal de chevaux revendicables."
+  missingArguments: "<yellow>Nombre d'arguments incorrect. Faites comme suit :"
   missingLanguage: "<yellow>Vous devez fournir une langue, veuillez utiliser l'une des suivantes : <lang><yellow>."
   missingPermission: "<yellow>Vous n'avez pas la permission <gold><perm><yellow>."
   missingPermissionOther: "<gold><player><yellow> n'a pas la permission <gold><perm><yellow>."
@@ -59,6 +64,7 @@ Messages:
   playerNotRegistered: "Le joueur suivant n'a pas pu être enregistré : <player>"
   playerOffline: "<gold><player><yellow> doit être en ligne pour exécuter cette commande."
   pluginReloaded: "<gold><value><yellow> a été rechargé avec succès."
+  pluginReloadedWithErrors: "<gold><value><yellow> a été rechargé avec des erreurs."
   teleportedToHorse: "<yellow>Vous avez été téléporté à <gold><horse><yellow>."
   unknownCommand: "<yellow>Ce n'est pas une commande de ZHorse."
   unknownHorseId: "<yellow>Vous ne possédez aucun cheval d'ID <gold><id>"
@@ -70,9 +76,10 @@ Messages:
   worldUnreachable: "<yellow>Votre monde et celui de <gold><horse><yellow> ne sont pas connectés."
 
 Economy:
-  commandCost: "<green>(<amount>€)"
-  commandPaid: "<yellow>Cette commande vous a couté <gold><amount>€<yellow>."
-  notEnoughMoney: "<yellow>Vous ne possédez pas <gold><amount>€<yellow>."
+  currencySymbol: "€"
+  commandCost: "<green>(<amount> <value>)"
+  commandPaid: "<yellow>Cette commande vous a couté <gold><amount> <value><yellow>."
+  notEnoughMoney: "<yellow>Vous ne possédez pas <gold><amount> <value><yellow>."
 
 Horse informations:
   health: "<yellow>Santé : <gold><amount><yellow>/<gold><max>"

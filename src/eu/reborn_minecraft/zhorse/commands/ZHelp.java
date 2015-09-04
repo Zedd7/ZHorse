@@ -29,7 +29,7 @@ public class ZHelp extends Command {
 	}
 
 	private void execute() {
-		if (zh.getEM().isReadyToPay(p, command)) {
+		if (zh.getEM().canAffordCommand(p, command)) {
 			if (a.length == 0) {
 				displayCommandList();
 				zh.getEM().payCommand(p, command);
@@ -63,7 +63,7 @@ public class ZHelp extends Command {
 					}
 					else {
 						String cost = Integer.toString(zh.getCM().getCommandCost(command));
-						s.sendMessage(zh.getMM().getCommandDescriptionCost(language, " ", command, zh.getLM().commandCost, cost, true));
+						s.sendMessage(zh.getMM().getCommandDescriptionCostValue(language, " ", command, zh.getLM().commandCost, cost, zh.getLM().getEconomyAnswer(language, zh.getLM().currencySymbol, true), true));
 					}
 				}
 			}

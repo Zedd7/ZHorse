@@ -101,12 +101,12 @@ public class MessageManager {
 	
 	public String getCommandDescription(String language, String space, String command, boolean hidePrefix) {
 		String costMessage = "";
-		return getCommandDescriptionFull(language, space, command, costMessage, amount, false, hidePrefix);
+		return getCommandDescriptionFull(language, space, command, costMessage, amount, value, false, hidePrefix);
 	}
 	
-	public String getCommandDescriptionCost(String language, String space, String command, String costIndex, String cost, boolean hidePrefix) {
+	public String getCommandDescriptionCostValue(String language, String space, String command, String costIndex, String cost, String value, boolean hidePrefix) {
 		String costMessage = space + zh.getLM().getEconomyAnswer(language, costIndex, hidePrefix);
-		return getCommandDescriptionFull(language, space, command, costMessage, cost, false, hidePrefix);
+		return getCommandDescriptionFull(language, space, command, costMessage, cost, value, false, hidePrefix);
 	}
 	
 	public String getCommandUsage(String language, String index, String space, String command, boolean hidePrefix) {
@@ -114,8 +114,8 @@ public class MessageManager {
 		return getHeaderFull(language, index, space, player, horse, userID, amount, usage, max, lang, hidePrefix);
 	}
 	
-	public String getEconomyAmount(String language, String index, String amount) {
-		return getEconomyFull(language, index, amount);
+	public String getEconomyAmountValue(String language, String index, String amount, String value) {
+		return getEconomyFull(language, index, amount, value);
 	}
 	
 	public String getHeader(String language, String index, boolean hidePrefix) {
@@ -274,15 +274,15 @@ public class MessageManager {
 	
 	public String getSettingsCommandDescription(String language, String space, String command, boolean hidePrefix) {
 		String costMessage = "";
-		return getCommandDescriptionFull(language, space, command, costMessage, amount, true, hidePrefix);
+		return getCommandDescriptionFull(language, space, command, costMessage, amount, value, true, hidePrefix);
 	}
 	
 	public String getSettingsCommandDescriptionCost(String language, String space, String command, String costIndex, String cost, boolean hidePrefix) {
 		String costMessage = space + zh.getLM().getEconomyAnswer(language, costIndex, hidePrefix);
-		return getCommandDescriptionFull(language, space, command, costMessage, cost, true, hidePrefix);
+		return getCommandDescriptionFull(language, space, command, costMessage, cost, value, true, hidePrefix);
 	}
 	
-	private String getCommandDescriptionFull(String language, String space, String command, String costMessage, String amount, boolean settingsCommand, boolean hidePrefix) {
+	private String getCommandDescriptionFull(String language, String space, String command, String costMessage, String amount, String value, boolean settingsCommand, boolean hidePrefix) {
 		String rawMessage = "";
 		if (!settingsCommand) {
 			rawMessage = space + zh.getLM().getCommandDescription(language, command) + costMessage;
@@ -294,7 +294,7 @@ public class MessageManager {
 		return message;
 	}
 	
-	private String getEconomyFull(String language, String index, String amount) {
+	private String getEconomyFull(String language, String index, String amount, String value) {
 		String rawMessage = zh.getLM().getEconomyAnswer(language, index);
 		String message = populate(rawMessage, player, horse, userID, perm, amount, value, max, lang);
 		return message;

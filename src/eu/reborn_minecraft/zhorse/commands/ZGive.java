@@ -47,7 +47,7 @@ public class ZGive extends Command {
 	
 	private void execute() {
 		if (isOwner()) {
-			if (zh.getEM().isReadyToPay(p, command)) {
+			if (zh.getEM().canAffordCommand(p, command)) {
 				horseName = zh.getUM().getHorseName(horse);
 				if (!samePlayer || adminMode) {
 					boolean locked = zh.getUM().isLocked(p.getUniqueId(), horse);
@@ -60,7 +60,7 @@ public class ZGive extends Command {
 						if (displayConsole) {
 							s.sendMessage(zh.getMM().getMessagePlayerHorse(language, zh.getLM().horseGiven, targetName, horseName));
 							if (isPlayerOnline(targetUUID, true)) {
-								zh.getServer().getPlayer(targetUUID).sendMessage(zh.getMM().getMessagePlayerHorse(language, zh.getLM().horseReceived, targetName, horseName));
+								zh.getServer().getPlayer(targetUUID).sendMessage(zh.getMM().getMessagePlayerHorse(language, zh.getLM().horseReceived, p.getName(), horseName));
 							}
 						}
 					}

@@ -46,7 +46,7 @@ public class ZClaim extends Command {
 	private void execute() {
 		if (craftHorseName(true)) {
 			if (isClaimable()) {
-				if (zh.getEM().isReadyToPay(p, command)) {
+				if (zh.getEM().canAffordCommand(p, command)) {
 					boolean lock = zh.getCM().shouldLockOnClaim();
 					boolean protect = zh.getCM().shouldProtectOnClaim();
 					boolean share = zh.getCM().shouldShareOnClaim();

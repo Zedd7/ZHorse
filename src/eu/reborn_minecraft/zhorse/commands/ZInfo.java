@@ -46,7 +46,7 @@ public class ZInfo extends Command {
 	}
 
 	private void execute() {
-		if (zh.getEM().isReadyToPay(p, command)) {
+		if (zh.getEM().canAffordCommand(p, command)) {
 			Damageable d = horse;
 			UUID ownerUUID = zh.getUM().getPlayerUUID(horse);
 			String ownerName = zh.getUM().getPlayerName(ownerUUID);

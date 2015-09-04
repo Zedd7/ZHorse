@@ -70,20 +70,18 @@ public class UserManager {
 	}
 	
 	public Horse getHorseInChunk(Chunk chunk, UUID horseUUID) {
-		if (horseUUID != null) {
-			boolean chunkLoaded = false;
-			if (!chunk.isLoaded()) {
-				chunk.load();
-				chunkLoaded = true;
+		boolean unloadChunk = false;
+		if (!chunk.isLoaded()) {
+			chunk.load();
+			unloadChunk = true;
+		}
+		for (Entity entity : chunk.getEntities()) {
+			if (entity.getUniqueId().equals(horseUUID)) {
+				return (Horse)entity;
 			}
-			for (Entity entity : chunk.getEntities()) {
-				if (entity.getUniqueId().equals(horseUUID)) {
-					return (Horse)entity;
-				}
-			}
-			if (chunkLoaded) {
-				chunk.unload(true, true);
-			}
+		}
+		if (unloadChunk) {
+			chunk.unload(true, true);
 		}
 		return null;
 	}

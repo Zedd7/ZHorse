@@ -1,3 +1,8 @@
+# You can use any of the following color flag formats : <4>, ^4, §4, <dark_red>, <darkred>
+# You can rework any message in this file but DON'T add/remove flags that are not color flags !
+# However, you can swap two or more flags in the same line. That's their original purpose.
+# Example:  "<player> just gave you <horse>" or "<horse> has been given to you by <player>".
+
 Headers:
   pluginPrefix: "<green>[ZHorse]"
   headerFormat: "<green>-+- <value>  <green>-+-"
@@ -13,7 +18,8 @@ Headers:
   remainingClaimsFormat: "<yellow>(<gold><amount><yellow>/<gold><max><yellow>)"
 
 Messages:
-  commandIncorrect: "<yellow>Incorrect number of arguments. Do as follows :"
+  claimsLimitReached: "<yellow>You have reached your claims limit."
+  claimsLimitReachedOther: "<gold><player><yellow> has reached (s)he's claims limit."
   horseAlreadyClaimed: "<yellow>You have already claimed this horse."
   horseBelongsTo: "<yellow>This horse belongs to <gold><player><yellow>."
   horseClaimed: "<gold><horse><yellow> was successfully claimed."
@@ -21,7 +27,7 @@ Messages:
   horseFreed: "<yellow>Freedom was given to <gold><horse><yellow>."
   horseGiven: "<yellow>You gave <gold><horse><yellow> to <gold><player><yellow>."
   horseHealed: "<gold><horse><yellow> has been fully healed."
-  horseIsProtected: "<gold><horse><yellow> is protected against PvP."
+  horseIsProtected: "<gold><horse><yellow> is protected against player's attacks."
   horseLocked: "<gold><horse><yellow> is now protected against thieves."
   horseManuallyTamed: "<yellow>Congratulation ! You can now use <gold>/zh claim (name)<yellow> if you want."
   horseMounted: "<yellow>You are already mounting <gold><horse><yellow>."
@@ -35,20 +41,19 @@ Messages:
   horseNotFound: "<gold><horse><yellow> could not be found in this server."
   horseNotRegistered: "Following horse could not be registered : <horse> of UUID <value>"
   horseNotTamed: "<yellow>You must tame this horse first."
-  horseProtected: "<gold><horse><yellow> is now protected against PvP."
+  horseProtected: "<gold><horse><yellow> is now protected against some types of damage."
   horseReceived: "<gold><player><yellow> gave you <gold><horse> <yellow>!"
   horseRenamed: "<yellow>This horse is now known as <gold><horse><yellow>."
   horseShared: "<gold><horse><yellow> can now be used by everyone."
   horseTamed: "<yellow>You successfully tamed this horse."
   horseTeleported: "<gold><horse> <yellow>has been teleported to you."
   horseUnLocked: "<gold><horse><yellow> is no longer protected against thieves."
-  horseUnProtected: "<gold><horse><yellow> is not longer protected against PvP."
+  horseUnProtected: "<gold><horse><yellow> is not longer protected against damages."
   horseUnShared: "<gold><horse><yellow> is no longer shared with people."
   horseUnTamed: "<yellow>Horse successfully untamed."
   languageEdited: "<yellow>You are now using the language <gold><lang><yellow>."
   languageEditedOther: "<gold><player> <yellow>is now using the language <gold><lang><yellow>."
-  maximumClaimsReached: "<yellow>You have reached the maximum of horses you can claim."
-  maximumClaimsReachedOther: "<gold><player><yellow> has reached the maximum of horses (s)he can claim."
+  missingArguments: "<yellow>Incorrect number of arguments. Do as follows :"
   missingLanguage: "<yellow>You must provide a language, please use one the followings : <lang><yellow>."
   missingPermission: "<yellow>You don't have the <gold><perm><yellow> permission."
   missingPermissionOther: "<gold><player><yellow> doesn't have the <gold><perm><yellow> permission."
@@ -59,6 +64,7 @@ Messages:
   playerNotRegistered: "Following player could not be registered : <player>"
   playerOffline: "<gold><player><yellow> must be online in order to perform this command."
   pluginReloaded: "<gold><value><yellow> has been successfully reloaded."
+  pluginReloadedWithErrors: "<gold><value><yellow> has been reloaded with errors."
   teleportedToHorse: "<yellow>You have been teleported to <gold><horse><yellow>."
   unknownCommand: "<yellow>This is not a ZHorse command."
   unknownHorseId: "<yellow>You don't owe any horse with ID <gold><id>"
@@ -70,9 +76,10 @@ Messages:
   worldUnreachable: "<yellow>Your world and <gold><horse><yellow>'s world are not connected."
 
 Economy:
-  commandCost: "<green>($<amount>)"
-  commandPaid: "<yellow>This command cost you <gold>$<amount><yellow>."
-  notEnoughMoney: "<yellow>You don't have <gold>$<amount><yellow>."
+  currencySymbol: "$"
+  commandCost: "<green>(<value><amount>)"
+  commandPaid: "<yellow>This command cost you <gold><value><amount><yellow>."
+  notEnoughMoney: "<yellow>You don't have <gold><value><amount><yellow>."
 
 Horse informations:
   health: "<yellow>Health : <gold><amount><yellow>/<gold><max>"

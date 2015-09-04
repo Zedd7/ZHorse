@@ -45,7 +45,7 @@ public class ZKill extends Command {
 
 	private void execute() {
 		if (isOwner()) {
-			if (zh.getEM().isReadyToPay(p, command)) {
+			if (zh.getEM().canAffordCommand(p, command)) {
 				Damageable dm = horse;
 				dm.damage(dm.getHealth());
 				zh.getEM().payCommand(p, command);

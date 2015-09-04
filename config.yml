@@ -1,6 +1,6 @@
 Commands:
 
-  # The list of ZHorse's commands. Don't remove anything from here !
+  # The list of ZHorse's commands. You can remove unused commands.
   # The value of cost defines how much will be charged per execution.
 
   claim:
@@ -42,7 +42,7 @@ Groups:
 
   # The list of groups with which ZHorse tries to bind.
   # The value of color is applied before the horse's name.
-  # Following formats can be used : <4>, ^4, §4, <dark_red>, <darkred>
+  # Following formats are available : <4>, ^4, §4, <dark_red>, <darkred>
   # The value of claims-limit defines how much horses a player can claim.
   # The permission is optional if the group is defined in a groups plugin.
   # Membership of the group is simulated for whoever owns the permission.
@@ -62,7 +62,7 @@ Groups:
   admin:
     color: ^c
     claims-limit: -1
-    permission: you.may.delete.this.line
+    permission: deleting.this.line.is.fine.too
 
 HorseNames:
 
@@ -83,7 +83,7 @@ HorseNames:
   # If set to 0, horse naming is unrestricted.
   minimum-length: 0
 
-  # The list of words that can't be inserted in horse's names.
+  # The list of words that can't be contained in horse's names.
   banned-names:
   - ExampleName
 
@@ -107,6 +107,7 @@ Languages:
   default: EN
 
   # The list of languages in which players can display ZHorse.
+  # You can add other languages if you create a valid locale_XX.yml file
   available:
   - EN
   - FR
@@ -114,10 +115,61 @@ Languages:
 Protections:
 
   # The list of damage types that /zh protect will block.
-  # Set enabled to false to disable the protection.
+  # Disable any protection by negating "enabled" or deleting the line.
+  
+  # Damages caused by players
 
-  TEMP:
+  OWNER_ATTACK:
+    enabled: false
+  PLAYER_ATTACK:
     enabled: true
+
+  # All kind of damages minus those caused by players
+
+  BLOCK_EXPLOSION:
+    enabled: false
+  CONTACT:
+    enabled: false
+  CUSTOM:
+    enabled: false
+  DROWNING:
+    enabled: false
+  ENTITY_ATTACK:
+    enabled: false
+  ENTITY_EXPLOSION:
+    enabled: false
+  FALL:
+    enabled: false
+  FALLING_BLOCK:
+    enabled: false
+  FIRE:
+    enabled: false
+  FIRE_TICK:
+    enabled: false
+  LAVA:
+    enabled: false
+  LIGHTNING:
+    enabled: false
+  MAGIC:
+    enabled: false
+  MELTING:
+    enabled: false
+  POISON:
+    enabled: false
+  PROJECTILE:
+    enabled: false
+  STARVATION:
+    enabled: false
+  SUFFOCATION:
+    enabled: false
+  SUICIDE:
+    enabled: false
+  THORNS:
+    enabled: false
+  VOID:
+    enabled: false
+  WITHER:
+    enabled: false
 
 Settings:
 

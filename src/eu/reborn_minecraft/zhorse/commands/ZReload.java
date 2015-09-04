@@ -11,7 +11,7 @@ public class ZReload extends Command {
 		super(zh, s, a);
 		idAllow = false;
 		targetAllow = false;
-		if (isPlayer(playerOnly)) {
+		if (isPlayer(!playerOnly)) {
 			if (analyseArguments()) {
 				if (hasPermission()) {
 					if (isWorldEnabled()) {
@@ -37,20 +37,32 @@ public class ZReload extends Command {
 		}
 	}
 
-	private void executePlayer() {
-		if (zh.getEM().isReadyToPay(p, command)) {
-			zh.reload();
-			if (displayConsole) {
-				s.sendMessage(zh.getMM().getMessageValue(language, zh.getLM().pluginReloaded, zh.getDescription().getFullName()));
+	private void executePlayer() { // fusionner avec executeConsole
+		if (zh.getEM().canAffordCommand(p, command)) {
+			if (zh.reload()) {
+				if (displayConsole) {
+					s.sendMessage(zh.getMM().getMessageValue(language, zh.getLM().pluginReloaded, zh.getDescription().getFullName()));
+				}
+			}
+			else {
+				if (displayConsole) {
+					s.sendMessage(zh.getMM().getMessageValue(language, zh.getLM().pluginReloadedWithErrors, zh.getDescription().getFullName()));
+				}
 			}
 			zh.getEM().payCommand(p, command);
 		}
 	}
 	
 	private void executeConsole() {
-		zh.reload();
-		if (displayConsole) {
-			s.sendMessage(zh.getMM().getMessageValue(language, zh.getLM().pluginReloaded, zh.getDescription().getFullName()));
+		if (zh.reload()) {
+			if (displayConsole) {
+				s.sendMessage(zh.getMM().getMessageValue(language, zh.getLM().pluginReloaded, zh.getDescription().getFullName()));
+			}
+		}
+		else {
+			if (displayConsole) {
+				s.sendMessage(zh.getMM().getMessageValue(language, zh.getLM().pluginReloadedWithErrors, zh.getDescription().getFullName()));
+			}
 		}
 	}
 

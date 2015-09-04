@@ -36,12 +36,7 @@ public class Command {
 		this.zh = zh;
 		this.a = a;
 		this.s = s;
-		if (a.length != 0) {
-			this.command = a[0];
-		}
-		else {
-			this.command = zh.getLM().help;
-		}
+		this.command = a[0];
 		this.language = zh.getCM().getDefaultLanguage();
 		this.displayConsole = !(zh.getCM().isConsoleMuted());
 		this.idAllow = false;
@@ -204,10 +199,10 @@ public class Command {
 		}
 		else if (displayConsole) {
 			if (samePlayer) {
-				s.sendMessage(zh.getMM().getMessage(language, zh.getLM().maximumClaimsReached));
+				s.sendMessage(zh.getMM().getMessage(language, zh.getLM().claimsLimitReached));
 			}
 			else {
-				s.sendMessage(zh.getMM().getMessagePlayer(language, zh.getLM().maximumClaimsReachedOther, targetName));
+				s.sendMessage(zh.getMM().getMessagePlayer(language, zh.getLM().claimsLimitReachedOther, targetName));
 			}
 		}
 		return true;
@@ -378,17 +373,17 @@ public class Command {
 	}
 	
 	protected boolean isPlayer() {
-		return isPlayer(true);
+		return isPlayer(false);
 	}
 	
-	protected boolean isPlayer(boolean sendErrorMessage) {
+	protected boolean isPlayer(boolean hideConsole) {
 		if (s instanceof Player) {
 			p = (Player)s;
 			language = zh.getUM().getPlayerLanguage(p.getUniqueId());
 			playerCommand = true;
 			return true;
 		}
-		else if (displayConsole && sendErrorMessage) {
+		else if (displayConsole && !hideConsole) {
 			s.sendMessage(zh.getMM().getMessage(language, zh.getLM().playerCommand));
 		}
 		playerCommand = false;
@@ -447,7 +442,7 @@ public class Command {
 	
 	protected void sendCommandUsage(boolean sendErrorMessage) {
 		if (sendErrorMessage) {
-			s.sendMessage(zh.getMM().getMessage(language, zh.getLM().commandIncorrect));
+			s.sendMessage(zh.getMM().getMessage(language, zh.getLM().missingArguments));
 		}
 		s.sendMessage(zh.getMM().getHeader(language, zh.getLM().commandUsageHeader, " ", true));
 		s.sendMessage(zh.getMM().getCommandUsage(language, zh.getLM().commandUsageFormat, " ", command, true));

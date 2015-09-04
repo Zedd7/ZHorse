@@ -44,7 +44,7 @@ public class ZProtect extends Command {
 
 	private void execute() {
 		if (isOwner()) {
-			if (zh.getEM().isReadyToPay(p, command)) {
+			if (zh.getEM().canAffordCommand(p, command)) {
 				if (!zh.getUM().isProtected(horse)) {
 					zh.getUM().protect(targetUUID, horse);
 					if (displayConsole) {

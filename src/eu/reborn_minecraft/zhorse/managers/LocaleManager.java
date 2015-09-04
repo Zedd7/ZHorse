@@ -20,7 +20,8 @@ public class LocaleManager {
 	public String horseListOtherHeader = "horseListOtherHeader";
 	public String remainingClaimsFormat = "remainingClaimsFormat";
 	
-	public String commandIncorrect = "commandIncorrect";
+	public String claimsLimitReached = "claimsLimitReached";
+	public String claimsLimitReachedOther = "claimsLimitReachedOther";
 	public String horseAlreadyClaimed = "horseAlreadyClaimed";
 	public String horseBelongsTo = "horseBelongsTo";
 	public String horseClaimed = "horseClaimed";
@@ -54,8 +55,7 @@ public class LocaleManager {
 	public String horseUnTamed = "horseUnTamed";
 	public String languageEdited = "languageEdited";
 	public String languageEditedOther = "languageEditedOther";
-	public String maximumClaimsReached = "maximumClaimsReached";
-	public String maximumClaimsReachedOther = "maximumClaimsReachedOther";
+	public String missingArguments = "missingArguments";
 	public String missingLanguage = "missingLanguage";
 	public String missingPermission = "missingPermission";
 	public String missingPermissionOther = "missingPermissionOther";
@@ -66,6 +66,7 @@ public class LocaleManager {
 	public String playerNotRegistered = "playerNotRegistered";
 	public String playerOffline = "playerOffline";
 	public String pluginReloaded = "pluginReloaded";
+	public String pluginReloadedWithErrors = "pluginReloadedWithErrors";
 	public String teleportedToHorse = "teleportedToHorse";
 	public String unknownCommand = "unknownCommand";
 	public String unknownHorseId = "unknownHorseId";
@@ -76,6 +77,7 @@ public class LocaleManager {
 	public String worldDisabled = "worldDisabled";
 	public String worldUnreachable = "worldUnreachable";
 	
+	public String currencySymbol = "currencySymbol";
 	public String commandCost = "commandCost";
 	public String commandPaid = "commandPaid";
 	public String notEnoughMoney = "notEnoughMoney";
@@ -188,6 +190,10 @@ public class LocaleManager {
         	return text;
         }
         return getHeaderMessage(language, pluginPrefix) + " " + text;
+	}
+	
+	public boolean checkConformity() {
+		return true;
 	}
 
 }

@@ -17,14 +17,14 @@ public class EconomyManager {
 		this.econ = zh.getEcon();
 	}
 	
-	public boolean isReadyToPay(Player p, String command) {
+	public boolean canAffordCommand(Player p, String command) {
 		if (p != null) {
 			int amount = zh.getCM().getCommandCost(command);
 			if (isCommandFree(p, command) || econ.has(zh.getServer().getOfflinePlayer(p.getUniqueId()), amount)) {
 				return true;
 			}
 			String language = zh.getUM().getPlayerLanguage(p.getUniqueId());
-			p.sendMessage(zh.getMM().getEconomyAmount(language, zh.getLM().notEnoughMoney, Integer.toString(amount)));
+			p.sendMessage(zh.getMM().getEconomyAmountValue(language, zh.getLM().notEnoughMoney, Integer.toString(amount), zh.getLM().getEconomyAnswer(language, zh.getLM().currencySymbol, true)));
 		}
 		return false;
 	}
@@ -59,7 +59,7 @@ public class EconomyManager {
 		if (!isCommandFree(p, command)) {
 			econ.withdrawPlayer(zh.getServer().getOfflinePlayer(p.getUniqueId()), amount);
 			String language = zh.getUM().getPlayerLanguage(p.getUniqueId());
-			p.sendMessage(zh.getMM().getEconomyAmount(language, zh.getLM().commandPaid, Integer.toString(amount)));
+			p.sendMessage(zh.getMM().getEconomyAmountValue(language, zh.getLM().commandPaid, Integer.toString(amount), zh.getLM().getEconomyAnswer(language, zh.getLM().currencySymbol, true)));
 		}
 	}
 

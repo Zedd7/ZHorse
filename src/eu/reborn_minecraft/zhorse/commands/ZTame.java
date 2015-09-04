@@ -44,7 +44,7 @@ public class ZTame extends Command {
 
 	private void execute() {
 		if (isOwner()) {
-			if (zh.getEM().isReadyToPay(p, command)) {
+			if (zh.getEM().canAffordCommand(p, command)) {
 				boolean tamed = horse.isTamed();
 				if (!tamed) {
 					horse.setTamed(true);

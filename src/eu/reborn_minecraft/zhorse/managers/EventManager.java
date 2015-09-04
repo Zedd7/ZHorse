@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -26,6 +27,8 @@ import eu.reborn_minecraft.zhorse.commands.ZClaim;
 public class EventManager implements Listener {
 	private ZHorse zh;
 	private boolean displayConsole;
+	private static String OWNERATTACK = "OWNER_ATTACK";
+	private static String PLAYERATTACK = "PLAYER_ATTACK";
 
 	public EventManager(ZHorse zh) {
 		this.zh = zh;
@@ -35,7 +38,7 @@ public class EventManager implements Listener {
 	@EventHandler
 	public void onChunkUnload(ChunkUnloadEvent e) {
 		for (Entity entity : e.getChunk().getEntities()) {
-			if (isHorseClaimed(entity)) {
+			if (isClaimedHorse(entity)) {
 				zh.getUM().saveLocation((Horse)entity);
 			}
 		}
@@ -43,32 +46,63 @@ public class EventManager implements Listener {
 	
 	@EventHandler
 	public void onDamageHorse(EntityDamageEvent e) {
-		Entity entityHorse = e.getEntity();
-		if (isHorseClaimed(entityHorse)) {
-			Horse horse = (Horse)entityHorse;
+		if (isClaimedHorse(e.getEntity())) {
+			Horse horse = (Horse)e.getEntity();
 			if (zh.getUM().isProtected(horse)) {
 				DamageCause damageCause = e.getCause();
-				if (damageCause.equals(DamageCause.MAGIC)) {
-					e.setCancelled(true);
-				}
-				else if (damageCause.equals(DamageCause.POISON)) {
-					e.setCancelled(true);
-				}
-				else if (damageCause.equals(DamageCause.PROJECTILE)) {
-					e.setCancelled(true);
-				}
-				else if (damageCause.equals(DamageCause.THORNS)) {
-					e.setCancelled(true);
+				if (!(damageCause == DamageCause.ENTITY_ATTACK ||
+						damageCause == DamageCause.ENTITY_EXPLOSION ||
+						damageCause == DamageCause.PROJECTILE ||
+						damageCause == DamageCause.MAGIC)) {
+					if (zh.getCM().isProtectionEnabled(damageCause.name())) {
+						e.setCancelled(true);
+					}
 				}
 			}
 		}
 	}
 	
 	@EventHandler
+	public void onPlayerDamageHorse(EntityDamageByEntityEvent e) {
+		if (isClaimedHorse(e.getEntity())) {
+			Horse horse = (Horse)e.getEntity();
+			if (zh.getUM().isProtected(horse)) {
+				boolean cancel = false;
+				if (e.getDamager() instanceof Player) {
+					Player p = (Player)e.getDamager();
+					cancel = !canPlayerDamageHorse(p, horse);
+				}
+				else if ((e.getDamager() instanceof Projectile) && ((Projectile)e.getDamager()).getShooter() instanceof Player) {
+					Player p = (Player)((Projectile)e.getDamager()).getShooter();
+					cancel = !canPlayerDamageHorse(p, horse);
+				}
+				else {
+					cancel = zh.getCM().isProtectionEnabled(e.getCause().name());
+				}
+				e.setCancelled(cancel);
+			}
+		}
+	}
+	
+	private boolean canPlayerDamageHorse(Player p, Horse horse) {
+		if (zh.getCM().isProtectionEnabled(PLAYERATTACK)) {
+			if (!((zh.getUM().isClaimedBy(p.getUniqueId(), horse) && !zh.getCM().isProtectionEnabled(OWNERATTACK)) ||
+					zh.getPerms().has(p, zh.getLM().zhPrefix + zh.getLM().protect + zh.getLM().adminSuffix))) {
+				if (displayConsole) {
+					String horseName = zh.getUM().getHorseName(horse);
+					String language = zh.getUM().getPlayerLanguage(p.getUniqueId());
+					p.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().horseIsProtected, horseName));
+				}
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	@EventHandler
 	public void onHorseDeath(EntityDeathEvent e) {
-		Entity entity = e.getEntity();
-		if (isHorseClaimed(entity)) {
-			Horse horse = (Horse)entity;
+		if (isClaimedHorse(e.getEntity())) {
+			Horse horse = (Horse)e.getEntity();
 			UUID ownerUUID = zh.getUM().getPlayerUUID(horse);
 			for (Player p : zh.getServer().getOnlinePlayers()) {
 				if (p.getUniqueId().equals(ownerUUID)) {
@@ -107,26 +141,6 @@ public class EventManager implements Listener {
 	}
 	
 	@EventHandler
-	public void onPlayerDamageHorse(EntityDamageByEntityEvent e) {
-		if (isHorseClaimed(e.getEntity())) {
-			Horse horse = (Horse)e.getEntity();
-			if (zh.getUM().isProtected(horse)) {
-				if (e.getDamager() instanceof Player) {
-					Player p = (Player)e.getDamager();
-					if (!(zh.getUM().isClaimedBy(p.getUniqueId(), horse) || zh.getPerms().has(p, zh.getLM().zhPrefix + zh.getLM().protect + zh.getLM().adminSuffix))) {
-						if (displayConsole) {
-							String horseName = zh.getUM().getHorseName(horse);
-							String language = zh.getUM().getPlayerLanguage(p.getUniqueId());
-							p.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().horseIsProtected, horseName));
-						}
-						e.setCancelled(true);
-					}
-				}
-			}
-		}
-	}
-	
-	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
 		if (!zh.getUM().isRegistered(p.getUniqueId())) {
@@ -147,10 +161,10 @@ public class EventManager implements Listener {
 	}
 	
 	@EventHandler
-	public void onPlayerOpenIntentory(InventoryOpenEvent e) {
+	public void onPlayerOpenInventory(InventoryOpenEvent e) {
 		Player p = (Player)e.getPlayer();
 		if (p.isInsideVehicle()) {
-			if (isHorseClaimed(p.getVehicle())) {
+			if (isClaimedHorse(p.getVehicle())) {
 				Horse horse = (Horse)p.getVehicle();
 				if (!((zh.getUM().isClaimedBy(p.getUniqueId(), horse)) || zh.getUM().isShared(horse) || zh.getPerms().has(p, zh.getLM().zhPrefix + zh.getLM().lock + zh.getLM().adminSuffix))) {
 					if (displayConsole) {
@@ -170,7 +184,7 @@ public class EventManager implements Listener {
 	}
 	
 	private boolean canPlayerInteractHorse(Player p, Entity entity) {
-		if (isHorseClaimed(entity)) {
+		if (isClaimedHorse(entity)) {
 			Horse horse = (Horse)entity;
 			if (!(zh.getUM().isClaimedBy(p.getUniqueId(), horse) || zh.getPerms().has(p, zh.getLM().zhPrefix + zh.getLM().lock + zh.getLM().adminSuffix))) {
 				if (zh.getUM().isLocked(horse) || !(horse.isEmpty() || zh.getUM().isShared(horse))) {
@@ -186,7 +200,7 @@ public class EventManager implements Listener {
 		return true;
 	}
 	
-	private boolean isHorseClaimed(Entity entity) {
+	private boolean isClaimedHorse(Entity entity) {
 		if (entity instanceof Horse) {
 			Horse horse = (Horse)entity;
 			return zh.getUM().isRegistered(horse);

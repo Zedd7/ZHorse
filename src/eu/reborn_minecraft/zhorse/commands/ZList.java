@@ -29,7 +29,7 @@ public class ZList extends Command {
 	}
 
 	private void execute() {
-		if (zh.getEM().isReadyToPay(p, command)) {
+		if (zh.getEM().canAffordCommand(p, command)) {
 			List<String> horseList = zh.getUM().getHorseList(targetUUID);
 			String remainingClaimsMessage = getRemainingClaimsMessage(horseList);
 			if (!horseList.isEmpty()) {

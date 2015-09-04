@@ -10,13 +10,12 @@ import org.bukkit.entity.Player;
 import eu.reborn_minecraft.zhorse.ZHorse;
 
 public class ZSettings extends Command {
-	private static boolean playerOnly = true;
 
 	public ZSettings(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
 		idAllow = false;
 		targetAllow = false;
-		if (isPlayer(playerOnly)) {
+		if (isPlayer()) {
 			if (analyseArguments()) {
 				if (hasPermission()) {
 					if (!idMode) {
@@ -31,7 +30,7 @@ public class ZSettings extends Command {
 	}
 
 	private void executePlayer() {
-		if (zh.getEM().isReadyToPay(p, command)) {
+		if (zh.getEM().canAffordCommand(p, command)) {
 			if (a.length >= 1) {
 				String subCommand = a[0];
 				if (subCommand.equals("language")) {
@@ -59,7 +58,7 @@ public class ZSettings extends Command {
 				}
 				else {
 					String cost = Integer.toString(zh.getCM().getCommandCost(command));
-					s.sendMessage(zh.getMM().getCommandDescriptionCost(language, " ", command, zh.getLM().commandCost, cost, true));
+					s.sendMessage(zh.getMM().getCommandDescriptionCostValue(language, " ", command, zh.getLM().commandCost, cost, zh.getLM().getEconomyAnswer(language, zh.getLM().currencySymbol, true), true));
 				}
 			}
 		}

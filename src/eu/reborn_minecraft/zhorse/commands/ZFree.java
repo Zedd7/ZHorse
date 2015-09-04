@@ -44,7 +44,7 @@ public class ZFree extends Command {
 
 	private void execute() {
 		if (isOwner()) {
-			if (zh.getEM().isReadyToPay(p, command)) {
+			if (zh.getEM().canAffordCommand(p, command)) {
 				if (zh.getUM().remove(horse)) {
 					horse.setCustomName(null);
 					horse.setCustomNameVisible(false);

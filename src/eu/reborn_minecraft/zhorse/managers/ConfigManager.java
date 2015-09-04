@@ -19,9 +19,6 @@ public class ConfigManager {
 	
 	public ConfigManager(ZHorse zh) {
 		this.zh = zh;
-		if (!checkConformity()) {
-			zh.getLogger().severe("This can be fixed by deleting \"config.yml\" and reloading ZHorse.");
-		}
 	}
 	
 	public List<String> getAvailableLanguages() {
@@ -201,6 +198,10 @@ public class ConfigManager {
 		return getAvailableLanguages().contains(language);
 	}
 	
+	public boolean isProtectionEnabled(String protection) {
+		return zh.getConfig().getBoolean("Protections." + protection + ".enabled", false);
+	}
+	
 	public boolean isRandomHorseNameEnabled() {
 		return zh.getConfig().getBoolean("HorseNames.give-random-names", false);
 	}
@@ -229,7 +230,7 @@ public class ConfigManager {
 		return zh.getConfig().getBoolean("Settings.share-onclaim", false);
 	}
 	
-	private boolean checkConformity() {
+	public boolean checkConformity() {
 		boolean conform = true;
 		if (!checkCommandsConformity()) {
 			conform = false;
@@ -251,6 +252,9 @@ public class ConfigManager {
 		}
 		if (!checkWorldsConformity()) {
 			conform = false;
+		}
+		if (!conform) {
+			zh.getLogger().severe("Fix it or delete \"config.yml\" and reload ZHorse.");
 		}
 		return conform;
 	}

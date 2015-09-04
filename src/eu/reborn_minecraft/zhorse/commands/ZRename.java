@@ -46,7 +46,7 @@ public class ZRename extends Command {
 	private void execute() {
 		if (isOwner()) {
 			if (craftHorseName(false)) {
-				if (zh.getEM().isReadyToPay(p, command)) {
+				if (zh.getEM().canAffordCommand(p, command)) {
 					ChatColor cc = zh.getCM().getGroupColor(targetUUID);
 					horse.setCustomName(cc + horseName + ChatColor.RESET);
 					horse.setCustomNameVisible(true);

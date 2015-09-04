@@ -58,13 +58,11 @@ public class CommandManager implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(CommandSender s, Command c, String l, String[] a) {
-		String subCommand;
 		if (a.length == 0) {
-			subCommand = zh.getLM().help;
+			a = new String[1];
+			a[0] = zh.getLM().help;
 		}
-		else {
-			subCommand = a[0];
-		}
+		String subCommand = a[0];
 		if (subCommand.equalsIgnoreCase(zh.getLM().claim)) {
 			new ZClaim(zh, s, a);
 		}

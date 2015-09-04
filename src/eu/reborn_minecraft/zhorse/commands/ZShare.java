@@ -44,7 +44,7 @@ public class ZShare extends Command {
 
 	private void execute() {
 		if (isOwner()) {
-			if (zh.getEM().isReadyToPay(p, command)) {
+			if (zh.getEM().canAffordCommand(p, command)) {
 				if (!zh.getUM().isShared(horse)) {
 					if (zh.getUM().isLocked(horse)) {
 						zh.getUM().unLock(targetUUID, horse);

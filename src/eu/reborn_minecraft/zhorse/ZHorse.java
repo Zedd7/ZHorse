@@ -82,14 +82,15 @@ public class ZHorse extends JavaPlugin {
     
     private void initMetrics() {
     	try {
-			Metrics metrics = new Metrics(this);
-            metrics.start();
+    		Metrics metrics = new Metrics(this);
+			metrics.start();
         } catch (IOException e) {
         	getLogger().severe("Failed to start Metrics !");
         }
     }
     
-    private void initManagers() {
+    private boolean initManagers() {
+    	boolean success = true;
     	if (!configFile.exists()) {
 			getLogger().info(configPath + " is missing... Creating it.");
 			saveResource(configPath, false);
@@ -114,10 +115,17 @@ public class ZHorse extends JavaPlugin {
 		userManager = new UserManager(this);
 		economyManager = new EconomyManager(this);
 		loadLocales();
+		if (!configManager.checkConformity()) {
+			success = false;
+		}
+		if (!localeManager.checkConformity()) {
+			success = false;
+		}
+		return success;
 	}
     
-	public void reload() {
-		initManagers();
+	public boolean reload() {
+		return initManagers();
 	}
 	
     public FileConfiguration getConfig() {
