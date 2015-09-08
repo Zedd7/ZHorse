@@ -36,7 +36,7 @@ public class Command {
 		this.zh = zh;
 		this.a = a;
 		this.s = s;
-		this.command = a[0];
+		this.command = a[0].toLowerCase();
 		this.language = zh.getCM().getDefaultLanguage();
 		this.displayConsole = !(zh.getCM().isConsoleMuted());
 		this.idAllow = false;
@@ -362,7 +362,11 @@ public class Command {
 	}
 	
 	protected boolean isOwner(boolean hideConsole) {
-		if (zh.getUM().isClaimedBy(p.getUniqueId(), horse) || adminMode) {
+		return isOwner(p.getUniqueId(), hideConsole);
+	}
+	
+	protected boolean isOwner(UUID playerUUID, boolean hideConsole) {
+		if (zh.getUM().isClaimedBy(playerUUID, horse) || adminMode) {
 			return true;
 		}
 		else if (displayConsole && !hideConsole) {

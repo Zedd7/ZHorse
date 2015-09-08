@@ -57,9 +57,10 @@ public class ZLock extends Command {
 					zh.getUM().lock(targetUUID, horse);
 					Entity passenger = horse.getPassenger();
 					if (passenger != null && passenger instanceof Player) {
-						targetUUID = ((Player)passenger).getUniqueId();
-						if (!hasPermissionAdmin(targetUUID, true)) {
+						adminMode = false;
+						if (!isOwner(passenger.getUniqueId(), true)) {
 							horse.eject();
+							passenger.sendMessage(zh.getMM().getMessagePlayer(language, zh.getLM().horseBelongsTo, zh.getUM().getPlayerName(horse)));
 						}
 					}
 					if (displayConsole) {

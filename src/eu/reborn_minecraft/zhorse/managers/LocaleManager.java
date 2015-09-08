@@ -1,5 +1,10 @@
 package eu.reborn_minecraft.zhorse.managers;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
+import org.bukkit.ChatColor;
+
 import eu.reborn_minecraft.zhorse.ZHorse;
 
 public class LocaleManager {
@@ -175,16 +180,15 @@ public class LocaleManager {
 	}
 	
 	public String getLocaleData(String language, String fullIndex, boolean hidePrefix) {
-		if (language == null) {
-			return ("Unknown language, please report this to an administrator");
-		}
         String text = zh.getLocale(language).getString(fullIndex);
         if (text == null) {
         	zh.getLogger().severe("No value found in \"locale_" + language + ".yml\" at index \"" + fullIndex + "\" !");
         	if (!language.equals(zh.getCM().getDefaultLanguage())) {
         		return getLocaleData(zh.getCM().getDefaultLanguage(), fullIndex, hidePrefix);
         	}
-        	return ("No text found at : " + fullIndex);
+        	Calendar cal = Calendar.getInstance();
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+            return(ChatColor.RED + "Please ask an administrator to take a look at the server's logs at " + sdf.format(cal.getTime()));
         }
         if (hidePrefix) {
         	return text;

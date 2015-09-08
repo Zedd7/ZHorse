@@ -3,7 +3,6 @@ package eu.reborn_minecraft.zhorse.managers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
@@ -11,6 +10,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 
@@ -159,15 +159,11 @@ public class ConfigManager {
 		ConfigurationSection cs = zh.getConfig().getConfigurationSection("Groups");
 		if (cs != null) {
 			for (String groupName : cs.getKeys(false)) {
-				System.out.println("group : " + groupName);
 				String permission = zh.getConfig().getString("Groups." + groupName + ".permission", null);
-				System.out.println("perm : " + permission);
 				if (permission != null && zh.getPerms().has(p, permission)) {
-					System.out.println("return : " + groupName);
 					return groupName;
 				}
 			}
-			System.out.println("not found");
 		}
 		return null;
 	}
@@ -231,32 +227,17 @@ public class ConfigManager {
 	}
 	
 	public boolean checkConformity() {
-		boolean conform = true;
-		if (!checkCommandsConformity()) {
-			conform = false;
-		}
-		if (!checkGroupsConformity()) {
-			conform = false;
-		}
-		if (!checkHorseNamesConformity()) {
-			conform = false;
-		}
-		if (!checkLanguagesConformity()) {
-			conform = false;
-		}
-		if (!checkProtectionsConformity()) {
-			conform = false;
-		}
-		if (!checkSettingsConformity()) {
-			conform = false;
-		}
-		if (!checkWorldsConformity()) {
-			conform = false;
-		}
-		if (!conform) {
+		if (!(checkCommandsConformity()
+				&& checkGroupsConformity()
+				&& checkHorseNamesConformity()
+				&& checkLanguagesConformity()
+				&& checkProtectionsConformity()
+				&& checkSettingsConformity() &&
+				checkWorldsConformity())) {
 			zh.getLogger().severe("Fix it or delete \"config.yml\" and reload ZHorse.");
+			return false;
 		}
-		return conform;
+		return true;
 	}
 	
 	private boolean checkCommandsConformity() {
@@ -264,10 +245,8 @@ public class ConfigManager {
 		ConfigurationSection cs = zh.getConfig().getConfigurationSection("Commands");
 		if (cs != null) {
 			List<String> exactCommandList = zh.getCmdM().getCommandList();
-			Set<String> configCommandList = cs.getKeys(false);
-			for (int i=0; i<exactCommandList.size(); i++) {
-				String command = exactCommandList.get(i);
-				if (configCommandList.contains(command)) {
+			for (String command : cs.getKeys(false)) {
+				if (exactCommandList.contains(command)) {
 					String commandCost = zh.getConfig().getString("Commands." + command + ".cost");
 					if (commandCost != null) {
 						int value = Integer.parseInt(commandCost);
@@ -282,7 +261,7 @@ public class ConfigManager {
 					}
 				}
 				else {
-					zh.getLogger().severe("The \"Commands." + command + "\" option is missing from the config !");
+					zh.getLogger().severe("The command \"Commands." + command + "\" is not a ZHorse command !");
 					conform = false;
 				}
 			}
@@ -404,7 +383,32 @@ public class ConfigManager {
 	
 	private boolean checkProtectionsConformity() {
 		boolean conform = true;
-		// TODO
+		ConfigurationSection cs = zh.getConfig().getConfigurationSection("Protections");
+		if (cs != null) {
+			DamageCause[] damageCauseEnum = DamageCause.values();
+			List<String> damageCauseList = new ArrayList<String>();
+			damageCauseList.add("OWNER_ATTACK");
+			damageCauseList.add("PLAYER_ATTACK");
+			for (DamageCause damageCause : damageCauseEnum) {
+				damageCauseList.add(damageCause.name());
+			}
+			for (String damageCause : cs.getKeys(false)) {
+				if (damageCauseList.contains(damageCause)) {
+					if (!zh.getConfig().isSet("Protections." + damageCause + ".enabled")) {
+						zh.getLogger().severe("The \"Protections." + damageCause + ".enabled\" option is missing from the config !");
+			        	conform = false;
+			        }
+				}
+				else {
+					zh.getLogger().severe("The damage cause \"Protections." + damageCause + "\" is not a valid damage cause !");
+					conform = false;
+				}
+			}
+		}
+		else {
+			zh.getLogger().severe("The \"Protections\" section is missing from the config !");
+			conform = false;
+		}
 		return conform;
 	}
 	
