@@ -117,7 +117,7 @@ Protections:
   # The list of damage types that /zh protect will block.
   # Disable any protection by negating "enabled" or deleting the line.
   
-  # Damages caused by players
+  # Damages caused by players only
 
   OWNER_ATTACK:
     enabled: false
