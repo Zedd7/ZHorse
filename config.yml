@@ -44,7 +44,7 @@ Groups:
   # The value of color is applied before the horse's name.
   # Following formats are available : <4>, ^4, §4, <dark_red>, <darkred>
   # The value of claims-limit defines how much horses a player can claim.
-  # The permission is optional if the group is defined in a groups plugin.
+  # The permission is optional if the group is defined in a perms plugin.
   # Membership of the group is simulated for whoever owns the permission.
   
   default:
@@ -87,7 +87,7 @@ HorseNames:
   banned-names:
   - ExampleName
 
-  # The list of names that are given randomly if random naming is enabled.
+  # The names that are given randomly if random naming is enabled.
   random-names:
   - Arod
   - Ashufel

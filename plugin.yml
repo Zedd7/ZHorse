@@ -47,7 +47,7 @@
             zh.settings.language: true
         
     zh.*.admin:
-        description: Grants access to all admin commands
+        description: Grants admin access to all commands
         children:
             zh.claim.admin: true
             zh.free.admin: true
