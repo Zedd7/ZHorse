@@ -1,48 +1,68 @@
+Version: 1.3.1
+
 Commands:
 
-  # The list of ZHorse's commands. You can remove unused commands.
+  # The list of the ZHorse's commands. You can remove unused commands.
+  # Set auto-admin to true to force admin mode for authorized users.
   # The value of cost defines how much will be charged per execution.
 
   claim:
+    auto-admin: false
     cost: 0
   free:
+    auto-admin: false
     cost: 0
   give:
+    auto-admin: false
     cost: 0
   heal:
+    auto-admin: false
     cost: 0
   help:
+    auto-admin: false
     cost: 0
   here:
+    auto-admin: true
     cost: 0
   info:
+    auto-admin: false
     cost: 0
   kill:
+    auto-admin: false
     cost: 0
   list:
+    auto-admin: false
     cost: 0
   lock:
+    auto-admin: false
     cost: 0
   rename:
+    auto-admin: false
     cost: 0
   protect:
+    auto-admin: false
     cost: 0
   reload:
+    auto-admin: true
     cost: 0
   settings:
+    auto-admin: false
     cost: 0
   share:
+    auto-admin: false
     cost: 0
   tame:
+    auto-admin: false
     cost: 0
   tp:
+    auto-admin: true
     cost: 0
 
 Groups:
 
   # The list of groups with which ZHorse tries to bind.
   # The value of color is applied before the horse's name.
-  # Following formats are available : <4>, ^4, §4, <dark_red>, <darkred>
+  # Following formats are available : <4>, ^4, §4, <dark_red>, <darkred>.
   # The value of claims-limit defines how much horses a player can claim.
   # The permission is optional if the group is defined in a perms plugin.
   # Membership of the group is simulated for whoever owns the permission.
@@ -107,7 +127,7 @@ Languages:
   default: EN
 
   # The list of languages in which players can display ZHorse.
-  # You can add other languages if you create a valid locale_XX.yml file
+  # You can add other languages if you create a valid locale_XX.yml file.
   available:
   - EN
   - FR
@@ -117,14 +137,14 @@ Protections:
   # The list of damage types that /zh protect will block.
   # Disable any protection by negating "enabled" or deleting the line.
   
-  # Damages caused by players only
+  # Damages caused by players only.
 
   OWNER_ATTACK:
     enabled: false
   PLAYER_ATTACK:
     enabled: true
 
-  # All kind of damages minus those caused by players
+  # All kind of damages minus those caused by players.
 
   BLOCK_EXPLOSION:
     enabled: false

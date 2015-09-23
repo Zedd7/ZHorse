@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import net.milkbowl.vault.economy.Economy;
 
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
@@ -23,8 +24,7 @@ public class EconomyManager {
 			if (isCommandFree(p, command) || econ.has(zh.getServer().getOfflinePlayer(p.getUniqueId()), amount)) {
 				return true;
 			}
-			String language = zh.getUM().getPlayerLanguage(p.getUniqueId());
-			p.sendMessage(zh.getMM().getEconomyAmountValue(language, zh.getLM().notEnoughMoney, Integer.toString(amount), zh.getLM().getEconomyAnswer(language, zh.getLM().currencySymbol, true)));
+			zh.getMM().sendEconomyAmountValue((CommandSender)p, zh.getLM().notEnoughMoney, Integer.toString(amount), zh.getLM().getEconomyAnswer(zh.getUM().getLanguage(p.getUniqueId()), zh.getLM().currencySymbol, true));
 		}
 		return false;
 	}
@@ -58,8 +58,7 @@ public class EconomyManager {
 		int amount = zh.getCM().getCommandCost(command);
 		if (!isCommandFree(p, command)) {
 			econ.withdrawPlayer(zh.getServer().getOfflinePlayer(p.getUniqueId()), amount);
-			String language = zh.getUM().getPlayerLanguage(p.getUniqueId());
-			p.sendMessage(zh.getMM().getEconomyAmountValue(language, zh.getLM().commandPaid, Integer.toString(amount), zh.getLM().getEconomyAnswer(language, zh.getLM().currencySymbol, true)));
+			zh.getMM().sendEconomyAmountValue((CommandSender)p, zh.getLM().commandPaid, Integer.toString(amount), zh.getLM().getEconomyAnswer(zh.getUM().getLanguage(p.getUniqueId()), zh.getLM().currencySymbol, true));
 		}
 	}
 

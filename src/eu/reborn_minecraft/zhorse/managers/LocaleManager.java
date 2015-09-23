@@ -7,7 +7,7 @@ import org.bukkit.ChatColor;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 
-public class LocaleManager {
+public class LocaleManager { // TODO utiliser une ENUM
 	public String adminSuffix = ".admin";
 	public String freeSuffix = ".free";
 	public String zhPrefix = "zh.";
@@ -46,7 +46,6 @@ public class LocaleManager {
 	public String horseNameTooShort = "horseNameTooShort";
 	public String horseNotClaimed = "horseNotClaimed";
 	public String horseNotFound = "horseNotFound";
-	public String horseNotRegistered = "horseNotRegistered";
 	public String horseNotTamed = "horseNotTamed";
 	public String horseProtected = "horseProtected";
 	public String horseReceived = "horseReceived";
@@ -58,6 +57,8 @@ public class LocaleManager {
 	public String horseUnProtected = "horseUnProtected";
 	public String horseUnShared = "horseUnShared";
 	public String horseUnTamed = "horseUnTamed";
+	public String languageAlreadyUsed = "languageAlreadyUsed";
+	public String languageAlreadyUsedOther = "languageAlreadyUsedOther";
 	public String languageEdited = "languageEdited";
 	public String languageEditedOther = "languageEditedOther";
 	public String missingArguments = "missingArguments";
@@ -68,14 +69,16 @@ public class LocaleManager {
 	public String noHorseOwnedOther = "noHorseOwnedOther";
 	public String notOnHorse = "notOnHorse";
 	public String playerCommand = "playerCommand";
-	public String playerNotRegistered = "playerNotRegistered";
 	public String playerOffline = "playerOffline";
 	public String pluginReloaded = "pluginReloaded";
 	public String pluginReloadedWithErrors = "pluginReloadedWithErrors";
+	public String samePlayer = "samePlayer";
 	public String teleportedToHorse = "teleportedToHorse";
 	public String unknownCommand = "unknownCommand";
 	public String unknownHorseId = "unknownHorseId";
 	public String unknownHorseIdOther = "unknownHorseIdOther";
+	public String unknownHorseName = "unknownHorseName";
+	public String unknownHorseNameOther = "unknownHorseNameOther";
 	public String unknownLanguage = "unknownLanguage";
 	public String unknownPlayer = "unknownPlayer";
 	public String unknownSettingsCommand = "unknownSettingsCommand";
@@ -89,6 +92,7 @@ public class LocaleManager {
 	
 	public String health = "health";
 	public String id = "id";
+	public String location = "location";
 	public String modeLocked = "modeLocked";
 	public String modeNone = "modeNone";
 	public String modeProtected = "modeProtected";

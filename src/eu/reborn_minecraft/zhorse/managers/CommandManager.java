@@ -6,7 +6,6 @@ import java.util.List;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.commands.ZClaim;
@@ -62,68 +61,61 @@ public class CommandManager implements CommandExecutor {
 			a = new String[1];
 			a[0] = zh.getLM().help;
 		}
-		String subCommand = a[0];
-		if (subCommand.equalsIgnoreCase(zh.getLM().claim)) {
+		String command = a[0];
+		if (command.equalsIgnoreCase(zh.getLM().claim)) {
 			new ZClaim(zh, s, a);
 		}
-		else if (subCommand.equalsIgnoreCase(zh.getLM().free)) {
+		else if (command.equalsIgnoreCase(zh.getLM().free)) {
 			new ZFree(zh, s, a);
 		}
-		else if (subCommand.equalsIgnoreCase(zh.getLM().give)) {
+		else if (command.equalsIgnoreCase(zh.getLM().give)) {
 			new ZGive(zh, s ,a);
 		}
-		else if (subCommand.equalsIgnoreCase(zh.getLM().heal)) {
+		else if (command.equalsIgnoreCase(zh.getLM().heal)) {
 			new ZHeal(zh, s, a);
 		}
-		else if (subCommand.equalsIgnoreCase(zh.getLM().help)) {
+		else if (command.equalsIgnoreCase(zh.getLM().help)) {
 			new ZHelp(zh, s, a);
 		}
-		else if (subCommand.equalsIgnoreCase(zh.getLM().here)) {
+		else if (command.equalsIgnoreCase(zh.getLM().here)) {
 			new ZHere(zh, s, a);
 		}
-		else if (subCommand.equalsIgnoreCase(zh.getLM().info)) {
+		else if (command.equalsIgnoreCase(zh.getLM().info)) {
 			new ZInfo(zh, s, a);
 		}
-		else if (subCommand.equalsIgnoreCase(zh.getLM().kill)) {
+		else if (command.equalsIgnoreCase(zh.getLM().kill)) {
 			new ZKill(zh, s, a);
 		}
-		else if (subCommand.equalsIgnoreCase(zh.getLM().list)) {
+		else if (command.equalsIgnoreCase(zh.getLM().list)) {
 			new ZList(zh, s, a);
 		}
-		else if (subCommand.equalsIgnoreCase(zh.getLM().lock)) {
+		else if (command.equalsIgnoreCase(zh.getLM().lock)) {
 			new ZLock(zh, s, a);
 		}
-		else if (subCommand.equalsIgnoreCase(zh.getLM().rename)) {
+		else if (command.equalsIgnoreCase(zh.getLM().rename)) {
 			new ZRename(zh, s, a);
 		}
-		else if (subCommand.equalsIgnoreCase(zh.getLM().protect)) {
+		else if (command.equalsIgnoreCase(zh.getLM().protect)) {
 			new ZProtect(zh, s, a);
 		}
-		else if (subCommand.equalsIgnoreCase(zh.getLM().reload)) {
+		else if (command.equalsIgnoreCase(zh.getLM().reload)) {
 			new ZReload(zh, s, a);
 		}
-		else if (subCommand.equalsIgnoreCase(zh.getLM().settings)) {
+		else if (command.equalsIgnoreCase(zh.getLM().settings)) {
 			new ZSettings(zh, s, a);
 		}
-		else if (subCommand.equalsIgnoreCase(zh.getLM().share)) {
+		else if (command.equalsIgnoreCase(zh.getLM().share)) {
 			new ZShare(zh, s, a);
 		}
-		else if (subCommand.equalsIgnoreCase(zh.getLM().tame)) {
+		else if (command.equalsIgnoreCase(zh.getLM().tame)) {
 			new ZTame(zh, s, a);
 		}
-		else if (subCommand.equalsIgnoreCase(zh.getLM().tp)) {
+		else if (command.equalsIgnoreCase(zh.getLM().tp)) {
 			new ZTp(zh, s, a);
 		}
 		else {
 			if (!zh.getCM().isConsoleMuted()) {
-				String language;
-				if (s instanceof Player) {
-					language = zh.getUM().getPlayerLanguage(((Player) s).getUniqueId());
-				}
-				else {
-					language = zh.getCM().getDefaultLanguage();
-				}
-				s.sendMessage(zh.getMM().getMessage(language, zh.getLM().unknownCommand));
+				zh.getMM().sendMessageValue(s, zh.getLM().unknownCommand, command);
 			}
 		}
 		return true;

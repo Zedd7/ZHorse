@@ -10,33 +10,38 @@ public class ZHeal extends Command {
 
 	public ZHeal(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		idAllow = true;
-		targetAllow = false;
-		if (isPlayer()) {
-			if (analyseArguments()) {
-				if (hasPermission()) {
-					if (isWorldEnabled()) {
-						if (!(idMode || targetMode)) {
-							if (isOnHorse()) {
-								horse = (Horse)p.getVehicle();
-								if (isRegistered()) {
-									execute();
-								}
+		playerOnly = true;
+		needTarget = false;
+		if (isPlayer()&& analyseArguments() && hasPermission() && isWorldEnabled()) {
+			applyArgument(true);
+			if (!idMode) {
+				if (!targetMode) {
+					boolean ownsHorse = ownsHorse(targetUUID, true);
+					if (isOnHorse(ownsHorse)) {
+						horse = (Horse)p.getVehicle();
+						if (isRegistered(horse)) {
+							execute();
+						}
+					}
+					else if (ownsHorse) {
+						userID = zh.getUM().getFavoriteUserID(p.getUniqueId());
+						if (isRegistered(p.getUniqueId(), userID)) {
+							horse = zh.getUM().getFavoriteHorse(p.getUniqueId());
+							if (isHorseLoaded()) {
+								execute();
 							}
 						}
-						else {
-							if (idMode) {
-								if (isRegistered(targetUUID, userID)) {
-									horse = zh.getUM().getHorse(targetUUID, userID);
-									if (isHorseLoaded()) {
-										execute();
-									}
-								}
-							}
-							else if (displayConsole){
-								sendCommandUsage();
-							}
-						}
+					}
+				}
+				else {
+					sendCommandUsage();
+				}
+			}
+			else {
+				if (isRegistered(targetUUID, userID)) {
+					horse = zh.getUM().getHorse(targetUUID, userID);
+					if (isHorseLoaded()) {
+						execute();
 					}
 				}
 			}
@@ -44,15 +49,13 @@ public class ZHeal extends Command {
 	}
 
 	private void execute() {
-		if (isOwner()) {
-			if (zh.getEM().canAffordCommand(p, command)) {
-				Damageable dm = horse;
-				dm.setHealth(dm.getMaxHealth());
-				if (displayConsole) {
-					s.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().horseHealed, horseName));
-				}
-				zh.getEM().payCommand(p, command);
+		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
+			Damageable dm = horse;
+			dm.setHealth(dm.getMaxHealth());
+			if (displayConsole) {
+				zh.getMM().sendMessageHorse(s, zh.getLM().horseHealed, horseName);
 			}
+			zh.getEM().payCommand(p, command);
 		}
 	}
 

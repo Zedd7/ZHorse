@@ -1,5 +1,6 @@
 package eu.reborn_minecraft.zhorse.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.md_5.bungee.api.ChatColor;
@@ -10,79 +11,88 @@ import org.bukkit.entity.Player;
 import eu.reborn_minecraft.zhorse.ZHorse;
 
 public class ZSettings extends Command {
+	private static String LANGUAGE = "language";
 
 	public ZSettings(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		idAllow = false;
-		targetAllow = false;
-		if (isPlayer()) {
-			if (analyseArguments()) {
-				if (hasPermission()) {
-					if (!idMode) {
-						executePlayer();
-					}
-					else if (displayConsole) {
-						sendCommandUsage(true);
-					}
+		playerOnly = true;
+		needTarget = false;
+		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {
+			if (!idMode) {
+				if (!targetMode || isRegistered(targetUUID) && isPlayerOnline(targetUUID, false)) {
+					execute();
 				}
+			}
+			else {
+				sendCommandUsage();
 			}
 		}
 	}
 
-	private void executePlayer() {
+	private void execute() {
 		if (zh.getEM().canAffordCommand(p, command)) {
-			if (a.length >= 1) {
-				String subCommand = a[0];
-				if (subCommand.equals("language")) {
+			if (!argument.isEmpty()) {
+				String settingsCommand;
+				if (argument.contains(" ")) {
+					settingsCommand = argument.substring(0, argument.indexOf(" ")).toLowerCase();
+				}
+				else {
+					settingsCommand = argument;
+				}
+				if (settingsCommand.equals(LANGUAGE)) {
 					editLanguage();
 				}
-				else if (displayConsole) {
-					s.sendMessage(zh.getMM().getMessage(language, zh.getLM().unknownSettingsCommand));
+				else {
+					if (displayConsole) {
+						zh.getMM().sendMessageValue(s, zh.getLM().unknownSettingsCommand, settingsCommand);
+					}
 					displaySettingsCommands();
 				}
 			}
-			else if (displayConsole) {
+			else {
+				System.out.println("test1");
 				displaySettingsCommands();
 			}
-			zh.getEM().payCommand(p, command);
 		}
 	}
 
 	private void displaySettingsCommands() {
-		s.sendMessage(zh.getMM().getHeaderContent(language, zh.getLM().headerFormat, zh.getLM().settingsCommandListHeader, true));
-		for (String subCommand : zh.getCmdM().getSettingsCommandList()) {
-			String fullCommand = command + "." + subCommand;
-			if (hasPermission(targetUUID, fullCommand, true, true)) {
-				if (zh.getEM().isCommandFree(targetUUID, command)) {
-					s.sendMessage(zh.getMM().getSettingsCommandDescription(language, " ", subCommand, true));
-				}
-				else {
-					String cost = Integer.toString(zh.getCM().getCommandCost(command));
-					s.sendMessage(zh.getMM().getCommandDescriptionCostValue(language, " ", command, zh.getLM().commandCost, cost, zh.getLM().getEconomyAnswer(language, zh.getLM().currencySymbol, true), true));
-				}
-			}
+		List <String> settingsCommandList = new ArrayList<String>();
+		for (String settingsCommand : zh.getCmdM().getSettingsCommandList()) {
+			settingsCommandList.add(command + "." + settingsCommand);
 		}
+		displayCommandList(settingsCommandList, zh.getLM().settingsCommandListHeader, true);
 	}
 
 	private void editLanguage() {
-		if (a.length == 2) {
-			String language = a[1].toUpperCase();
+		if (argument.split(" ").length >= 2) {
+			String language = argument.substring(argument.indexOf(" ")+1).toUpperCase();
 			if (zh.getCM().isLanguageAvailable(language)) {
-				zh.getUM().saveLanguage(targetUUID, language);
-				if (samePlayer) {
-					s.sendMessage(zh.getMM().getMessageLang(language, zh.getLM().languageEdited, language));
+				if (!zh.getUM().getLanguage(targetUUID).equals(language)) {
+					zh.getUM().saveLanguage(targetUUID, language);
+					if (samePlayer) {
+						zh.getMM().sendMessageLang(s, zh.getLM().languageEdited, language);
+					}
+					else {
+						zh.getMM().sendMessagePlayerLang(s, zh.getLM().languageEditedOther, targetName, language);
+						if (isPlayerOnline(targetUUID, true)) {
+							Player target = zh.getServer().getPlayer(targetUUID);
+							zh.getMM().sendMessageLang((CommandSender)target, zh.getLM().languageEdited, language);
+						}
+					}
+					zh.getEM().payCommand(p, command);
 				}
-				else {
-					String playerLanguage = zh.getUM().getPlayerLanguage(p.getUniqueId());
-					s.sendMessage(zh.getMM().getMessagePlayerLang(playerLanguage, zh.getLM().languageEditedOther, targetName, language));
-					if (isPlayerOnline(targetUUID, true)) {
-						Player target = zh.getServer().getPlayer(targetUUID);
-						target.sendMessage(zh.getMM().getMessageLang(language, zh.getLM().languageEdited, language));
+				else if (displayConsole) {
+					if (samePlayer) {
+						zh.getMM().sendMessageLang(s, zh.getLM().languageAlreadyUsed, language);
+					}
+					else {
+						zh.getMM().sendMessagePlayerLang(s, zh.getLM().languageAlreadyUsedOther, targetName, language);
 					}
 				}
 			}
 			else if (displayConsole) {
-				displayAvailableLanguages(zh.getLM().unknownLanguage);
+				displayAvailableLanguages(zh.getLM().unknownLanguage, language);
 			}
 		}
 		else if (displayConsole) {
@@ -90,18 +100,27 @@ public class ZSettings extends Command {
 		}
 		
 	}
-
+	
 	private void displayAvailableLanguages(String index) {
+		displayAvailableLanguages(index, null);
+	}
+
+	private void displayAvailableLanguages(String index, String language) {
 		List<String> availableLanguages = zh.getCM().getAvailableLanguages();
 		String availableLanguagesMessage = "";
 		for (int i=0; i<availableLanguages.size(); i++) {
-			availableLanguagesMessage += zh.getMM().getHeaderLang(language, zh.getLM().availableLanguageFormat, availableLanguages.get(i), true);
+			availableLanguagesMessage += zh.getMM().getHeaderValue(s, zh.getLM().availableLanguageFormat, 0, availableLanguages.get(i), true);
 			if (i < availableLanguages.size()-1) {
 				availableLanguagesMessage += ", ";
 			}
 		}
 		availableLanguagesMessage += ChatColor.RESET;
-		s.sendMessage(zh.getMM().getMessageLang(language, index, availableLanguagesMessage));
+		if (language != null) {
+			zh.getMM().sendMessageValueLang(s, index, availableLanguagesMessage, language);
+		}
+		else {
+			zh.getMM().sendMessageValue(s, index, availableLanguagesMessage);
+		}
 	}
 
 }

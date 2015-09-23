@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Horse;
@@ -17,6 +18,7 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 
 public class UserManager {
 	private static String DOT = ".";
+	private static String FAVORITE = "1";
 	private static String HORSES = "Horses";
 	private static String LANGUAGE = "Language";
 	private static String LOCATION = "Location";
@@ -46,36 +48,47 @@ public class UserManager {
 		return 0;
 	}
 	
+	public Horse getFavoriteHorse(UUID playerUUID) {
+		return getHorse(playerUUID, FAVORITE);
+	}
+	
+	public String getFavoriteUserID(UUID playerUUID) {
+		// TODO
+		return FAVORITE;
+	}
+	
 	public Horse getHorse(UUID playerUUID, String userID) {
-		UUID horseUUID = getHorseUUID(playerUUID, userID);
-		if (horseUUID != null) {
-			Location location = getLocation(playerUUID, userID);
-			Chunk chunk = location.getChunk();
-			Horse horse = getHorseInChunk(chunk, horseUUID);
-			if (horse != null) {
-				return horse;
-			}
-			else {
-				List<Chunk> neighboringChunks = getNeighboringChunks(location);
-				for (Chunk neighboringChunk : neighboringChunks) {
-					horse = getHorseInChunk(neighboringChunk, horseUUID);
-					if (horse != null) {
-						return horse;
+		if (playerUUID != null && userID != null) {
+			UUID horseUUID = getHorseUUID(playerUUID, userID);
+			if (horseUUID != null) {
+				Location location = getLocation(playerUUID, userID);
+				Chunk chunk = location.getChunk();
+				Horse horse = getHorseInChunk(chunk, horseUUID);
+				if (horse != null) {
+					return horse;
+				}
+				else {
+					List<Chunk> neighboringChunks = getNeighboringChunks(location);
+					for (Chunk neighboringChunk : neighboringChunks) {
+						horse = getHorseInChunk(neighboringChunk, horseUUID);
+						if (horse != null) {
+							return horse;
+						}
 					}
 				}
-			}
-			List<World> worlds = zh.getServer().getWorlds();
-			for (World world : worlds) {
-				List<LivingEntity> livingEntities = world.getLivingEntities();
-				for (LivingEntity livingEntity : livingEntities) {
-					if (livingEntity.getUniqueId().equals(horseUUID)) {
-						return (Horse)livingEntity;
+				List<World> worlds = zh.getServer().getWorlds();
+				for (World world : worlds) {
+					List<LivingEntity> livingEntities = world.getLivingEntities();
+					for (LivingEntity livingEntity : livingEntities) {
+						if (livingEntity.getUniqueId().equals(horseUUID)) {
+							return (Horse)livingEntity;
+						}
 					}
-				}
-				List<Entity> entities = world.getEntities();
-				for (Entity entity : entities) {
-					if (entity.getUniqueId().equals(horseUUID)) {
-						return (Horse)entity;
+					List<Entity> entities = world.getEntities();
+					for (Entity entity : entities) {
+						if (entity.getUniqueId().equals(horseUUID)) {
+							return (Horse)entity;
+						}
 					}
 				}
 			}
@@ -145,19 +158,40 @@ public class UserManager {
 	
 	public UUID getHorseUUID(UUID playerUUID, String userID) {
 		String horseUUID = getHorseData(playerUUID, userID, UNIQUEID, null);
-		return UUID.fromString(horseUUID);
+		if (horseUUID != null) {
+			return UUID.fromString(horseUUID);
+		}
+		return null;
+	}
+	
+	public String getLanguage(CommandSender s) {
+		if (s instanceof Player) {
+			return getLanguage(((Player)s).getUniqueId());
+		}
+		else {
+			return zh.getCM().getDefaultLanguage();
+		}
+	}
+	
+	public String getLanguage(UUID playerUUID) {
+		String language = getPlayerData(playerUUID, LANGUAGE, null);
+		if (language == null) {
+			language = zh.getCM().getDefaultLanguage();
+		}
+		return language;
 	}
 	
 	public Location getLocation(UUID playerUUID, String userID) {
-		String worldName = getHorseData(playerUUID, userID, LOCATION + DOT + WORLD, null);
-		World world = zh.getServer().getWorld(worldName);
-		if (world != null) {
-			double x = Double.parseDouble(getHorseData(playerUUID, userID, LOCATION + DOT + X, null));
-			double y = Double.parseDouble(getHorseData(playerUUID, userID, LOCATION + DOT + Y, null));
-			double z = Double.parseDouble(getHorseData(playerUUID, userID, LOCATION + DOT + Z, null));
-			return new Location(world, x, y, z);
+		if (playerUUID != null && userID != null) {
+			String worldName = getHorseData(playerUUID, userID, LOCATION + DOT + WORLD, null);
+			World world = zh.getServer().getWorld(worldName);
+			if (world != null) {
+				double x = Double.parseDouble(getHorseData(playerUUID, userID, LOCATION + DOT + X, null));
+				double y = Double.parseDouble(getHorseData(playerUUID, userID, LOCATION + DOT + Y, null));
+				double z = Double.parseDouble(getHorseData(playerUUID, userID, LOCATION + DOT + Z, null));
+				return new Location(world, x, y, z);
+			}
 		}
-		zh.getLogger().severe("The world \"" + worldName + "\" doesn't exist !");
 		return null;
 	}
 	
@@ -187,14 +221,6 @@ public class UserManager {
 		return Integer.toString(userID);
 	}
 	
-	public String getPlayerLanguage(UUID playerUUID) {
-		String language = getPlayerData(playerUUID, LANGUAGE, null);
-		if (language == null) {
-			language = zh.getCM().getDefaultLanguage();
-		}
-		return language;
-	}
-	
 	public String getPlayerName(String targetName) {
         ConfigurationSection cs = zh.getUsers().getConfigurationSection(getPlayerPath());
         if (cs != null) {
@@ -219,20 +245,22 @@ public class UserManager {
 	}
 	
 	public UUID getPlayerUUID(Horse horse) {
-        ConfigurationSection cs = zh.getUsers().getConfigurationSection(getPlayerPath());
-        if (cs != null) {
-        	for (String player : cs.getKeys(false)) {
- 	    	   UUID playerUUID = UUID.fromString(player);
- 	    	   ConfigurationSection subCS = cs.getConfigurationSection(playerUUID + DOT + HORSES);
- 	    	   if (subCS != null) {
- 	    		   for (String userID : subCS.getKeys(false)) {
- 	    			   if (getHorseUUID(playerUUID, userID).equals(horse.getUniqueId())) {
- 	    				   return playerUUID;
- 	    			   }
- 	    		   }
- 	    	   }
-        	}
-	    }
+		if (horse != null) {
+			ConfigurationSection cs = zh.getUsers().getConfigurationSection(getPlayerPath());
+	        if (cs != null) {
+	        	for (String player : cs.getKeys(false)) {
+	 	    	   UUID playerUUID = UUID.fromString(player);
+	 	    	   ConfigurationSection subCS = cs.getConfigurationSection(playerUUID + DOT + HORSES);
+	 	    	   if (subCS != null) {
+	 	    		   for (String userID : subCS.getKeys(false)) {
+	 	    			   if (getHorseUUID(playerUUID, userID).equals(horse.getUniqueId())) {
+	 	    				   return playerUUID;
+	 	    			   }
+	 	    		   }
+	 	    	   }
+	        	}
+		    }
+		}
 		return null;
 	}
 	
@@ -253,7 +281,10 @@ public class UserManager {
 	}
 	
 	private String getPlayerPath(UUID playerUUID) {
-		return PLAYERS + DOT + playerUUID.toString();
+		if (playerUUID != null) {
+			return PLAYERS + DOT + playerUUID.toString();
+		}
+		return null;
 	}
 	
 	private String getPlayerPath(UUID playerUUID, String path) {
@@ -280,6 +311,20 @@ public class UserManager {
 			if (cs != null) {
 				for (String userID : cs.getKeys(false)) {
 					if (getHorseUUID(playerUUID, userID).equals(horse.getUniqueId())) {
+						return userID;
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	public String getUserID(UUID playerUUID, String horseName) {
+		if (isRegistered(playerUUID)) {
+			ConfigurationSection cs = zh.getUsers().getConfigurationSection(getPlayerPath(playerUUID, HORSES));
+			if (cs != null) {
+				for (String userID : cs.getKeys(false)) {
+					if (getHorseName(playerUUID, userID).equalsIgnoreCase(horseName)) {
 						return userID;
 					}
 				}
@@ -339,20 +384,19 @@ public class UserManager {
 				}
 			}
 		}
-		
 		return false;
 	}
 	
 	public boolean isRegistered(UUID playerUUID) {
-		return zh.getUsers().contains(getPlayerPath(playerUUID));
+		return playerUUID != null && zh.getUsers().contains(getPlayerPath(playerUUID));
 	}
 	
 	public boolean isRegistered(Horse horse) {
-		return getPlayerUUID(horse) != null;
+		return horse != null && getPlayerUUID(horse) != null;
 	}
 	
 	public boolean isRegistered(UUID playerUUID, String userID) {
-		return zh.getUsers().contains(getHorsePath(playerUUID, userID));
+		return playerUUID != null && userID != null && zh.getUsers().contains(getHorsePath(playerUUID, userID));
 	}
 	
 	public boolean isShared(Horse horse) {
@@ -393,16 +437,14 @@ public class UserManager {
         setHorseData(playerUUID, userID, PROTECTED, false, true);
 	}
 	
-	public boolean registerHorse(UUID playerUUID, Horse horse, String horseName, boolean lock, boolean protect, boolean share) {
-		if (!isRegistered(playerUUID)) {
-			if (!registerPlayer(playerUUID)) {
-				return false;
+	public void registerHorse(UUID playerUUID, Horse horse, String horseName, boolean lock, boolean protect, boolean share) {
+		if (playerUUID != null && horse != null && horseName != null) {
+			if (!isRegistered(playerUUID)) {
+				registerPlayer(playerUUID);
 			}
-		}
-		if (isRegistered(horse)) {
-			remove(horse);
-		}
-		if (horse != null) {
+			if (isRegistered(horse)) {
+				remove(horse);
+			}
 			String userID = getNextUserID(playerUUID);
 			UUID horseUUID = horse.getUniqueId();
 			setHorseData(playerUUID, userID, NAME, horseName, false);
@@ -411,21 +453,19 @@ public class UserManager {
 			setHorseData(playerUUID, userID, SHARED, share, false);
 			setHorseData(playerUUID, userID, UNIQUEID, horseUUID.toString(), false);
 			saveLocation(playerUUID, horse, userID);
-			return true;
 		}
-		return false;
 	}
 	
-	public boolean registerPlayer(UUID playerUUID) {
-		String playerName = zh.getServer().getOfflinePlayer(playerUUID).getName();
-		String language = zh.getCM().getDefaultLanguage();
-		if (playerName != null && language != null) {
-			setPlayerData(playerUUID, NAME, playerName, false);
-			setPlayerData(playerUUID, LANGUAGE, language, false);
-			zh.saveUsers();
-			return true;
+	public void registerPlayer(UUID playerUUID) {
+		if (playerUUID != null) {
+			String playerName = zh.getServer().getOfflinePlayer(playerUUID).getName();
+			String language = zh.getCM().getDefaultLanguage();
+			if (playerName != null && language != null) {
+				setPlayerData(playerUUID, NAME, playerName, false);
+				setPlayerData(playerUUID, LANGUAGE, language, false);
+				zh.saveUsers();
+			}
 		}
-		return false;
 	}
 	
 	public boolean remove(Horse horse) {

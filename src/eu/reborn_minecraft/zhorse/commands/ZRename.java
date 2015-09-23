@@ -10,33 +10,37 @@ public class ZRename extends Command {
 
 	public ZRename(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		idAllow = true;
-		targetAllow = false;
-		if (isPlayer()) {
-			if (analyseArguments()) {
-				if (hasPermission()) {
-					if (isWorldEnabled()) {
-						if (!(idMode || targetMode)) {
-							if (isOnHorse()) {
-								horse = (Horse)p.getVehicle();
-								if (isRegistered()) {
-									execute();
-								}
+		playerOnly = true;
+		needTarget = false;
+		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {
+			if (!idMode) {
+				if (!targetMode) {
+					boolean ownsHorse = ownsHorse(targetUUID, true);
+					if (isOnHorse(ownsHorse)) {
+						horse = (Horse)p.getVehicle();
+						if (isRegistered(horse)) {
+							execute();
+						}
+					}
+					else if (ownsHorse) {
+						userID = zh.getUM().getFavoriteUserID(p.getUniqueId());
+						if (isRegistered(p.getUniqueId(), userID)) {
+							horse = zh.getUM().getFavoriteHorse(p.getUniqueId());
+							if (isHorseLoaded()) {
+								execute();
 							}
 						}
-						else {
-							if (idMode) {
-								if (isRegistered(targetUUID, userID)) {
-									horse = zh.getUM().getHorse(targetUUID, userID);
-									if (isHorseLoaded()) {
-										execute();
-									}
-								}
-							}
-							else if (displayConsole) {
-								sendCommandUsage();
-							}
-						}
+					}
+				}
+				else {
+					sendCommandUsage();
+				}
+			}
+			else {
+				if (isRegistered(targetUUID, userID)) {
+					horse = zh.getUM().getHorse(targetUUID, userID);
+					if (isHorseLoaded()) {
+						execute();
 					}
 				}
 			}
@@ -44,19 +48,15 @@ public class ZRename extends Command {
 	}
 	
 	private void execute() {
-		if (isOwner()) {
-			if (craftHorseName(false)) {
-				if (zh.getEM().canAffordCommand(p, command)) {
-					ChatColor cc = zh.getCM().getGroupColor(targetUUID);
-					horse.setCustomName(cc + horseName + ChatColor.RESET);
-					horse.setCustomNameVisible(true);
-					zh.getUM().rename(targetUUID, horse, horseName);
-					if (displayConsole) {
-						s.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().horseRenamed, horseName));
-					}
-					zh.getEM().payCommand(p, command);
-				}
+		if (isOwner() && craftHorseName(false) && zh.getEM().canAffordCommand(p, command)) {
+			ChatColor cc = zh.getCM().getGroupColor(targetUUID);
+			horse.setCustomName(cc + horseName + ChatColor.RESET);
+			horse.setCustomNameVisible(true);
+			zh.getUM().rename(targetUUID, horse, horseName);
+			if (displayConsole) {
+				zh.getMM().sendMessageHorse(s, zh.getLM().horseRenamed, horseName);
 			}
+			zh.getEM().payCommand(p, command);
 		}
 	}
 }

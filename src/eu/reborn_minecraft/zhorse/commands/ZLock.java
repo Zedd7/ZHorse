@@ -11,33 +11,38 @@ public class ZLock extends Command {
 
 	public ZLock(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		idAllow = true;
-		targetAllow = false;
-		if (isPlayer()) {
-			if (analyseArguments()) {
-				if (hasPermission()) {
-					if (isWorldEnabled()) {
-						if (!(idMode || targetMode)) {
-							if (isOnHorse()) {
-								horse = (Horse)p.getVehicle();
-								if (isRegistered()) {
-									execute();
-								}
+		playerOnly = true;
+		needTarget = false;
+		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {
+			applyArgument(true);
+			if (!idMode) {
+				if (!targetMode) {
+					boolean ownsHorse = ownsHorse(targetUUID, true);
+					if (isOnHorse(ownsHorse)) {
+						horse = (Horse)p.getVehicle();
+						if (isRegistered(horse)) {
+							execute();
+						}
+					}
+					else if (ownsHorse) {
+						userID = zh.getUM().getFavoriteUserID(p.getUniqueId());
+						if (isRegistered(p.getUniqueId(), userID)) {
+							horse = zh.getUM().getFavoriteHorse(p.getUniqueId());
+							if (isHorseLoaded()) {
+								execute();
 							}
 						}
-						else {
-							if (idMode) {
-								if (isRegistered(targetUUID, userID)) {
-									horse = zh.getUM().getHorse(targetUUID, userID);
-									if (isHorseLoaded()) {
-										execute();
-									}
-								}
-							}
-							else if (displayConsole){
-								sendCommandUsage();
-							}
-						}
+					}
+				}
+				else {
+					sendCommandUsage();
+				}
+			}
+			else {
+				if (isRegistered(targetUUID, userID)) {
+					horse = zh.getUM().getHorse(targetUUID, userID);
+					if (isHorseLoaded()) {
+						execute();
 					}
 				}
 			}
@@ -45,36 +50,34 @@ public class ZLock extends Command {
 	}
 
 	private void execute() {
-		if (isOwner()) {
-			if (zh.getEM().canAffordCommand(p, command)) {
-				if (!zh.getUM().isLocked(horse)) {
-					if (zh.getUM().isShared(horse)) {
-						zh.getUM().unShare(targetUUID, horse);
-						if (displayConsole) {
-							s.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().horseUnShared, horseName));
-						}
-					}
-					zh.getUM().lock(targetUUID, horse);
-					Entity passenger = horse.getPassenger();
-					if (passenger != null && passenger instanceof Player) {
-						adminMode = false;
-						if (!isOwner(passenger.getUniqueId(), true)) {
-							horse.eject();
-							passenger.sendMessage(zh.getMM().getMessagePlayer(language, zh.getLM().horseBelongsTo, zh.getUM().getPlayerName(horse)));
-						}
-					}
+		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
+			if (!zh.getUM().isLocked(horse)) {
+				if (zh.getUM().isShared(horse)) {
+					zh.getUM().unShare(targetUUID, horse);
 					if (displayConsole) {
-						s.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().horseLocked, horseName));
+						zh.getMM().sendMessageHorse(s, zh.getLM().horseUnShared, horseName);
 					}
 				}
-				else {
-					zh.getUM().unLock(targetUUID, horse);
-					if (displayConsole) {
-						s.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().horseUnLocked, horseName));
+				zh.getUM().lock(targetUUID, horse);
+				Entity passenger = horse.getPassenger();
+				if (passenger != null && passenger instanceof Player) {
+					adminMode = false;
+					if (!isOwner(passenger.getUniqueId(), true)) {
+						horse.eject();
+						zh.getMM().sendMessagePlayer((CommandSender)passenger, zh.getLM().horseBelongsTo, zh.getUM().getPlayerName(horse));
 					}
 				}
-				zh.getEM().payCommand(p, command);
+				if (displayConsole) {
+					zh.getMM().sendMessageHorse(s, zh.getLM().horseLocked, horseName);
+				}
 			}
+			else {
+				zh.getUM().unLock(targetUUID, horse);
+				if (displayConsole) {
+					zh.getMM().sendMessageHorse(s, zh.getLM().horseUnLocked, horseName);
+				}
+			}
+			zh.getEM().payCommand(p, command);
 		}
 	}
 

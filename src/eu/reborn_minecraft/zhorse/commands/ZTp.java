@@ -8,23 +8,29 @@ public class ZTp extends Command {
 
 	public ZTp(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		idAllow = true;
-		targetAllow = false;
-		if (isPlayer()) {
-			if (analyseArguments()) {
-				if (hasPermission()) {
-					if (isWorldEnabled()) {
-						if (idMode) {
-							if (isRegistered(targetUUID, userID)) {
-								horse = zh.getUM().getHorse(targetUUID, userID);
-								if (isHorseLoaded()) {
-									execute();
-								}
-							}
+		playerOnly = true;
+		needTarget = false;
+		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {
+			applyArgument(true);
+			if (!idMode) {
+				if (!targetMode) {
+					userID = zh.getUM().getFavoriteUserID(p.getUniqueId());
+					if (isRegistered(p.getUniqueId(), userID)) {
+						horse = zh.getUM().getFavoriteHorse(p.getUniqueId());
+						if (isHorseLoaded()) {
+							execute();
 						}
-						else if (displayConsole) {
-							sendCommandUsage();
-						}
+					}
+				}
+				else {
+					sendCommandUsage();
+				}
+			}
+			else {
+				if (isRegistered(targetUUID, userID)) {
+					horse = zh.getUM().getHorse(targetUUID, userID);
+					if (isHorseLoaded()) {
+						execute();
 					}
 				}
 			}
@@ -32,18 +38,12 @@ public class ZTp extends Command {
 	}
 	
 	private void execute() {
-		if (isOwner()) {
-			if (isHorseReachable()) {
-				if (isNotOnHorse()) {
-					if (zh.getEM().canAffordCommand(p, command)) {
-						p.teleport(horse);
-						if (displayConsole) {
-							s.sendMessage(zh.getMM().getMessageHorse(language, zh.getLM().teleportedToHorse, horseName));
-						}
-						zh.getEM().payCommand(p, command);
-					}
-				}
+		if (isOwner() && isHorseReachable() && isNotOnHorse() && zh.getEM().canAffordCommand(p, command)) {
+			p.teleport(horse);
+			if (displayConsole) {
+				zh.getMM().sendMessageHorse(s, zh.getLM().teleportedToHorse, horseName);
 			}
+			zh.getEM().payCommand(p, command);
 		}
 	}
 }

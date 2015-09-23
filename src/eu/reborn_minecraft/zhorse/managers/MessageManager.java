@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 
@@ -23,7 +24,7 @@ public class MessageManager {
 	private String max = "";
 	private String perm = "";
 	private String player = "";
-	private String space = "";
+	private int spacer = 1;
 	private String userID = "";
 	private String value = "";
 	
@@ -99,226 +100,429 @@ public class MessageManager {
 		return (getColor(color) != null);
 	}
 	
-	public String getCommandDescription(String language, String space, String command, boolean hidePrefix) {
+	public String getCommandDescription(CommandSender s, int spacer, String command, boolean hidePrefix) {
 		String costMessage = "";
-		return getCommandDescriptionFull(language, space, command, costMessage, amount, value, false, hidePrefix);
+		return getCommandDescriptionFull(s, spacer, command, costMessage, amount, value, false, hidePrefix);
 	}
 	
-	public String getCommandDescriptionCostValue(String language, String space, String command, String costIndex, String cost, String value, boolean hidePrefix) {
-		String costMessage = space + zh.getLM().getEconomyAnswer(language, costIndex, hidePrefix);
-		return getCommandDescriptionFull(language, space, command, costMessage, cost, value, false, hidePrefix);
+	public String getCommandDescriptionCostValue(CommandSender s, int spacer, String command, String costIndex, String cost, String value, boolean hidePrefix) {
+		String costMessage = getSpace(spacer) + zh.getLM().getEconomyAnswer(zh.getUM().getLanguage(s), costIndex, hidePrefix);
+		return getCommandDescriptionFull(s, spacer, command, costMessage, cost, value, false, hidePrefix);
 	}
 	
-	public String getCommandUsage(String language, String index, String space, String command, boolean hidePrefix) {
-		String usage = zh.getLM().getCommandUsage(language, command);
-		return getHeaderFull(language, index, space, player, horse, userID, amount, usage, max, lang, hidePrefix);
+	public String getCommandUsage(CommandSender s, String index, int spacer, String command, boolean hidePrefix) {
+		String usage = zh.getLM().getCommandUsage(zh.getUM().getLanguage(s), command);
+		return getHeaderFull(s, index, spacer, player, horse, userID, amount, usage, max, lang, hidePrefix);
 	}
 	
-	public String getEconomyAmountValue(String language, String index, String amount, String value) {
-		return getEconomyFull(language, index, amount, value);
+	public String getEconomyAmountValue(CommandSender s, String index, String amount, String value) {
+		return getEconomyFull(s, index, amount, value);
 	}
 	
-	public String getHeader(String language, String index, boolean hidePrefix) {
-		return getHeaderFull(language, index, space, player, horse, userID, amount, value, max, lang, hidePrefix);
+	public String getHeader(CommandSender s, String index, boolean hidePrefix) {
+		return getHeaderFull(s, index, spacer, player, horse, userID, amount, value, max, lang, hidePrefix);
 	}
 	
-	public String getHeader(String language, String index, String space, boolean hidePrefix) {
-		return getHeaderFull(language, index, space, player, horse, userID, amount, value, max, lang, hidePrefix);
+	public String getHeader(CommandSender s, String index, int spacer, boolean hidePrefix) {
+		return getHeaderFull(s, index, spacer, player, horse, userID, amount, value, max, lang, hidePrefix);
 	}
 	
-	public String getHeaderAmount(String language, String index, String amount, boolean hidePrefix) {
-		return getHeaderFull(language, index, space, player, horse, userID, amount, value, max, lang, hidePrefix);
+	public String getHeaderAmount(CommandSender s, String index, String amount, boolean hidePrefix) {
+		return getHeaderFull(s, index, spacer, player, horse, userID, amount, value, max, lang, hidePrefix);
 	}
 	
-	public String getHeaderAmount(String language, String index, String space, String amount, boolean hidePrefix) {
-		return getHeaderFull(language, index, space, player, horse, userID, amount, value, max, lang, hidePrefix);
+	public String getHeaderAmount(CommandSender s, String index, int spacer, String amount, boolean hidePrefix) {
+		return getHeaderFull(s, index, spacer, player, horse, userID, amount, value, max, lang, hidePrefix);
 	}
 	
-	public String getHeaderAmountMax(String language, String index, String amount, String max, boolean hidePrefix) {
-		return getHeaderFull(language, index, space, player, horse, userID, amount, value, max, lang, hidePrefix);
+	public String getHeaderAmountMax(CommandSender s, String index, String amount, String max, boolean hidePrefix) {
+		return getHeaderFull(s, index, spacer, player, horse, userID, amount, value, max, lang, hidePrefix);
 	}
 	
-	public String getHeaderAmountMax(String language, String index, String space, String amount, String max, boolean hidePrefix) {
-		return getHeaderFull(language, index, space, player, horse, userID, amount, value, max, lang, hidePrefix);
+	public String getHeaderAmountMax(CommandSender s, String index, int spacer, String amount, String max, boolean hidePrefix) {
+		return getHeaderFull(s, index, spacer, player, horse, userID, amount, value, max, lang, hidePrefix);
 	}
 	
-	public String getHeaderHorseUserID(String language, String index, String horse, String userID, boolean hidePrefix) {
-		return getHeaderFull(language, index, space, player, horse, userID, amount, value, max, lang, hidePrefix);
+	public String getHeaderHorseUserID(CommandSender s, String index, String horse, String userID, boolean hidePrefix) {
+		return getHeaderFull(s, index, spacer, player, horse, userID, amount, value, max, lang, hidePrefix);
 	}
 	
-	public String getHeaderHorseUserID(String language, String index, String space, String horse, String userID, boolean hidePrefix) {
-		return getHeaderFull(language, index, space, player, horse, userID, amount, value, max, lang, hidePrefix);
+	public String getHeaderHorseUserID(CommandSender s, String index, int spacer, String horse, String userID, boolean hidePrefix) {
+		return getHeaderFull(s, index, spacer, player, horse, userID, amount, value, max, lang, hidePrefix);
 	}
 	
-	public String getHeaderLang(String language, String index, String lang, boolean hidePrefix) {
-		return getHeaderFull(language, index, space, player, horse, userID, amount, value, max, lang, hidePrefix);
+	public String getHeaderLang(CommandSender s, String index, String lang, boolean hidePrefix) {
+		return getHeaderFull(s, index, spacer, player, horse, userID, amount, value, max, lang, hidePrefix);
 	}
 	
-	public String getHeaderLang(String language, String index, String space, String lang, boolean hidePrefix) {
-		return getHeaderFull(language, index, space, player, horse, userID, amount, value, max, lang, hidePrefix);
+	public String getHeaderLang(CommandSender s, String index, int spacer, String lang, boolean hidePrefix) {
+		return getHeaderFull(s, index, spacer, player, horse, userID, amount, value, max, lang, hidePrefix);
 	}
 	
-	public String getHeaderPlayer(String language, String index, String player, boolean hidePrefix) {
-		return getHeaderFull(language, index, space, player, horse, userID, amount, value, max, lang, hidePrefix);
+	public String getHeaderPlayer(CommandSender s, String index, String player, boolean hidePrefix) {
+		return getHeaderFull(s, index, spacer, player, horse, userID, amount, value, max, lang, hidePrefix);
 	}
 	
-	public String getHeaderPlayer(String language, String index, String space, String player, boolean hidePrefix) {
-		return getHeaderFull(language, index, space, player, horse, userID, amount, value, max, lang, hidePrefix);
+	public String getHeaderPlayer(CommandSender s, String index, int spacer, String player, boolean hidePrefix) {
+		return getHeaderFull(s, index, spacer, player, horse, userID, amount, value, max, lang, hidePrefix);
 	}
 	
-	public String getHeaderPlayerAmount(String language, String index, String player, String amount, boolean hidePrefix) {
-		return getHeaderFull(language, index, space, player, horse, userID, amount, value, max, lang, hidePrefix);
+	public String getHeaderPlayerAmount(CommandSender s, String index, String player, String amount, boolean hidePrefix) {
+		return getHeaderFull(s, index, spacer, player, horse, userID, amount, value, max, lang, hidePrefix);
 	}
 	
-	public String getHeaderPlayerAmount(String language, String index, String space, String player, String amount, boolean hidePrefix) {
-		return getHeaderFull(language, index, space, player, horse, userID, amount, value, max, lang, hidePrefix);
+	public String getHeaderPlayerAmount(CommandSender s, String index, int spacer, String player, String amount, boolean hidePrefix) {
+		return getHeaderFull(s, index, spacer, player, horse, userID, amount, value, max, lang, hidePrefix);
 	}
 	
-	public String getHeaderContent(String language, String index, String contentIndex, boolean hidePrefix) {
-		String content = zh.getLM().getHeaderMessage(language, contentIndex);
-		return getHeaderFull(language, index, space, player, horse, userID, amount, content, max, lang, hidePrefix);
+	public String getHeaderContent(CommandSender s, String index, String contentIndex, boolean hidePrefix) {
+		String content = zh.getLM().getHeaderMessage(zh.getUM().getLanguage(s), contentIndex);
+		return getHeaderFull(s, index, spacer, player, horse, userID, amount, content, max, lang, hidePrefix);
 	}
 	
-	public String getHeaderContent(String language, String index, String space, String contentIndex, boolean hidePrefix) {
-		String content = zh.getLM().getHeaderMessage(language, contentIndex);
-		return getHeaderFull(language, index, space, player, horse, userID, amount, content, max, lang, hidePrefix);
+	public String getHeaderContent(CommandSender s, String index, int spacer, String contentIndex, boolean hidePrefix) {
+		String content = zh.getLM().getHeaderMessage(zh.getUM().getLanguage(s), contentIndex);
+		return getHeaderFull(s, index, spacer, player, horse, userID, amount, content, max, lang, hidePrefix);
 	}
 	
-	public String getHeaderValue(String language, String index, String value, boolean hidePrefix) {
-		return getHeaderFull(language, index, space, player, horse, userID, amount, value, max, lang, hidePrefix);
+	public String getHeaderValue(CommandSender s, String index, String value, boolean hidePrefix) {
+		return getHeaderFull(s, index, spacer, player, horse, userID, amount, value, max, lang, hidePrefix);
 	}
 	
-	public String getHeaderValue(String language, String index, String space, String value, boolean hidePrefix) {
-		return getHeaderFull(language, index, space, player, horse, userID, amount, value, max, lang, hidePrefix);
+	public String getHeaderValue(CommandSender s, String index, int spacer, String value, boolean hidePrefix) {
+		return getHeaderFull(s, index, spacer, player, horse, userID, amount, value, max, lang, hidePrefix);
 	}
 	
-	public String getInfo(String language, String index, String space, boolean hidePrefix) {
-		return getInfoFull(language, index, space, player, horse, userID, amount, value, max, hidePrefix);
+	public String getInfo(CommandSender s, String index, boolean hidePrefix) {
+		return getInfoFull(s, index, spacer, player, horse, userID, amount, value, max, hidePrefix);
 	}
 	
-	public String getInfoAmountMax(String language, String index, String space, String amount, String max, boolean hidePrefix) {
-		return getInfoFull(language, index, space, player, horse, userID, amount, value, max, hidePrefix);
+	public String getInfoAmountMax(CommandSender s, String index, String amount, String max, boolean hidePrefix) {
+		return getInfoFull(s, index, spacer, player, horse, userID, amount, value, max, hidePrefix);
 	}
 	
-	public String getInfoHorse(String language, String index, String space, String horse, boolean hidePrefix) {
-		return getInfoFull(language, index, space, player, horse, userID, amount, value, max, hidePrefix);
+	public String getInfoHorse(CommandSender s, String index, String horse, boolean hidePrefix) {
+		return getInfoFull(s, index, spacer, player, horse, userID, amount, value, max, hidePrefix);
 	}
 	
-	public String getInfoPlayer(String language, String index, String space, String player, boolean hidePrefix) {
-		return getInfoFull(language, index, space, player, horse, userID, amount, value, max, hidePrefix);
+	public String getInfoPlayer(CommandSender s, String index, String player, boolean hidePrefix) {
+		return getInfoFull(s, index, spacer, player, horse, userID, amount, value, max, hidePrefix);
 	}
 	
-	public String getInfoUserID(String language, String index, String space, String userID, boolean hidePrefix) {
-		return getInfoFull(language, index, space, player, horse, userID, amount, value, max, hidePrefix);
+	public String getInfoUserID(CommandSender s, String index, String userID, boolean hidePrefix) {
+		return getInfoFull(s, index, spacer, player, horse, userID, amount, value, max, hidePrefix);
 	}
 	
-	public String getInfoValue(String language, String index, String space, String value, boolean hidePrefix) {
-		return getInfoFull(language, index, space, player, horse, userID, amount, value, max, hidePrefix);
+	public String getInfoValue(CommandSender s, String index, String value, boolean hidePrefix) {
+		return getInfoFull(s, index, spacer, player, horse, userID, amount, value, max, hidePrefix);
 	}
 
-	public String getMessage(String language, String index) {
-		return getMessageFull(language, index, player, horse, userID, perm, amount, value, lang);
+	public String getMessage(CommandSender s, String index) {
+		return getMessageFull(s, index, player, horse, userID, perm, amount, value, lang);
 	}
 	
-	public String getMessageAmount(String language, String index, String amount) {
-		return getMessageFull(language, index, player, horse, userID, perm, amount, value, lang);
+	public String getMessageAmount(CommandSender s, String index, String amount) {
+		return getMessageFull(s, index, player, horse, userID, perm, amount, value, lang);
 	}
 	
-	public String getMessageHorse(String language, String index, String horse) {
-		return getMessageFull(language, index, player, horse, userID, perm, amount, value, lang);
+	public String getMessageHorse(CommandSender s, String index, String horse) {
+		return getMessageFull(s, index, player, horse, userID, perm, amount, value, lang);
 	}	
 	
-	public String getMessageHorseValue(String language, String index, String horse, String value) {
-		return getMessageFull(language, index, player, horse, userID, perm, amount, value, lang);
+	public String getMessageHorseValue(CommandSender s, String index, String horse, String value) {
+		return getMessageFull(s, index, player, horse, userID, perm, amount, value, lang);
 	}
 	
-	public String getMessageLang(String language, String index, String lang) {
-		return getMessageFull(language, index, player, horse, userID, perm, amount, value, lang);
+	public String getMessageLang(CommandSender s, String index, String lang) {
+		return getMessageFull(s, index, player, horse, userID, perm, amount, value, lang);
 	}	
 	
-	public String getMessagePerm(String language, String index, String perm) {
-		return getMessageFull(language, index, player, horse, userID, perm, amount, value, lang);
+	public String getMessagePerm(CommandSender s, String index, String perm) {
+		return 	getMessageFull(s, index, player, horse, userID, perm, amount, value, lang);
 	}
 	
-	public String getMessagePlayer(String language, String index, String player) {
-		return getMessageFull(language, index, player, horse, userID, perm, amount, value, lang);
+	public String getMessagePlayer(CommandSender s, String index, String player) {
+		return getMessageFull(s, index, player, horse, userID, perm, amount, value, lang);
 	}
 	
-	public String getMessagePlayerAmount(String language, String index, String player, String amount) {
-		return getMessageFull(language, index, player, horse, userID, perm, amount, value, lang);
+	public String getMessagePlayerAmount(CommandSender s, String index, String player, String amount) {
+		return getMessageFull(s, index, player, horse, userID, perm, amount, value, lang);
 	}
 	
-	public String getMessagePlayerLang(String language, String index, String player, String lang) {
-		return getMessageFull(language, index, player, horse, userID, perm, amount, value, lang);
+	public String getMessagePlayerLang(CommandSender s, String index, String player, String lang) {
+		return getMessageFull(s, index, player, horse, userID, perm, amount, value, lang);
 	}
 	
-	public String getMessagePlayerHorse(String language, String index, String player, String horse) {
-		return getMessageFull(language, index, player, horse, userID, perm, amount, value, lang);
+	public String getMessagePlayerHorse(CommandSender s, String index, String player, String horse) {
+		return getMessageFull(s, index, player, horse, userID, perm, amount, value, lang);
 	}
 	
-	public String getMessagePlayerPerm(String language, String index, String player, String perm) {
-		return getMessageFull(language, index, player, horse, userID, perm, amount, value, lang);
+	public String getMessagePlayerPerm(CommandSender s, String index, String player, String perm) {
+		return getMessageFull(s, index, player, horse, userID, perm, amount, value, lang);
 	}
 	
-	public String getMessagePlayerUserID(String language, String index, String player, String userID) {
-		return getMessageFull(language, index, player, horse, userID, perm, amount, value, lang);
+	public String getMessagePlayerUserID(CommandSender s, String index, String player, String userID) {
+		return getMessageFull(s, index, player, horse, userID, perm, amount, value, lang);
 	}
 	
-	public String getMessageUserID(String language, String index, String userID) {
-		return getMessageFull(language, index, player, horse, userID, perm, amount, value, lang);
+	public String getMessageUserID(CommandSender s, String index, String userID) {
+		return 	getMessageFull(s, index, player, horse, userID, perm, amount, value, lang);
 	}
 	
-	public String getMessageValue(String language, String index, String value) {
-		return getMessageFull(language, index, player, horse, userID, perm, amount, value, lang);
+	public String getMessageValue(CommandSender s, String index, String value) {
+		return getMessageFull(s, index, player, horse, userID, perm, amount, value, lang);
 	}
 	
-	public String getSettingsCommandDescription(String language, String space, String command, boolean hidePrefix) {
-		String costMessage = "";
-		return getCommandDescriptionFull(language, space, command, costMessage, amount, value, true, hidePrefix);
+	public String getMessageValueLang(CommandSender s, String index, String value, String lang) {
+		return getMessageFull(s, index, player, horse, userID, perm, amount, value, lang);
 	}
 	
-	public String getSettingsCommandDescriptionCost(String language, String space, String command, String costIndex, String cost, boolean hidePrefix) {
-		String costMessage = space + zh.getLM().getEconomyAnswer(language, costIndex, hidePrefix);
-		return getCommandDescriptionFull(language, space, command, costMessage, cost, value, true, hidePrefix);
+	public String getSettingsCommandDescription(CommandSender s, int spacer, String command, boolean hidePrefix) {
+		return getCommandDescriptionFull(s, spacer, command, "", amount, value, true, hidePrefix);
 	}
 	
-	private String getCommandDescriptionFull(String language, String space, String command, String costMessage, String amount, String value, boolean settingsCommand, boolean hidePrefix) {
-		String rawMessage = "";
+	public String getSettingsCommandDescriptionCostValue(CommandSender s, int spacer, String command, String costIndex, String cost, String value, boolean hidePrefix) {
+		String costMessage = getSpace(spacer) + zh.getLM().getEconomyAnswer(zh.getUM().getLanguage(s), costIndex, hidePrefix);
+		return getCommandDescriptionFull(s, spacer, command, costMessage, cost, value, true, hidePrefix);
+	}
+	
+	
+	
+	public void sendCommandDescription(CommandSender s, int spacer, String command, boolean hidePrefix) {
+		s.sendMessage(getCommandDescription(s, spacer, command, hidePrefix));
+	}
+	
+	public void sendCommandDescriptionCostValue(CommandSender s, int spacer, String command, String costIndex, String cost, String value, boolean hidePrefix) {
+		s.sendMessage(getCommandDescriptionCostValue(s, spacer, command, costIndex, cost, value, hidePrefix));
+	}
+	
+	public void sendCommandUsage(CommandSender s, String index, int spacer, String command, boolean hidePrefix) {
+		s.sendMessage(getCommandUsage(s, index, spacer, command, hidePrefix));
+	}
+	
+	public void sendEconomyAmountValue(CommandSender s, String index, String amount, String value) {
+		s.sendMessage(getEconomyAmountValue(s, index, amount, value));
+	}
+	
+	public void sendHeader(CommandSender s, String index, boolean hidePrefix) {
+		s.sendMessage(getHeader(s, index, hidePrefix));
+	}
+	
+	public void sendHeader(CommandSender s, String index, int spacer, boolean hidePrefix) {
+		s.sendMessage(getHeader(s, index, spacer, hidePrefix));
+	}
+	
+	public void sendHeaderAmount(CommandSender s, String index, String amount, boolean hidePrefix) {
+		s.sendMessage(getHeaderAmount(s, index, amount, hidePrefix));
+	}
+	
+	public void sendHeaderAmount(CommandSender s, String index, int spacer, String amount, boolean hidePrefix) {
+		s.sendMessage(getHeaderAmount(s, index, spacer, amount, hidePrefix));
+	}
+	
+	public void sendHeaderAmountMax(CommandSender s, String index, String amount, String max, boolean hidePrefix) {
+		s.sendMessage(getHeaderAmountMax(s, index, amount, max, hidePrefix));
+	}
+	
+	public void sendHeaderAmountMax(CommandSender s, String index, int spacer, String amount, String max, boolean hidePrefix) {
+		s.sendMessage(getHeaderAmountMax(s, index, spacer, amount, max, hidePrefix));
+	}
+	
+	public void sendHeaderHorseUserID(CommandSender s, String index, String horse, String userID, boolean hidePrefix) {
+		s.sendMessage(getHeaderHorseUserID(s, index, horse, userID, hidePrefix));
+	}
+	
+	public void sendHeaderHorseUserID(CommandSender s, String index, int spacer, String horse, String userID, boolean hidePrefix) {
+		s.sendMessage(getHeaderHorseUserID(s, index, spacer, horse, userID, hidePrefix));
+	}
+	
+	public void sendHeaderLang(CommandSender s, String index, String lang, boolean hidePrefix) {
+		s.sendMessage(getHeaderLang(s, index, lang, hidePrefix));
+	}
+	
+	public void sendHeaderLang(CommandSender s, String index, int spacer, String lang, boolean hidePrefix) {
+		s.sendMessage(getHeaderLang(s, index, spacer, lang, hidePrefix));
+	}
+	
+	public void sendHeaderPlayer(CommandSender s, String index, String player, boolean hidePrefix) {
+		s.sendMessage(getHeaderPlayer(s, index, player, hidePrefix));
+	}
+	
+	public void sendHeaderPlayer(CommandSender s, String index, int spacer, String player, boolean hidePrefix) {
+		s.sendMessage(getHeaderPlayer(s, index, spacer, player, hidePrefix));
+	}
+	
+	public void sendHeaderPlayerAmount(CommandSender s, String index, String player, String amount, boolean hidePrefix) {
+		s.sendMessage(getHeaderPlayerAmount(s, index, player, amount, hidePrefix));
+	}
+	
+	public void sendHeaderPlayerAmount(CommandSender s, String index, int spacer, String player, String amount, boolean hidePrefix) {
+		s.sendMessage(getHeaderPlayerAmount(s, index, spacer, player, amount, hidePrefix));
+	}
+	
+	public void sendHeaderContent(CommandSender s, String index, String contentIndex, boolean hidePrefix) {
+		s.sendMessage(getHeaderContent(s, index, contentIndex, hidePrefix));
+	}
+	
+	public void sendHeaderContent(CommandSender s, String index, int spacer, String contentIndex, boolean hidePrefix) {
+		s.sendMessage(getHeaderContent(s, index, spacer, contentIndex, hidePrefix));
+	}
+	
+	public void sendHeaderValue(CommandSender s, String index, String value, boolean hidePrefix) {
+		s.sendMessage(getHeaderValue(s, index, value, hidePrefix));
+	}
+	
+	public void sendHeaderValue(CommandSender s, String index, int spacer, String value, boolean hidePrefix) {
+		s.sendMessage(getHeaderValue(s, index, spacer, value, hidePrefix));
+	}
+	
+	public void sendInfo(CommandSender s, String index, boolean hidePrefix) {
+		s.sendMessage(getInfo(s, index, hidePrefix));
+	}
+	
+	public void sendInfoAmountMax(CommandSender s, String index, String amount, String max, boolean hidePrefix) {
+		s.sendMessage(getInfoAmountMax(s, index, amount, max, hidePrefix));
+	}
+	
+	public void sendInfoHorse(CommandSender s, String index, String horse, boolean hidePrefix) {
+		s.sendMessage(getInfoHorse(s, index, horse, hidePrefix));
+	}
+	
+	public void sendInfoPlayer(CommandSender s, String index, String player, boolean hidePrefix) {
+		s.sendMessage(getInfoPlayer(s, index, player, hidePrefix));
+	}
+	
+	public void sendInfoUserID(CommandSender s, String index, String userID, boolean hidePrefix) {
+		s.sendMessage(getInfoUserID(s, index, userID, hidePrefix));
+	}
+	
+	public void sendInfoValue(CommandSender s, String index, String value, boolean hidePrefix) {
+		s.sendMessage(getInfoValue(s, index, value, hidePrefix));
+	}
+
+	public void sendMessage(CommandSender s, String index) {
+		s.sendMessage(getMessage(s, index));
+	}
+	
+	public void sendMessageAmount(CommandSender s, String index, String amount) {
+		s.sendMessage(getMessageAmount(s, index, amount));
+	}
+	
+	public void sendMessageHorse(CommandSender s, String index, String horse) {
+		s.sendMessage(getMessageHorse(s, index, horse));
+	}	
+	
+	public void sendMessageHorseValue(CommandSender s, String index, String horse, String value) {
+		s.sendMessage(getMessageHorseValue(s, index, horse, value));
+	}
+	
+	public void sendMessageLang(CommandSender s, String index, String lang) {
+		s.sendMessage(getMessageLang(s, index, lang));
+	}	
+	
+	public void sendMessagePerm(CommandSender s, String index, String perm) {
+		s.sendMessage(getMessagePerm(s, index, perm));
+	}
+	
+	public void sendMessagePlayer(CommandSender s, String index, String player) {
+		s.sendMessage(getMessagePlayer(s, index, player));
+	}
+	
+	public void sendMessagePlayerAmount(CommandSender s, String index, String player, String amount) {
+		s.sendMessage(getMessagePlayerAmount(s, index, player, amount));
+	}
+	
+	public void sendMessagePlayerLang(CommandSender s, String index, String player, String lang) {
+		s.sendMessage(getMessagePlayerLang(s, index, player, lang));
+	}
+	
+	public void sendMessagePlayerHorse(CommandSender s, String index, String player, String horse) {
+		s.sendMessage(getMessagePlayerHorse(s, index, player, horse));
+	}
+	
+	public void sendMessagePlayerPerm(CommandSender s, String index, String player, String perm) {
+		s.sendMessage(getMessagePlayerPerm(s, index, player, perm));
+	}
+	
+	public void sendMessagePlayerUserID(CommandSender s, String index, String player, String userID) {
+		s.sendMessage(getMessagePlayerUserID(s, index, player, userID));
+	}
+	
+	public void sendMessageUserID(CommandSender s, String index, String userID) {
+		s.sendMessage(getMessageUserID(s, index, userID));
+	}
+	
+	public void sendMessageValue(CommandSender s, String index, String value) {
+		s.sendMessage(getMessageValue(s, index, value));
+	}
+	
+	public void sendMessageValueLang(CommandSender s, String index, String value, String lang) {
+		s.sendMessage(getMessageValueLang(s, index, value, lang));
+	}
+	
+	public void sendSettingsCommandDescription(CommandSender s, int spacer, String command, boolean hidePrefix) {
+		s.sendMessage(getSettingsCommandDescription(s, spacer, command, hidePrefix));
+	}
+	
+	public void sendSettingsCommandDescriptionCostValue(CommandSender s, int spacer, String command, String costIndex, String cost, String value, boolean hidePrefix) {
+		s.sendMessage(getSettingsCommandDescriptionCostValue(s, spacer, command, costIndex, cost, value, hidePrefix));
+	}
+	
+	private String getCommandDescriptionFull(CommandSender s, int spacer, String command, String costMessage, String amount, String value, boolean settingsCommand, boolean hidePrefix) {
+		String rawMessage;
 		if (!settingsCommand) {
-			rawMessage = space + zh.getLM().getCommandDescription(language, command) + costMessage;
+			rawMessage = getSpace(spacer) + zh.getLM().getCommandDescription(zh.getUM().getLanguage(s), command) + costMessage;
 		}
 		else {
-			rawMessage = space + zh.getLM().getSettingsCommandDescription(language, command) + costMessage;
+			rawMessage = getSpace(spacer) + zh.getLM().getSettingsCommandDescription(zh.getUM().getLanguage(s), command) + costMessage;
 		}
-		String message = populate(rawMessage, player, horse, userID, perm, amount, value, max, lang);
+		String message = populateFlags(rawMessage, player, horse, userID, perm, amount, value, max, lang);
 		return message;
 	}
 	
-	private String getEconomyFull(String language, String index, String amount, String value) {
-		String rawMessage = zh.getLM().getEconomyAnswer(language, index);
-		String message = populate(rawMessage, player, horse, userID, perm, amount, value, max, lang);
+	private String getEconomyFull(CommandSender s, String index, String amount, String value) {
+		String rawMessage = zh.getLM().getEconomyAnswer(zh.getUM().getLanguage(s), index);
+		String message = populateFlags(rawMessage, player, horse, userID, perm, amount, value, max, lang);
 		return message;
 	}
 	
-	private String getHeaderFull(String language, String index, String space, String player, String horse, String userID, String amount, String value, String max, String lang, boolean hidePrefix) {
-		String rawMessage = space + zh.getLM().getHeaderMessage(language, index, hidePrefix);
-		String message = populate(rawMessage, player, horse, userID, perm, amount, value, max, lang);
+	private String getHeaderFull(CommandSender s, String index, int spacer, String player, String horse, String userID, String amount, String value, String max, String lang, boolean hidePrefix) {
+		String rawMessage = getSpace(spacer) + zh.getLM().getHeaderMessage(zh.getUM().getLanguage(s), index, hidePrefix);
+		String message = populateFlags(rawMessage, player, horse, userID, perm, amount, value, max, lang);
 		return message;
 	}
 	
-	private String getInfoFull(String language, String index, String space, String player, String horse, String userID, String amount, String value, String max, boolean hidePrefix) {
-		String rawMessage = space + zh.getLM().getInformationMessage(language, index, hidePrefix);
-		String message = populate(rawMessage, player, horse, userID, perm, amount, value, max, lang);
+	private String getInfoFull(CommandSender s, String index, int spacer, String player, String horse, String userID, String amount, String value, String max, boolean hidePrefix) {
+		String rawMessage = getSpace(spacer) + zh.getLM().getInformationMessage(zh.getUM().getLanguage(s), index, hidePrefix);
+		String message = populateFlags(rawMessage, player, horse, userID, perm, amount, value, max, lang);
 		return message;
 	}
 	
-	private String getMessageFull(String language, String index, String player, String horse, String userID, String perm, String amount, String value, String lang) {
-		String rawMessage = zh.getLM().getCommandAnswer(language, index);
-		String message = populate(rawMessage, player, horse, userID, perm, amount, value, max, lang);
+	private String getMessageFull(CommandSender s, String index, String player, String horse, String userID, String perm, String amount, String value, String lang) {
+		String rawMessage = zh.getLM().getCommandAnswer(zh.getUM().getLanguage(s), index);
+		String message = populateFlags(rawMessage, player, horse, userID, perm, amount, value, max, lang);
 		return message;
 	}
 	
-	private String populate(String rawMessage, String player, String horse, String userID, String perm, String amount, String value, String max, String lang) {
+	private String getSpace(int spacer) {
+		String space = "";
+		while (space.length() < spacer) {
+			space += " ";
+		}
+		return space;
+	}
+	
+	private String populateColors(String rawMessage) {
+		String message = rawMessage;
+		for (ChatColor cc : colors.keySet()) {
+			for (String colorCode : colors.get(cc)) {
+				message = message.replace(colorCode, cc.toString());
+			}
+		}
+		return message;
+	}
+	
+	private String populateFlags(String rawMessage, String player, String horse, String userID, String perm, String amount, String value, String max, String lang) {
 		String message = rawMessage;
 		message = message.replace(MessageManager.amountFlag, amount);
 		message = message.replace(MessageManager.horseFlag, horse);
@@ -329,16 +533,6 @@ public class MessageManager {
 		message = message.replace(MessageManager.userIDFlag, userID);		
 		message = message.replace(MessageManager.valueFlag, value);		
 		message = populateColors(message);
-		return message;
-	}
-
-	private String populateColors(String rawMessage) {
-		String message = rawMessage;
-		for (ChatColor cc : colors.keySet()) {
-			for (String colorCode : colors.get(cc)) {
-				message = message.replace(colorCode, cc.toString());
-			}
-		}
 		return message;
 	}
 
