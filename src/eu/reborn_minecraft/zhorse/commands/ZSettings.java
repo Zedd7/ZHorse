@@ -9,6 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
 public class ZSettings extends Command {
 	private static String LANGUAGE = "language";
@@ -44,7 +45,7 @@ public class ZSettings extends Command {
 				}
 				else {
 					if (displayConsole) {
-						zh.getMM().sendMessageValue(s, zh.getLM().unknownSettingsCommand, settingsCommand);
+						zh.getMM().sendMessageValue(s, LocaleEnum.unknownSettingsCommand, settingsCommand);
 					}
 					displaySettingsCommands();
 				}
@@ -61,7 +62,7 @@ public class ZSettings extends Command {
 		for (String settingsCommand : zh.getCmdM().getSettingsCommandList()) {
 			settingsCommandList.add(command + "." + settingsCommand);
 		}
-		displayCommandList(settingsCommandList, zh.getLM().settingsCommandListHeader, true);
+		displayCommandList(settingsCommandList, zh.getMM().getMessage(s, LocaleEnum.settingsCommandListHeader, true));
 	}
 
 	private void editLanguage() {

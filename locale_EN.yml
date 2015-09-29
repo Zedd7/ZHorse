@@ -15,8 +15,8 @@ Headers:
   settingsCommandListHeader: "<gold>ZHorse's settings commands"
   horseInfoHeader: "<gold>Horse data"
   horseListFormat: "<yellow><id><green> - <yellow><horse>"
-  horseListHeader: "<gold>Your horses <amount>"
-  horseListOtherHeader: "<gold><player>'s horses <amount>"
+  horseListHeader: "<gold>Your horses <value>"
+  horseListOtherHeader: "<gold><player>'s horses <value>"
   remainingClaimsFormat: "<yellow>(<gold><amount><yellow>/<gold><max><yellow>)"
 
 Messages:
@@ -60,8 +60,8 @@ Messages:
   missingLanguage: "<yellow>You must provide a language, please use one the followings : <value><yellow>."
   missingPermission: "<yellow>You don't have the <gold><perm><yellow> permission."
   missingPermissionOther: "<gold><player><yellow> doesn't have the <gold><perm><yellow> permission."
-  noHorseOwned: "<yellow>You don't own any horse. <amount>"
-  noHorseOwnedOther: "<gold><player><yellow> doesn't own any horse. <amount>"
+  noHorseOwned: "<yellow>You don't own any horse. <value>"
+  noHorseOwnedOther: "<gold><player><yellow> doesn't own any horse. <value>"
   notOnHorse: "<yellow>You must be on a horse to perform this command."
   playerCommand: "<yellow>You must be a player to perform this command."
   playerOffline: "<gold><player><yellow> must be online in order to perform this command."

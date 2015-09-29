@@ -15,8 +15,8 @@ Headers:
   settingsCommandListHeader: "<gold>Commandes de ZHorse settings"
   horseInfoHeader: "<gold>Données du cheval"
   horseListFormat: "<yellow><id><green> - <yellow><horse>"
-  horseListHeader: "<gold>Vos chevaux <amount>"
-  horseListOtherHeader: "<gold>Chevaux de <player> <amount>"
+  horseListHeader: "<gold>Vos chevaux <value>"
+  horseListOtherHeader: "<gold>Chevaux de <player> <value>"
   remainingClaimsFormat: "<yellow>(<gold><amount><yellow>/<gold><max><yellow>)"
 
 Messages:
@@ -60,8 +60,8 @@ Messages:
   missingLanguage: "<yellow>Vous devez fournir une langue, veuillez utiliser l'une des suivantes : <value><yellow>."
   missingPermission: "<yellow>Vous n'avez pas la permission <gold><perm><yellow>."
   missingPermissionOther: "<gold><player><yellow> n'a pas la permission <gold><perm><yellow>."
-  noHorseOwned: "<yellow>Vous ne possédez aucun cheval. <amount>"
-  noHorseOwnedOther: "<gold><player><yellow> ne possède aucun cheval. <amount>"
+  noHorseOwned: "<yellow>Vous ne possédez aucun cheval. <value>"
+  noHorseOwnedOther: "<gold><player><yellow> ne possède aucun cheval. <value>"
   notOnHorse: "<yellow>Vous devez être à cheval pour exécuter cette commande."
   playerCommand: "<yellow>Vous devez être un joueur pour exécuter cette commande."
   playerOffline: "<gold><player><yellow> doit être en ligne pour exécuter cette commande."

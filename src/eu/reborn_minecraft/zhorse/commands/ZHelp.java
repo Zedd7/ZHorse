@@ -3,6 +3,7 @@ package eu.reborn_minecraft.zhorse.commands;
 import org.bukkit.command.CommandSender;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
 public class ZHelp extends Command {
 
@@ -25,7 +26,7 @@ public class ZHelp extends Command {
 	private void execute() {
 		if (zh.getEM().canAffordCommand(p, command)) {
 			if (argument.isEmpty()) {
-				displayCommandList(zh.getCmdM().getCommandList(), zh.getLM().commandListHeader);
+				displayCommandList(zh.getCmdM().getCommandList(), zh.getMM().getMessage(s, LocaleEnum.commandListHeader, true));
 				zh.getEM().payCommand(p, command);
 			}
 			else {

@@ -9,6 +9,8 @@ import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
+import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
 public class Command {
 	protected ZHorse zh;
@@ -143,20 +145,20 @@ public class Command {
 						return true;
 					}
 					else if (displayConsole) {
-						zh.getMM().sendMessageHorse(s, zh.getLM().horseNameBanned, horseName);
+						zh.getMM().sendMessageHorse(s, LocaleEnum.horseNameBanned, horseName);
 					}
 				}
 				else if (displayConsole) {
 					if (length < minimumLength) {
-						zh.getMM().sendMessageAmount(s, zh.getLM().horseNameTooShort, Integer.toString(minimumLength));
+						zh.getMM().sendMessageAmount(s, LocaleEnum.horseNameTooShort, minimumLength);
 					}
 					else if (length > maximumLength) {
-						zh.getMM().sendMessageAmount(s, zh.getLM().horseNameTooLong, Integer.toString(maximumLength));
+						zh.getMM().sendMessageAmount(s, LocaleEnum.horseNameTooLong, maximumLength);
 					}
 				}
 			}
 			else if (displayConsole) {
-				zh.getMM().sendMessage(s, zh.getLM().horseNameForbidden);
+				zh.getMM().sendMessage(s, LocaleEnum.horseNameForbidden);
 			}
 		}
 		else {
@@ -176,7 +178,7 @@ public class Command {
 				}
 			}
 			else if (displayConsole) {
-				zh.getMM().sendMessage(s, zh.getLM().horseNameMandatory);
+				zh.getMM().sendMessage(s, LocaleEnum.horseNameMandatory);
 			}
 		}
 		return false;
@@ -186,30 +188,30 @@ public class Command {
 		displayCommandList(commandList, index, false);
 	}
 	
-	protected void displayCommandList(List<String> commandList, String index, boolean settingsCommand) {
+	protected void displayCommandList(List<String> commandList, String header, boolean settingsCommand) {
 		if (displayConsole) {
-			zh.getMM().sendHeaderContent(s, zh.getLM().headerFormat, index, true);
+			zh.getMM().sendMessageValue(s, LocaleEnum.headerFormat, header, true);
 			for (String command : commandList) {
 				if (hasPermission(targetUUID, command, true, true)) {
 					if (!settingsCommand) {
 						if (zh.getEM().isCommandFree(targetUUID, command)) {
-							zh.getMM().sendCommandDescription(s, 1, command, true);
+							zh.getMM().sendMessageSpacer(s, LocaleEnum.valueOf(command), 1, true);
 						}
 						else {
-							String cost = Integer.toString(zh.getCM().getCommandCost(command));
-							zh.getMM().sendCommandDescriptionCostValue(s, 1, command, zh.getLM().commandCost, cost, zh.getLM().getEconomyAnswer(zh.getUM().getLanguage(s), zh.getLM().currencySymbol, true), true);
+							int cost = zh.getCM().getCommandCost(command);
+							String currencySymbol = zh.getMM().getMessage(s, LocaleEnum.currencySymbol, true);
+							zh.getMM().sendMessageCostSpacerValue(s, LocaleEnum.valueOf(command), cost, 1, currencySymbol, true);
 						}
 					}
 					else {
-						System.out.println(command);
 						command = command.substring(command.indexOf(".")+1);
-						System.out.println(command);
 						if (zh.getEM().isCommandFree(targetUUID, this.command)) {
-							zh.getMM().sendSettingsCommandDescription(s, 1, command, true);
+							zh.getMM().sendMessageSpacer(s, LocaleEnum.valueOf(command), 1, true);
 						}
 						else {
-							String cost = Integer.toString(zh.getCM().getCommandCost(this.command));
-							zh.getMM().sendSettingsCommandDescriptionCostValue(s, 1, command, zh.getLM().commandCost, cost, zh.getLM().getEconomyAnswer(zh.getUM().getLanguage(s), zh.getLM().currencySymbol, true), true);
+							int cost = zh.getCM().getCommandCost(this.command);
+							String currencySymbol = zh.getMM().getMessage(s, LocaleEnum.currencySymbol, true);
+							zh.getMM().sendMessageCostSpacerValue(s, LocaleEnum.valueOf(command), cost, 1, currencySymbol, true);
 						}
 					}
 				}
@@ -233,7 +235,7 @@ public class Command {
 		if (samePlayer || isPlayerOnline(playerUUID, true)) {
 			int claimsAmount = zh.getUM().getClaimsAmount(playerUUID);
 			int maxClaims = zh.getCM().getClaimsLimit(playerUUID);
-			message = zh.getMM().getHeaderAmountMax(s, zh.getLM().remainingClaimsFormat, 0, Integer.toString(claimsAmount), Integer.toString(maxClaims), true);
+			message = zh.getMM().getMessageAmountMax(s, LocaleEnum.remainingClaimsFormat, claimsAmount, maxClaims, true);
 		}
 		return message;
 	}
@@ -251,10 +253,10 @@ public class Command {
 		}
 		else if (displayConsole) {
 			if (samePlayer) {
-				zh.getMM().sendMessage(s, zh.getLM().claimsLimitReached);
+				zh.getMM().sendMessage(s, LocaleEnum.claimsLimitReached);
 			}
 			else {
-				zh.getMM().sendMessagePlayer(s, zh.getLM().claimsLimitReachedOther, targetName);
+				zh.getMM().sendMessagePlayer(s, LocaleEnum.claimsLimitReachedOther, targetName);
 			}
 		}
 		return true;
@@ -273,7 +275,7 @@ public class Command {
 	}
 	
 	protected boolean hasPermission(CommandSender s, String command, boolean ignoreModes, boolean hideConsole) {
-		String permission = zh.getLM().zhPrefix + command;
+		String permission = KeyWordEnum.zhPrefix.getValue() + command;
     	if (!ignoreModes && (adminMode || (targetMode && !needTarget)) ) {
     		return hasPermissionAdmin(s, command, hideConsole);
     	}
@@ -281,7 +283,7 @@ public class Command {
     		return true;
     	}
     	else if (displayConsole && !hideConsole) {
-    		zh.getMM().sendMessagePerm(s, zh.getLM().missingPermission, permission);
+    		zh.getMM().sendMessagePerm(s, LocaleEnum.missingPermission, permission);
     	}
     	return false;
 	}
@@ -299,12 +301,12 @@ public class Command {
 	}
 	
 	protected boolean hasPermissionAdmin(CommandSender s, String command, boolean hideConsole) {
-		String permission = zh.getLM().zhPrefix + command + zh.getLM().adminSuffix;
+		String permission = KeyWordEnum.zhPrefix.getValue() + command + KeyWordEnum.adminSuffix.getValue();
 		if (zh.getPerms().has(s, permission)) {
         	return true;
 		}
         else if (displayConsole && !hideConsole) {
-        	zh.getMM().sendMessagePerm(s, zh.getLM().missingPermission, permission);
+        	zh.getMM().sendMessagePerm(s, LocaleEnum.missingPermission, permission);
         }
     	return false;
 	}
@@ -320,26 +322,26 @@ public class Command {
 				}
 				else if (displayConsole) {
 					if (zh.getUM().isClaimedBy(p.getUniqueId(), horse)) {
-						zh.getMM().sendMessage(s, zh.getLM().horseAlreadyClaimed);
+						zh.getMM().sendMessage(s, LocaleEnum.horseAlreadyClaimed);
 					}
 					else {
 						if (!targetMode) {
 							targetName = zh.getUM().getPlayerName(horse);
 						}
-						zh.getMM().sendMessagePlayer(s, zh.getLM().horseBelongsTo, targetName);
+						zh.getMM().sendMessagePlayer(s, LocaleEnum.horseBelongsTo, targetName);
 					}
 				}
 			}
 			else if (displayConsole) {
-				zh.getMM().sendMessage(s, zh.getLM().horseNotTamed);
+				zh.getMM().sendMessage(s, LocaleEnum.horseNotTamed);
 			}
 		}
 		else if (displayConsole) {
 			if (idMode && !targetMode) {
-				zh.getMM().sendMessageUserID(s, zh.getLM().unknownHorseId, userID);
+				zh.getMM().sendMessageUserID(s, LocaleEnum.unknownHorseId, userID);
 			}
 			else if (idMode && targetMode) {
-				zh.getMM().sendMessagePlayerUserID(s, zh.getLM().unknownHorseIdOther, targetName, userID);
+				zh.getMM().sendMessagePlayerUserID(s, LocaleEnum.unknownHorseIdOther, targetName, userID);
 			}
 		}
 		return false;
@@ -350,7 +352,7 @@ public class Command {
 			return true;
 		}
 		else if (displayConsole) {
-			zh.getMM().sendMessageHorse(s, zh.getLM().horseNotFound, zh.getUM().getHorseName(targetUUID, userID));
+			zh.getMM().sendMessageHorse(s, LocaleEnum.horseNotFound, zh.getUM().getHorseName(targetUUID, userID));
 		}
 		return false;
 	}
@@ -365,7 +367,7 @@ public class Command {
 		}
 		else if (displayConsole) {
 			String passengerName = ((Player)passenger).getName();
-			zh.getMM().sendMessagePlayerHorse(s, zh.getLM().horseMountedBy, passengerName, horseName);
+			zh.getMM().sendMessagePlayerHorse(s, LocaleEnum.horseMountedBy, passengerName, horseName);
 		}
 		return false;
 	}
@@ -375,7 +377,7 @@ public class Command {
 			return true;
 		}
 		else if (displayConsole) {
-			zh.getMM().sendMessageHorse(s, zh.getLM().worldUnreachable, horseName);
+			zh.getMM().sendMessageHorse(s, LocaleEnum.worldUnreachable, horseName);
 		}
 		return false;
 	}
@@ -389,7 +391,7 @@ public class Command {
 			return true;
 		}
 		else if (displayConsole && !hideConsole) {
-			zh.getMM().sendMessageHorse(s, zh.getLM().horseMounted, horseName);
+			zh.getMM().sendMessageHorse(s, LocaleEnum.horseMounted, horseName);
 		}
 		return false;
 	}
@@ -399,7 +401,7 @@ public class Command {
 			return true;
 		}
 		else if (displayConsole && !hideConsole) {
-			zh.getMM().sendMessage(s, zh.getLM().notOnHorse);
+			zh.getMM().sendMessage(s, LocaleEnum.notOnHorse);
 		}
 		return false;
 	}
@@ -418,7 +420,7 @@ public class Command {
 		}
 		else if (displayConsole && !hideConsole) {
 			String ownerName = zh.getUM().getPlayerName(horse);
-			zh.getMM().sendMessagePlayer(s, zh.getLM().horseBelongsTo, ownerName);
+			zh.getMM().sendMessagePlayer(s, LocaleEnum.horseBelongsTo, ownerName);
 		}
 		return false;
 	}
@@ -434,7 +436,7 @@ public class Command {
 			return playerCommand;
 		}
 		if (displayConsole && !hideConsole) {
-			zh.getMM().sendMessage(s, zh.getLM().playerCommand);
+			zh.getMM().sendMessage(s, LocaleEnum.playerCommand);
 		}
 		playerCommand = false;
 		return playerCommand;
@@ -445,7 +447,7 @@ public class Command {
 			return true;
 		}
 		else if (displayConsole) {
-			zh.getMM().sendMessage(s, zh.getLM().samePlayer);
+			zh.getMM().sendMessage(s, LocaleEnum.samePlayer);
 		}
 		return false;
 	}
@@ -455,7 +457,7 @@ public class Command {
 			return true;
 		}
     	if (displayConsole && !hideConsole) {
-    		zh.getMM().sendMessagePlayer(s, zh.getLM().playerOffline, targetName);
+    		zh.getMM().sendMessagePlayer(s, LocaleEnum.playerOffline, targetName);
     	}
 		return false;
 	}
@@ -466,7 +468,7 @@ public class Command {
 			return true;
 		}
 		else if (displayConsole) {
-			zh.getMM().sendMessage(s, zh.getLM().horseNotClaimed);
+			zh.getMM().sendMessage(s, LocaleEnum.horseNotClaimed);
 		}
 		return false;
 	}
@@ -476,7 +478,7 @@ public class Command {
 			return true;
 		}
 		else if (displayConsole) {
-			zh.getMM().sendMessagePlayer(s, zh.getLM().unknownPlayer, targetName);
+			zh.getMM().sendMessagePlayer(s, LocaleEnum.unknownPlayer, targetName);
 		}
 		return false;
 	}
@@ -492,23 +494,23 @@ public class Command {
 		}
 		else if (displayConsole) {
 			if (targetUUID == null) {
-				zh.getMM().sendMessagePlayer(s, zh.getLM().unknownPlayer, targetName);
+				zh.getMM().sendMessagePlayer(s, LocaleEnum.unknownPlayer, targetName);
 			}
 			else {
 				if (userID == null) {
 					if (samePlayer || isOwner) {
-						zh.getMM().sendMessageHorse(s, zh.getLM().unknownHorseName, horseName);
+						zh.getMM().sendMessageHorse(s, LocaleEnum.unknownHorseName, horseName);
 					}
 					else {
-						zh.getMM().sendMessagePlayerHorse(s, zh.getLM().unknownHorseNameOther, targetName, horseName);
+						zh.getMM().sendMessagePlayerHorse(s, LocaleEnum.unknownHorseNameOther, targetName, horseName);
 					}
 				}
 				else {
 					if (samePlayer || isOwner) {
-						zh.getMM().sendMessageUserID(s, zh.getLM().unknownHorseId, userID);
+						zh.getMM().sendMessageUserID(s, LocaleEnum.unknownHorseId, userID);
 					}
 					else {
-						zh.getMM().sendMessagePlayerUserID(s, zh.getLM().unknownHorseIdOther, targetName, userID);
+						zh.getMM().sendMessagePlayerUserID(s, LocaleEnum.unknownHorseIdOther, targetName, userID);
 					}
 				}
 			}
@@ -521,7 +523,7 @@ public class Command {
 			return true;
 		}
 		else if (displayConsole) {
-			zh.getMM().sendMessage(s, zh.getLM().worldDisabled);
+			zh.getMM().sendMessage(s, LocaleEnum.worldDisabled);
 		}
 		return false;
 	}
@@ -532,10 +534,10 @@ public class Command {
 		}
 		else if (displayConsole && !hideConsole) {
 			if (samePlayer) {
-				zh.getMM().sendMessageAmount(s, zh.getLM().noHorseOwned, getRemainingClaimsMessage(playerUUID));
+				zh.getMM().sendMessageValue(s, LocaleEnum.noHorseOwned, getRemainingClaimsMessage(playerUUID));
 			}
 			else {
-				zh.getMM().sendMessagePlayerAmount(s, zh.getLM().noHorseOwnedOther, targetName, getRemainingClaimsMessage(playerUUID));
+				zh.getMM().sendMessagePlayerValue(s, LocaleEnum.noHorseOwnedOther, targetName, getRemainingClaimsMessage(playerUUID));
 			}
 		}
 		return false;
@@ -548,10 +550,11 @@ public class Command {
 	protected void sendCommandUsage(String command, boolean hideError) {
 		if (displayConsole) {
 			if (!hideError) {
-				zh.getMM().sendMessage(s, zh.getLM().missingArguments);
+				zh.getMM().sendMessage(s, LocaleEnum.missingArguments);
 			}
-			zh.getMM().sendHeader(s, zh.getLM().commandUsageHeader, 1, true);
-			zh.getMM().sendCommandUsage(s, zh.getLM().commandUsageFormat, 1, command, true);
+			zh.getMM().sendMessageSpacer(s, LocaleEnum.commandUsageHeader, 1, true);
+			String commandUsage = zh.getMM().getMessage(s, LocaleEnum.valueOf(command), true);
+			zh.getMM().sendMessageSpacerValue(s, LocaleEnum.commandUsageFormat, 1, commandUsage, true);
 		}
 	}
 }
