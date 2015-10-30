@@ -3,6 +3,7 @@ package eu.reborn_minecraft.zhorse.commands;
 import org.bukkit.command.CommandSender;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
 public class ZTp extends Command {
 
@@ -41,7 +42,7 @@ public class ZTp extends Command {
 		if (isOwner() && isHorseReachable() && isNotOnHorse() && zh.getEM().canAffordCommand(p, command)) {
 			p.teleport(horse);
 			if (displayConsole) {
-				zh.getMM().sendMessageHorse(s, zh.getLM().teleportedToHorse, horseName);
+				zh.getMM().sendMessageHorse(s, LocaleEnum.teleportedToHorse, horseName);
 			}
 			zh.getEM().payCommand(p, command);
 		}

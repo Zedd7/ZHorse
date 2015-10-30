@@ -4,6 +4,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Horse;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
 public class ZShare extends Command {
 
@@ -53,18 +54,18 @@ public class ZShare extends Command {
 				if (zh.getUM().isLocked(horse)) {
 					zh.getUM().unLock(targetUUID, horse);
 					if (displayConsole) {
-						zh.getMM().sendMessageHorse(s, zh.getLM().horseUnLocked, horseName);
+						zh.getMM().sendMessageHorse(s, LocaleEnum.horseUnLocked, horseName);
 					}
 				}
 				zh.getUM().share(targetUUID, horse);
 				if (displayConsole) {
-					zh.getMM().sendMessageHorse(s, zh.getLM().horseShared, horseName);
+					zh.getMM().sendMessageHorse(s, LocaleEnum.horseShared, horseName);
 				}
 			}
 			else {
 				zh.getUM().unShare(targetUUID, horse);
 				if (displayConsole) {
-					zh.getMM().sendMessageHorse(s, zh.getLM().horseUnShared, horseName);
+					zh.getMM().sendMessageHorse(s, LocaleEnum.horseUnShared, horseName);
 				}
 			}
 			zh.getEM().payCommand(p, command);

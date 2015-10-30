@@ -1,15 +1,13 @@
 package eu.reborn_minecraft.zhorse.commands;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import net.md_5.bungee.api.ChatColor;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
+import net.md_5.bungee.api.ChatColor;
 
 public class ZSettings extends Command {
 	private static String LANGUAGE = "language";
@@ -47,22 +45,13 @@ public class ZSettings extends Command {
 					if (displayConsole) {
 						zh.getMM().sendMessageValue(s, LocaleEnum.unknownSettingsCommand, settingsCommand);
 					}
-					displaySettingsCommands();
+					displayCommandList(zh.getCmdM().getSettingsCommandList(), zh.getMM().getMessage(s, LocaleEnum.settingsCommandListHeader, true), true);
 				}
 			}
 			else {
-				System.out.println("test1");
-				displaySettingsCommands();
+				displayCommandList(zh.getCmdM().getSettingsCommandList(), zh.getMM().getMessage(s, LocaleEnum.settingsCommandListHeader, true), true);
 			}
 		}
-	}
-
-	private void displaySettingsCommands() {
-		List <String> settingsCommandList = new ArrayList<String>();
-		for (String settingsCommand : zh.getCmdM().getSettingsCommandList()) {
-			settingsCommandList.add(command + "." + settingsCommand);
-		}
-		displayCommandList(settingsCommandList, zh.getMM().getMessage(s, LocaleEnum.settingsCommandListHeader, true));
 	}
 
 	private void editLanguage() {
@@ -72,52 +61,52 @@ public class ZSettings extends Command {
 				if (!zh.getUM().getLanguage(targetUUID).equals(language)) {
 					zh.getUM().saveLanguage(targetUUID, language);
 					if (samePlayer) {
-						zh.getMM().sendMessageLang(s, zh.getLM().languageEdited, language);
+						zh.getMM().sendMessageLang(s, LocaleEnum.languageEdited, language);
 					}
 					else {
-						zh.getMM().sendMessagePlayerLang(s, zh.getLM().languageEditedOther, targetName, language);
+						zh.getMM().sendMessageLangPlayer(s, LocaleEnum.languageEditedOther, language, targetName);
 						if (isPlayerOnline(targetUUID, true)) {
 							Player target = zh.getServer().getPlayer(targetUUID);
-							zh.getMM().sendMessageLang((CommandSender)target, zh.getLM().languageEdited, language);
+							zh.getMM().sendMessageLang((CommandSender)target, LocaleEnum.languageEdited, language);
 						}
 					}
 					zh.getEM().payCommand(p, command);
 				}
 				else if (displayConsole) {
 					if (samePlayer) {
-						zh.getMM().sendMessageLang(s, zh.getLM().languageAlreadyUsed, language);
+						zh.getMM().sendMessageLang(s, LocaleEnum.languageAlreadyUsed, language);
 					}
 					else {
-						zh.getMM().sendMessagePlayerLang(s, zh.getLM().languageAlreadyUsedOther, targetName, language);
+						zh.getMM().sendMessageLangPlayer(s, LocaleEnum.languageAlreadyUsedOther, language, targetName);
 					}
 				}
 			}
 			else if (displayConsole) {
-				displayAvailableLanguages(zh.getLM().unknownLanguage, language);
+				displayAvailableLanguages(LocaleEnum.unknownLanguage, language);
 			}
 		}
 		else if (displayConsole) {
-			displayAvailableLanguages(zh.getLM().missingLanguage);
+			displayAvailableLanguages(LocaleEnum.missingLanguage);
 		}
 		
 	}
 	
-	private void displayAvailableLanguages(String index) {
+	private void displayAvailableLanguages(LocaleEnum index) {
 		displayAvailableLanguages(index, null);
 	}
 
-	private void displayAvailableLanguages(String index, String language) {
+	private void displayAvailableLanguages(LocaleEnum index, String language) {
 		List<String> availableLanguages = zh.getCM().getAvailableLanguages();
 		String availableLanguagesMessage = "";
 		for (int i=0; i<availableLanguages.size(); i++) {
-			availableLanguagesMessage += zh.getMM().getHeaderValue(s, zh.getLM().availableLanguageFormat, 0, availableLanguages.get(i), true);
+			availableLanguagesMessage += zh.getMM().getMessageValue(s, LocaleEnum.availableLanguageFormat, availableLanguages.get(i), true);
 			if (i < availableLanguages.size()-1) {
 				availableLanguagesMessage += ", ";
 			}
 		}
 		availableLanguagesMessage += ChatColor.RESET;
 		if (language != null) {
-			zh.getMM().sendMessageValueLang(s, index, availableLanguagesMessage, language);
+			zh.getMM().sendMessageLangValue(s, index, language, availableLanguagesMessage);
 		}
 		else {
 			zh.getMM().sendMessageValue(s, index, availableLanguagesMessage);

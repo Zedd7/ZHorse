@@ -5,6 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Horse;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
 public class ZRename extends Command {
 
@@ -54,7 +55,7 @@ public class ZRename extends Command {
 			horse.setCustomNameVisible(true);
 			zh.getUM().rename(targetUUID, horse, horseName);
 			if (displayConsole) {
-				zh.getMM().sendMessageHorse(s, zh.getLM().horseRenamed, horseName);
+				zh.getMM().sendMessageHorse(s, LocaleEnum.horseRenamed, horseName);
 			}
 			zh.getEM().payCommand(p, command);
 		}

@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 
 public class ConfigManager {
 	private ZHorse zh;
@@ -22,7 +23,7 @@ public class ConfigManager {
 	}
 	
 	public List<String> getAvailableLanguages() {
-		List<String> availableLanguages = zh.getConfig().getStringList("Languages.available");
+		List<String> availableLanguages = zh.getConfig().getStringList(KeyWordEnum.languagesPrefix.getValue() + KeyWordEnum.available.getValue());
 		if (availableLanguages == null || availableLanguages.isEmpty()) {
 			availableLanguages = new ArrayList<String>();
 			availableLanguages.add(getDefaultLanguage());
@@ -35,7 +36,7 @@ public class ConfigManager {
 		if (playerUUID != null) {
 			String groupName = getGroupName(playerUUID);
 			if (groupName != null) {
-				String claimsLimit = zh.getConfig().getString("Groups." + groupName + ".claims-limit");
+				String claimsLimit = zh.getConfig().getString(KeyWordEnum.groupsPrefix.getValue() + groupName + KeyWordEnum.claimsLimitSuffix.getValue());
 				if (claimsLimit != null) {
 					value = Integer.parseInt(claimsLimit);
 					if (value < 0 && value != -1) {
@@ -50,7 +51,7 @@ public class ConfigManager {
 	public int getCommandCost(String command) {
 		int value = 0;
 		if (command != null) {
-			String commandCost = zh.getConfig().getString("Commands." + command + ".cost");
+			String commandCost = zh.getConfig().getString(KeyWordEnum.commandsPrefix.getValue() + command + KeyWordEnum.costSuffix.getValue());
 			if (commandCost != null) {
 				value = Integer.parseInt(commandCost);
 				if (value < 0) {
@@ -62,24 +63,16 @@ public class ConfigManager {
 	}
 	
 	public String getDefaultHorseName() {
-		String defaultHorseName = zh.getConfig().getString("HorseNames.default-name");
-		if (defaultHorseName == null) {
-			defaultHorseName = "NotSet";
-		}
-		return defaultHorseName;
+		return zh.getConfig().getString(KeyWordEnum.horsenames.getValue() + KeyWordEnum.defaultNameSuffix.getValue(), "NotSet");
 	}
 	
 	public String getDefaultLanguage() {
-		String defaultLanguage = zh.getConfig().getString("Languages.default");
-		if (defaultLanguage == null) {
-			defaultLanguage = "EN";
-		}
-		return defaultLanguage;
+		return zh.getConfig().getString(KeyWordEnum.languages.getValue() + KeyWordEnum.defaultSuffix.getValue(), null);
 	}
 	
 	private String getExactGroupName(String groupName) {
 		if (groupName != null) {
-			ConfigurationSection cs = zh.getConfig().getConfigurationSection("Groups");
+			ConfigurationSection cs = zh.getConfig().getConfigurationSection(KeyWordEnum.groups.getValue());
 			if (cs != null) {
 				for (String exactGroupName : cs.getKeys(false)) {
 					if (groupName.equalsIgnoreCase(exactGroupName)) {
@@ -96,7 +89,7 @@ public class ConfigManager {
 		if (playerUUID != null) {
 			String groupName = getGroupName(playerUUID);
 			if (groupName != null) {
-				String color = zh.getConfig().getString("Groups." + groupName + ".color", null);
+				String color = zh.getConfig().getString(KeyWordEnum.groupsPrefix.getValue() + groupName + KeyWordEnum.colorSuffix.getValue(), null);
 				if (color != null) {
 					cc = zh.getMM().getColor(color);
 				}
@@ -119,7 +112,7 @@ public class ConfigManager {
 					groupName = zh.getPerms().getPrimaryGroup(world, op);
 				}
 			}
-			if (p != null && p.hasPlayedBefore() && (groupName == null || !zh.getConfig().contains("Groups." + groupName))) {
+			if (p != null && p.hasPlayedBefore() && (groupName == null || !zh.getConfig().contains(KeyWordEnum.groupsPrefix.getValue() + groupName))) {
 				groupName = getSurrogateGroupName(p);
 			}
 			else {
@@ -131,7 +124,7 @@ public class ConfigManager {
 	
 	public int getMaximumHorseNameLength() {
 		int value = -1;
-		String maximumHorseNameLength = zh.getConfig().getString("HorseNames.maximum-length");
+		String maximumHorseNameLength = zh.getConfig().getString(KeyWordEnum.horsenamesPrefix.getValue() + KeyWordEnum.maximumLength.getValue());
 		if (maximumHorseNameLength != null) {
 			value = Integer.parseInt(maximumHorseNameLength);
 			if (value < 0 && value != -1) {
@@ -143,7 +136,7 @@ public class ConfigManager {
 	
 	public int getMinimumHorseNameLength() {
 		int value = 0;
-		String minimumHorseNameLength = zh.getConfig().getString("HorseNames.minimum-length");
+		String minimumHorseNameLength = zh.getConfig().getString(KeyWordEnum.horsenamesPrefix.getValue() + KeyWordEnum.minimumLength.getValue());
 		if (minimumHorseNameLength != null) {
 			value = Integer.parseInt(minimumHorseNameLength);
 			if (value < 0) {
@@ -156,7 +149,7 @@ public class ConfigManager {
 	public String getRandomHorseName() {
 		String randomHorseName = null;
 		Random random = new Random();
-		List<String> randomHorseNameList = zh.getConfig().getStringList("HorseNames.random-names");
+		List<String> randomHorseNameList = zh.getConfig().getStringList(KeyWordEnum.horsenamesPrefix.getValue() + KeyWordEnum.randomNames.getValue());
 		if (!(randomHorseNameList == null || randomHorseNameList.size() == 0)) {
 			randomHorseName = randomHorseNameList.get(random.nextInt(randomHorseNameList.size()));
 		}
@@ -165,10 +158,10 @@ public class ConfigManager {
 	
 	private String getSurrogateGroupName(Player p) {
 		if (p != null) {
-			ConfigurationSection cs = zh.getConfig().getConfigurationSection("Groups");
+			ConfigurationSection cs = zh.getConfig().getConfigurationSection(KeyWordEnum.groups.getValue());
 			if (cs != null) {
 				for (String groupName : cs.getKeys(false)) {
-					String permission = zh.getConfig().getString("Groups." + groupName + ".permission", null);
+					String permission = zh.getConfig().getString(KeyWordEnum.groupsPrefix.getValue() + groupName + KeyWordEnum.permissionSuffix.getValue(), null);
 					if (permission != null && zh.getPerms().has(p, permission)) {
 						return groupName;
 					}
@@ -179,11 +172,11 @@ public class ConfigManager {
 	}
 	
 	public boolean isAutoAdminModeEnabled(String command) {
-		return command != null && zh.getConfig().getBoolean("Commands." + command + ".auto-admin", false);
+		return command != null && zh.getConfig().getBoolean(KeyWordEnum.commandsPrefix.getValue() + command + KeyWordEnum.autoAdminSuffix.getValue(), false);
 	}
 	
 	public boolean isConsoleMuted() {
-		return zh.getConfig().getBoolean("Settings.mute-console", false);
+		return zh.getConfig().getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.muteConsole.getValue(), false);
 	}
 	
 	public boolean isHorseNameAllowed() {
@@ -192,7 +185,7 @@ public class ConfigManager {
 	
 	public boolean isHorseNameBanned(String horseName) {
 		if (horseName != null) {
-			List<String> bannedNameList = zh.getConfig().getStringList("HorseNames.banned-names");
+			List<String> bannedNameList = zh.getConfig().getStringList(KeyWordEnum.horsenamesPrefix + KeyWordEnum.bannedNames.getValue());
 			for (String bannedName : bannedNameList) {
 				if (horseName.toLowerCase().contains(bannedName.toLowerCase())) {
 					return true;
@@ -211,35 +204,35 @@ public class ConfigManager {
 	}
 	
 	public boolean isProtectionEnabled(String protection) {
-		return protection != null && zh.getConfig().getBoolean("Protections." + protection + ".enabled", false);
+		return protection != null && zh.getConfig().getBoolean(KeyWordEnum.protectionsPrefix.getValue() + protection + KeyWordEnum.enabledSuffix.getValue(), false);
 	}
 	
 	public boolean isRandomHorseNameEnabled() {
-		return zh.getConfig().getBoolean("HorseNames.give-random-names", false);
+		return zh.getConfig().getBoolean(KeyWordEnum.horsenamesPrefix.getValue() + KeyWordEnum.giveRandomNames.getValue(), false);
 	}
 	
 	public boolean isWorldCrossable(World world) {
-		return world != null && zh.getConfig().getBoolean("Worlds." + world.getName() + ".crossable", false);
+		return world != null && zh.getConfig().getBoolean(KeyWordEnum.worldsPrefix.getValue() + world.getName() + KeyWordEnum.crossableSuffix.getValue(), false);
 	}
 	
 	public boolean isWorldEnabled(World world) {
-		return world != null && zh.getConfig().getBoolean("Worlds." + world.getName() + ".enabled", false);
+		return world != null && zh.getConfig().getBoolean(KeyWordEnum.worldsPrefix.getValue() + world.getName() + KeyWordEnum.enabledSuffix.getValue(), false);
 	}
 	
 	public boolean shouldClaimOnTame() {
-		return zh.getConfig().getBoolean("Settings.claim-on-tame", false);
+		return zh.getConfig().getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.claimOnTame.getValue(), false);
 	}
 	
 	public boolean shouldLockOnClaim() {
-		return zh.getConfig().getBoolean("Settings.lock-on-claim", false);
+		return zh.getConfig().getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.lockOnClaim.getValue(), false);
 	}
 	
 	public boolean shouldProtectOnClaim() {
-		return zh.getConfig().getBoolean("Settings.protect-on-claim", false);
+		return zh.getConfig().getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.protectOnClaim.getValue(), false);
 	}
 	
 	public boolean shouldShareOnClaim() {
-		return zh.getConfig().getBoolean("Settings.share-onclaim", false);
+		return zh.getConfig().getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.shareOnClaim.getValue(), false);
 	}
 	
 	public boolean checkConformity() {
@@ -248,9 +241,9 @@ public class ConfigManager {
 				&& checkHorseNamesConformity()
 				&& checkLanguagesConformity()
 				&& checkProtectionsConformity()
-				&& checkSettingsConformity() &&
-				checkWorldsConformity())) {
-			zh.getLogger().severe("Fix that or delete \"config.yml\" and reload ZHorse.");
+				&& checkSettingsConformity()
+				&& checkWorldsConformity())) {
+			zh.getLogger().severe("Fix that or delete config.yml and reload ZHorse.");
 			return false;
 		}
 		return true;
@@ -260,7 +253,7 @@ public class ConfigManager {
 		boolean conform = true;
 		ConfigurationSection cs = zh.getConfig().getConfigurationSection("Commands");
 		if (cs != null) {
-			List<String> exactCommandList = zh.getCmdM().getCommandList();
+			List<String> exactCommandList = zh.getCmdM().getCommandNameList();
 			for (String command : cs.getKeys(false)) {
 				if (exactCommandList.contains(command)) {
 					if (!zh.getConfig().isSet("Commands." + command + ".auto-admin")) {
@@ -301,7 +294,7 @@ public class ConfigManager {
 				String color = zh.getConfig().getString("Groups." + group + ".color");
 		        if (color != null) {
 					if (!zh.getMM().isColor(color)) {
-		        		zh.getLogger().severe("The color \"" + color + "\" of the group \"" + group + "\" is not a color !");
+		        		zh.getLogger().severe("The color \"" + color + "\" used for the group \"" + group + "\" is not a color !");
 		        		conform = false;
 		        	}
 		        }
@@ -393,7 +386,7 @@ public class ConfigManager {
 		if (availableLanguageList == null || availableLanguageList.size() == 0) {
 			zh.getLogger().severe("The \"Languages.available\" list is missing from the config !");
 			conform = false;
-		}
+		}		
 		else if (!availableLanguageList.contains(getDefaultLanguage())) {
 			zh.getLogger().severe("The \"Languages.available\" list must contain the default language !");
 			conform = false;

@@ -4,6 +4,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Horse;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
 public class ZTame extends Command {
 
@@ -53,13 +54,13 @@ public class ZTame extends Command {
 			if (!tamed) {
 				horse.setTamed(true);
 				if (displayConsole) {
-					zh.getMM().sendMessage(s, zh.getLM().horseTamed);
+					zh.getMM().sendMessage(s, LocaleEnum.horseTamed);
 				}
 			}
 			else {
 				horse.setTamed(false);
 				if (displayConsole) {
-					zh.getMM().sendMessage(s, zh.getLM().horseUnTamed);
+					zh.getMM().sendMessage(s, LocaleEnum.horseUnTamed);
 				}
 			}
 			zh.getEM().payCommand(p, command);

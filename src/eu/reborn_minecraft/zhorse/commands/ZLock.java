@@ -6,6 +6,7 @@ import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
 public class ZLock extends Command {
 
@@ -55,7 +56,7 @@ public class ZLock extends Command {
 				if (zh.getUM().isShared(horse)) {
 					zh.getUM().unShare(targetUUID, horse);
 					if (displayConsole) {
-						zh.getMM().sendMessageHorse(s, zh.getLM().horseUnShared, horseName);
+						zh.getMM().sendMessageHorse(s, LocaleEnum.horseUnShared, horseName);
 					}
 				}
 				zh.getUM().lock(targetUUID, horse);
@@ -64,17 +65,17 @@ public class ZLock extends Command {
 					adminMode = false;
 					if (!isOwner(passenger.getUniqueId(), true)) {
 						horse.eject();
-						zh.getMM().sendMessagePlayer((CommandSender)passenger, zh.getLM().horseBelongsTo, zh.getUM().getPlayerName(horse));
+						zh.getMM().sendMessagePlayer((CommandSender)passenger, LocaleEnum.horseBelongsTo, zh.getUM().getPlayerName(horse));
 					}
 				}
 				if (displayConsole) {
-					zh.getMM().sendMessageHorse(s, zh.getLM().horseLocked, horseName);
+					zh.getMM().sendMessageHorse(s, LocaleEnum.horseLocked, horseName);
 				}
 			}
 			else {
 				zh.getUM().unLock(targetUUID, horse);
 				if (displayConsole) {
-					zh.getMM().sendMessageHorse(s, zh.getLM().horseUnLocked, horseName);
+					zh.getMM().sendMessageHorse(s, LocaleEnum.horseUnLocked, horseName);
 				}
 			}
 			zh.getEM().payCommand(p, command);

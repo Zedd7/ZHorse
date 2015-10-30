@@ -5,6 +5,7 @@ import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
 public class ZHere extends Command {
 
@@ -51,7 +52,7 @@ public class ZHere extends Command {
 			}
 			horse.teleport(location);
 			if (displayConsole) {
-				zh.getMM().sendMessageHorse(s, zh.getLM().horseTeleported, horseName);
+				zh.getMM().sendMessageHorse(s, LocaleEnum.horseTeleported, horseName);
 			}
 			zh.getEM().payCommand(p, command);
 		}

@@ -91,7 +91,6 @@ Horse informations:
   id: "<yellow>ID : <gold><id>"
   location: "<yellow>Location : <gold><value>"
   modeLocked: "[Lo]"
-  modeNone: "Aucun"
   modeProtected: "[Pr]"
   modeShared: "[Sh]"
   name: "<yellow>Nom : <gold><horse>"

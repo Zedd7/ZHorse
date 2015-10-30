@@ -5,9 +5,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.permission.Permission;
-
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -22,6 +19,8 @@ import eu.reborn_minecraft.zhorse.managers.LocaleManager;
 import eu.reborn_minecraft.zhorse.managers.MessageManager;
 import eu.reborn_minecraft.zhorse.managers.UserManager;
 import eu.reborn_minecraft.zhorse.metrics.Metrics;
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.permission.Permission;
 
 public class ZHorse extends JavaPlugin {
 	private static String configPath = "config.yml";

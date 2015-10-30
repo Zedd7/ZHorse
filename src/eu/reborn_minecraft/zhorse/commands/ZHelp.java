@@ -12,7 +12,7 @@ public class ZHelp extends Command {
 		playerOnly = true;
 		needTarget = false;
 		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {
-			if (!idMode) { // sur deux lignes pour ne pas apeller sendCommandUsage si cible introuvable
+			if (!idMode) { // sur deux lignes pour ne pas appeler sendCommandUsage si cible introuvable
 				if (!targetMode || (isRegistered(targetUUID) && isPlayerOnline(targetUUID, false))) {
 					execute();
 				}
@@ -26,17 +26,17 @@ public class ZHelp extends Command {
 	private void execute() {
 		if (zh.getEM().canAffordCommand(p, command)) {
 			if (argument.isEmpty()) {
-				displayCommandList(zh.getCmdM().getCommandList(), zh.getMM().getMessage(s, LocaleEnum.commandListHeader, true));
+				displayCommandList(zh.getCmdM().getCommandList(), zh.getMM().getMessage(s, LocaleEnum.commandListHeader, true), false);
 				zh.getEM().payCommand(p, command);
 			}
 			else {
 				String subCommand = argument.toLowerCase();
-				if (zh.getCmdM().getCommandList().contains(subCommand)) {
+				if (zh.getCmdM().getCommandNameList().contains(subCommand)) {
 					sendCommandUsage(subCommand, true);
 					zh.getEM().payCommand(p, command);
 				}
 				else if (displayConsole) {
-					zh.getMM().sendMessageValue(s, zh.getLM().unknownCommand, subCommand);
+					zh.getMM().sendMessageValue(s, LocaleEnum.unknownCommand, subCommand);
 				}
 			}
 		}

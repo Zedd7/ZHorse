@@ -8,6 +8,7 @@ import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Horse;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
 public class ZInfo extends Command {
 
@@ -58,8 +59,8 @@ public class ZInfo extends Command {
 			String ownerName = zh.getUM().getPlayerName(ownerUUID);
 			String userID = zh.getUM().getUserID(ownerUUID, horse);
 			String horseName = zh.getUM().getHorseName(ownerUUID, userID);
-			String health = Integer.toString(((Number) d.getHealth()).intValue());
-			String maxHealth = Integer.toString(((Number) d.getMaxHealth()).intValue());
+			int health = ((Number) d.getHealth()).intValue();
+			int maxHealth = ((Number) d.getMaxHealth()).intValue();
 			Location loc = zh.getUM().getLocation(ownerUUID, userID);
 			String x = Double.toString(loc.getX());
 			String y = Double.toString(loc.getY());
@@ -67,33 +68,28 @@ public class ZInfo extends Command {
 			String world = loc.getWorld().getName();
 			String location = x.substring(0, x.indexOf(".")) + "/" + y.substring(0, y.indexOf(".")) + "/" + z.substring(0, z.indexOf(".")) + " : " + world;
 			String status = "";
-			boolean normal = true;
 			if (zh.getUM().isProtected(ownerUUID, userID)) {
-				status += zh.getMM().getInfo(s, zh.getLM().modeProtected, true);
-				normal = false;
+				status += zh.getMM().getMessageSpacer(s, LocaleEnum.modeProtected, 1, true);
 			}
 			if (zh.getUM().isLocked(ownerUUID, userID)) {
-				status += zh.getMM().getInfo(s, zh.getLM().modeLocked, true);
-				normal = false;
+				status += zh.getMM().getMessageSpacer(s, LocaleEnum.modeLocked, 1, true);
 			}
 			else if (zh.getUM().isShared(ownerUUID, userID)) {
-				status += zh.getMM().getInfo(s, zh.getLM().modeShared, true);
-				normal = false;
+				status += zh.getMM().getMessageSpacer(s, LocaleEnum.modeShared, 1, true);
 			}
-			if (normal) {
-				status += zh.getMM().getInfo(s, zh.getLM().modeNone, true);
-			}
-			zh.getMM().sendHeaderContent(s, zh.getLM().headerFormat, zh.getLM().horseInfoHeader, true);
+			zh.getMM().sendMessageValue(s, LocaleEnum.headerFormat, zh.getMM().getMessage(s, LocaleEnum.horseInfoHeader, true), true);
 			if (isOwner(true)) {
-				zh.getMM().sendInfoUserID(s, zh.getLM().id, userID, true);
+				zh.getMM().sendMessageSpacerUserID(s, LocaleEnum.id, 1, userID, true);
 			}
-			zh.getMM().sendInfoPlayer(s, zh.getLM().owner, ownerName, true);
-			zh.getMM().sendInfoHorse(s, zh.getLM().name, horseName, true);
-			zh.getMM().sendInfoAmountMax(s, zh.getLM().health, health, maxHealth, true);
+			zh.getMM().sendMessagePlayerSpacer(s, LocaleEnum.owner, ownerName, 1, true);
+			zh.getMM().sendMessageHorseSpacer(s, LocaleEnum.name, horseName, 1, true);
+			zh.getMM().sendMessageAmountMaxSpacer(s, LocaleEnum.health, health, maxHealth, 1, true);
 			if (isNotOnHorse(true)) {
-				zh.getMM().sendInfoValue(s, zh.getLM().location, location, true);
+				zh.getMM().sendMessageSpacerValue(s, LocaleEnum.location, 1, location, true);
 			}
-			zh.getMM().sendInfoValue(s, zh.getLM().status, status, true);
+			if (!status.isEmpty()) {
+				zh.getMM().sendMessageSpacerValue(s, LocaleEnum.status, 1, status, true);
+			}
 			zh.getEM().payCommand(p, command);
 		}
 	}

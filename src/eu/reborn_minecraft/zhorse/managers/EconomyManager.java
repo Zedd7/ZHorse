@@ -2,12 +2,13 @@ package eu.reborn_minecraft.zhorse.managers;
 
 import java.util.UUID;
 
-import net.milkbowl.vault.economy.Economy;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
+import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
+import net.milkbowl.vault.economy.Economy;
 
 public class EconomyManager {
 	private ZHorse zh;
@@ -24,7 +25,7 @@ public class EconomyManager {
 			if (isCommandFree(p, command) || econ.has(zh.getServer().getOfflinePlayer(p.getUniqueId()), amount)) {
 				return true;
 			}
-			zh.getMM().sendEconomyAmountValue((CommandSender)p, zh.getLM().notEnoughMoney, Integer.toString(amount), zh.getLM().getEconomyAnswer(zh.getUM().getLanguage(p.getUniqueId()), zh.getLM().currencySymbol, true));
+			zh.getMM().sendMessageAmountValue((CommandSender)p, LocaleEnum.notEnoughMoney, amount, zh.getLM().getMessage(LocaleEnum.currencySymbol.getIndex(), zh.getUM().getLanguage(p.getUniqueId()), true));
 		}
 		return false;
 	}
@@ -39,7 +40,7 @@ public class EconomyManager {
 	
 	public boolean isCommandFree(Player p, String command) {
 		int cost = zh.getCM().getCommandCost(command);
-		if (cost == 0 || zh.getPerms().has(p, zh.getLM().zhPrefix + command + zh.getLM().freeSuffix)) {
+		if (cost == 0 || zh.getPerms().has(p, KeyWordEnum.zhPrefix.getValue() + command + KeyWordEnum.freeSuffix.getValue())) {
 			return true;
 		}
 		return false;
@@ -58,7 +59,7 @@ public class EconomyManager {
 		int amount = zh.getCM().getCommandCost(command);
 		if (!isCommandFree(p, command)) {
 			econ.withdrawPlayer(zh.getServer().getOfflinePlayer(p.getUniqueId()), amount);
-			zh.getMM().sendEconomyAmountValue((CommandSender)p, zh.getLM().commandPaid, Integer.toString(amount), zh.getLM().getEconomyAnswer(zh.getUM().getLanguage(p.getUniqueId()), zh.getLM().currencySymbol, true));
+			zh.getMM().sendMessageAmountValue((CommandSender)p, LocaleEnum.commandPaid, amount, zh.getLM().getMessage(LocaleEnum.currencySymbol.getIndex(), zh.getUM().getLanguage(p.getUniqueId()), true));
 		}
 	}
 

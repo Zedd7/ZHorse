@@ -1,4 +1,4 @@
-Version: 1.3.1
+Version: 1.4.0
 
 Commands:
 
@@ -95,7 +95,7 @@ HorseNames:
   # The maximum lenght of a horse's name.
   # If set to more than 0, length of horse's name is limited.
   # If set to 0, horse naming is forbbiden.
-  # If set to -1, horse naming is unrestricted.
+  # If set to -1, horse naming is optional.
   maximum-length: 30
 
   # The minimum lenght of a horse's name.

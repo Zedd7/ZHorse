@@ -5,6 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Horse;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
 public class ZClaim extends Command {
 	
@@ -46,7 +47,7 @@ public class ZClaim extends Command {
 			horse.setCustomNameVisible(true);
 			horse.setTamed(true);
 			if (displayConsole) {
-				zh.getMM().sendMessageHorse(s, zh.getLM().horseClaimed, horseName);
+				zh.getMM().sendMessageHorse(s, LocaleEnum.horseClaimed, horseName);
 			}
 			zh.getEM().payCommand(p, command);
 		}

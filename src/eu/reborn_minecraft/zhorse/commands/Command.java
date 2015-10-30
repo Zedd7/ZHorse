@@ -9,6 +9,7 @@ import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.enums.CommandEnum;
 import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
@@ -184,35 +185,25 @@ public class Command {
 		return false;
 	}
 	
-	protected void displayCommandList(List<String> commandList, String index) {
-		displayCommandList(commandList, index, false);
-	}
-	
-	protected void displayCommandList(List<String> commandList, String header, boolean settingsCommand) {
+	protected void displayCommandList(List<CommandEnum> commandList, String header, boolean settingsCommand) {
 		if (displayConsole) {
 			zh.getMM().sendMessageValue(s, LocaleEnum.headerFormat, header, true);
-			for (String command : commandList) {
-				if (hasPermission(targetUUID, command, true, true)) {
-					if (!settingsCommand) {
-						if (zh.getEM().isCommandFree(targetUUID, command)) {
-							zh.getMM().sendMessageSpacer(s, LocaleEnum.valueOf(command), 1, true);
-						}
-						else {
-							int cost = zh.getCM().getCommandCost(command);
-							String currencySymbol = zh.getMM().getMessage(s, LocaleEnum.currencySymbol, true);
-							zh.getMM().sendMessageCostSpacerValue(s, LocaleEnum.valueOf(command), cost, 1, currencySymbol, true);
-						}
+			for (CommandEnum command : commandList) {
+				String commandName = command.getName();
+				String permission = commandName;
+				LocaleEnum commandDescription = LocaleEnum.valueOf(commandName + KeyWordEnum.description.getValue());
+				if (settingsCommand) {
+					commandName = this.command;
+					permission = this.command + KeyWordEnum.dot.getValue() + command.getName();
+				}
+				if (hasPermission(targetUUID, permission, true, true)) {
+					if (zh.getEM().isCommandFree(targetUUID, commandName)) {
+						zh.getMM().sendMessageSpacer(s, commandDescription, 1, true);
 					}
 					else {
-						command = command.substring(command.indexOf(".")+1);
-						if (zh.getEM().isCommandFree(targetUUID, this.command)) {
-							zh.getMM().sendMessageSpacer(s, LocaleEnum.valueOf(command), 1, true);
-						}
-						else {
-							int cost = zh.getCM().getCommandCost(this.command);
-							String currencySymbol = zh.getMM().getMessage(s, LocaleEnum.currencySymbol, true);
-							zh.getMM().sendMessageCostSpacerValue(s, LocaleEnum.valueOf(command), cost, 1, currencySymbol, true);
-						}
+						int cost = zh.getCM().getCommandCost(commandName);
+						String currencySymbol = zh.getMM().getMessage(s, LocaleEnum.currencySymbol, true);
+						zh.getMM().sendMessageCostSpacerValue(s, commandDescription, cost, 1, currencySymbol, true);
 					}
 				}
 			}
@@ -367,7 +358,7 @@ public class Command {
 		}
 		else if (displayConsole) {
 			String passengerName = ((Player)passenger).getName();
-			zh.getMM().sendMessagePlayerHorse(s, LocaleEnum.horseMountedBy, passengerName, horseName);
+			zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.horseMountedBy, horseName, passengerName);
 		}
 		return false;
 	}
@@ -502,7 +493,7 @@ public class Command {
 						zh.getMM().sendMessageHorse(s, LocaleEnum.unknownHorseName, horseName);
 					}
 					else {
-						zh.getMM().sendMessagePlayerHorse(s, LocaleEnum.unknownHorseNameOther, targetName, horseName);
+						zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.unknownHorseNameOther, horseName, targetName);
 					}
 				}
 				else {
@@ -553,7 +544,7 @@ public class Command {
 				zh.getMM().sendMessage(s, LocaleEnum.missingArguments);
 			}
 			zh.getMM().sendMessageSpacer(s, LocaleEnum.commandUsageHeader, 1, true);
-			String commandUsage = zh.getMM().getMessage(s, LocaleEnum.valueOf(command), true);
+			String commandUsage = zh.getMM().getMessage(s, LocaleEnum.valueOf(command + KeyWordEnum.usage.getValue()), true);
 			zh.getMM().sendMessageSpacerValue(s, LocaleEnum.commandUsageFormat, 1, commandUsage, true);
 		}
 	}

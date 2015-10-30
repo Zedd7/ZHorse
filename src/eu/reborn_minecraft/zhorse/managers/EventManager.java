@@ -23,6 +23,9 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.commands.ZClaim;
+import eu.reborn_minecraft.zhorse.enums.CommandEnum;
+import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
+import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
 public class EventManager implements Listener {
 	private ZHorse zh;
@@ -100,7 +103,7 @@ public class EventManager implements Listener {
 					if (p.getUniqueId().equals(ownerUUID)) {
 						if (displayConsole) {
 							String horseName = zh.getUM().getHorseName(ownerUUID, horse);
-							zh.getMM().sendMessageHorse((CommandSender)p, zh.getLM().horseDied, horseName);
+							zh.getMM().sendMessageHorse((CommandSender)p, LocaleEnum.horseDied, horseName);
 						}
 					}
 				}
@@ -117,9 +120,9 @@ public class EventManager implements Listener {
 				String[] a = {CLAIM};
 				new ZClaim(zh, (CommandSender)e.getOwner(), a);
 			}
-			else if (zh.getPerms().has((Player)e.getOwner(), zh.getLM().zhPrefix + zh.getLM().claim)) {
+			else if (zh.getPerms().has((Player)e.getOwner(), KeyWordEnum.zhPrefix.getValue() + CommandEnum.claim.getName())) {
 				if (displayConsole) {
-					zh.getMM().sendMessage((CommandSender)e.getOwner(), zh.getLM().horseManuallyTamed);
+					zh.getMM().sendMessage((CommandSender)e.getOwner(), LocaleEnum.horseManuallyTamed);
 				}
 			}
 		}
@@ -189,10 +192,10 @@ public class EventManager implements Listener {
 		boolean allowed = true;
 		if (zh.getCM().isProtectionEnabled(PLAYER_ATTACK)) {
 			if (!((zh.getUM().isClaimedBy(p.getUniqueId(), horse) && !zh.getCM().isProtectionEnabled(OWNER_ATTACK)) ||
-					zh.getPerms().has(p, zh.getLM().zhPrefix + zh.getLM().protect + zh.getLM().adminSuffix))) {
+					zh.getPerms().has(p, KeyWordEnum.zhPrefix.getValue() + CommandEnum.protect.getName() + KeyWordEnum.adminSuffix.getValue()))) {
 				if (displayConsole) {
 					String horseName = zh.getUM().getHorseName(horse);
-					zh.getMM().sendMessageHorse((CommandSender)p, zh.getLM().horseIsProtected, horseName);
+					zh.getMM().sendMessageHorse((CommandSender)p, LocaleEnum.horseIsProtected, horseName);
 				}
 				allowed = false;
 			}
@@ -203,11 +206,11 @@ public class EventManager implements Listener {
 	private boolean handlePlayerInteractHorse(Player p, Horse horse, boolean mustBeShared) {
 		boolean allowed = true;
 		if (zh.getUM().isRegistered(horse)) {
-			if (!(zh.getUM().isClaimedBy(p.getUniqueId(), horse) || zh.getPerms().has(p, zh.getLM().zhPrefix + zh.getLM().lock + zh.getLM().adminSuffix))) {
+			if (!(zh.getUM().isClaimedBy(p.getUniqueId(), horse) || zh.getPerms().has(p, KeyWordEnum.zhPrefix.getValue() + CommandEnum.lock.getName() + KeyWordEnum.adminSuffix.getValue()))) {
 				if (zh.getUM().isLocked(horse) || (!zh.getUM().isShared(horse) && (!horse.isEmpty() || mustBeShared))) {
 					if (displayConsole) {
 						String ownerName = zh.getUM().getPlayerName(horse);
-						zh.getMM().sendMessagePlayer((CommandSender)p, zh.getLM().horseBelongsTo, ownerName);
+						zh.getMM().sendMessagePlayer((CommandSender)p, LocaleEnum.horseBelongsTo, ownerName);
 					}
 					allowed = false;
 				}

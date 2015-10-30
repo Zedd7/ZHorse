@@ -5,6 +5,7 @@ import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Horse;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
 public class ZKill extends Command {
 
@@ -53,7 +54,7 @@ public class ZKill extends Command {
 			Damageable dm = horse;
 			dm.damage(dm.getHealth());
 			if (displayConsole && !samePlayer) {
-				zh.getMM().sendMessageHorse(s, zh.getLM().horseDied, horseName);
+				zh.getMM().sendMessageHorse(s, LocaleEnum.horseDied, horseName);
 			}
 			zh.getEM().payCommand(p, command);
 		}

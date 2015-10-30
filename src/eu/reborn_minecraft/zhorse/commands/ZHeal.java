@@ -5,6 +5,7 @@ import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Horse;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
 public class ZHeal extends Command {
 
@@ -53,7 +54,7 @@ public class ZHeal extends Command {
 			Damageable dm = horse;
 			dm.setHealth(dm.getMaxHealth());
 			if (displayConsole) {
-				zh.getMM().sendMessageHorse(s, zh.getLM().horseHealed, horseName);
+				zh.getMM().sendMessageHorse(s, LocaleEnum.horseHealed, horseName);
 			}
 			zh.getEM().payCommand(p, command);
 		}

@@ -4,6 +4,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Horse;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
 public class ZProtect extends Command {
 
@@ -52,13 +53,13 @@ public class ZProtect extends Command {
 			if (!zh.getUM().isProtected(horse)) {
 				zh.getUM().protect(targetUUID, horse);
 				if (displayConsole) {
-					zh.getMM().sendMessageHorse(s, zh.getLM().horseProtected, horseName);
+					zh.getMM().sendMessageHorse(s, LocaleEnum.horseProtected, horseName);
 				}
 			}
 			else {
 				zh.getUM().unProtect(targetUUID, horse);
 				if (displayConsole) {
-					zh.getMM().sendMessageHorse(s, zh.getLM().horseUnProtected, horseName);
+					zh.getMM().sendMessageHorse(s, LocaleEnum.horseUnProtected, horseName);
 				}
 			}
 			zh.getEM().payCommand(p, command);

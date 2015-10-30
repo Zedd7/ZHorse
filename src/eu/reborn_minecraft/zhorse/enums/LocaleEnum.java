@@ -83,37 +83,57 @@ public enum LocaleEnum {
 	id("Horse informations.id"),
 	location("Horse informations.location"),
 	modeLocked("Horse informations.modeLocked"),
-	modeNone("Horse informations.modeNone"),
 	modeProtected("Horse informations.modeProtected"),
 	modeShared("Horse informations.modeShared"),
 	name("Horse informations.name"),
 	owner("Horse informations.owner"),
 	status("Horse informations.status"),
 	
-	help("Command descriptions.help"),
-	claim("Command descriptions.claim"),
-	free("Command descriptions.free"),
-	give("Command descriptions.give"),
-	heal("Command descriptions.heal"),
-	here("Command descriptions.here"),
-	info("Command descriptions.info"),
-	kill("Command descriptions.kill"),
-	list("Command descriptions.list"),
-	lock("Command descriptions.lock"),
-	rename("Command descriptions.rename"),
-	protect("Command descriptions.protect"),
-	reload("Command descriptions.reload"),
-	settings("Command descriptions.settings"),
-	share("Command descriptions.share"),
-	tame("Command descriptions.tame"),
-	tp("Command descriptions.tp"),
+	claimDescription("Command descriptions.claim"),
+	freeDescription("Command descriptions.free"),
+	giveDescription("Command descriptions.give"),
+	healDescription("Command descriptions.heal"),
+	helpDescription("Command descriptions.help"),
+	hereDescription("Command descriptions.here"),
+	infoDescription("Command descriptions.info"),
+	killDescription("Command descriptions.kill"),
+	listDescription("Command descriptions.list"),
+	lockDescription("Command descriptions.lock"),
+	renameDescription("Command descriptions.rename"),
+	protectDescription("Command descriptions.protect"),
+	reloadDescription("Command descriptions.reload"),
+	settingsDescription("Command descriptions.settings"),
+	shareDescription("Command descriptions.share"),
+	tameDescription("Command descriptions.tame"),
+	tpDescription("Command descriptions.tp"),	
+	languageDescription("Settings command descriptions.language"),
 	
-	language("Settings command descriptions.language");
+	claimUsage("Command usages.claim"),
+	freeUsage("Command usages.free"),
+	giveUsage("Command usages.give"),
+	healUsage("Command usages.heal"),
+	helpUsage("Command usages.help"),
+	hereUsage("Command usages.here"),
+	infoUsage("Command usages.info"),
+	killUsage("Command usages.kill"),
+	listUsage("Command usages.list"),
+	lockUsage("Command usages.lock"),
+	renameUsage("Command usages.rename"),
+	protectUsage("Command usages.protect"),
+	reloadUsage("Command usages.reload"),
+	settingsUsage("Command usages.settings"),
+	shareUsage("Command usages.share"),
+	tameUsage("Command usages.tame"),
+	tpUsage("Command usages.tp");
 	
 	private String index;
 	
 	LocaleEnum(String index) {
 		this.index = index;
+	}
+	
+	public String getName() {
+		return index.substring(index.indexOf(".")+1);
 	}
 	
 	public String getIndex() {

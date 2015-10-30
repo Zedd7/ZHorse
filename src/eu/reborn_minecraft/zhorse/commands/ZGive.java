@@ -5,6 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Horse;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
 public class ZGive extends Command {
 
@@ -61,9 +62,9 @@ public class ZGive extends Command {
 			horse.setCustomName(cc + horseName + ChatColor.RESET);
 			zh.getEM().payCommand(p, command);
 			if (displayConsole) {
-				zh.getMM().sendMessagePlayerHorse(s, zh.getLM().horseGiven, targetName, horseName);
+				zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.horseGiven, horseName, targetName);
 				if (isPlayerOnline(targetUUID, true)) {
-					zh.getMM().sendMessagePlayerHorse(((CommandSender)zh.getServer().getPlayer(targetUUID)), zh.getLM().horseReceived, p.getName(), horseName);
+					zh.getMM().sendMessageHorsePlayer(((CommandSender)zh.getServer().getPlayer(targetUUID)), LocaleEnum.horseReceived, horseName, p.getName());
 				}
 			}
 		}

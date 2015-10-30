@@ -15,23 +15,10 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 
 public class UserManager {
-	private static String DOT = ".";
-	private static String FAVORITE = "1";
-	private static String HORSES = "Horses";
-	private static String LANGUAGE = "Language";
-	private static String LOCATION = "Location";
-	private static String LOCKED = "Locked";
-	private static String NAME = "Name";
-	private static String PLAYERS = "Players";
-	private static String PROTECTED = "Protected";
-	private static String SHARED = "Shared";
-	private static String UNIQUEID = "UUID";
-	private static String WORLD = "World";
-	private static String X = "X";
-	private static String Y = "Y";
-	private static String Z = "Z";
+	private static String FAVORITE = "1";;
 	private ZHorse zh;
 	
 	public UserManager(ZHorse zh) {
@@ -40,7 +27,7 @@ public class UserManager {
 	
 	public int getClaimsAmount(UUID playerUUID) {
 		if (isRegistered(playerUUID)) {
-			ConfigurationSection cs = zh.getUsers().getConfigurationSection(getPlayerPath(playerUUID, HORSES));
+			ConfigurationSection cs = zh.getUsers().getConfigurationSection(getPlayerPath(playerUUID, KeyWordEnum.horses.getValue()));
 			if (cs != null) {
 				return cs.getKeys(false).size();
 			}
@@ -116,7 +103,7 @@ public class UserManager {
 	public List<String> getHorseList(UUID playerUUID) {
 		List<String> horseList = new ArrayList<String>();
 		if (isRegistered(playerUUID)) {
-			ConfigurationSection cs = zh.getUsers().getConfigurationSection(getPlayerPath(playerUUID, HORSES));
+			ConfigurationSection cs = zh.getUsers().getConfigurationSection(getPlayerPath(playerUUID, KeyWordEnum.horses.getValue()));
 			if (cs != null) {
 				for (String userID : cs.getKeys(false)) {
 					horseList.add(getHorseName(playerUUID, userID));
@@ -136,16 +123,22 @@ public class UserManager {
 	}
 
 	public String getHorseName(UUID playerUUID, String userID) {
-		return getHorseData(playerUUID, userID, NAME, null);
+		return getHorseData(playerUUID, userID, KeyWordEnum.name.getValue(), null);
 	}
 	
 	private String getHorsePath(UUID playerUUID, String userID) {
-		String fullPath = PLAYERS + DOT + playerUUID.toString() + DOT + HORSES + DOT + userID;
+		String fullPath = KeyWordEnum.players.getValue()
+				+ KeyWordEnum.dot.getValue()
+				+ playerUUID.toString()
+				+ KeyWordEnum.dot.getValue()
+				+ KeyWordEnum.horses.getValue()
+				+ KeyWordEnum.dot.getValue()
+				+ userID;
 		return fullPath;
 	}
 	
 	private String getHorsePath(UUID playerUUID, String userID, String path) {
-		return getHorsePath(playerUUID, userID) + DOT + path;
+		return getHorsePath(playerUUID, userID) + KeyWordEnum.dot.getValue() + path;
 	}
 	
 	private String getHorseData(UUID playerUUID, String userID, String path, String defaultValue) {
@@ -157,9 +150,11 @@ public class UserManager {
 	}
 	
 	public UUID getHorseUUID(UUID playerUUID, String userID) {
-		String horseUUID = getHorseData(playerUUID, userID, UNIQUEID, null);
-		if (horseUUID != null) {
-			return UUID.fromString(horseUUID);
+		if (playerUUID != null && userID != null) {
+			String horseUUID = getHorseData(playerUUID, userID, KeyWordEnum.uuid.getValue(), null);
+			if (horseUUID != null) {
+				return UUID.fromString(horseUUID);
+			}
 		}
 		return null;
 	}
@@ -174,7 +169,7 @@ public class UserManager {
 	}
 	
 	public String getLanguage(UUID playerUUID) {
-		String language = getPlayerData(playerUUID, LANGUAGE, null);
+		String language = getPlayerData(playerUUID, KeyWordEnum.language.getValue(), null);
 		if (language == null) {
 			language = zh.getCM().getDefaultLanguage();
 		}
@@ -183,12 +178,12 @@ public class UserManager {
 	
 	public Location getLocation(UUID playerUUID, String userID) {
 		if (playerUUID != null && userID != null) {
-			String worldName = getHorseData(playerUUID, userID, LOCATION + DOT + WORLD, null);
+			String worldName = getHorseData(playerUUID, userID, KeyWordEnum.location.getValue() + KeyWordEnum.dot.getValue() + KeyWordEnum.world.getValue(), null);
 			World world = zh.getServer().getWorld(worldName);
 			if (world != null) {
-				double x = Double.parseDouble(getHorseData(playerUUID, userID, LOCATION + DOT + X, null));
-				double y = Double.parseDouble(getHorseData(playerUUID, userID, LOCATION + DOT + Y, null));
-				double z = Double.parseDouble(getHorseData(playerUUID, userID, LOCATION + DOT + Z, null));
+				double x = Double.parseDouble(getHorseData(playerUUID, userID, KeyWordEnum.location.getValue() + KeyWordEnum.dot.getValue() + KeyWordEnum.x.getValue(), null));
+				double y = Double.parseDouble(getHorseData(playerUUID, userID, KeyWordEnum.location.getValue() + KeyWordEnum.dot.getValue() + KeyWordEnum.y.getValue(), null));
+				double z = Double.parseDouble(getHorseData(playerUUID, userID, KeyWordEnum.location.getValue() + KeyWordEnum.dot.getValue() + KeyWordEnum.z.getValue(), null));
 				return new Location(world, x, y, z);
 			}
 		}
@@ -211,7 +206,7 @@ public class UserManager {
 	public String getNextUserID(UUID playerUUID) {
         int userID = 1;
 		if (isRegistered(playerUUID)) {
-			ConfigurationSection cs = zh.getUsers().getConfigurationSection(getPlayerPath(playerUUID, HORSES));
+			ConfigurationSection cs = zh.getUsers().getConfigurationSection(getPlayerPath(playerUUID, KeyWordEnum.horses.getValue()));
 			if (cs != null) {
 				while(cs.getKeys(false).contains(Integer.toString(userID))) {
 					userID++;
@@ -226,7 +221,7 @@ public class UserManager {
         if (cs != null) {
         	for (String player : cs.getKeys(false)) {
  	    	  UUID playerUUID = UUID.fromString(player);
- 	    	  String playerName = getPlayerData(playerUUID, NAME, null);
+ 	    	  String playerName = getPlayerData(playerUUID, KeyWordEnum.name.getValue(), null);
  	    	  if (targetName.equalsIgnoreCase(playerName)) {
 	    		   return playerName;
 	    	  }
@@ -236,7 +231,7 @@ public class UserManager {
 	}
 	
 	public String getPlayerName(UUID playerUUID) {
-		return getPlayerData(playerUUID, NAME, null);
+		return getPlayerData(playerUUID, KeyWordEnum.name.getValue(), null);
 	}
 	
 	public String getPlayerName(Horse horse) {
@@ -250,10 +245,11 @@ public class UserManager {
 	        if (cs != null) {
 	        	for (String player : cs.getKeys(false)) {
 	 	    	   UUID playerUUID = UUID.fromString(player);
-	 	    	   ConfigurationSection subCS = cs.getConfigurationSection(playerUUID + DOT + HORSES);
+	 	    	   ConfigurationSection subCS = cs.getConfigurationSection(playerUUID + KeyWordEnum.dot.getValue() + KeyWordEnum.horses.getValue());
 	 	    	   if (subCS != null) {
 	 	    		   for (String userID : subCS.getKeys(false)) {
-	 	    			   if (getHorseUUID(playerUUID, userID).equals(horse.getUniqueId())) {
+	 	    			   UUID horseUUID = getHorseUUID(playerUUID, userID);
+	 	    			   if (horseUUID != null && horseUUID.equals(horse.getUniqueId())) {
 	 	    				   return playerUUID;
 	 	    			   }
 	 	    		   }
@@ -268,7 +264,7 @@ public class UserManager {
         ConfigurationSection cs = zh.getUsers().getConfigurationSection(getPlayerPath());
         if (cs != null) {
         	for (String playerUUID : cs.getKeys(false)) {
-	    	   if (playerName.equalsIgnoreCase(getPlayerData(UUID.fromString(playerUUID), NAME, null))) {
+	    	   if (playerName.equalsIgnoreCase(getPlayerData(UUID.fromString(playerUUID), KeyWordEnum.name.getValue(), null))) {
 	    		   return UUID.fromString(playerUUID);
 	    	   }
 	        }
@@ -277,18 +273,18 @@ public class UserManager {
 	}
 	
 	private String getPlayerPath() {
-		return PLAYERS;
+		return KeyWordEnum.players.getValue();
 	}
 	
 	private String getPlayerPath(UUID playerUUID) {
 		if (playerUUID != null) {
-			return PLAYERS + DOT + playerUUID.toString();
+			return KeyWordEnum.players.getValue() + KeyWordEnum.dot.getValue() + playerUUID.toString();
 		}
 		return null;
 	}
 	
 	private String getPlayerPath(UUID playerUUID, String path) {
-		return getPlayerPath(playerUUID) + DOT + path;
+		return getPlayerPath(playerUUID) + KeyWordEnum.dot.getValue() + path;
 	}
 	
 	private String getPlayerData(UUID playerUUID, String path, String defaultValue) {
@@ -307,7 +303,7 @@ public class UserManager {
 	
 	public String getUserID(UUID playerUUID, Horse horse) {
 		if (isRegistered(playerUUID)) {
-			ConfigurationSection cs = zh.getUsers().getConfigurationSection(getPlayerPath(playerUUID, HORSES));
+			ConfigurationSection cs = zh.getUsers().getConfigurationSection(getPlayerPath(playerUUID, KeyWordEnum.horses.getValue()));
 			if (cs != null) {
 				for (String userID : cs.getKeys(false)) {
 					if (getHorseUUID(playerUUID, userID).equals(horse.getUniqueId())) {
@@ -321,7 +317,7 @@ public class UserManager {
 	
 	public String getUserID(UUID playerUUID, String horseName) {
 		if (isRegistered(playerUUID)) {
-			ConfigurationSection cs = zh.getUsers().getConfigurationSection(getPlayerPath(playerUUID, HORSES));
+			ConfigurationSection cs = zh.getUsers().getConfigurationSection(getPlayerPath(playerUUID, KeyWordEnum.horses.getValue()));
 			if (cs != null) {
 				for (String userID : cs.getKeys(false)) {
 					if (getHorseName(playerUUID, userID).equalsIgnoreCase(horseName)) {
@@ -335,7 +331,7 @@ public class UserManager {
 	
 	public boolean isClaimedBy(UUID playerUUID, Horse horse) {
 		if (isRegistered(playerUUID)) {
-			ConfigurationSection cs = zh.getUsers().getConfigurationSection(getPlayerPath(playerUUID, HORSES));
+			ConfigurationSection cs = zh.getUsers().getConfigurationSection(getPlayerPath(playerUUID, KeyWordEnum.horses.getValue()));
 			if (cs != null) {
 				for (String userID : cs.getKeys(false)) {
 					if (getHorseUUID(playerUUID, userID).equals(horse.getUniqueId())) {
@@ -354,11 +350,11 @@ public class UserManager {
 	
 	public boolean isLocked(UUID playerUUID, Horse horse) {
         String userID = getUserID(playerUUID, horse);
-        return getHorseData(playerUUID, userID, LOCKED, false);
+        return isLocked(playerUUID, userID);
 	}
 	
 	public boolean isLocked(UUID playerUUID, String userID) { 
-        return getHorseData(playerUUID, userID, LOCKED, false);
+        return getHorseData(playerUUID, userID, KeyWordEnum.modeLocked.getValue(), false);
 	}
 	
 	public boolean isProtected(Horse horse) {
@@ -372,7 +368,7 @@ public class UserManager {
 	}
 	
 	public boolean isProtected(UUID playerUUID, String userID) {
-		return getHorseData(playerUUID, userID, PROTECTED, false);
+		return getHorseData(playerUUID, userID, KeyWordEnum.modeProtected.getValue(), false);
 	}
 	
 	public boolean isRegistered(String playerName) {
@@ -410,7 +406,7 @@ public class UserManager {
 	}
 	
 	public boolean isShared(UUID playerUUID, String userID) {
-		return getHorseData(playerUUID, userID, SHARED, false);
+		return getHorseData(playerUUID, userID, KeyWordEnum.modeShared.getValue(), false);
 	}
 	
 	public boolean isSpawned(UUID playerUUID, String userID) {
@@ -419,22 +415,22 @@ public class UserManager {
 	
 	public void lock(UUID playerUUID, Horse horse) {
         String userId = getUserID(playerUUID, horse);
-        setHorseData(playerUUID, userId, LOCKED, true, true);
+        setHorseData(playerUUID, userId, KeyWordEnum.modeLocked.getValue(), true, true);
 	}
 	
 	public void unLock(UUID playerUUID, Horse horse) {
         String userId = getUserID(playerUUID, horse);
-        setHorseData(playerUUID, userId, LOCKED, false, true);
+        setHorseData(playerUUID, userId, KeyWordEnum.modeLocked.getValue(), false, true);
 	}
 	
 	public void protect(UUID playerUUID, Horse horse) {
         String userID = getUserID(playerUUID, horse);
-        setHorseData(playerUUID, userID, PROTECTED, true, true);
+        setHorseData(playerUUID, userID, KeyWordEnum.modeProtected.getValue(), true, true);
 	}
 	
 	public void unProtect(UUID playerUUID, Horse horse) {
         String userID = getUserID(playerUUID, horse);
-        setHorseData(playerUUID, userID, PROTECTED, false, true);
+        setHorseData(playerUUID, userID, KeyWordEnum.modeProtected.getValue(), false, true);
 	}
 	
 	public void registerHorse(UUID playerUUID, Horse horse, String horseName, boolean lock, boolean protect, boolean share) {
@@ -442,16 +438,16 @@ public class UserManager {
 			if (!isRegistered(playerUUID)) {
 				registerPlayer(playerUUID);
 			}
-			if (isRegistered(horse)) {
+			if (isRegistered(horse)) { // retire l'enregistrement précédent en cas de give
 				remove(horse);
 			}
 			String userID = getNextUserID(playerUUID);
 			UUID horseUUID = horse.getUniqueId();
-			setHorseData(playerUUID, userID, NAME, horseName, false);
-			setHorseData(playerUUID, userID, LOCKED, lock, false);
-			setHorseData(playerUUID, userID, PROTECTED, protect, false);
-			setHorseData(playerUUID, userID, SHARED, share, false);
-			setHorseData(playerUUID, userID, UNIQUEID, horseUUID.toString(), false);
+			setHorseData(playerUUID, userID, KeyWordEnum.name.getValue(), horseName, false);
+			setHorseData(playerUUID, userID, KeyWordEnum.modeLocked.getValue(), lock, false);
+			setHorseData(playerUUID, userID, KeyWordEnum.modeProtected.getValue(), protect, false);
+			setHorseData(playerUUID, userID, KeyWordEnum.modeShared.getValue(), share, false);
+			setHorseData(playerUUID, userID, KeyWordEnum.uuid.getValue(), horseUUID.toString(), false);
 			saveLocation(playerUUID, horse, userID);
 		}
 	}
@@ -461,8 +457,8 @@ public class UserManager {
 			String playerName = zh.getServer().getOfflinePlayer(playerUUID).getName();
 			String language = zh.getCM().getDefaultLanguage();
 			if (playerName != null && language != null) {
-				setPlayerData(playerUUID, NAME, playerName, false);
-				setPlayerData(playerUUID, LANGUAGE, language, false);
+				setPlayerData(playerUUID, KeyWordEnum.name.getValue(), playerName, false);
+				setPlayerData(playerUUID, KeyWordEnum.language.getValue(), language, false);
 				zh.saveUsers();
 			}
 		}
@@ -496,7 +492,7 @@ public class UserManager {
 	public boolean remove(UUID playerUUID, String userID) {
 		int claimsAmount = getClaimsAmount(playerUUID);
 		if (claimsAmount <= 1) {
-			setPlayerData(playerUUID, HORSES, null, true);
+			setPlayerData(playerUUID, KeyWordEnum.horses.getValue(), null, true);
 		}
 		else {
 			for (int i=Integer.valueOf(userID); i<claimsAmount; i++) {
@@ -510,11 +506,11 @@ public class UserManager {
 	
 	public void rename(UUID playerUUID, Horse horse, String horseName) {
         String userID = getUserID(playerUUID, horse);
-        setHorseData(playerUUID, userID, NAME, horseName, true);
+        setHorseData(playerUUID, userID, KeyWordEnum.name.getValue(), horseName, true);
 	}
 	
 	public void saveLanguage(UUID playerUUID, String language) {
-		setPlayerData(playerUUID, LANGUAGE, language, true);
+		setPlayerData(playerUUID, KeyWordEnum.language.getValue(), language, true);
 	}
 	
 	public void saveLocation(Horse horse) {
@@ -531,10 +527,10 @@ public class UserManager {
 		String xPos = Integer.toString(xLoc.intValue());
 		String yPos = Integer.toString(yLoc.intValue());
 		String zPos = Integer.toString(zLoc.intValue());
-		setHorseData(playerUUID, userID, LOCATION + DOT + WORLD, world, false);
-		setHorseData(playerUUID, userID, LOCATION + DOT + X, xPos, false);
-		setHorseData(playerUUID, userID, LOCATION + DOT + Y, yPos, false);
-		setHorseData(playerUUID, userID, LOCATION + DOT + Z, zPos, false);
+		setHorseData(playerUUID, userID, KeyWordEnum.location.getValue() + KeyWordEnum.dot.getValue() + KeyWordEnum.world.getValue(), world, false);
+		setHorseData(playerUUID, userID, KeyWordEnum.location.getValue() + KeyWordEnum.dot.getValue() + KeyWordEnum.x.getValue(), xPos, false);
+		setHorseData(playerUUID, userID, KeyWordEnum.location.getValue() + KeyWordEnum.dot.getValue() + KeyWordEnum.y.getValue(), yPos, false);
+		setHorseData(playerUUID, userID, KeyWordEnum.location.getValue() + KeyWordEnum.dot.getValue() + KeyWordEnum.z.getValue(), zPos, false);
 		zh.saveUsers();
 	}
 	
@@ -588,16 +584,16 @@ public class UserManager {
 	
 	public void share(UUID playerUUID, Horse horse) {
         String userID = getUserID(playerUUID, horse);
-        setHorseData(playerUUID, userID, SHARED, true, true);
+        setHorseData(playerUUID, userID, KeyWordEnum.modeShared.getValue(), true, true);
 	}
 	
 	public void unShare(UUID playerUUID, Horse horse) {
         String userID = getUserID(playerUUID, horse);
-        setHorseData(playerUUID, userID, SHARED, false, true);
+        setHorseData(playerUUID, userID, KeyWordEnum.modeShared.getValue(), false, true);
 	}
 	
 	public void updatePlayer(Player p) {
-		setPlayerData(p.getUniqueId(), NAME, p.getName(), true);
+		setPlayerData(p.getUniqueId(), KeyWordEnum.name.getValue(), p.getName(), true);
 	}
 	
 }

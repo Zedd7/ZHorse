@@ -5,6 +5,7 @@ import java.util.List;
 import org.bukkit.command.CommandSender;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
 public class ZList extends Command {
 
@@ -33,35 +34,35 @@ public class ZList extends Command {
 				if (ownsHorse(targetUUID, true)) {
 					String horseListHeader;
 					if (samePlayer) {
-						horseListHeader = zh.getMM().getHeaderAmount(s, zh.getLM().horseListHeader, 0, remainingClaimsMessage, true);
+						horseListHeader = zh.getMM().getMessageValue(s, LocaleEnum.horseListHeader, remainingClaimsMessage, true);
 					}
 					else {
-						horseListHeader = zh.getMM().getHeaderPlayerAmount(s, zh.getLM().horseListOtherHeader, 0, targetName, remainingClaimsMessage, true);
+						horseListHeader = zh.getMM().getMessagePlayerValue(s, LocaleEnum.horseListOtherHeader, targetName, remainingClaimsMessage, true);
 					}
-					zh.getMM().sendHeaderValue(s, zh.getLM().headerFormat, horseListHeader, true);
+					zh.getMM().sendMessageValue(s, LocaleEnum.headerFormat, horseListHeader, true);
 					for (int i=1; i<=horseList.size(); i++) {
 						String userID = Integer.toString(i);
 						String horseName = horseList.get(i-1);
-						String message = zh.getMM().getHeaderHorseUserID(s, zh.getLM().horseListFormat, horseName, userID, true);
+						String message = zh.getMM().getMessageHorseSpacerUserID(s, LocaleEnum.horseListFormat, horseName, 1, userID, true);
 						String status = "";
 						if (zh.getUM().isProtected(targetUUID, userID)) {
-							status += zh.getMM().getInfo(s, zh.getLM().modeProtected, true);
+							status += zh.getMM().getMessageSpacer(s, LocaleEnum.modeProtected, 1, true);
 						}
 						if (zh.getUM().isLocked(targetUUID, userID)) {
-							status += zh.getMM().getInfo(s, zh.getLM().modeLocked, true);
+							status += zh.getMM().getMessageSpacer(s, LocaleEnum.modeLocked, 1, true);
 						}
 						else if (zh.getUM().isShared(targetUUID, userID)) {
-							status += zh.getMM().getInfo(s, zh.getLM().modeShared, true);
+							status += zh.getMM().getMessageSpacer(s, LocaleEnum.modeShared, 1, true);
 						}
 						s.sendMessage(message + status);
 					}
 				}
 				else {
 					if (samePlayer) {
-						zh.getMM().sendMessageAmount(s, zh.getLM().noHorseOwned, remainingClaimsMessage);
+						zh.getMM().sendMessageValue(s, LocaleEnum.noHorseOwned, remainingClaimsMessage);
 					}
 					else {
-						zh.getMM().sendMessagePlayerAmount(s, zh.getLM().noHorseOwnedOther, targetName, remainingClaimsMessage);
+						zh.getMM().sendMessagePlayerValue(s, LocaleEnum.noHorseOwnedOther, targetName, remainingClaimsMessage);
 					}
 				}
 			}

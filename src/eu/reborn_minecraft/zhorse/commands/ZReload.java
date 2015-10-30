@@ -3,6 +3,7 @@ package eu.reborn_minecraft.zhorse.commands;
 import org.bukkit.command.CommandSender;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
 public class ZReload extends Command {
 
@@ -13,7 +14,7 @@ public class ZReload extends Command {
 		if (isPlayer(!playerOnly)) {
 			if (analyseArguments() && hasPermission() && isWorldEnabled()) {
 				if (!idMode && !targetMode) {
-					executePlayer();
+					execute();
 				}
 				else {
 					sendCommandUsage();
@@ -23,7 +24,7 @@ public class ZReload extends Command {
 		else {
 			if (analyseArguments()) {
 				if (!idMode && !targetMode) {
-					executeConsole();
+					execute();
 				}
 				else {
 					sendCommandUsage();
@@ -32,28 +33,19 @@ public class ZReload extends Command {
 		}
 	}
 
-	private void executePlayer() { // TODO fusionner avec executeConsole
-		if (zh.getEM().canAffordCommand(p, command)) {
+	private void execute() {
+		if (!playerCommand || (playerCommand && zh.getEM().canAffordCommand(p, command))) {
 			if (zh.reload()) {
 				if (displayConsole) {
-					zh.getMM().sendMessageValue(s, zh.getLM().pluginReloaded, zh.getDescription().getFullName());
+					zh.getMM().sendMessageValue(s, LocaleEnum.pluginReloaded, zh.getDescription().getFullName());
 				}
 			}
 			else if (displayConsole) {
-				zh.getMM().sendMessageValue(s, zh.getLM().pluginReloadedWithErrors, zh.getDescription().getFullName());
+				zh.getMM().sendMessageValue(s, LocaleEnum.pluginReloadedWithErrors, zh.getDescription().getFullName());
 			}
-			zh.getEM().payCommand(p, command);
-		}
-	}
-	
-	private void executeConsole() {
-		if (zh.reload()) {
-			if (displayConsole) {
-				zh.getMM().sendMessageValue(s, zh.getLM().pluginReloaded, zh.getDescription().getFullName());
+			if (playerCommand) {
+				zh.getEM().payCommand(p, command);
 			}
-		}
-		else if (displayConsole) {
-			zh.getMM().sendMessageValue(s, zh.getLM().pluginReloadedWithErrors, zh.getDescription().getFullName());
 		}
 	}
 
