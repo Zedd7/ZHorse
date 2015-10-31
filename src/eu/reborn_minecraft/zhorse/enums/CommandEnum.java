@@ -19,6 +19,7 @@ public enum CommandEnum {
 	tame("eu.reborn_minecraft.zhorse.commands.ZTame", "tame"),
 	tp("eu.reborn_minecraft.zhorse.commands.ZTp", "tp"),
 	
+	favorite("eu.reborn_minecraft.zhorse.commands.ZSettings", "favorite"),
 	language("eu.reborn_minecraft.zhorse.commands.ZSettings", "language");
 	
 	private String classPath;

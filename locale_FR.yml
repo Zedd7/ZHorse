@@ -15,6 +15,7 @@ Headers:
   settingsCommandListHeader: "<gold>Commandes de ZHorse settings"
   horseInfoHeader: "<gold>Données du cheval"
   horseListFormat: "<yellow><id><green> - <yellow><horse>"
+  horseListFormatFavorite: "<yellow><id><green> - <yellow><horse> <green>(favori)"
   horseListHeader: "<gold>Vos chevaux <value>"
   horseListOtherHeader: "<gold>Chevaux de <player> <value>"
   remainingClaimsFormat: "<yellow>(<gold><amount><yellow>/<gold><max><yellow>)"
@@ -22,6 +23,10 @@ Headers:
 Messages:
   claimsLimitReached: "<yellow>Votre limite de chevaux revendicables a été atteinte."
   claimsLimitReachedOther: "<yellow>La limite de chevaux revendicables par <gold><player><yellow> a été atteinte."
+  favoriteAlreadySet: "<yellow>Vous avez déjà défini <gold><horse><yellow> en tant que cheval favori."
+  favoriteAlreadySetOther: "<gold><player><yellow> a déjà défini <gold><horse><yellow> en tant que cheval favori."
+  favoriteEdited: "<gold><horse><yellow> est désormais votre cheval favori."
+  favoriteEditedOther: "<gold><horse><yellow> est désormais le cheval favori de <gold><player><yellow>."
   horseAlreadyClaimed: "<yellow>Vous avez déjà revendiqué ce cheval."
   horseBelongsTo: "<yellow>Ce cheval appartient à <gold><player><yellow>."
   horseClaimed: "<gold><horse><yellow> a été revendiqué avec succès."
@@ -57,6 +62,7 @@ Messages:
   languageEdited: "<yellow>Vous utilisez maintenant la langue <gold><lang><yellow>."
   languageEditedOther: "<gold><player><yellow> utilise maintenant la langue <gold><lang><yellow>."
   missingArguments: "<yellow>Nombre d'arguments incorrect. Faites comme suit :"
+  missingHorseId: "<yellow>Vous devez fournir un ID, veuillez taper /zh list et choisissez un ID."
   missingLanguage: "<yellow>Vous devez fournir une langue, veuillez utiliser l'une des suivantes : <value><yellow>."
   missingPermission: "<yellow>Vous n'avez pas la permission <gold><perm><yellow>."
   missingPermissionOther: "<gold><player><yellow> n'a pas la permission <gold><perm><yellow>."
@@ -117,6 +123,7 @@ Command descriptions:
   tp: "<gold>/zh tp<gray>: <yellow>Vous téléporte au cheval."
 
 Settings command descriptions:
+  favorite: "<gold>/zh settings favorite [horseID]<gray>: <yellow>Défini votre cheval favori."
   language: "<gold>/zh settings language [lang]<gray>: <yellow>Défini la langue de ZHorse."
 
 Command usages:

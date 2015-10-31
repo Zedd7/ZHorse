@@ -32,6 +32,7 @@ public class ZList extends Command {
 			String remainingClaimsMessage = getRemainingClaimsMessage(targetUUID);
 			if (displayConsole) {
 				if (ownsHorse(targetUUID, true)) {
+					String favorite = zh.getUM().getFavoriteUserID(targetUUID);
 					String horseListHeader;
 					if (samePlayer) {
 						horseListHeader = zh.getMM().getMessageValue(s, LocaleEnum.horseListHeader, remainingClaimsMessage, true);
@@ -43,18 +44,23 @@ public class ZList extends Command {
 					for (int i=1; i<=horseList.size(); i++) {
 						String userID = Integer.toString(i);
 						String horseName = horseList.get(i-1);
-						String message = zh.getMM().getMessageHorseSpacerUserID(s, LocaleEnum.horseListFormat, horseName, 1, userID, true);
-						String status = "";
+						String message;
+						if (userID.equals(favorite)) {
+							message = zh.getMM().getMessageHorseSpacerUserID(s, LocaleEnum.horseListFormatFavorite, horseName, 1, userID, true);
+						}
+						else {
+							message = zh.getMM().getMessageHorseSpacerUserID(s, LocaleEnum.horseListFormat, horseName, 1, userID, true);
+						}
 						if (zh.getUM().isProtected(targetUUID, userID)) {
-							status += zh.getMM().getMessageSpacer(s, LocaleEnum.modeProtected, 1, true);
+							message += zh.getMM().getMessageSpacer(s, LocaleEnum.modeProtected, 1, true);
 						}
 						if (zh.getUM().isLocked(targetUUID, userID)) {
-							status += zh.getMM().getMessageSpacer(s, LocaleEnum.modeLocked, 1, true);
+							message += zh.getMM().getMessageSpacer(s, LocaleEnum.modeLocked, 1, true);
 						}
 						else if (zh.getUM().isShared(targetUUID, userID)) {
-							status += zh.getMM().getMessageSpacer(s, LocaleEnum.modeShared, 1, true);
+							message += zh.getMM().getMessageSpacer(s, LocaleEnum.modeShared, 1, true);
 						}
-						s.sendMessage(message + status);
+						s.sendMessage(message);
 					}
 				}
 				else {

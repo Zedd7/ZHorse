@@ -15,6 +15,7 @@ Headers:
   settingsCommandListHeader: "<gold>ZHorse's settings commands"
   horseInfoHeader: "<gold>Horse data"
   horseListFormat: "<yellow><id><green> - <yellow><horse>"
+  horseListFormatFavorite: "<yellow><id><green> - <yellow><horse> <green>(favorite)"
   horseListHeader: "<gold>Your horses <value>"
   horseListOtherHeader: "<gold><player>'s horses <value>"
   remainingClaimsFormat: "<yellow>(<gold><amount><yellow>/<gold><max><yellow>)"
@@ -22,6 +23,10 @@ Headers:
 Messages:
   claimsLimitReached: "<yellow>Your claims limit has been reached."
   claimsLimitReachedOther: "<gold><player><yellow>'s claims limit has been reached."
+  favoriteAlreadySet: "<yellow>You have already defined <gold><horse><yellow> as favorite horse."
+  favoriteAlreadySetOther: "<gold><player><yellow> has already defined <gold><horse><yellow> as favorite horse."
+  favoriteEdited: "<gold><horse><yellow> is now your favorite horse."
+  favoriteEditedOther: "<gold><horse><yellow> is now the favorite horse of <gold><player><yellow>."
   horseAlreadyClaimed: "<yellow>You have already claimed this horse."
   horseBelongsTo: "<yellow>That horse belongs to <gold><player><yellow>."
   horseClaimed: "<gold><horse><yellow> was successfully claimed."
@@ -57,6 +62,7 @@ Messages:
   languageEdited: "<yellow>You are now using the language <gold><lang><yellow>."
   languageEditedOther: "<gold><player><yellow> is now using the language <gold><lang><yellow>."
   missingArguments: "<yellow>Incorrect number of arguments. Do as follows :"
+  missingHorseId: "<yellow>You must provide a horse ID, please type <gold>/zh list<yellow> and choose an ID."
   missingLanguage: "<yellow>You must provide a language, please use one the followings : <value><yellow>."
   missingPermission: "<yellow>You don't have the <gold><perm><yellow> permission."
   missingPermissionOther: "<gold><player><yellow> doesn't have the <gold><perm><yellow> permission."
@@ -117,6 +123,7 @@ Command descriptions:
   tp: "<gold>/zh tp<gray>: <yellow>Teleports you to the horse."
 
 Settings command descriptions:
+  favorite: "<gold>/zh settings favorite [horseID]<gray>: <yellow>Defines your favorite horse."
   language: "<gold>/zh settings language [lang]<gray>: <yellow>Sets ZHorse's language."
 
 Command usages:

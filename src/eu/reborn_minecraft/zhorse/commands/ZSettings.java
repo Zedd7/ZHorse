@@ -6,11 +6,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.enums.CommandEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 import net.md_5.bungee.api.ChatColor;
 
 public class ZSettings extends Command {
-	private static String LANGUAGE = "language";
 
 	public ZSettings(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
@@ -31,15 +31,15 @@ public class ZSettings extends Command {
 	private void execute() {
 		if (zh.getEM().canAffordCommand(p, command)) {
 			if (!argument.isEmpty()) {
-				String settingsCommand;
+				String settingsCommand = argument.toLowerCase();;
 				if (argument.contains(" ")) {
-					settingsCommand = argument.substring(0, argument.indexOf(" ")).toLowerCase();
+					settingsCommand = argument.substring(0, argument.indexOf(" "));
 				}
-				else {
-					settingsCommand = argument;
+				if (settingsCommand.equals(CommandEnum.language.name())) {
+					setLanguage();
 				}
-				if (settingsCommand.equals(LANGUAGE)) {
-					editLanguage();
+				else if (settingsCommand.equals((CommandEnum.favorite.name()))) {
+					setFavorite();
 				}
 				else {
 					if (displayConsole) {
@@ -53,8 +53,41 @@ public class ZSettings extends Command {
 			}
 		}
 	}
+	
+	private void setFavorite() {
+		if (argument.split(" ").length >= 2) {
+			userID = argument.substring(argument.indexOf(" ")+1);
+			if (isRegistered(targetUUID, userID)) {
+				if (!zh.getUM().getFavoriteUserID(targetUUID).equals(userID)) {
+					zh.getUM().saveFavorite(targetUUID, userID);
+					if (samePlayer) {
+						zh.getMM().sendMessageHorse(s, LocaleEnum.favoriteEdited, horseName);
+					}
+					else {
+						zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.favoriteEditedOther, horseName, targetName);
+						if (isPlayerOnline(targetUUID, true)) {
+							Player target = zh.getServer().getPlayer(targetUUID);
+							zh.getMM().sendMessageHorse((CommandSender)target, LocaleEnum.favoriteEdited, horseName);
+						}
+					}
+					zh.getEM().payCommand(p, command);
+				}
+				else if (displayConsole) {
+					if (samePlayer) {
+						zh.getMM().sendMessageHorse(s, LocaleEnum.favoriteAlreadySet, horseName);
+					}
+					else {
+						zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.favoriteAlreadySetOther, horseName, targetName);
+					}
+				}
+			}
+		}
+		else if (displayConsole) {
+			zh.getMM().sendMessage(s, LocaleEnum.missingHorseId);
+		}
+	}
 
-	private void editLanguage() {
+	private void setLanguage() {
 		if (argument.split(" ").length >= 2) {
 			String language = argument.substring(argument.indexOf(" ")+1).toUpperCase();
 			if (zh.getCM().isLanguageAvailable(language)) {
@@ -88,7 +121,6 @@ public class ZSettings extends Command {
 		else if (displayConsole) {
 			displayAvailableLanguages(LocaleEnum.missingLanguage);
 		}
-		
 	}
 	
 	private void displayAvailableLanguages(LocaleEnum index) {

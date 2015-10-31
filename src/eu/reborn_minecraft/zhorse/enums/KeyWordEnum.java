@@ -54,6 +54,7 @@ public enum KeyWordEnum {
 	valueFlag("<value>"),
 	
 	/* users.yml keywords */
+	favorite("Favorite"),
 	horses("Horses"),
 	language("Language"),
 	location("Location"),

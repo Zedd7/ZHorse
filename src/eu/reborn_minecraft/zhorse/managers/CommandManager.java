@@ -38,6 +38,7 @@ public class CommandManager implements CommandExecutor {
 		commandList.add(CommandEnum.share);
 		commandList.add(CommandEnum.tame);
 		commandList.add(CommandEnum.tp);
+		settingsCommandList.add(CommandEnum.favorite);
 		settingsCommandList.add(CommandEnum.language);
 	}
 
