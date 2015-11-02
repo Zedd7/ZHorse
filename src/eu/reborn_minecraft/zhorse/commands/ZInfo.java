@@ -78,7 +78,7 @@ public class ZInfo extends Command {
 				status += zh.getMM().getMessageSpacer(s, LocaleEnum.modeShared, 1, true);
 			}
 			zh.getMM().sendMessageValue(s, LocaleEnum.headerFormat, zh.getMM().getMessage(s, LocaleEnum.horseInfoHeader, true), true);
-			if (isOwner(true)) {
+			if (isOwner(false, true)) {
 				zh.getMM().sendMessageSpacerUserID(s, LocaleEnum.id, 1, userID, true);
 			}
 			zh.getMM().sendMessagePlayerSpacer(s, LocaleEnum.owner, ownerName, 1, true);

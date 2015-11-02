@@ -34,7 +34,7 @@ public class UserManager {
 		return 0;
 	}
 	
-	private String getDefaultFavoriteUserID() {
+	public String getDefaultFavoriteUserID() {
 		return "1";
 	}
 	
@@ -502,7 +502,7 @@ public class UserManager {
 				registerPlayer(playerUUID);
 			}
 			if (isRegistered(horse)) { // retire l'enregistrement précédent en cas de give
-				remove(horse);
+				unRegisterHorse(horse);
 			}
 			String userID = getNextUserID(playerUUID);
 			UUID horseUUID = horse.getUniqueId();
@@ -528,54 +528,6 @@ public class UserManager {
 				zh.saveUsers();
 			}
 		}
-	}
-	
-	public boolean remove(Horse horse) {
-		if (horse != null) {
-			UUID playerUUID = getPlayerUUID(horse);
-			if (playerUUID != null) {
-				String userID = getUserID(playerUUID, horse);
-				if (userID != null) {
-					return remove(playerUUID, userID);
-				}
-			}
-		}
-		return false;
-	}
-	
-	public boolean remove(UUID playerUUID, Horse horse) {
-		if (playerUUID != null && horse != null) {
-			String userID = getUserID(playerUUID, horse);
-			if (playerUUID != null) {
-				if (userID != null) {
-					return remove(playerUUID, userID);
-				}
-			}
-		}
-		return false;
-	}
-	
-	public boolean remove(UUID playerUUID, String userID) {
-		if (playerUUID != null && userID != null) {
-			int claimsAmount = getClaimsAmount(playerUUID);
-			if (claimsAmount <= 1) {
-				setPlayerData(playerUUID, KeyWordEnum.horses.getValue(), null);
-				zh.saveUsers();
-			}
-			else {
-				if (userID.equals(getFavoriteUserID(playerUUID))) {
-					saveFavorite(playerUUID, getDefaultFavoriteUserID());
-				}
-				for (int i=Integer.valueOf(userID); i<claimsAmount; i++) { // i == ID != iterator
-					ConfigurationSection cs = zh.getUsers().getConfigurationSection(getHorsePath(playerUUID, Integer.toString(i+1)));
-					setHorseData(playerUUID, Integer.toString(i), cs);
-				}
-				setHorseData(playerUUID, Integer.toString(claimsAmount), null);
-				zh.saveUsers();
-			}
-			return true;
-		}
-		return false;
 	}
 	
 	public void rename(UUID playerUUID, Horse horse, String horseName) {
@@ -702,6 +654,66 @@ public class UserManager {
 			setPlayerData(p.getUniqueId(), KeyWordEnum.name.getValue(), p.getName());
 			zh.saveUsers();
 		}
+	}
+	
+	public boolean unRegisterHorse(Horse horse) {
+		if (horse != null) {
+			UUID playerUUID = getPlayerUUID(horse);
+			if (playerUUID != null) {
+				String userID = getUserID(playerUUID, horse);
+				if (userID != null) {
+					return unRegisterHorse(playerUUID, userID);
+				}
+			}
+		}
+		return false;
+	}
+	
+	public boolean unRegisterHorse(UUID playerUUID, Horse horse) {
+		if (playerUUID != null && horse != null) {
+			String userID = getUserID(playerUUID, horse);
+			if (playerUUID != null) {
+				if (userID != null) {
+					return unRegisterHorse(playerUUID, userID);
+				}
+			}
+		}
+		return false;
+	}
+	
+	public boolean unRegisterHorse(UUID playerUUID, String userID) {
+		if (playerUUID != null && userID != null) {
+			int claimsAmount = getClaimsAmount(playerUUID);
+			if (claimsAmount <= 1) {
+				setPlayerData(playerUUID, KeyWordEnum.horses.getValue(), null);
+				zh.saveUsers();
+			}
+			else {
+				if (userID.equals(getFavoriteUserID(playerUUID))) { // réinitialisation du favori si relâché
+					saveFavorite(playerUUID, getDefaultFavoriteUserID());
+				}
+				else if (Integer.valueOf(userID) < Integer.valueOf(getFavoriteUserID(playerUUID))) { // désincrémentation du favori si ID maj
+					saveFavorite(playerUUID, String.valueOf(Integer.valueOf(getFavoriteUserID(playerUUID))-1));
+				}
+				for (int i=Integer.valueOf(userID); i<claimsAmount; i++) { // i == ID -> != iterator
+					ConfigurationSection cs = zh.getUsers().getConfigurationSection(getHorsePath(playerUUID, Integer.toString(i+1)));
+					setHorseData(playerUUID, Integer.toString(i), cs);
+				}
+				setHorseData(playerUUID, Integer.toString(claimsAmount), null);
+				zh.saveUsers();
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean unRegisterPlayer(UUID playerUUID) {
+		if (playerUUID != null) {
+			setPlayerData(playerUUID, KeyWordEnum.horses.getValue(), null);
+			zh.saveUsers();
+			return true;
+		}
+		return false;
 	}
 	
 }

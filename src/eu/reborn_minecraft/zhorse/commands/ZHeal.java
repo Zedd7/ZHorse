@@ -13,7 +13,7 @@ public class ZHeal extends Command {
 		super(zh, s, a);
 		playerOnly = true;
 		needTarget = false;
-		if (isPlayer()&& analyseArguments() && hasPermission() && isWorldEnabled()) {
+		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {
 			applyArgument(true);
 			if (!idMode) {
 				if (!targetMode) {

@@ -30,6 +30,16 @@ public class ZFree extends Command {
 							if (isHorseLoaded()) {
 								execute();
 							}
+							else {
+								zh.getUM().unRegisterHorse(targetUUID, userID);
+								if (samePlayer) {
+									zh.getMM().sendMessageHorse(s, LocaleEnum.horseCleared, horseName);
+								}
+								else {
+									zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.horseClearedOther, horseName, targetName);
+								}
+								zh.getEM().payCommand(p, command);
+							}
 						}
 					}
 				}
@@ -43,6 +53,16 @@ public class ZFree extends Command {
 					if (isHorseLoaded()) {
 						execute();
 					}
+					else {
+						zh.getUM().unRegisterHorse(targetUUID, userID);
+						if (samePlayer) {
+							zh.getMM().sendMessageHorse(s, LocaleEnum.horseCleared, horseName);
+						}
+						else {
+							zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.horseClearedOther, horseName, targetName);
+						}
+						zh.getEM().payCommand(p, command);
+					}
 				}
 			}
 		}
@@ -50,7 +70,7 @@ public class ZFree extends Command {
 
 	private void execute() {
 		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
-			if (zh.getUM().remove(horse)) {
+			if (zh.getUM().unRegisterHorse(horse)) {
 				horse.setCustomName(null);
 				horse.setCustomNameVisible(false);
 				if (displayConsole) {

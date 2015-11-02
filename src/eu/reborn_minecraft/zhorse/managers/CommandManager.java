@@ -15,12 +15,19 @@ import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 public class CommandManager implements CommandExecutor {
 	private ZHorse zh;
 	private List<CommandEnum> commandList;
+	private List<CommandEnum> adminCommandList;
 	private List<CommandEnum> settingsCommandList;
 	
 	public CommandManager(ZHorse zh) {
 		this.zh = zh;
+		initCommands();
+	}
+
+	private void initCommands() {
 		commandList = new ArrayList<CommandEnum>();
+		adminCommandList = new ArrayList<CommandEnum>();
 		settingsCommandList = new ArrayList<CommandEnum>();
+		commandList.add(CommandEnum.admin);
 		commandList.add(CommandEnum.claim);
 		commandList.add(CommandEnum.free);
 		commandList.add(CommandEnum.give);
@@ -38,6 +45,7 @@ public class CommandManager implements CommandExecutor {
 		commandList.add(CommandEnum.share);
 		commandList.add(CommandEnum.tame);
 		commandList.add(CommandEnum.tp);
+		adminCommandList.add(CommandEnum.clear);
 		settingsCommandList.add(CommandEnum.favorite);
 		settingsCommandList.add(CommandEnum.language);
 	}
@@ -84,16 +92,28 @@ public class CommandManager implements CommandExecutor {
 		return commandNameList;
 	}
 	
+	public List<CommandEnum> getAdminCommandList() {
+		return adminCommandList;
+	}
+	
+//	public List<String> getAdminCommandNameList() {
+//		List<String> adminCommandNameList = new ArrayList<String>();
+//		for (CommandEnum command : adminCommandList) {
+//			adminCommandNameList.add(command.getName());
+//		}
+//		return adminCommandNameList;
+//	}
+	
 	public List<CommandEnum> getSettingsCommandList() {
 		return settingsCommandList;
 	}
 	
-	public List<String> getSettingsCommandNameList() {
-		List<String> settingsCommandNameList = new ArrayList<String>();
-		for (CommandEnum command : settingsCommandList) {
-			settingsCommandNameList.add(command.getName());
-		}
-		return settingsCommandNameList;
-	}
+//	public List<String> getSettingsCommandNameList() {
+//		List<String> settingsCommandNameList = new ArrayList<String>();
+//		for (CommandEnum command : settingsCommandList) {
+//			settingsCommandNameList.add(command.getName());
+//		}
+//		return settingsCommandNameList;
+//	}
 	
 }

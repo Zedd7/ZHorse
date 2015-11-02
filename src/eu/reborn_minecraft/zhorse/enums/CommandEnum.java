@@ -1,6 +1,8 @@
 package eu.reborn_minecraft.zhorse.enums;
 
 public enum CommandEnum {
+	/* main commands */
+	admin("eu.reborn_minecraft.zhorse.commands.ZAdmin", "admin"),
 	claim("eu.reborn_minecraft.zhorse.commands.ZClaim", "claim"),
 	free("eu.reborn_minecraft.zhorse.commands.ZFree", "free"),
 	give("eu.reborn_minecraft.zhorse.commands.ZGive", "give"),
@@ -19,6 +21,10 @@ public enum CommandEnum {
 	tame("eu.reborn_minecraft.zhorse.commands.ZTame", "tame"),
 	tp("eu.reborn_minecraft.zhorse.commands.ZTp", "tp"),
 	
+	/* admin commands */
+	clear("eu.reborn_minecraft.zhorse.commands.ZSettings", "clear"),
+	
+	/* settings commands */
 	favorite("eu.reborn_minecraft.zhorse.commands.ZSettings", "favorite"),
 	language("eu.reborn_minecraft.zhorse.commands.ZSettings", "language");
 	

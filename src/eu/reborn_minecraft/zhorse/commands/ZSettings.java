@@ -3,27 +3,36 @@ package eu.reborn_minecraft.zhorse.commands;
 import java.util.List;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.CommandEnum;
+import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 import net.md_5.bungee.api.ChatColor;
 
 public class ZSettings extends Command {
+	String fullCommand;
+	String subCommand;
 
 	public ZSettings(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
 		playerOnly = true;
 		needTarget = false;
-		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {
+		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {			
 			if (!idMode) {
-				if (!targetMode || isRegistered(targetUUID) && isPlayerOnline(targetUUID, false)) {
-					execute();
+				if (isOnHorse(true)) { // sélection du cheval avec ou sans target
+					horse = (Horse)p.getVehicle();
+					if (isOwner(targetUUID, true, true)) {
+						idMode = true;
+						userID = zh.getUM().getUserID(targetUUID, horse);
+					}
 				}
+				execute();
 			}
-			else {
-				sendCommandUsage();
+			else if (isRegistered(targetUUID, userID)) {
+				execute();
 			}
 		}
 	}
@@ -31,19 +40,19 @@ public class ZSettings extends Command {
 	private void execute() {
 		if (zh.getEM().canAffordCommand(p, command)) {
 			if (!argument.isEmpty()) {
-				String settingsCommand = argument.toLowerCase();;
+				subCommand = argument.toLowerCase();;
 				if (argument.contains(" ")) {
-					settingsCommand = argument.substring(0, argument.indexOf(" "));
+					subCommand = argument.substring(0, argument.indexOf(" "));
 				}
-				if (settingsCommand.equals(CommandEnum.language.name())) {
+				if (subCommand.equals(CommandEnum.language.name())) {
 					setLanguage();
 				}
-				else if (settingsCommand.equals((CommandEnum.favorite.name()))) {
+				else if (subCommand.equals((CommandEnum.favorite.name()))) {
 					setFavorite();
 				}
 				else {
 					if (displayConsole) {
-						zh.getMM().sendMessageValue(s, LocaleEnum.unknownSettingsCommand, settingsCommand);
+						zh.getMM().sendMessageValue(s, LocaleEnum.unknownSettingsCommand, subCommand);
 					}
 					displayCommandList(zh.getCmdM().getSettingsCommandList(), zh.getMM().getMessage(s, LocaleEnum.settingsCommandListHeader, true), true);
 				}
@@ -55,71 +64,82 @@ public class ZSettings extends Command {
 	}
 	
 	private void setFavorite() {
-		if (argument.split(" ").length >= 2) {
-			userID = argument.substring(argument.indexOf(" ")+1);
-			if (isRegistered(targetUUID, userID)) {
-				if (!zh.getUM().getFavoriteUserID(targetUUID).equals(userID)) {
-					zh.getUM().saveFavorite(targetUUID, userID);
-					if (samePlayer) {
-						zh.getMM().sendMessageHorse(s, LocaleEnum.favoriteEdited, horseName);
-					}
-					else {
-						zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.favoriteEditedOther, horseName, targetName);
-						if (isPlayerOnline(targetUUID, true)) {
-							Player target = zh.getServer().getPlayer(targetUUID);
-							zh.getMM().sendMessageHorse((CommandSender)target, LocaleEnum.favoriteEdited, horseName);
-						}
-					}
-					zh.getEM().payCommand(p, command);
-				}
-				else if (displayConsole) {
-					if (samePlayer) {
-						zh.getMM().sendMessageHorse(s, LocaleEnum.favoriteAlreadySet, horseName);
-					}
-					else {
-						zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.favoriteAlreadySetOther, horseName, targetName);
-					}
-				}
+		fullCommand = command + KeyWordEnum.dot.getValue() + CommandEnum.favorite.getName().toLowerCase();
+		if (hasPermission(s, fullCommand , true, false)) {
+			if (argument.split(" ").length >= 2) {
+				idMode = true;
+				userID = argument.substring(argument.indexOf(" ")+1);
 			}
-		}
-		else if (displayConsole) {
-			zh.getMM().sendMessage(s, LocaleEnum.missingHorseId);
-		}
-	}
-
-	private void setLanguage() {
-		if (argument.split(" ").length >= 2) {
-			String language = argument.substring(argument.indexOf(" ")+1).toUpperCase();
-			if (zh.getCM().isLanguageAvailable(language)) {
-				if (!zh.getUM().getLanguage(targetUUID).equals(language)) {
-					zh.getUM().saveLanguage(targetUUID, language);
-					if (samePlayer) {
-						zh.getMM().sendMessageLang(s, LocaleEnum.languageEdited, language);
-					}
-					else {
-						zh.getMM().sendMessageLangPlayer(s, LocaleEnum.languageEditedOther, language, targetName);
-						if (isPlayerOnline(targetUUID, true)) {
-							Player target = zh.getServer().getPlayer(targetUUID);
-							zh.getMM().sendMessageLang((CommandSender)target, LocaleEnum.languageEdited, language);
+			if (idMode) {
+				if (isRegistered(targetUUID, userID)) {
+					if (!zh.getUM().getFavoriteUserID(targetUUID).equals(userID)) {
+						zh.getUM().saveFavorite(targetUUID, userID);
+						if (samePlayer) {
+							zh.getMM().sendMessageHorse(s, LocaleEnum.favoriteEdited, horseName);
 						}
+						else {
+							zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.favoriteEditedOther, horseName, targetName);
+							if (isPlayerOnline(targetUUID, true)) {
+								Player target = zh.getServer().getPlayer(targetUUID);
+								zh.getMM().sendMessageHorse((CommandSender)target, LocaleEnum.favoriteEdited, horseName);
+							}
+						}
+						zh.getEM().payCommand(p, command);
 					}
-					zh.getEM().payCommand(p, command);
-				}
-				else if (displayConsole) {
-					if (samePlayer) {
-						zh.getMM().sendMessageLang(s, LocaleEnum.languageAlreadyUsed, language);
-					}
-					else {
-						zh.getMM().sendMessageLangPlayer(s, LocaleEnum.languageAlreadyUsedOther, language, targetName);
+					else if (displayConsole) {
+						if (samePlayer) {
+							zh.getMM().sendMessageHorse(s, LocaleEnum.favoriteAlreadySet, horseName);
+						}
+						else {
+							zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.favoriteAlreadySetOther, horseName, targetName);
+						}
 					}
 				}
 			}
 			else if (displayConsole) {
-				displayAvailableLanguages(LocaleEnum.unknownLanguage, language);
+				zh.getMM().sendMessage(s, LocaleEnum.missingHorseId);
+				sendCommandUsage(subCommand, true);
 			}
 		}
-		else if (displayConsole) {
-			displayAvailableLanguages(LocaleEnum.missingLanguage);
+	}
+
+	private void setLanguage() {
+		fullCommand = command + KeyWordEnum.dot.getValue() + CommandEnum.language.getName().toLowerCase();
+		if (hasPermission(s, fullCommand , true, false)) {
+			if (argument.split(" ").length >= 2) {
+				String language = argument.substring(argument.indexOf(" ")+1).toUpperCase();
+				if (zh.getCM().isLanguageAvailable(language)) {
+					if (!zh.getUM().getLanguage(targetUUID).equals(language)) {
+						zh.getUM().saveLanguage(targetUUID, language);
+						if (samePlayer) {
+							zh.getMM().sendMessageLang(s, LocaleEnum.languageEdited, language);
+						}
+						else {
+							zh.getMM().sendMessageLangPlayer(s, LocaleEnum.languageEditedOther, language, targetName);
+							if (isPlayerOnline(targetUUID, true)) {
+								Player target = zh.getServer().getPlayer(targetUUID);
+								zh.getMM().sendMessageLang((CommandSender)target, LocaleEnum.languageEdited, language);
+							}
+						}
+						zh.getEM().payCommand(p, command);
+					}
+					else if (displayConsole) {
+						if (samePlayer) {
+							zh.getMM().sendMessageLang(s, LocaleEnum.languageAlreadyUsed, language);
+						}
+						else {
+							zh.getMM().sendMessageLangPlayer(s, LocaleEnum.languageAlreadyUsedOther, language, targetName);
+						}
+					}
+				}
+				else if (displayConsole) {
+					displayAvailableLanguages(LocaleEnum.unknownLanguage, language);
+				}
+			}
+			else if (displayConsole) {
+				displayAvailableLanguages(LocaleEnum.missingLanguage);
+				sendCommandUsage(subCommand, true);
+			}
 		}
 	}
 	

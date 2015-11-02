@@ -1,20 +1,23 @@
 package eu.reborn_minecraft.zhorse.enums;
 
-public enum LocaleEnum {	
-	pluginPrefix("Headers.pluginPrefix"),
-	headerFormat("Headers.headerFormat"),
+public enum LocaleEnum {
+	/* headers */
+	adminCommandListHeader("Headers.adminCommandListHeader"),
 	availableLanguageFormat("Headers.availableLanguageFormat"),
 	commandListHeader("Headers.commandListHeader"),
-	commandUsageHeader("Headers.commandUsageHeader"),
 	commandUsageFormat("Headers.commandUsageFormat"),
-	settingsCommandListHeader("Headers.settingsCommandListHeader"),
+	commandUsageHeader("Headers.commandUsageHeader"),
+	headerFormat("Headers.headerFormat"),
 	horseInfoHeader("Headers.horseInfoHeader"),
 	horseListFormat("Headers.horseListFormat"),
 	horseListFormatFavorite("Headers.horseListFormatFavorite"),
 	horseListHeader("Headers.horseListHeader"),
 	horseListOtherHeader("Headers.horseListOtherHeader"),
+	pluginPrefix("Headers.pluginPrefix"),
 	remainingClaimsFormat("Headers.remainingClaimsFormat"),
+	settingsCommandListHeader("Headers.settingsCommandListHeader"),
 	
+	/* messages */
 	claimsLimitReached("Messages.claimsLimitReached"),
 	claimsLimitReachedOther("Messages.claimsLimitReachedOther"),
 	favoriteAlreadySet("Messages.favoriteAlreadySet"),
@@ -24,6 +27,8 @@ public enum LocaleEnum {
 	horseAlreadyClaimed("Messages.horseAlreadyClaimed"),
 	horseBelongsTo("Messages.horseBelongsTo"),
 	horseClaimed("Messages.horseClaimed"),
+	horseCleared("Messages.horseCleared"),
+	horseClearedOther("Messages.horseClearedOther"),
 	horseDied("Messages.horseDied"),
 	horseFreed("Messages.horseFreed"),
 	horseGiven("Messages.horseGiven"),
@@ -60,15 +65,19 @@ public enum LocaleEnum {
 	missingLanguage("Messages.missingLanguage"),
 	missingPermission("Messages.missingPermission"),
 	missingPermissionOther("Messages.missingPermissionOther"),
+	missingTarget("Messages.missingTarget"),
 	noHorseOwned("Messages.noHorseOwned"),
 	noHorseOwnedOther("Messages.noHorseOwnedOther"),
 	notOnHorse("Messages.notOnHorse"),
+	playerCleared("Messages.playerCleared"),
+	playerClearedOther("Messages.playerClearedOther"),
 	playerCommand("Messages.playerCommand"),
 	playerOffline("Messages.playerOffline"),
 	pluginReloaded("Messages.pluginReloaded"),
 	pluginReloadedWithErrors("Messages.pluginReloadedWithErrors"),
 	samePlayer("Messages.samePlayer"),
 	teleportedToHorse("Messages.teleportedToHorse"),
+	unknownAdminCommand("Messages.unknownAdminCommand"),
 	unknownCommand("Messages.unknownCommand"),
 	unknownHorseId("Messages.unknownHorseId"),
 	unknownHorseIdOther("Messages.unknownHorseIdOther"),
@@ -80,11 +89,13 @@ public enum LocaleEnum {
 	worldDisabled("Messages.worldDisabled"),
 	worldUnreachable("Messages.worldUnreachable"),
 	
-	currencySymbol("Economy.currencySymbol"),
+	/* economy messages */
 	commandCost("Economy.commandCost"),
 	commandPaid("Economy.commandPaid"),
+	currencySymbol("Economy.currencySymbol"),
 	notEnoughMoney("Economy.notEnoughMoney"),
 	
+	/* horse informations */
 	health("Horse informations.health"),
 	id("Horse informations.id"),
 	location("Horse informations.location"),
@@ -95,6 +106,8 @@ public enum LocaleEnum {
 	owner("Horse informations.owner"),
 	status("Horse informations.status"),
 	
+	/* command descriptions */
+	adminDescription("Command descriptions.admin"),
 	claimDescription("Command descriptions.claim"),
 	freeDescription("Command descriptions.free"),
 	giveDescription("Command descriptions.give"),
@@ -111,10 +124,17 @@ public enum LocaleEnum {
 	settingsDescription("Command descriptions.settings"),
 	shareDescription("Command descriptions.share"),
 	tameDescription("Command descriptions.tame"),
-	tpDescription("Command descriptions.tp"),	
+	tpDescription("Command descriptions.tp"),
+	
+	/* admin command descriptions */
+	clearDescription("Admin command descriptions.clear"),
+	
+	/* settings command descriptions */
 	favoriteDescription("Settings command descriptions.favorite"),
 	languageDescription("Settings command descriptions.language"),
 	
+	/* command usages */
+	adminUsage("Command usages.admin"),
 	claimUsage("Command usages.claim"),
 	freeUsage("Command usages.free"),
 	giveUsage("Command usages.give"),
@@ -131,7 +151,14 @@ public enum LocaleEnum {
 	settingsUsage("Command usages.settings"),
 	shareUsage("Command usages.share"),
 	tameUsage("Command usages.tame"),
-	tpUsage("Command usages.tp");
+	tpUsage("Command usages.tp"),
+	
+	/* admin command usages */
+	clearUsage("Admin command usages.clear"),
+	
+	/* settings command usages */
+	favoriteUsage("Settings command usages.favorite"),
+	languageUsage("Settings command usages.language");
 	
 	private String index;
 	

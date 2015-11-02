@@ -185,16 +185,16 @@ public class Command {
 		return false;
 	}
 	
-	protected void displayCommandList(List<CommandEnum> commandList, String header, boolean settingsCommand) {
+	protected void displayCommandList(List<CommandEnum> commandList, String header, boolean subCommands) {
 		if (displayConsole) {
 			zh.getMM().sendMessageValue(s, LocaleEnum.headerFormat, header, true);
 			for (CommandEnum command : commandList) {
 				String commandName = command.getName();
 				String permission = commandName;
 				LocaleEnum commandDescription = LocaleEnum.valueOf(commandName + KeyWordEnum.description.getValue());
-				if (settingsCommand) {
+				if (subCommands) {
 					commandName = this.command;
-					permission = this.command + KeyWordEnum.dot.getValue() + command.getName();
+					permission = commandName + KeyWordEnum.dot.getValue() + command.getName();
 				}
 				if (hasPermission(targetUUID, permission, true, true)) {
 					if (zh.getEM().isCommandFree(targetUUID, commandName)) {
@@ -398,15 +398,19 @@ public class Command {
 	}
 	
 	protected boolean isOwner() {
-		return isOwner(false);
-	}
-	
-	protected boolean isOwner(boolean hideConsole) {
-		return isOwner(p.getUniqueId(), hideConsole);
+		return isOwner(p.getUniqueId(), false, false);
 	}
 	
 	protected boolean isOwner(UUID playerUUID, boolean hideConsole) {
-		if (zh.getUM().isClaimedBy(playerUUID, horse) || adminMode) {
+		return isOwner(p.getUniqueId(), false, hideConsole);
+	}
+	
+	protected boolean isOwner(boolean ignoreModes, boolean hideConsole) {
+		return isOwner(p.getUniqueId(), ignoreModes, hideConsole);
+	}
+	
+	protected boolean isOwner(UUID playerUUID, boolean ignoreModes, boolean hideConsole) {
+		if (zh.getUM().isClaimedBy(playerUUID, horse) || (!ignoreModes && adminMode)) {
 			return true;
 		}
 		else if (displayConsole && !hideConsole) {
@@ -548,4 +552,5 @@ public class Command {
 			zh.getMM().sendMessageSpacerValue(s, LocaleEnum.commandUsageFormat, 1, commandUsage, true);
 		}
 	}
+
 }

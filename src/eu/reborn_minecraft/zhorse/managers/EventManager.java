@@ -107,7 +107,7 @@ public class EventManager implements Listener {
 						}
 					}
 				}
-				zh.getUM().remove(horse);
+				zh.getUM().unRegisterHorse(horse);
 			}
 		}
 	}

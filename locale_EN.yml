@@ -1,24 +1,25 @@
-Version: 1.4.0
+Version: 1.4.1
 
 # You can use any of the following color flag formats : <4>, ^4, §4, <dark_red>, <darkred>
 # You can rework any message in this file but DON'T add/remove flags that are not color flags !
 # However, you can swap two or more flags in the same line. That's their original purpose.
-# Example:  "<player> just gave you <horse>" or "<horse> has been given to you by <player>".
+# Example: "<player> just gave you <horse>" or "<horse> has been given to you by <player>".
 
 Headers:
-  pluginPrefix: "<green>[ZHorse]"
-  headerFormat: "<green>-+- <value>  <green>-+-"
+  adminCommandListHeader: "<gold>ZHorse's admin commands"
   availableLanguageFormat: "<gold><value><yellow>"
   commandListHeader: "<gold>ZHorse's commands"
-  commandUsageHeader: "<green>Legend : <gold>/command <yellow>mandatoryParams (optionalParams)"
   commandUsageFormat: "<green>Usage : <value>"
-  settingsCommandListHeader: "<gold>ZHorse's settings commands"
+  commandUsageHeader: "<green>Legend : <gold>/command <yellow>mandatoryParams (optionalParams)"
+  headerFormat: "<green>-+- <value>  <green>-+-"
   horseInfoHeader: "<gold>Horse data"
   horseListFormat: "<yellow><id><green> - <yellow><horse>"
   horseListFormatFavorite: "<yellow><id><green> - <yellow><horse> <green>(favorite)"
   horseListHeader: "<gold>Your horses <value>"
   horseListOtherHeader: "<gold><player>'s horses <value>"
+  pluginPrefix: "<green>[ZHorse]"
   remainingClaimsFormat: "<yellow>(<gold><amount><yellow>/<gold><max><yellow>)"
+  settingsCommandListHeader: "<gold>ZHorse's settings commands"
 
 Messages:
   claimsLimitReached: "<yellow>Your claims limit has been reached."
@@ -30,6 +31,8 @@ Messages:
   horseAlreadyClaimed: "<yellow>You have already claimed this horse."
   horseBelongsTo: "<yellow>That horse belongs to <gold><player><yellow>."
   horseClaimed: "<gold><horse><yellow> was successfully claimed."
+  horseCleared: "<gold><horse><yellow> has been cleared from the database."
+  horseClearedOther: "<gold><player><yellow>'s <gold><horse><yellow> has been cleared from the database."
   horseDied: "<gold><horse><yellow> just died in agony."
   horseFreed: "<yellow>Freedom was given to <gold><horse><yellow>."
   horseGiven: "<yellow>You gave <gold><horse><yellow> to <gold><player><yellow>."
@@ -66,15 +69,19 @@ Messages:
   missingLanguage: "<yellow>You must provide a language, please use one the followings : <value><yellow>."
   missingPermission: "<yellow>You don't have the <gold><perm><yellow> permission."
   missingPermissionOther: "<gold><player><yellow> doesn't have the <gold><perm><yellow> permission."
+  missingTarget: "<yellow>You must provide a player name."
   noHorseOwned: "<yellow>You don't own any horse. <value>"
   noHorseOwnedOther: "<gold><player><yellow> doesn't own any horse. <value>"
   notOnHorse: "<yellow>You must be on a horse to perform this command."
+  playerCleared: "<yellow>All your horses have been cleared from the database."
+  playerClearedOther: "<yellow>All <gold><player><yellow>'s horses have been cleared from the database."
   playerCommand: "<yellow>You must be a player to perform this command."
   playerOffline: "<gold><player><yellow> must be online in order to perform this command."
   pluginReloaded: "<gold><value><yellow> has been successfully reloaded."
   pluginReloadedWithErrors: "<gold><value><yellow> has been reloaded with errors."
   samePlayer: "<yellow>You can't target yourself."
   teleportedToHorse: "<yellow>You have been teleported to <gold><horse><yellow>."
+  unknownAdminCommand: "<gold><value><yellow> is not a ZHorse's admin command."
   unknownCommand: "<gold><value><yellow> is not a ZHorse command."
   unknownHorseId: "<yellow>You don't own any horse with ID <gold><id><yellow>."
   unknownHorseIdOther: "<gold><player><yellow> don't own any horse with ID <gold><id><yellow>."
@@ -87,9 +94,9 @@ Messages:
   worldUnreachable: "<yellow>Your world and <gold><horse><yellow>'s world are not connected."
 
 Economy:
-  currencySymbol: "$"
   commandCost: "<green>(<value><amount>)"
   commandPaid: "<yellow>This command cost you <gold><value><amount><yellow>."
+  currencySymbol: "$"
   notEnoughMoney: "<yellow>You don't have <gold><value><amount><yellow>."
 
 Horse informations:
@@ -104,6 +111,7 @@ Horse informations:
   status: "<yellow>Status :<gold><value>"
 
 Command descriptions:
+  admin: "<gold>/zh admin<gray>: <yellow>Manages ZHorse files."
   claim: "<gold>/zh claim<gray>: <yellow>Claims the horse."
   free: "<gold>/zh free<gray>: <yellow>Releases the horse."
   give: "<gold>/zh give<gray>: <yellow>Gives the horse to another player."
@@ -117,22 +125,26 @@ Command descriptions:
   protect: "<gold>/zh protect<gray>: <yellow>Prevents the horse from being hurt."
   reload: "<gold>/zh reload<gray>: <yellow>Reloads all ZHorse's files."
   rename: "<gold>/zh rename<gray>: <yellow>Renames the horse."
-  settings: "<gold>/zh settings<gray>: <yellow>Ajusts personal settings."
+  settings: "<gold>/zh settings<gray>: <yellow>Adjusts personal settings."
   share: "<gold>/zh share<gray>: <yellow>Shares the horse with other players."
   tame: "<gold>/zh tame<gray>: <yellow>Tames the horse."
   tp: "<gold>/zh tp<gray>: <yellow>Teleports you to the horse."
 
+Admin command descriptions:
+  clear: "<gold>/zh admin clear<gray>: <yellow>Clear a horse from database."
+
 Settings command descriptions:
-  favorite: "<gold>/zh settings favorite [horseID]<gray>: <yellow>Defines your favorite horse."
-  language: "<gold>/zh settings language [lang]<gray>: <yellow>Sets ZHorse's language."
+  favorite: "<gold>/zh settings favorite<gray>: <yellow>Defines your favorite horse."
+  language: "<gold>/zh settings language<gray>: <yellow>Sets ZHorse's language."
 
 Command usages:
+  admin: "<gold>/zh admin<yellow> option value1 (value2)"
   claim: "<gold>/zh claim<yellow> (horseName) (-i horseID) (-t playerName) (-a)"
   free: "<gold>/zh free<yellow> (-i horseID) (-t playerName) (-a)"
-  give: "<gold>/zh give<yellow> (-i horseID) -t playerName (-a)"
+  give: "<gold>/zh give<yellow> (-i horseID) (-t) playerName (-a)"
   heal: "<gold>/zh heal<yellow> (-i horseID) (-t playerName) (-a)"
   help: "<gold>/zh help<yellow> (commandName) (-t playerName) (-a)"
-  here: "<gold>/zh here<yellow> -i horseID (-t playerName) (-a)"
+  here: "<gold>/zh here<yellow> (-i horseID) (-t playerName) (-a)"
   info: "<gold>/zh info<yellow> (-i horseID) (-t playerName) (-a)"
   kill: "<gold>/zh kill<yellow> (-i horseID) (-t playerName) (-a)"
   list: "<gold>/zh list<yellow> (-t playerName) (-a)"
@@ -143,4 +155,11 @@ Command usages:
   settings: "<gold>/zh settings<yellow> option value (-t playerName) (-a)"
   share: "<gold>/zh share<yellow> (-i horseID) (-t playerName) (-a)"
   tame: "<gold>/zh tame<yellow> (-i horseID) (-t playerName) (-a)"
-  tp: "<gold>/zh tp<yellow> -i horseID (-t playerName) (-a)"
+  tp: "<gold>/zh tp<yellow> (-i horseID) (-t playerName) (-a)"
+
+Admin command usages:
+  clear: "<gold>/zh admin<yellow> clear (-t) playerName (-i horseID)"
+
+Settings command usages:
+  favorite: "<gold>/zh settings<yellow> favorite (-i) horseID"
+  language: "<gold>/zh settings<yellow> language value"
