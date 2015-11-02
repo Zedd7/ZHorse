@@ -26,7 +26,7 @@ public class ZHorse extends JavaPlugin {
 	private static String configPath = "config.yml";
 	private static String usersPath = "users.yml";
 	private static String localePath = "locale_%s.yml";
-	private static String[] providedLanguages = {"EN", "FR"};
+	private static String[] providedLanguages = {"EN", "FR", "NL"};
 	private static File configFile;
 	private static File usersFile;
 	private Permission perms;

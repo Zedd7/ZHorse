@@ -43,24 +43,23 @@ public class ZList extends Command {
 					zh.getMM().sendMessageValue(s, LocaleEnum.headerFormat, horseListHeader, true);
 					for (int i=1; i<=horseList.size(); i++) {
 						String userID = Integer.toString(i);
-						String horseName = horseList.get(i-1);
-						String message;
-						if (userID.equals(favorite)) {
-							message = zh.getMM().getMessageHorseSpacerUserID(s, LocaleEnum.horseListFormatFavorite, horseName, 1, userID, true);
-						}
-						else {
-							message = zh.getMM().getMessageHorseSpacerUserID(s, LocaleEnum.horseListFormat, horseName, 1, userID, true);
-						}
+						String horseName = horseList.get(i-1);						
+						String status = "";
 						if (zh.getUM().isProtected(targetUUID, userID)) {
-							message += zh.getMM().getMessageSpacer(s, LocaleEnum.modeProtected, 1, true);
+							status += zh.getMM().getMessageSpacer(s, LocaleEnum.modeProtected, 1, true);
 						}
 						if (zh.getUM().isLocked(targetUUID, userID)) {
-							message += zh.getMM().getMessageSpacer(s, LocaleEnum.modeLocked, 1, true);
+							status += zh.getMM().getMessageSpacer(s, LocaleEnum.modeLocked, 1, true);
 						}
 						else if (zh.getUM().isShared(targetUUID, userID)) {
-							message += zh.getMM().getMessageSpacer(s, LocaleEnum.modeShared, 1, true);
+							status += zh.getMM().getMessageSpacer(s, LocaleEnum.modeShared, 1, true);
 						}
-						s.sendMessage(message);
+						if (userID.equals(favorite)) {
+							zh.getMM().sendMessageHorseSpacerUserIDValue(s, LocaleEnum.horseListFormatFavorite, horseName, 1, userID, status, true);
+						}
+						else {
+							zh.getMM().sendMessageHorseSpacerUserIDValue(s, LocaleEnum.horseListFormat, horseName, 1, userID, status, true);
+						}
 					}
 				}
 				else {

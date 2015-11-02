@@ -81,6 +81,10 @@ public class MessageManager {
 		return getMessageFull(s, index, amount, cost, horse, lang, max, perm, player, spacer, userID, value, hidePrefix);
 	}
 	
+	public String getMessageHorseSpacerUserIDValue(CommandSender s, LocaleEnum index, String horse, int spacer, String userID, String value, boolean hidePrefix) {
+		return getMessageFull(s, index, amount, cost, horse, lang, max, perm, player, spacer, userID, value, hidePrefix);
+	}
+	
 	public String getMessageLang(CommandSender s, LocaleEnum index, String lang, boolean hidePrefix) {
 		return getMessageFull(s, index, amount, cost, horse, lang, max, perm, player, spacer, userID, value, hidePrefix);
 	}
@@ -211,6 +215,14 @@ public class MessageManager {
 	
 	public void sendMessageHorseSpacerUserID(CommandSender s, LocaleEnum index, String horse, int spacer, String userID, boolean hidePrefix) {
 		s.sendMessage(getMessageHorseSpacerUserID(s, index, horse, spacer, userID, hidePrefix));
+	}
+	
+	public void sendMessageHorseSpacerUserIDValue(CommandSender s, LocaleEnum index, String horse, int spacer, String userID, String value) {
+		s.sendMessage(getMessageHorseSpacerUserIDValue(s, index, horse, spacer, userID, value, false));
+	}
+	
+	public void sendMessageHorseSpacerUserIDValue(CommandSender s, LocaleEnum index, String horse, int spacer, String userID, String value, boolean hidePrefix) {
+		s.sendMessage(getMessageHorseSpacerUserIDValue(s, index, horse, spacer, userID, value, hidePrefix));
 	}
 	
 	public void sendMessageLang(CommandSender s, LocaleEnum index, String lang) {
