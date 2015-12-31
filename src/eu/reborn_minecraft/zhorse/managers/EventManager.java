@@ -3,11 +3,11 @@ package eu.reborn_minecraft.zhorse.managers;
 import java.util.UUID;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -26,6 +26,8 @@ import eu.reborn_minecraft.zhorse.commands.ZClaim;
 import eu.reborn_minecraft.zhorse.enums.CommandEnum;
 import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
+import eu.reborn_minecraft.zhorse.scheduler.AsyncChunckUnload;
+import eu.reborn_minecraft.zhorse.scheduler.AsyncPlayerJoin;
 
 public class EventManager implements Listener {
 	private ZHorse zh;
@@ -39,16 +41,9 @@ public class EventManager implements Listener {
 		this.displayConsole = !(zh.getCM().isConsoleMuted());
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onChunkUnload(ChunkUnloadEvent e) {
-		for (Entity entity : e.getChunk().getEntities()) {
-			if (entity instanceof Horse) {
-				Horse horse = (Horse)entity;
-				if (zh.getUM().isRegistered(horse)) {
-					zh.getUM().saveLocation(horse);
-				}
-			}
-		}
+		new AsyncChunckUnload(e, zh);
 	}
 	
 	@EventHandler
@@ -130,7 +125,7 @@ public class EventManager implements Listener {
 	
 //	@EventHandler
 //	public void onHangingBreak(HangingBreakEvent e) { // e.getEntity est une instance de LeashHitch
-//		if (e.getEntity().getLeashedEntity() instanceof Horse) { // en attente d'implémentation pour getLeashedEntity()
+//		if (e.getEntity().getLeashedEntity() instanceof Horse) { // en attente d'implÃ©mentation pour getLeashedEntity()
 //			Horse horse = (Horse)e.getEntity().getLeashedEntity();
 //			if (zh.getUM().isRegistered(horse)) {
 //				if (zh.getUM().isLocked(horse)) {
@@ -142,7 +137,7 @@ public class EventManager implements Listener {
 
 //	@EventHandler
 //	public void onHangingBreakByEntity(HangingBreakByEntityEvent e) { // e.getEntity est une instance de LeashHitch
-//		if (e.getRemover() instanceof Player && e.getEntity().getLeashedEntity() instanceof Horse) { // en attente d'implémentation pour getLeashedEntity()
+//		if (e.getRemover() instanceof Player && e.getEntity().getLeashedEntity() instanceof Horse) { // en attente d'implÃ©mentation pour getLeashedEntity()
 //			e.setCancelled(handlePlayerInteractHorse((Player)e.getRemover(), (Horse)e.getEntity(), false));
 //		}
 //	}
@@ -154,17 +149,9 @@ public class EventManager implements Listener {
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(PlayerJoinEvent e) {
-		Player p = e.getPlayer();
-		if (!zh.getUM().isRegistered(p.getUniqueId())) {
-			zh.getUM().registerPlayer(p.getUniqueId());
-		}
-		else {
-			if (!p.getName().equalsIgnoreCase(zh.getUM().getPlayerName(p.getUniqueId()))) {
-				zh.getUM().updatePlayer(p);
-			}
-		}
+		new AsyncPlayerJoin(e, zh);
 	}
 	
 	@EventHandler
@@ -181,9 +168,13 @@ public class EventManager implements Listener {
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onVehicleEnter(VehicleEnterEvent e) {
 		if (e.getEntered() instanceof Player && e.getVehicle() instanceof Horse) {
+			//Player p = (Player) e.getEntered();
+			//Horse horse = (Horse) e.getVehicle();
+			//if(!zh.getUM().isClaimedBy(p.getUniqueId(), horse))
+			//May improve perfomance aswell? To skip the large check faster?
 			e.setCancelled(!handlePlayerInteractHorse((Player)e.getEntered(), (Horse)e.getVehicle(), false));
 		}
 	}
