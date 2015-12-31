@@ -193,7 +193,9 @@ public class ZHorse extends JavaPlugin {
 	
 	public void saveUsers(FileConfiguration users) {
         try {
-			users.save(usersFile);
+			synchronized (users) {
+				users.save(usersFile);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
