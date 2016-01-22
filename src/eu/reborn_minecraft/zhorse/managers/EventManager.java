@@ -43,7 +43,7 @@ public class EventManager implements Listener {
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onChunkUnload(ChunkUnloadEvent e) {
-		new AsyncChunckUnload(e, zh);
+		new AsyncChunckUnload(zh, e);
 	}
 	
 	@EventHandler
@@ -122,25 +122,27 @@ public class EventManager implements Listener {
 			}
 		}
 	}
-	
-//	@EventHandler
-//	public void onHangingBreak(HangingBreakEvent e) { // e.getEntity est une instance de LeashHitch
-//		if (e.getEntity().getLeashedEntity() instanceof Horse) { // en attente d'implémentation pour getLeashedEntity()
-//			Horse horse = (Horse)e.getEntity().getLeashedEntity();
-//			if (zh.getUM().isRegistered(horse)) {
-//				if (zh.getUM().isLocked(horse)) {
-//					e.setCancelled(true);
-//				}
-//			}
-//		}
-//	}
 
-//	@EventHandler
-//	public void onHangingBreakByEntity(HangingBreakByEntityEvent e) { // e.getEntity est une instance de LeashHitch
-//		if (e.getRemover() instanceof Player && e.getEntity().getLeashedEntity() instanceof Horse) { // en attente d'implémentation pour getLeashedEntity()
-//			e.setCancelled(handlePlayerInteractHorse((Player)e.getRemover(), (Horse)e.getEntity(), false));
-//		}
-//	}
+	/*
+	@EventHandler
+	public void onHangingBreak(HangingBreakEvent e) { // e.getEntity est une instance de LeashHitch
+		if (e.getEntity().getLeashedEntity() instanceof Horse) { // en attente d'implémentation pour getLeashedEntity()
+			Horse horse = (Horse)e.getEntity().getLeashedEntity();
+			if (zh.getUM().isRegistered(horse)) {
+				if (zh.getUM().isLocked(horse)) {
+					e.setCancelled(true);
+				}
+			}
+		}
+	}
+
+	@EventHandler
+	public void onHangingBreakByEntity(HangingBreakByEntityEvent e) { // e.getEntity est une instance de LeashHitch
+		if (e.getRemover() instanceof Player && e.getEntity().getLeashedEntity() instanceof Horse) { // en attente d'implémentation pour getLeashedEntity()
+			e.setCancelled(handlePlayerInteractHorse((Player)e.getRemover(), (Horse)e.getEntity(), false));
+		}
+	}
+	*/
 	
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent e) {
@@ -151,7 +153,7 @@ public class EventManager implements Listener {
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(PlayerJoinEvent e) {
-		new AsyncPlayerJoin(e, zh);
+		new AsyncPlayerJoin(zh, e);
 	}
 	
 	@EventHandler
@@ -171,10 +173,6 @@ public class EventManager implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onVehicleEnter(VehicleEnterEvent e) {
 		if (e.getEntered() instanceof Player && e.getVehicle() instanceof Horse) {
-			//Player p = (Player) e.getEntered();
-			//Horse horse = (Horse) e.getVehicle();
-			//if(!zh.getUM().isClaimedBy(p.getUniqueId(), horse))
-			//May improve perfomance aswell? To skip the large check faster?
 			e.setCancelled(!handlePlayerInteractHorse((Player)e.getEntered(), (Horse)e.getVehicle(), false));
 		}
 	}

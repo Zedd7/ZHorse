@@ -96,24 +96,28 @@ public class CommandManager implements CommandExecutor {
 		return adminCommandList;
 	}
 	
-//	public List<String> getAdminCommandNameList() {
-//		List<String> adminCommandNameList = new ArrayList<String>();
-//		for (CommandEnum command : adminCommandList) {
-//			adminCommandNameList.add(command.getName());
-//		}
-//		return adminCommandNameList;
-//	}
+	/*
+	public List<String> getAdminCommandNameList() {
+		List<String> adminCommandNameList = new ArrayList<String>();
+		for (CommandEnum command : adminCommandList) {
+			adminCommandNameList.add(command.getName());
+		}
+		return adminCommandNameList;
+	}
+	*/
 	
 	public List<CommandEnum> getSettingsCommandList() {
 		return settingsCommandList;
 	}
 	
-//	public List<String> getSettingsCommandNameList() {
-//		List<String> settingsCommandNameList = new ArrayList<String>();
-//		for (CommandEnum command : settingsCommandList) {
-//			settingsCommandNameList.add(command.getName());
-//		}
-//		return settingsCommandNameList;
-//	}
+	/*
+	public List<String> getSettingsCommandNameList() {
+		List<String> settingsCommandNameList = new ArrayList<String>();
+		for (CommandEnum command : settingsCommandList) {
+			settingsCommandNameList.add(command.getName());
+		}
+		return settingsCommandNameList;
+	}
+	*/
 	
 }

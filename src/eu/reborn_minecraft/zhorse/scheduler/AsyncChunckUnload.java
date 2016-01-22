@@ -9,19 +9,18 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 
 public class AsyncChunckUnload {
 	
-	private ChunkUnloadEvent e;
 	private ZHorse zh;
+	private ChunkUnloadEvent e;
 	
-	public AsyncChunckUnload(ChunkUnloadEvent e, ZHorse zh){
-		this.e = e;
+	public AsyncChunckUnload(ZHorse zh, ChunkUnloadEvent e) {
 		this.zh = zh;
-		
+		this.e = e;		
 		asyncChunkUnloadScheduler();
 	}
 	
 	private void asyncChunkUnloadScheduler(){
 		final Entity[] entityArray = e.getChunk().getEntities();
-		Bukkit.getScheduler().runTaskAsynchronously(zh, new Runnable() {
+		Bukkit.getScheduler().runTaskAsynchronously(zh, new Runnable() {			
 			
 			@Override
 			public void run() {

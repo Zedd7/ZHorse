@@ -8,19 +8,17 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 
 public class AsyncPlayerJoin {
 	
-	private PlayerJoinEvent e;
 	private ZHorse zh;
+	private PlayerJoinEvent e;
 	
-	public AsyncPlayerJoin(PlayerJoinEvent e, ZHorse zh) {
-		this.e = e;
-		this.zh = zh;
-		
+	public AsyncPlayerJoin(ZHorse zh, PlayerJoinEvent e) {
+		this.zh = zh;	
+		this.e = e;	
 		asyncPlayerJoinSchedule();
 		
 	}
 	
-	private void asyncPlayerJoinSchedule(){
-		
+	private void asyncPlayerJoinSchedule() {		
 		Bukkit.getScheduler().runTaskAsynchronously(zh, new Runnable() {
 			
 			@Override

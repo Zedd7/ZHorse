@@ -6,6 +6,9 @@ Commands:
   # Set auto-admin to true to force admin mode for authorized users.
   # The value of cost defines how much will be charged per execution.
 
+  admin:
+    auto-admin: true
+    cost: 0
   claim:
     auto-admin: false
     cost: 0
