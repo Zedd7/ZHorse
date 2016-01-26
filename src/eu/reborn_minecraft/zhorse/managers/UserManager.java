@@ -284,17 +284,19 @@ public class UserManager {
 		if (horse != null) {
 			ConfigurationSection cs = zh.getUsers().getConfigurationSection(getPlayerPath());
 	        if (cs != null) {
-	        	for (String player : cs.getKeys(false)) {
-	 	    	   UUID playerUUID = UUID.fromString(player);
-	 	    	   ConfigurationSection subCS = cs.getConfigurationSection(playerUUID + KeyWordEnum.dot.getValue() + KeyWordEnum.horses.getValue());
-	 	    	   if (subCS != null) {
-	 	    		   for (String userID : subCS.getKeys(false)) {
-	 	    			   UUID horseUUID = getHorseUUID(playerUUID, userID);
-	 	    			   if (horseUUID != null && horseUUID.equals(horse.getUniqueId())) {
-	 	    				   return playerUUID;
-	 	    			   }
-	 	    		   }
-	 	    	   }
+	        	synchronized(cs) {
+	        		for (String player : cs.getKeys(false)) {
+	 	 	    	   UUID playerUUID = UUID.fromString(player);
+	 	 	    	   ConfigurationSection subCS = cs.getConfigurationSection(playerUUID + KeyWordEnum.dot.getValue() + KeyWordEnum.horses.getValue());
+	 	 	    	   if (subCS != null) {
+	 	 	    		   for (String userID : subCS.getKeys(false)) {
+	 	 	    			   UUID horseUUID = getHorseUUID(playerUUID, userID);
+	 	 	    			   if (horseUUID != null && horseUUID.equals(horse.getUniqueId())) {
+	 	 	    				   return playerUUID;
+	 	 	    			   }
+	 	 	    		   }
+	 	 	    	   }
+	 	        	}
 	        	}
 		    }
 		}
