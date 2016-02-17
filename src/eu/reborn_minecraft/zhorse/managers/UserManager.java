@@ -1,7 +1,9 @@
 package eu.reborn_minecraft.zhorse.managers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Chunk;
@@ -19,6 +21,8 @@ import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 
 public class UserManager {
 	private ZHorse zh;
+	private HashMap<UUID, UUID> getPlayerUUIDCache = new HashMap<>();
+	private HashMap<UUID, UUID> isClaimedByCache = new HashMap<>();
 	
 	public UserManager(ZHorse zh) {
 		this.zh = zh;
@@ -282,6 +286,10 @@ public class UserManager {
 	
 	public UUID getPlayerUUID(Horse horse) {
 		if (horse != null) {
+			
+			if(getPlayerUUIDCache.containsKey(horse.getUniqueId()))
+				return getPlayerUUIDCache.get(horse.getUniqueId());
+			
 			ConfigurationSection cs = zh.getUsers().getConfigurationSection(getPlayerPath());
 	        if (cs != null) {
 	        	synchronized(cs) {
@@ -292,6 +300,7 @@ public class UserManager {
 	 	 	    		   for (String userID : subCS.getKeys(false)) {
 	 	 	    			   UUID horseUUID = getHorseUUID(playerUUID, userID);
 	 	 	    			   if (horseUUID != null && horseUUID.equals(horse.getUniqueId())) {
+	 	 	    				   getPlayerUUIDCache.put(horse.getUniqueId(), playerUUID);
 	 	 	    				   return playerUUID;
 	 	 	    			   }
 	 	 	    		   }
@@ -387,11 +396,15 @@ public class UserManager {
 	}
 	
 	public boolean isClaimedBy(UUID playerUUID, Horse horse) {
+		if(isClaimedByCache.containsKey(horse.getUniqueId()) && isClaimedByCache.get(horse.getUniqueId()) == playerUUID)
+			return true;	
+		
 		if (isRegistered(playerUUID)) {
 			ConfigurationSection cs = zh.getUsers().getConfigurationSection(getPlayerPath(playerUUID, KeyWordEnum.horses.getValue()));
 			if (cs != null) {
 				for (String userID : cs.getKeys(false)) {
 					if (getHorseUUID(playerUUID, userID).equals(horse.getUniqueId())) {
+						isClaimedByCache.put(horse.getUniqueId(), playerUUID);
 						return true;
 					}
 				}
@@ -664,6 +677,7 @@ public class UserManager {
 			if (playerUUID != null) {
 				String userID = getUserID(playerUUID, horse);
 				if (userID != null) {
+					removeCacheEntries(horse, playerUUID);
 					return unRegisterHorse(playerUUID, userID);
 				}
 			}
@@ -676,6 +690,7 @@ public class UserManager {
 			String userID = getUserID(playerUUID, horse);
 			if (playerUUID != null) {
 				if (userID != null) {
+					removeCacheEntries(horse, playerUUID);
 					return unRegisterHorse(playerUUID, userID);
 				}
 			}
@@ -703,6 +718,7 @@ public class UserManager {
 				}
 				setHorseData(playerUUID, Integer.toString(claimsAmount), null);
 				zh.saveUsers();
+				removeCacheEntries(playerUUID);
 			}
 			return true;
 		}
@@ -713,9 +729,28 @@ public class UserManager {
 		if (playerUUID != null) {
 			setPlayerData(playerUUID, KeyWordEnum.horses.getValue(), null);
 			zh.saveUsers();
+			removeCacheEntries(playerUUID);
 			return true;
 		}
 		return false;
+	}
+	
+	private void removeCacheEntries(Horse horse, UUID playerUUID){
+		getPlayerUUIDCache.remove(horse.getUniqueId());
+		isClaimedByCache.remove(horse.getUniqueId());
+	}
+	
+	private void removeCacheEntries(UUID playerUUID){
+		for(Entry<UUID, UUID> entry : getPlayerUUIDCache.entrySet()){
+			if(entry.getValue().equals(playerUUID)){
+				getPlayerUUIDCache.remove(entry.getKey());
+			}
+		}
+		for(Entry<UUID, UUID> entry : isClaimedByCache.entrySet()){
+			if(entry.getValue().equals(playerUUID)){
+				isClaimedByCache.remove(entry.getKey());
+			}
+		}
 	}
 	
 }
