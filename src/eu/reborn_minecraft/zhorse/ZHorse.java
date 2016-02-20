@@ -33,7 +33,7 @@ public class ZHorse extends JavaPlugin {
 	private Economy econ;
 	private FileConfiguration config;
 	private FileConfiguration users;
-	private Map<String,FileConfiguration> locales;
+	private Map<String, FileConfiguration> locales;
 	private ConfigManager configManager;
 	private UserManager userManager;
 	private LocaleManager localeManager;
@@ -176,10 +176,6 @@ public class ZHorse extends JavaPlugin {
 	}
 	
 	public void saveConfig() {
-        saveConfig(getConfig());
-	}
-	
-	public void saveConfig(FileConfiguration config) {
         try {
 			config.save(configFile);
 		} catch (IOException e) {
@@ -188,10 +184,6 @@ public class ZHorse extends JavaPlugin {
 	}
 	
 	public void saveUsers() {
-        saveUsers(getUsers());
-	}
-	
-	public void saveUsers(FileConfiguration users) {
         try {
 			synchronized (users) {
 				users.save(usersFile);
