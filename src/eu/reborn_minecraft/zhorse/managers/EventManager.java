@@ -126,7 +126,7 @@ public class EventManager implements Listener {
 	/*
 	@EventHandler
 	public void onHangingBreak(HangingBreakEvent e) { // e.getEntity est une instance de LeashHitch
-		if (e.getEntity().getLeashedEntity() instanceof Horse) { // en attente d'implÃ©mentation pour getLeashedEntity()
+		if (e.getEntity().getLeashedEntity() instanceof Horse) { // en attente d'implémentation pour getLeashedEntity()
 			Horse horse = (Horse)e.getEntity().getLeashedEntity();
 			if (zh.getUM().isRegistered(horse)) {
 				if (zh.getUM().isLocked(horse)) {
@@ -138,7 +138,7 @@ public class EventManager implements Listener {
 
 	@EventHandler
 	public void onHangingBreakByEntity(HangingBreakByEntityEvent e) { // e.getEntity est une instance de LeashHitch
-		if (e.getRemover() instanceof Player && e.getEntity().getLeashedEntity() instanceof Horse) { // en attente d'implÃ©mentation pour getLeashedEntity()
+		if (e.getRemover() instanceof Player && e.getEntity().getLeashedEntity() instanceof Horse) { // en attente d'implémentation pour getLeashedEntity()
 			e.setCancelled(handlePlayerInteractHorse((Player)e.getRemover(), (Horse)e.getEntity(), false));
 		}
 	}

@@ -2,7 +2,9 @@ package eu.reborn_minecraft.zhorse.managers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Chunk;
@@ -20,8 +22,8 @@ import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 
 public class UserManager {
 	private ZHorse zh;
-	private HashMap<UUID, UUID> cachedPlayerUUID = new HashMap<>();
-	private HashMap<UUID, UUID> cachedIsClaimedBy = new HashMap<>();
+	private Map<UUID, UUID> cachedPlayerUUID = new HashMap<>();
+	private Map<UUID, UUID> cachedIsClaimedBy = new HashMap<>();
 	
 	public UserManager(ZHorse zh) {
 		this.zh = zh;
@@ -513,7 +515,7 @@ public class UserManager {
 			if (!isRegistered(playerUUID)) {
 				registerPlayer(playerUUID);
 			}
-			if (isRegistered(horse)) { // retire l'enregistrement prï¿½cï¿½dent en cas de give
+			if (isRegistered(horse)) { // retire l'enregistrement précédent en cas de give
 				unRegisterHorse(horse);
 			}
 			String userID = getNextUserID(playerUUID);
@@ -701,10 +703,10 @@ public class UserManager {
 				zh.saveUsers();
 			}
 			else {
-				if (userID.equals(getFavoriteUserID(playerUUID))) { // rÃ©initialisation du favori si relÃ¢chÃ©
+				if (userID.equals(getFavoriteUserID(playerUUID))) { // réinitialisation du favori si relâché
 					saveFavorite(playerUUID, getDefaultFavoriteUserID());
 				}
-				else if (Integer.valueOf(userID) < Integer.valueOf(getFavoriteUserID(playerUUID))) { // dÃ©sincrÃ©mentation du favori si maj de l'ID
+				else if (Integer.valueOf(userID) < Integer.valueOf(getFavoriteUserID(playerUUID))) { // désincrémentation du favori si maj de l'ID
 					saveFavorite(playerUUID, String.valueOf(Integer.valueOf(getFavoriteUserID(playerUUID))-1));
 				}
 				for (int i=Integer.valueOf(userID); i<claimsAmount; i++) { // i == ID -> != iterator
@@ -730,15 +732,17 @@ public class UserManager {
 		return false;
 	}
 	
-	private void removeCachedEntries(UUID playerUUID){
-		for (UUID horseID : cachedPlayerUUID.keySet()) {
-			if (cachedPlayerUUID.get(horseID).equals(playerUUID)) {
-				cachedPlayerUUID.remove(horseID);
-			}
-		}
-		for (UUID horseID : cachedIsClaimedBy.keySet()) {
-			if (cachedIsClaimedBy.get(horseID).equals(playerUUID)) {
-				cachedIsClaimedBy.remove(horseID);
+	private void removeCachedEntries(UUID playerUUID) {
+		removeCachedEntry(cachedPlayerUUID, playerUUID);
+		removeCachedEntry(cachedIsClaimedBy, playerUUID);
+	}
+
+	private void removeCachedEntry(Map<UUID, UUID> cachedEntries, UUID playerUUID) {
+		Iterator<Map.Entry<UUID, UUID>> cachedEntriesIter = cachedPlayerUUID.entrySet().iterator();
+		while (cachedEntriesIter.hasNext()) {
+		    Map.Entry<UUID, UUID> entry = cachedEntriesIter.next();
+		    if (entry.getValue().equals(playerUUID)) {
+				cachedPlayerUUID.remove(entry.getKey());
 			}
 		}
 	}
