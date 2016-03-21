@@ -1,6 +1,5 @@
 package eu.reborn_minecraft.zhorse.commands;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Horse;
 
@@ -50,8 +49,7 @@ public class ZRename extends Command {
 	
 	private void execute() {
 		if (isOwner() && craftHorseName(false) && zh.getEM().canAffordCommand(p, command)) {
-			ChatColor cc = zh.getCM().getGroupColor(targetUUID);
-			horse.setCustomName(cc + horseName + ChatColor.RESET);
+			applyHorseName();
 			horse.setCustomNameVisible(true);
 			zh.getUM().rename(targetUUID, horse, horseName);
 			if (displayConsole) {

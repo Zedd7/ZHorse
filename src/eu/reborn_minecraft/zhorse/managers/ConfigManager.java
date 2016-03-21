@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -84,18 +83,15 @@ public class ConfigManager {
 		return groupName;
 	}
 	
-	public ChatColor getGroupColor(UUID playerUUID) {
-		ChatColor cc = ChatColor.WHITE;
+	public String getGroupColorCode(UUID playerUUID) {
+		String colorCode = "<WHITE>";
 		if (playerUUID != null) {
 			String groupName = getGroupName(playerUUID);
 			if (groupName != null) {
-				String color = zh.getConfig().getString(KeyWordEnum.groupsPrefix.getValue() + groupName + KeyWordEnum.colorSuffix.getValue(), null);
-				if (color != null) {
-					cc = zh.getMM().getColor(color);
-				}
+				colorCode = zh.getConfig().getString(KeyWordEnum.groupsPrefix.getValue() + groupName + KeyWordEnum.colorSuffix.getValue(), colorCode);
 		    }
 		}
-		return cc;
+		return colorCode;
 	}
 	
 	private String getGroupName(UUID playerUUID) {
@@ -293,7 +289,7 @@ public class ConfigManager {
 			for (String group : cs.getKeys(false)) {
 				String color = zh.getConfig().getString("Groups." + group + ".color");
 		        if (color != null) {
-					if (!zh.getMM().isColor(color)) {
+					if (!MessageManager.isColor(color)) {
 		        		zh.getLogger().severe("The color \"" + color + "\" used for the group \"" + group + "\" is not a color !");
 		        		conform = false;
 		        	}

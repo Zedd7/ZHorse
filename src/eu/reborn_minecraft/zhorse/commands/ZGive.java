@@ -1,6 +1,5 @@
 package eu.reborn_minecraft.zhorse.commands;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Horse;
 
@@ -58,8 +57,7 @@ public class ZGive extends Command {
 			boolean protect = zh.getUM().isProtected(p.getUniqueId(), horse);
 			boolean shared = zh.getUM().isShared(p.getUniqueId(), horse);
 			zh.getUM().registerHorse(targetUUID, horse, horseName, locked, protect, shared);
-			ChatColor cc = zh.getCM().getGroupColor(targetUUID);
-			horse.setCustomName(cc + horseName + ChatColor.RESET);
+			applyHorseName();
 			zh.getEM().payCommand(p, command);
 			if (displayConsole) {
 				zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.horseGiven, horseName, targetName);

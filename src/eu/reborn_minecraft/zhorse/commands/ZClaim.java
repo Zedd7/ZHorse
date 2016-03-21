@@ -1,6 +1,5 @@
 package eu.reborn_minecraft.zhorse.commands;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Horse;
 
@@ -42,8 +41,7 @@ public class ZClaim extends Command {
 			boolean protect = zh.getCM().shouldProtectOnClaim();
 			boolean share = zh.getCM().shouldShareOnClaim();
 			zh.getUM().registerHorse(p.getUniqueId(), horse, horseName, lock, protect, share);
-			ChatColor cc = zh.getCM().getGroupColor(p.getUniqueId());
-			horse.setCustomName(cc + horseName + ChatColor.RESET);
+			applyHorseName();
 			horse.setCustomNameVisible(true);
 			horse.setTamed(true);
 			if (displayConsole) {

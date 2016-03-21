@@ -9,16 +9,16 @@ import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
 public class MessageManager {	
-	private static int amount = 0;
-	private static int cost = 0;
-	private static String horse = "";
-	private static String lang = "";
-	private static int max = 0;
-	private static String perm = "";
-	private static String player = "";
-	private static int spacer = 0;
-	private static String userID = "";
-	private static String value = "";
+	private static final int AMOUNT = 0;
+	private static final int COST = 0;
+	private static final String HORSE = "";
+	private static final String LANG = "";
+	private static final int MAX = 0;
+	private static final String PERM = "";
+	private static final String PLAYER = "";
+	private static final int SPACER = 0;
+	private static final String USERID = "";
+	private static final String VALUE = "";
 	
 	private ZHorse zh;
 	
@@ -26,115 +26,100 @@ public class MessageManager {
 		this.zh = zh;
 	}
 	
-	public ChatColor getColor(String colorCode) {
-		for (ColorEnum color : ColorEnum.values()) {
-			for (String code : color.getCodes()) {
-				if (code.equalsIgnoreCase(colorCode)) {
-					return color.getColor();
-				}
-			}
-		}
-		return null;
-	}
-
-	public boolean isColor(String colorCode) {
-		return (getColor(colorCode) != null);
-	}
-	
 	public String getMessage(CommandSender s, LocaleEnum index, boolean hidePrefix) {
-		return getMessageFull(s, index, amount, cost, horse, lang, max, perm, player, spacer, userID, value, hidePrefix);
+		return getMessageFull(s, index, AMOUNT, COST, HORSE, LANG, MAX, PERM, PLAYER, SPACER, USERID, VALUE, hidePrefix);
 	}
 	
 	public String getMessageAmount(CommandSender s, LocaleEnum index, int amount, boolean hidePrefix) {
-		return getMessageFull(s, index, amount, cost, horse, lang, max, perm, player, spacer, userID, value, hidePrefix);
+		return getMessageFull(s, index, amount, COST, HORSE, LANG, MAX, PERM, PLAYER, SPACER, USERID, VALUE, hidePrefix);
 	}
 	
 	public String getMessageAmountMax(CommandSender s, LocaleEnum index, int amount, int max, boolean hidePrefix) {
-		return getMessageFull(s, index, amount, cost, horse, lang, max, perm, player, spacer, userID, value, hidePrefix);
+		return getMessageFull(s, index, amount, COST, HORSE, LANG, max, PERM, PLAYER, SPACER, USERID, VALUE, hidePrefix);
 	}
 	
 	public String getMessageAmountMaxSpacer(CommandSender s, LocaleEnum index, int amount, int max, int spacer, boolean hidePrefix) {
-		return getMessageFull(s, index, amount, cost, horse, lang, max, perm, player, spacer, userID, value, hidePrefix);
+		return getMessageFull(s, index, amount, COST, HORSE, LANG, max, PERM, PLAYER, spacer, USERID, VALUE, hidePrefix);
 	}
 	
 	public String getMessageAmountValue(CommandSender s, LocaleEnum index, int amount, String value, boolean hidePrefix) {
-		return getMessageFull(s, index, amount, cost, horse, lang, max, perm, player, spacer, userID, value, hidePrefix);
+		return getMessageFull(s, index, amount, COST, HORSE, LANG, MAX, PERM, PLAYER, SPACER, USERID, value, hidePrefix);
 	}
 	
 	public String getMessageCostSpacerValue(CommandSender s, LocaleEnum index, int cost, int spacer, String value, boolean hidePrefix) {
-		return getMessageFull(s, index, amount, cost, horse, lang, max, perm, player, spacer, userID, value, hidePrefix);
+		return getMessageFull(s, index, AMOUNT, cost, HORSE, LANG, MAX, PERM, PLAYER, spacer, USERID, value, hidePrefix);
 	}
 	
 	public String getMessageHorse(CommandSender s, LocaleEnum index, String horse, boolean hidePrefix) {
-		return getMessageFull(s, index, amount, cost, horse, lang, max, perm, player, spacer, userID, value, hidePrefix);
+		return getMessageFull(s, index, AMOUNT, COST, horse, LANG, MAX, PERM, PLAYER, SPACER, USERID, VALUE, hidePrefix);
 	}
 	
 	public String getMessageHorsePlayer(CommandSender s, LocaleEnum index, String horse, String player, boolean hidePrefix) {
-		return getMessageFull(s, index, amount, cost, horse, lang, max, perm, player, spacer, userID, value, hidePrefix);
+		return getMessageFull(s, index, AMOUNT, COST, horse, LANG, MAX, PERM, player, SPACER, USERID, VALUE, hidePrefix);
 	}
 	
 	public String getMessageHorseSpacer(CommandSender s, LocaleEnum index, String horse, int spacer, boolean hidePrefix) {
-		return getMessageFull(s, index, amount, cost, horse, lang, max, perm, player, spacer, userID, value, hidePrefix);
+		return getMessageFull(s, index, AMOUNT, COST, horse, LANG, MAX, PERM, PLAYER, spacer, USERID, VALUE, hidePrefix);
 	}
 	
 	public String getMessageHorseSpacerUserID(CommandSender s, LocaleEnum index, String horse, int spacer, String userID, boolean hidePrefix) {
-		return getMessageFull(s, index, amount, cost, horse, lang, max, perm, player, spacer, userID, value, hidePrefix);
+		return getMessageFull(s, index, AMOUNT, COST, horse, LANG, MAX, PERM, PLAYER, spacer, userID, VALUE, hidePrefix);
 	}
 	
 	public String getMessageHorseSpacerUserIDValue(CommandSender s, LocaleEnum index, String horse, int spacer, String userID, String value, boolean hidePrefix) {
-		return getMessageFull(s, index, amount, cost, horse, lang, max, perm, player, spacer, userID, value, hidePrefix);
+		return getMessageFull(s, index, AMOUNT, COST, horse, LANG, MAX, PERM, PLAYER, spacer, userID, value, hidePrefix);
 	}
 	
 	public String getMessageLang(CommandSender s, LocaleEnum index, String lang, boolean hidePrefix) {
-		return getMessageFull(s, index, amount, cost, horse, lang, max, perm, player, spacer, userID, value, hidePrefix);
+		return getMessageFull(s, index, AMOUNT, COST, HORSE, lang, MAX, PERM, PLAYER, SPACER, USERID, VALUE, hidePrefix);
 	}
 	
 	public String getMessageLangPlayer(CommandSender s, LocaleEnum index, String lang, String player, boolean hidePrefix) {
-		return getMessageFull(s, index, amount, cost, horse, lang, max, perm, player, spacer, userID, value, hidePrefix);
+		return getMessageFull(s, index, AMOUNT, COST, HORSE, lang, MAX, PERM, player, SPACER, USERID, VALUE, hidePrefix);
 	}
 	
 	public String getMessageLangValue(CommandSender s, LocaleEnum index, String lang, String value, boolean hidePrefix) {
-		return getMessageFull(s, index, amount, cost, horse, lang, max, perm, player, spacer, userID, value, hidePrefix);
+		return getMessageFull(s, index, AMOUNT, COST, HORSE, lang, MAX, PERM, PLAYER, SPACER, USERID, value, hidePrefix);
 	}
 	
 	public String getMessagePerm(CommandSender s, LocaleEnum index, String perm, boolean hidePrefix) {
-		return getMessageFull(s, index, amount, cost, horse, lang, max, perm, player, spacer, userID, value, hidePrefix);
+		return getMessageFull(s, index, AMOUNT, COST, HORSE, LANG, MAX, perm, PLAYER, SPACER, USERID, VALUE, hidePrefix);
 	}
 	
 	public String getMessagePlayer(CommandSender s, LocaleEnum index, String player, boolean hidePrefix) {
-		return getMessageFull(s, index, amount, cost, horse, lang, max, perm, player, spacer, userID, value, hidePrefix);
+		return getMessageFull(s, index, AMOUNT, COST, HORSE, LANG, MAX, PERM, player, SPACER, USERID, VALUE, hidePrefix);
 	}
 	
 	public String getMessagePlayerSpacer(CommandSender s, LocaleEnum index, String player, int spacer, boolean hidePrefix) {
-		return getMessageFull(s, index, amount, cost, horse, lang, max, perm, player, spacer, userID, value, hidePrefix);
+		return getMessageFull(s, index, AMOUNT, COST, HORSE, LANG, MAX, PERM, player, spacer, USERID, VALUE, hidePrefix);
 	}
 	
 	public String getMessagePlayerUserID(CommandSender s, LocaleEnum index, String player, String userID, boolean hidePrefix) {
-		return getMessageFull(s, index, amount, cost, horse, lang, max, perm, player, spacer, userID, value, hidePrefix);
+		return getMessageFull(s, index, AMOUNT, COST, HORSE, LANG, MAX, PERM, player, SPACER, userID, VALUE, hidePrefix);
 	}
 	
 	public String getMessagePlayerValue(CommandSender s, LocaleEnum index, String player, String value, boolean hidePrefix) {
-		return getMessageFull(s, index, amount, cost, horse, lang, max, perm, player, spacer, userID, value, hidePrefix);
+		return getMessageFull(s, index, AMOUNT, COST, HORSE, LANG, MAX, PERM, player, SPACER, USERID, value, hidePrefix);
 	}
 	
 	public String getMessageSpacer(CommandSender s, LocaleEnum index, int spacer, boolean hidePrefix) {
-		return getMessageFull(s, index, amount, cost, horse, lang, max, perm, player, spacer, userID, value, hidePrefix);
+		return getMessageFull(s, index, AMOUNT, COST, HORSE, LANG, MAX, PERM, PLAYER, spacer, USERID, VALUE, hidePrefix);
 	}
 	
 	public String getMessageSpacerUserID(CommandSender s, LocaleEnum index, int spacer, String userID, boolean hidePrefix) {
-		return getMessageFull(s, index, amount, cost, horse, lang, max, perm, player, spacer, userID, value, hidePrefix);
+		return getMessageFull(s, index, AMOUNT, COST, HORSE, LANG, MAX, PERM, PLAYER, spacer, userID, VALUE, hidePrefix);
 	}
 	
 	public String getMessageSpacerValue(CommandSender s, LocaleEnum index, int spacer, String value, boolean hidePrefix) {
-		return getMessageFull(s, index, amount, cost, horse, lang, max, perm, player, spacer, userID, value, hidePrefix);
+		return getMessageFull(s, index, AMOUNT, COST, HORSE, LANG, MAX, PERM, PLAYER, spacer, USERID, value, hidePrefix);
 	}
 	
 	public String getMessageUserID(CommandSender s, LocaleEnum index, String userID, boolean hidePrefix) {
-		return getMessageFull(s, index, amount, cost, horse, lang, max, perm, player, spacer, userID, value, hidePrefix);
+		return getMessageFull(s, index, AMOUNT, COST, HORSE, LANG, MAX, PERM, PLAYER, SPACER, userID, VALUE, hidePrefix);
 	}
 	
 	public String getMessageValue(CommandSender s, LocaleEnum index, String value, boolean hidePrefix) {
-		return getMessageFull(s, index, amount, cost, horse, lang, max, perm, player, spacer, userID, value, hidePrefix);
+		return getMessageFull(s, index, AMOUNT, COST, HORSE, LANG, MAX, PERM, PLAYER, SPACER, USERID, value, hidePrefix);
 	}
 	
 	public void sendMessage(CommandSender s, LocaleEnum index) {
@@ -354,17 +339,7 @@ public class MessageManager {
 		return space;
 	}
 	
-	private String populateColors(String rawMessage) {
-		String message = rawMessage;
-		for (ColorEnum color : ColorEnum.values()) {
-			for (String code : color.getCodes()) {
-				message = message.replace(code, color.getColor().toString());
-			}
-		}
-		return message;
-	}
-	
-	private String populateFlags(String rawMessage, int amount, String horse, String lang, int max, String perm, String player, String userID, String value) {
+	private static String populateFlags(String rawMessage, int amount, String horse, String lang, int max, String perm, String player, String userID, String value) {
 		String message = rawMessage;
 		message = message.replace(KeyWordEnum.amountFlag.getValue(), Integer.toString(amount));
 		message = message.replace(KeyWordEnum.horseFlag.getValue(), horse);
@@ -376,6 +351,25 @@ public class MessageManager {
 		message = message.replace(KeyWordEnum.valueFlag.getValue(), value);		
 		message = populateColors(message);
 		return message;
+	}
+	
+	private static String populateColors(String rawMessage) {
+		String message = rawMessage;
+		for (ColorEnum color : ColorEnum.values()) {
+			for (String code : color.getCodes()) {
+				message = message.replaceAll("(?i)" + code, color.getColor().toString()); // (?i) makes replaceAll case insensitive
+			}
+		}
+		message += ChatColor.RESET.toString();
+		return message;
+	}
+	
+	public static String applyColors(String message, String colorCode) {
+		return populateColors(colorCode + message);
+	}
+	
+	public static boolean isColor(String colorCode) {
+		return !colorCode.equals(populateColors((colorCode)));
 	}
 
 }

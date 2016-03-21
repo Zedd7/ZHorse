@@ -12,6 +12,7 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.CommandEnum;
 import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
+import eu.reborn_minecraft.zhorse.managers.MessageManager;
 
 public class Command {
 	protected ZHorse zh;
@@ -47,7 +48,7 @@ public class Command {
 		adminMode = false;
 		idMode = false;
 		targetMode = false;
-		for (int i=1; i<a.length; i++) { // départ à 1 pour retirer la commande
+		for (int i=1; i<a.length; i++) { // dï¿½part ï¿½ 1 pour retirer la commande
 			boolean valid = true;
 			if (a[i].equalsIgnoreCase("-a")) {
 				valid = !adminMode;
@@ -55,7 +56,7 @@ public class Command {
 			}
 			else if (a[i].equalsIgnoreCase("-i")) {
 				valid = (!idMode) && (i != a.length-1) && (!a[i+1].startsWith("-"));
-				if (valid) { // évite une sortie de la chaîne
+				if (valid) { // ï¿½vite une sortie de la chaï¿½ne
 					idMode = true;
 					userID = a[i+1];
 					i++; // saut de l'id
@@ -63,7 +64,7 @@ public class Command {
 			}
 			else if (a[i].equalsIgnoreCase("-t")) {
 				valid = (!targetMode) && (i != a.length-1) && (!a[i+1].startsWith("-"));
-				if (valid) { // évite une sortie de la chaîne
+				if (valid) { // ï¿½vite une sortie de la chaï¿½ne
 					targetMode = true;
 					targetName = a[i+1];
 					i++; // saut du target
@@ -132,6 +133,12 @@ public class Command {
 		targetMode = true;
 		targetName = argument;
 		analyseModes();
+	}
+	
+	protected void applyHorseName() {
+		String colorCode = zh.getCM().getGroupColorCode(targetUUID);
+		String customHorseName = MessageManager.applyColors(horseName, colorCode);
+		horse.setCustomName(customHorseName);
 	}
 	
 	protected boolean craftHorseName(boolean keepPreviousName) {

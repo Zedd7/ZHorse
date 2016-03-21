@@ -6,35 +6,35 @@ import java.util.List;
 import org.bukkit.ChatColor;
 
 public enum ColorEnum {
-	aqua(ChatColor.AQUA, "<b>", "^b", "งb", "<aqua>"),
-	black(ChatColor.BLACK, "<0>", "^0", "ง0", "<black>"),
-	blue(ChatColor.BLUE, "<9>", "^9", "ง9", "<blue>"),
-	bold(ChatColor.BOLD, "<l>", "^l", "งl", "<bold>"),
-	dark_aqua(ChatColor.DARK_AQUA, "<3>", "^3", "ง3", "<dark_aqua>", "<darkaqua>"),
-	darkBlue(ChatColor.DARK_BLUE, "<1>", "^1", "ง1", "<dark_blue>", "<darkblue>"),
-	darkGray(ChatColor.DARK_GRAY, "<8>", "^8", "ง8", "<dark_gray>", "<darkgray>"),
-	darkGreen(ChatColor.DARK_GREEN, "<2>", "^2", "ง2", "<dark_green>", "<darkgreen>"),
-	darkPurple(ChatColor.DARK_PURPLE, "<5>", "^5", "ง5", "<dark_purple>", "<darkpurple>"),
-	darkRed(ChatColor.DARK_RED, "<4>", "^4", "ง4", "<dark_red>", "<darkred>"),
-	gold(ChatColor.GOLD, "<6>", "^6", "ง6", "<gold>"),
-	gray(ChatColor.GRAY, "<7>", "^7", "ง7", "<gray>", "<grey>"),
-	green(ChatColor.GREEN, "<a>", "^a", "งa", "<green>"),
-	italic(ChatColor.ITALIC, "<o>", "^o", "งo", "<italic>"),
-	lightPurple(ChatColor.LIGHT_PURPLE, "<d>", "^d", "งd", "<light_purple>", "<lightpurple>"),
-	magic(ChatColor.MAGIC, "<k>", "^k", "งk", "<magic>"),
-	red(ChatColor.RED, "<c>", "^c", "งc", "<red>"),
-	reset(ChatColor.RESET, "<r>", "^r", "งr", "<reset>"),
-	strikethrough(ChatColor.STRIKETHROUGH, "<m>", "^m", "งm", "<strikethrough>"),
-	underline(ChatColor.UNDERLINE, "<n>", "^n", "งn", "<underline>"),
-	white(ChatColor.WHITE, "<f>", "^f", "งf", "<white>"),
-	yellow(ChatColor.YELLOW, "<e>", "^e", "งe", "<yellow>");
+	aqua(ChatColor.AQUA, "&b", "ยงb", "<b>", "<aqua>"),
+	black(ChatColor.BLACK, "&0", "ยง0", "<0>", "<black>"),
+	blue(ChatColor.BLUE, "&9", "ยง9", "<9>", "<blue>"),
+	bold(ChatColor.BOLD, "&l", "ยงl", "<l>", "<bold>"),
+	dark_aqua(ChatColor.DARK_AQUA, "&3", "ยง3", "<3>", "<dark_aqua>", "<darkaqua>"),
+	darkBlue(ChatColor.DARK_BLUE, "&1", "ยง1", "<1>", "<dark_blue>", "<darkblue>"),
+	darkGray(ChatColor.DARK_GRAY, "&8", "ยง8", "<8>", "<dark_gray>", "<darkgray>"),
+	darkGreen(ChatColor.DARK_GREEN, "&2", "ยง2", "<2>", "<dark_green>", "<darkgreen>"),
+	darkPurple(ChatColor.DARK_PURPLE, "&5", "ยง5", "<5>", "<dark_purple>", "<darkpurple>"),
+	darkRed(ChatColor.DARK_RED, "&4", "ยง4", "<4>", "<dark_red>", "<darkred>"),
+	gold(ChatColor.GOLD, "&6", "ยง6", "<6>", "<gold>"),
+	gray(ChatColor.GRAY, "&7", "ยง7", "<7>", "<gray>", "<grey>"),
+	green(ChatColor.GREEN, "&a", "ยงa", "<a>", "<green>"),
+	italic(ChatColor.ITALIC, "&o", "ยงo", "<o>", "<italic>"),
+	lightPurple(ChatColor.LIGHT_PURPLE, "&d", "ยงd", "<d>", "<light_purple>", "<lightpurple>"),
+	magic(ChatColor.MAGIC, "&k", "ยงk", "<k>", "<magic>"),
+	red(ChatColor.RED, "&c", "ยงc", "<c>", "<red>"),
+	reset(ChatColor.RESET, "&r", "ยงr", "<r>", "<reset>"),
+	strikethrough(ChatColor.STRIKETHROUGH, "&m", "ยงm", "<m>", "<strikethrough>"),
+	underline(ChatColor.UNDERLINE, "&n", "ยงn", "<n>", "<underline>"),
+	white(ChatColor.WHITE, "&f", "ยงf", "<f>", "<white>"),
+	yellow(ChatColor.YELLOW, "&e", "ยงe", "<e>", "<yellow>");
 	
-	private ChatColor color;
-	private String code1;
-	private String code2;
-	private String code3;
-	private String code4;
-	private String code5;
+	private final ChatColor color;
+	private final String code1;
+	private final String code2;
+	private final String code3;
+	private final String code4;
+	private final String code5;
 
 	ColorEnum(ChatColor color, String code1, String code2, String code3, String code4) {
 		this(color, code1, code2, code3, code4, null);

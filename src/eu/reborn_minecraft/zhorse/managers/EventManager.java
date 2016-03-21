@@ -26,8 +26,8 @@ import eu.reborn_minecraft.zhorse.commands.ZClaim;
 import eu.reborn_minecraft.zhorse.enums.CommandEnum;
 import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
-import eu.reborn_minecraft.zhorse.scheduler.AsyncChunckUnload;
-import eu.reborn_minecraft.zhorse.scheduler.AsyncPlayerJoin;
+import eu.reborn_minecraft.zhorse.utils.AsyncChunckUnload;
+import eu.reborn_minecraft.zhorse.utils.AsyncPlayerJoin;
 
 public class EventManager implements Listener {
 	private ZHorse zh;
@@ -126,7 +126,7 @@ public class EventManager implements Listener {
 	/*
 	@EventHandler
 	public void onHangingBreak(HangingBreakEvent e) { // e.getEntity est une instance de LeashHitch
-		if (e.getEntity().getLeashedEntity() instanceof Horse) { // en attente d'implémentation pour getLeashedEntity()
+		if (e.getEntity().getLeashedEntity() instanceof Horse) { // en attente d'implï¿½mentation pour getLeashedEntity()
 			Horse horse = (Horse)e.getEntity().getLeashedEntity();
 			if (zh.getUM().isRegistered(horse)) {
 				if (zh.getUM().isLocked(horse)) {
@@ -138,7 +138,7 @@ public class EventManager implements Listener {
 
 	@EventHandler
 	public void onHangingBreakByEntity(HangingBreakByEntityEvent e) { // e.getEntity est une instance de LeashHitch
-		if (e.getRemover() instanceof Player && e.getEntity().getLeashedEntity() instanceof Horse) { // en attente d'implémentation pour getLeashedEntity()
+		if (e.getRemover() instanceof Player && e.getEntity().getLeashedEntity() instanceof Horse) { // en attente d'implï¿½mentation pour getLeashedEntity()
 			e.setCancelled(handlePlayerInteractHorse((Player)e.getRemover(), (Horse)e.getEntity(), false));
 		}
 	}

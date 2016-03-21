@@ -1,4 +1,4 @@
-package eu.reborn_minecraft.zhorse.scheduler;
+package eu.reborn_minecraft.zhorse.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

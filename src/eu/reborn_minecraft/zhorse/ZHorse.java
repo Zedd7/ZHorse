@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -18,7 +17,8 @@ import eu.reborn_minecraft.zhorse.managers.EventManager;
 import eu.reborn_minecraft.zhorse.managers.LocaleManager;
 import eu.reborn_minecraft.zhorse.managers.MessageManager;
 import eu.reborn_minecraft.zhorse.managers.UserManager;
-import eu.reborn_minecraft.zhorse.metrics.Metrics;
+import eu.reborn_minecraft.zhorse.utils.Metrics;
+import eu.reborn_minecraft.zhorse.utils.Utf8YamlConfiguration;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
@@ -148,11 +148,11 @@ public class ZHorse extends JavaPlugin {
     }
     
 	public void loadConfig() {
-		config = YamlConfiguration.loadConfiguration(configFile);
+		config = Utf8YamlConfiguration.loadConfiguration(configFile);
 	}
 	
 	public void loadUsers() {
-		users = YamlConfiguration.loadConfiguration(usersFile);
+		users = Utf8YamlConfiguration.loadConfiguration(usersFile);
 	}
 	
 	public void loadLocales() {
@@ -161,14 +161,14 @@ public class ZHorse extends JavaPlugin {
 			String exactLocalePath = String.format(localePath, language);
 			File localeFile = new File(getDataFolder(), exactLocalePath);
 			if (localeFile.exists()) {
-				FileConfiguration locale = YamlConfiguration.loadConfiguration(localeFile);
+				FileConfiguration locale = Utf8YamlConfiguration.loadConfiguration(localeFile);
 				locales.put(language, locale);
 			}
 			else {
 				getLogger().info(exactLocalePath + " is missing... Creating it.");
 				exactLocalePath = String.format(localePath, getCM().getDefaultLanguage());
 				localeFile = new File(getDataFolder(), exactLocalePath);
-				FileConfiguration locale = YamlConfiguration.loadConfiguration(localeFile);
+				FileConfiguration locale = Utf8YamlConfiguration.loadConfiguration(localeFile);
 				saveLocale(locale, language);
 				locales.put(language, locale);
 			}
