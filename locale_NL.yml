@@ -2,9 +2,9 @@ Version: 1.4.2
 
 # Translated by Sikatsu1997
 
-# Je kunt op de volgende manier kleuren aangeven: <4>, ^4, §4, <dark_red>, <darkred>
+# Je kunt op de volgende manier kleuren aangeven: <4>, ^4, Â§4, <dark_red>, <darkred>
 # Je kan alle berichten in dit bestand aanpassen, maar verwijder of voeg geen codes toe wat geen kleurcodes zijn!
-# Hoe dan ook, je kunt twee of meer codes verwisselen met elkaar in dezelfde lijn. Dat is hun originele functie.
+# Hoe dan ook, je kunt twee of meer codes verwisselen met elkaar in dezelfde lijn. Dat is hun functie.
 # Voorbeeld: "<player> heeft je net <horse> gegeven" of "<horse> is net aan jou gegeven door <player>".
 
 Headers:
@@ -98,7 +98,7 @@ Messages:
 Economy:
   commandCost: "<green>(<value><amount>)"
   commandPaid: "<yellow>Dit commando kost je <gold><value><amount><yellow>."
-  currencySymbol: "€"
+  currencySymbol: "â‚¬"
   notEnoughMoney: "<yellow>Je hebt geen <gold><value><amount><yellow>."
 
 Horse informations:

@@ -4,7 +4,7 @@ Commands:
 
   # The list of the ZHorse's commands. You can remove unused commands.
   # Set auto-admin to true to force admin mode for authorized users.
-  # The value of cost defines how much will be charged per execution.
+  # The value of cost defines how much will be charged per use.
 
   admin:
     auto-admin: true
@@ -65,10 +65,10 @@ Groups:
 
   # The list of groups with which ZHorse tries to bind.
   # The value of color is applied before the horse's name.
-  # Following formats are available : <4>, ^4, ง4, <dark_red>, <darkred>.
+  # Following formats are available : <4>, ^4, ยง4, <dark_red>, <darkred>.
   # The value of claims-limit defines how much horses a player can claim.
   # The permission is optional if the group is defined in a perms plugin.
-  # Membership of the group is simulated for whoever owns the permission.
+  # Membership of the group is simulated for whoever has the permission.
   
   default:
     color: <f>
@@ -126,7 +126,7 @@ HorseNames:
 Languages:
 
   # The language ZHorse will use for new players.
-  # It will be used if a locale file is incomplete or corrupted.
+  # It will be used if a custom locale file is incomplete or corrupted.
   default: EN
 
   # The list of languages in which players can display ZHorse.
@@ -148,7 +148,7 @@ Protections:
   PLAYER_ATTACK:
     enabled: true
 
-  # All kind of damages minus those caused by players.
+  # All kind of damages except those caused by players.
 
   BLOCK_EXPLOSION:
     enabled: false
@@ -197,26 +197,26 @@ Protections:
 
 Settings:
 
-  # Set to true to hide all ZHorse messages in player's chat.
+  # Set to true to hide all ZHorse messages in chat.
   mute-console: false
 
-  # Set to true to make players execute /zh claim when taming a horse.
+  # Set to true to make player execute /zh claim on horse tame.
   claim-on-tame: false
 
-  # Set to true to make players execute /zh lock when claiming a horse.
+  # Set to true to make player execute /zh lock on horse claim.
   lock-on-claim: false
 
-  # Set to true to make players execute /zh protect when claiming a horse.
+  # Set to true to make player execute /zh protect on horse claim.
   protect-on-claim: false
 
-  # Set to true to make players execute /zh share when claiming a horse.
+  # Set to true to make player execute /zh share on horse claim.
   share-on-claim: false
 
 Worlds:
 
   # The list of worlds that ZHorse can interact with.
-  # Set enabled to false to disable ZHorse in that world.
-  # Set crossable to false to disable /zh tp and /zh here in that world.
+  # Set enabled to false to disable ZHorse in a world.
+  # Set crossable to false to disable /zh tp and /zh here in a world.
 
   world:
     enabled: true
