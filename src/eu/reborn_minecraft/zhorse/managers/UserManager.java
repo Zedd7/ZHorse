@@ -515,7 +515,7 @@ public class UserManager {
 			if (!isRegistered(playerUUID)) {
 				registerPlayer(playerUUID);
 			}
-			if (isRegistered(horse)) { // retire l'enregistrement précédent en cas de give
+			if (isRegistered(horse)) { // retire l'enregistrement prï¿½cï¿½dent en cas de give
 				unRegisterHorse(horse);
 			}
 			String userID = getNextUserID(playerUUID);
@@ -703,10 +703,10 @@ public class UserManager {
 				zh.saveUsers();
 			}
 			else {
-				if (userID.equals(getFavoriteUserID(playerUUID))) { // réinitialisation du favori si relâché
+				if (userID.equals(getFavoriteUserID(playerUUID))) { // rï¿½initialisation du favori si relï¿½chï¿½
 					saveFavorite(playerUUID, getDefaultFavoriteUserID());
 				}
-				else if (Integer.valueOf(userID) < Integer.valueOf(getFavoriteUserID(playerUUID))) { // désincrémentation du favori si maj de l'ID
+				else if (Integer.valueOf(userID) < Integer.valueOf(getFavoriteUserID(playerUUID))) { // dï¿½sincrï¿½mentation du favori si maj de l'ID
 					saveFavorite(playerUUID, String.valueOf(Integer.valueOf(getFavoriteUserID(playerUUID))-1));
 				}
 				for (int i=Integer.valueOf(userID); i<claimsAmount; i++) { // i == ID -> != iterator
@@ -738,11 +738,11 @@ public class UserManager {
 	}
 
 	private void removeCachedEntry(Map<UUID, UUID> cachedEntries, UUID playerUUID) {
-		Iterator<Map.Entry<UUID, UUID>> cachedEntriesIter = cachedPlayerUUID.entrySet().iterator();
-		while (cachedEntriesIter.hasNext()) {
-		    Map.Entry<UUID, UUID> entry = cachedEntriesIter.next();
+		Iterator<Map.Entry<UUID, UUID>> cachedEntriesItr = cachedEntries.entrySet().iterator();
+		while (cachedEntriesItr.hasNext()) {
+		    Map.Entry<UUID, UUID> entry = cachedEntriesItr.next();
 		    if (entry.getValue().equals(playerUUID)) {
-				cachedPlayerUUID.remove(entry.getKey());
+		    	cachedEntriesItr.remove();
 			}
 		}
 	}
