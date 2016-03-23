@@ -65,7 +65,7 @@ Groups:
 
   # The list of groups with which ZHorse tries to bind.
   # The value of color is applied before the horse's name.
-  # Following formats are available : "&4", §4, <4>, <dark_red>, <DARKRED>.
+  # Following formats are available : "&4", <4>, <dark_red>, <DARKRED>.
   # The value of claims-limit defines how much horses a player can claim.
   # The permission is optional if the group is defined in a perms plugin.
   # Membership of the group is simulated for whoever has the permission.
@@ -79,7 +79,7 @@ Groups:
     claims-limit: 5
     permission: zh.what.ever.you.want
   vip:
-    color: §3<BOLD>
+    color: <3><BOLD>
     claims-limit: 10
     permission: prefix.zh.is.not.required
   admin:

@@ -1,6 +1,6 @@
 Version: 1.4.3
 
-# You can use any of the following color flag formats : "&4", §4, <4>, <dark_red>, <DARKRED>.
+# You can use any of the following color flag formats : "&4", <4>, <dark_red>, <DARKRED>.
 # You can rework any message in this file but DO NOT add/remove flags that are not color flags !
 # However, you can swap any flag within the same line. That's their main purpose.
 # Example: "<player> just gave you <horse>" or "<horse> has been given to you by <player>".

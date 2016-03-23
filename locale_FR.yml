@@ -1,6 +1,6 @@
 Version: 1.4.3
 
-# Vous pouvez employer n'importe lequel de ces formats pour les balises de couleur : "&4", §4, <4>, <dark_red>, <DARKRED>.
+# Vous pouvez employer n'importe lequel de ces formats pour les balises de couleur : "&4", <4>, <dark_red>, <DARKRED>.
 # Vous pouvez modifier n'importe quelle ligne dans ce fichier, mais n'ajoutez/retirez AUCUNE balise qui ne soit pas une balise de couleur !
 # Cependant, vous pouvez échanger deux balises ou plus dans la même ligne. C'est pour ça qu'elles sont là.
 # Exemple: "<player> vous a offert <horse>" or "<horse> vous a été offert par <player>".
