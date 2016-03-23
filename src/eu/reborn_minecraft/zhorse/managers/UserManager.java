@@ -14,7 +14,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Horse;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
@@ -76,6 +75,7 @@ public class UserManager {
 						}
 					}
 				}
+				/* Deep search for horse (should never be called)
 				List<World> worlds = zh.getServer().getWorlds();
 				for (World world : worlds) {
 					List<LivingEntity> livingEntities = world.getLivingEntities();
@@ -91,6 +91,7 @@ public class UserManager {
 						}
 					}
 				}
+				*/
 			}
 		}
 		return null;

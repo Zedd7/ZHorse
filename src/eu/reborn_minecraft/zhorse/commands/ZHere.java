@@ -42,15 +42,13 @@ public class ZHere extends Command {
 	
 	private void execute() {
 		if (isOwner() && isHorseReachable() && isNotOnHorse() && !isHorseMounted() && zh.getEM().canAffordCommand(p, command)) {
-			Location location;
-			if (!p.isFlying()) {
-				location = p.getLocation();
+			Location destination = p.getLocation();
+			if (p.isFlying()) {
+				Block block = destination.getWorld().getHighestBlockAt(destination);
+				destination = new Location(destination.getWorld(), block.getX(), block.getY(), block.getZ());
 			}
-			else {
-				Block block = p.getWorld().getHighestBlockAt(p.getLocation());
-				location = new Location(p.getWorld(), block.getX(), block.getY(), block.getZ());
-			}
-			horse.teleport(location);
+			horse.teleport(destination);
+			zh.getUM().saveLocation(p.getUniqueId(), horse, userID);
 			if (displayConsole) {
 				zh.getMM().sendMessageHorse(s, LocaleEnum.horseTeleported, horseName);
 			}

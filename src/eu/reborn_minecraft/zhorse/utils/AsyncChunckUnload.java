@@ -24,10 +24,10 @@ public class AsyncChunckUnload {
 			
 			@Override
 			public void run() {
-				for(Entity entity : entityArray){
-					if(entity instanceof Horse){
+				for (Entity entity : entityArray){
+					if (entity instanceof Horse){
 						Horse horse = (Horse) entity;
-						if(zh.getUM().isRegistered(horse)){
+						if (zh.getUM().isRegistered(horse)){
 							zh.getUM().saveLocation(horse);
 						}
 					}
