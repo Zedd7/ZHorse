@@ -14,6 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Horse;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
@@ -62,37 +63,33 @@ public class UserManager {
 			UUID horseUUID = getHorseUUID(playerUUID, userID);
 			if (horseUUID != null) {
 				Location location = getLocation(playerUUID, userID);
-				Chunk chunk = location.getChunk();
-				Horse horse = getHorseInChunk(chunk, horseUUID);
-				if (horse != null) {
-					return horse;
-				}
-				else {
-					List<Chunk> neighboringChunks = getNeighboringChunks(location);
-					for (Chunk neighboringChunk : neighboringChunks) {
-						horse = getHorseInChunk(neighboringChunk, horseUUID);
-						if (horse != null) {
-							return horse;
+				if (location != null) {
+					Chunk chunk = location.getChunk();
+					Horse horse = getHorseInChunk(chunk, horseUUID);
+					if (horse != null) {
+						return horse;
+					}
+					else {
+						List<Chunk> neighboringChunks = getNeighboringChunks(location);
+						for (Chunk neighboringChunk : neighboringChunks) {
+							horse = getHorseInChunk(neighboringChunk, horseUUID);
+							if (horse != null) {
+								return horse;
+							}
 						}
 					}
-				}
-				/* Deep search for horse (should never be called)
-				List<World> worlds = zh.getServer().getWorlds();
-				for (World world : worlds) {
-					List<LivingEntity> livingEntities = world.getLivingEntities();
-					for (LivingEntity livingEntity : livingEntities) {
+					World world = location.getWorld();
+					for (LivingEntity livingEntity : world.getLivingEntities()) {
 						if (livingEntity.getUniqueId().equals(horseUUID)) {
-							return (Horse)livingEntity;
+							return (Horse) livingEntity;
 						}
-					}
-					List<Entity> entities = world.getEntities();
-					for (Entity entity : entities) {
-						if (entity.getUniqueId().equals(horseUUID)) {
-							return (Horse)entity;
+						for (Entity entity : world.getEntities()) {
+							if (entity.getUniqueId().equals(horseUUID)) {
+								return (Horse)entity;
+							}
 						}
 					}
 				}
-				*/
 			}
 		}
 		return null;
@@ -573,6 +570,7 @@ public class UserManager {
 			UUID playerUUID = getPlayerUUID(horse);
 			String userID = getUserID(playerUUID, horse);
 			saveLocation(playerUUID, horse, userID);
+			zh.saveUsers();
 		}
 	}
 	
@@ -589,7 +587,6 @@ public class UserManager {
 			setHorseData(playerUUID, userID, KeyWordEnum.location.getValue() + KeyWordEnum.dot.getValue() + KeyWordEnum.x.getValue(), xPos);
 			setHorseData(playerUUID, userID, KeyWordEnum.location.getValue() + KeyWordEnum.dot.getValue() + KeyWordEnum.y.getValue(), yPos);
 			setHorseData(playerUUID, userID, KeyWordEnum.location.getValue() + KeyWordEnum.dot.getValue() + KeyWordEnum.z.getValue(), zPos);
-			zh.saveUsers();
 		}
 	}
 	
@@ -668,6 +665,14 @@ public class UserManager {
 	public void updatePlayer(Player p) {
 		if (p != null) {
 			setPlayerData(p.getUniqueId(), KeyWordEnum.name.getValue(), p.getName());
+			zh.saveUsers();
+		}
+	}
+	
+	public void updateHorse(UUID playerUUID, String userID, Horse horse) {
+		if (playerUUID != null && userID != null && horse != null) {
+			setHorseData(playerUUID, userID, KeyWordEnum.uuid.getValue(), horse.getUniqueId().toString());
+			saveLocation(playerUUID, horse, userID);
 			zh.saveUsers();
 		}
 	}

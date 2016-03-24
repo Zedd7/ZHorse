@@ -55,8 +55,7 @@ public class ZHorse extends JavaPlugin {
 		Plugin vault = getServer().getPluginManager().getPlugin("Vault");
 		if (!(vault == null || vault.isEnabled())) {
 			getServer().getPluginManager().enablePlugin(vault);
-		}
-		else if (vault == null) {
+		} else if (vault == null) {
 			getLogger().severe(String.format("Vault is missing ! Disabling %s...", getDescription().getName()));
 			getServer().getPluginManager().disablePlugin(this);
 		}
@@ -91,12 +90,12 @@ public class ZHorse extends JavaPlugin {
     	if (!configFile.exists()) {
 			getLogger().info(CONFIG_PATH + " is missing... Creating it.");
 			saveResource(CONFIG_PATH, false);
-		}    	
+		}
     	File usersFile = new File(getDataFolder(), USERS_PATH);    
 		if (!usersFile.exists()) {
 			getLogger().info(USERS_PATH + " is missing... Creating it.");
 			saveResource(USERS_PATH, false);			
-		}		
+		}
 		for (String language : PROVIDED_LANGUAGES) {
 			String exactLocalePath = String.format(LOCALE_PATH, language);
 			File localeFile = new File(getDataFolder(), exactLocalePath);
@@ -169,8 +168,7 @@ public class ZHorse extends JavaPlugin {
 			if (localeFile.exists()) {
 				FileConfiguration locale = Utf8YamlConfiguration.loadConfiguration(localeFile);
 				locales.put(language, locale);
-			}
-			else {
+			} else {
 				getLogger().info(exactLocalePath + " is missing... Creating it.");
 				exactLocalePath = String.format(LOCALE_PATH, getCM().getDefaultLanguage());
 				localeFile = new File(getDataFolder(), exactLocalePath);

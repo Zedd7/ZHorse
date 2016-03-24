@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
+import net.md_5.bungee.api.ChatColor;
 
 public class ZHere extends Command {
 
@@ -48,12 +49,17 @@ public class ZHere extends Command {
 				destination = new Location(destination.getWorld(), block.getX(), block.getY(), block.getZ());
 			}
 //			horse.teleport(destination);
-			horse = zh.getHM().teleport(horse, destination);
-			zh.getUM().saveLocation(p.getUniqueId(), horse, userID);
-			if (displayConsole) {
-				zh.getMM().sendMessageHorse(s, LocaleEnum.horseTeleported, horseName);
+			if (!horse.isCarryingChest()) { // TODO handle chests
+				horse = zh.getHM().teleport(horse, destination);
+				zh.getUM().saveLocation(p.getUniqueId(), horse, userID);
+				if (displayConsole) {
+					zh.getMM().sendMessageHorse(s, LocaleEnum.horseTeleported, horseName);
+				}
+				zh.getEM().payCommand(p, command);
 			}
-			zh.getEM().payCommand(p, command);
+			else {
+				s.sendMessage(ChatColor.RED + "The new teleportation method has not been adapted to Donkeys or Mules yet.");
+			}
 		}
 	}
 
