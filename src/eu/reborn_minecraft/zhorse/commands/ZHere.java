@@ -47,7 +47,8 @@ public class ZHere extends Command {
 				Block block = destination.getWorld().getHighestBlockAt(destination);
 				destination = new Location(destination.getWorld(), block.getX(), block.getY(), block.getZ());
 			}
-			horse.teleport(destination);
+//			horse.teleport(destination);
+			horse = zh.getHM().teleport(horse, destination);
 			zh.getUM().saveLocation(p.getUniqueId(), horse, userID);
 			if (displayConsole) {
 				zh.getMM().sendMessageHorse(s, LocaleEnum.horseTeleported, horseName);

@@ -14,6 +14,7 @@ import eu.reborn_minecraft.zhorse.managers.CommandManager;
 import eu.reborn_minecraft.zhorse.managers.ConfigManager;
 import eu.reborn_minecraft.zhorse.managers.EconomyManager;
 import eu.reborn_minecraft.zhorse.managers.EventManager;
+import eu.reborn_minecraft.zhorse.managers.HorseManager;
 import eu.reborn_minecraft.zhorse.managers.LocaleManager;
 import eu.reborn_minecraft.zhorse.managers.MessageManager;
 import eu.reborn_minecraft.zhorse.managers.UserManager;
@@ -23,27 +24,24 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
 public class ZHorse extends JavaPlugin {
-	private static String configPath = "config.yml";
-	private static String usersPath = "users.yml";
-	private static String localePath = "locale_%s.yml";
-	private static String[] providedLanguages = {"EN", "FR", "NL"};
-	private static File configFile;
-	private static File usersFile;
-	private Permission perms;
-	private Economy econ;
+	private static final String CONFIG_PATH = "config.yml";
+	private static final String USERS_PATH = "users.yml";
+	private static final String LOCALE_PATH = "locale_%s.yml";
+	private static final String[] PROVIDED_LANGUAGES = {"EN", "FR", "NL"};
+	private Permission vaultPerms;
+	private Economy vaultEcon;
 	private FileConfiguration config;
 	private FileConfiguration users;
 	private Map<String, FileConfiguration> locales;
-	private ConfigManager configManager;
-	private UserManager userManager;
-	private LocaleManager localeManager;
 	private CommandManager commandManager;
-	private MessageManager messageManager;
+	private ConfigManager configManager;
 	private EconomyManager economyManager;
+	private HorseManager horseManager;
+	private LocaleManager localeManager;
+	private MessageManager messageManager;
+	private UserManager userManager;
 	
 	public void onEnable() {
-		configFile = new File(getDataFolder(), configPath);
-		usersFile = new File(getDataFolder(), usersPath);
 		initDependencies();
 		initPermissions();
 		initEconomy();
@@ -66,8 +64,8 @@ public class ZHorse extends JavaPlugin {
 
 	private boolean initPermissions() {
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-        perms = rsp.getProvider();
-        return perms != null;
+        vaultPerms = rsp.getProvider();
+        return vaultPerms != null;
     }
     
     private boolean initEconomy() {
@@ -75,8 +73,8 @@ public class ZHorse extends JavaPlugin {
         if (rsp == null) {
             return false;
         }
-        econ = rsp.getProvider();
-        return econ != null;
+        vaultEcon = rsp.getProvider();
+        return vaultEcon != null;
     }
     
     private void initMetrics() {
@@ -89,22 +87,25 @@ public class ZHorse extends JavaPlugin {
     }
     
     private boolean initManagers() {
-    	boolean success = true;
+    	File configFile = new File(getDataFolder(), CONFIG_PATH);	
     	if (!configFile.exists()) {
-			getLogger().info(configPath + " is missing... Creating it.");
-			saveResource(configPath, false);
-		}
+			getLogger().info(CONFIG_PATH + " is missing... Creating it.");
+			saveResource(CONFIG_PATH, false);
+		}    	
+    	File usersFile = new File(getDataFolder(), USERS_PATH);    
 		if (!usersFile.exists()) {
-			getLogger().info(usersPath + " is missing... Creating it.");
-			saveResource(usersPath, false);			
-		}
-		for (String language : providedLanguages) {
-			String exactLocalePath = String.format(localePath, language);
-			if (!new File(getDataFolder(), exactLocalePath).exists()) {
+			getLogger().info(USERS_PATH + " is missing... Creating it.");
+			saveResource(USERS_PATH, false);			
+		}		
+		for (String language : PROVIDED_LANGUAGES) {
+			String exactLocalePath = String.format(LOCALE_PATH, language);
+			File localeFile = new File(getDataFolder(), exactLocalePath);
+			if (!localeFile.exists()) {
 				getLogger().info(exactLocalePath + " is missing... Creating it.");
 				saveResource(exactLocalePath, false);
 			}
 		}
+		
 		loadConfig();
 		loadUsers();
 		messageManager = new MessageManager(this);
@@ -113,7 +114,10 @@ public class ZHorse extends JavaPlugin {
 		configManager = new ConfigManager(this);
 		userManager = new UserManager(this);
 		economyManager = new EconomyManager(this);
+		horseManager = new HorseManager(this);
 		loadLocales();
+		
+		boolean success = true;
 		if (!configManager.checkConformity()) {
 			success = false;
 		}
@@ -148,17 +152,19 @@ public class ZHorse extends JavaPlugin {
     }
     
 	public void loadConfig() {
+		File configFile = new File(getDataFolder(), CONFIG_PATH);
 		config = Utf8YamlConfiguration.loadConfiguration(configFile);
 	}
 	
 	public void loadUsers() {
+		File usersFile = new File(getDataFolder(), USERS_PATH);
 		users = Utf8YamlConfiguration.loadConfiguration(usersFile);
 	}
 	
 	public void loadLocales() {
 		locales = new HashMap<String, FileConfiguration>();
 		for (String language : getCM().getAvailableLanguages()) {
-			String exactLocalePath = String.format(localePath, language);
+			String exactLocalePath = String.format(LOCALE_PATH, language);
 			File localeFile = new File(getDataFolder(), exactLocalePath);
 			if (localeFile.exists()) {
 				FileConfiguration locale = Utf8YamlConfiguration.loadConfiguration(localeFile);
@@ -166,7 +172,7 @@ public class ZHorse extends JavaPlugin {
 			}
 			else {
 				getLogger().info(exactLocalePath + " is missing... Creating it.");
-				exactLocalePath = String.format(localePath, getCM().getDefaultLanguage());
+				exactLocalePath = String.format(LOCALE_PATH, getCM().getDefaultLanguage());
 				localeFile = new File(getDataFolder(), exactLocalePath);
 				FileConfiguration locale = Utf8YamlConfiguration.loadConfiguration(localeFile);
 				saveLocale(locale, language);
@@ -176,6 +182,7 @@ public class ZHorse extends JavaPlugin {
 	}
 	
 	public void saveConfig() {
+		File configFile = new File(getDataFolder(), CONFIG_PATH);
         try {
 			config.save(configFile);
 		} catch (IOException e) {
@@ -184,6 +191,7 @@ public class ZHorse extends JavaPlugin {
 	}
 	
 	public void saveUsers() {
+		File usersFile = new File(getDataFolder(), USERS_PATH);
         try {
 			synchronized (users) {
 				users.save(usersFile);
@@ -198,7 +206,7 @@ public class ZHorse extends JavaPlugin {
 	}
 	
 	public void saveLocale(FileConfiguration locale, String language) {
-		String exactLocalePath = String.format(localePath, language);
+		String exactLocalePath = String.format(LOCALE_PATH, language);
 		File localeFile = new File(getDataFolder(), exactLocalePath);
         try {
 			locale.save(localeFile);
@@ -211,32 +219,36 @@ public class ZHorse extends JavaPlugin {
 		return commandManager;
 	}
 	
-	public MessageManager getMM() {
-		return messageManager;
-	}
-	
-    public Permission getPerms() {
-    	return perms;
-    }
-    
-    public Economy getEcon() {
-    	return econ;
-    }
-    
     public ConfigManager getCM() {
     	return configManager;
     }
     
-    public UserManager getUM() {
-    	return userManager;
-    }
-    
-    public LocaleManager getLM() {
-    	return localeManager;
-    }
-    
-    public EconomyManager getEM() {
-    	return economyManager;
-    }
+	public Economy getEcon() {
+		return vaultEcon;
+	}
+	
+	public EconomyManager getEM() {
+		return economyManager;
+	}
+	
+	public HorseManager getHM() {
+		return horseManager;
+	}
+	
+	public LocaleManager getLM() {
+		return localeManager;
+	}
+	
+	public MessageManager getMM() {
+		return messageManager;
+	}
+	
+	public Permission getPerms() {
+		return vaultPerms;
+	}
+	
+	public UserManager getUM() {
+		return userManager;
+	}
 
 }

@@ -20,6 +20,7 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 
 public class UserManager {
+	
 	private ZHorse zh;
 	private Map<UUID, UUID> cachedPlayerUUID = new HashMap<>();
 	private Map<UUID, UUID> cachedIsClaimedBy = new HashMap<>();
