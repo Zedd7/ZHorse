@@ -14,6 +14,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTameEvent;
+import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.entity.PlayerLeashEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -119,6 +120,17 @@ public class EventManager implements Listener {
 				if (displayConsole) {
 					zh.getMM().sendMessage((CommandSender)e.getOwner(), LocaleEnum.horseManuallyTamed);
 				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onEntityTeleport(EntityTeleportEvent e) {
+		if (e.getEntity() instanceof Horse) {
+			Horse horse = (Horse)e.getEntity();
+			if (zh.getUM().isRegistered(horse)) {
+				zh.getHM().teleport(horse, e.getTo());
+				e.setCancelled(true);
 			}
 		}
 	}
