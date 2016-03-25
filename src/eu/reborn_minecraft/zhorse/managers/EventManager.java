@@ -13,13 +13,14 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.entity.EntityTameEvent;
-import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.entity.PlayerLeashEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerUnleashEntityEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
@@ -27,6 +28,7 @@ import eu.reborn_minecraft.zhorse.commands.ZClaim;
 import eu.reborn_minecraft.zhorse.enums.CommandEnum;
 import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
+import eu.reborn_minecraft.zhorse.utils.AsyncChunckLoad;
 import eu.reborn_minecraft.zhorse.utils.AsyncChunckUnload;
 import eu.reborn_minecraft.zhorse.utils.AsyncPlayerJoin;
 
@@ -40,6 +42,11 @@ public class EventManager implements Listener {
 	public EventManager(ZHorse zh) {
 		this.zh = zh;
 		this.displayConsole = !(zh.getCM().isConsoleMuted());
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onChunkLoad(ChunkLoadEvent e) {
+		new AsyncChunckLoad(zh, e);
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -125,12 +132,13 @@ public class EventManager implements Listener {
 	}
 	
 	@EventHandler
-	public void onEntityTeleport(EntityTeleportEvent e) {
+	public void onEntityPortal(EntityPortalEvent e) {
 		if (e.getEntity() instanceof Horse) {
 			Horse horse = (Horse)e.getEntity();
 			if (zh.getUM().isRegistered(horse)) {
 				zh.getHM().teleport(horse, e.getTo());
 				e.setCancelled(true);
+				System.out.println("cancelled portal teleportation of " + zh.getUM().getHorseName(horse));
 			}
 		}
 	}
