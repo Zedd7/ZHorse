@@ -49,7 +49,7 @@ public class ZFree extends Command {
 			}
 			else {
 				if (isRegistered(targetUUID, userID)) {
-					horse = zh.getUM().getHorse(targetUUID, userID);
+					horse = zh.getHM().getHorse(targetUUID, userID);
 					if (isHorseLoaded()) {
 						execute();
 					}
@@ -70,7 +70,7 @@ public class ZFree extends Command {
 
 	private void execute() {
 		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
-			if (zh.getUM().unRegisterHorse(horse)) {
+			if (zh.getUM().unRegisterHorse(targetUUID, userID)) {
 				horse.setCustomName(null);
 				horse.setCustomNameVisible(false);
 				if (displayConsole) {

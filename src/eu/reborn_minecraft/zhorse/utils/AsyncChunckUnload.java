@@ -28,8 +28,8 @@ public class AsyncChunckUnload {
 					if (entity instanceof Horse) {
 						Horse horse = (Horse) entity;
 						if (zh.getUM().isRegistered(horse)) {
+							zh.getHM().unloadHorse(horse);
 							zh.getUM().saveLocation(horse);
-							System.out.println("unloaded zhorse : " + zh.getUM().getHorseName(horse));
 						}
 					}
 				}

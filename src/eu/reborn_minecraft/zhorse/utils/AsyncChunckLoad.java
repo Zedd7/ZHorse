@@ -28,7 +28,7 @@ public class AsyncChunckLoad {
 					if (entity instanceof Horse) {
 						Horse horse = (Horse) entity;
 						if (zh.getUM().isRegistered(horse)) {
-							System.out.println("loaded zhorse : " + zh.getUM().getHorseName(horse));
+							zh.getHM().loadHorse(horse);
 						}
 					}
 				}

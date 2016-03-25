@@ -18,7 +18,7 @@ public class ZAdmin extends Command {
 		needTarget = false;
 		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {			
 			if (!idMode) {
-				if (isOnHorse(true)) { // sélection du cheval avec ou sans target
+				if (isOnHorse(true)) { // select horse w/ or w/o target
 					horse = (Horse)p.getVehicle();
 					if (isOwner(targetUUID, true, true)) {
 						idMode = true;
@@ -61,11 +61,11 @@ public class ZAdmin extends Command {
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (argument.split(" ").length >= 2) {
 				targetMode = true;
-				String subArgument = argument.substring(argument.indexOf(" ")+1);
+				String subArgument = argument.substring(argument.indexOf(" ") + 1);
 				if (subArgument.split(" ").length >= 2) {
 					idMode = true;
 					targetName = subArgument.substring(0, subArgument.indexOf(" "));
-					userID = subArgument.substring(subArgument.indexOf(" ")+1);
+					userID = subArgument.substring(subArgument.indexOf(" ") + 1);
 				}
 				else {
 					targetName = subArgument;
@@ -76,8 +76,18 @@ public class ZAdmin extends Command {
 			if (targetMode) {
 				if (!idMode) {
 					if (isRegistered(targetUUID)) {
-						if (zh.getUM().unRegisterPlayer(targetUUID)) {
-							zh.getUM().saveFavorite(targetUUID, zh.getUM().getDefaultFavoriteUserID());
+						boolean success = true;
+						for (int userID = 1; userID <= zh.getUM().getClaimsAmount(targetUUID); ++userID) {
+							Horse horse = zh.getHM().getHorse(targetUUID, Integer.toString(userID));
+							if (horse != null) {
+								horse.setCustomName(null);
+								horse.setCustomNameVisible(false);
+							}
+							if (zh.getUM().unRegisterHorse(targetUUID, Integer.toString(userID))) {
+								success = false;
+							}
+						}
+						if (success) {
 							if (samePlayer) {
 								zh.getMM().sendMessage(s, LocaleEnum.playerCleared);
 							}
@@ -89,6 +99,11 @@ public class ZAdmin extends Command {
 					}
 				}
 				else if (isRegistered(targetUUID, userID)) {
+					Horse horse = zh.getHM().getHorse(targetUUID, userID);
+					if (horse != null) {
+						horse.setCustomName(null);
+						horse.setCustomNameVisible(false);
+					}
 					if (zh.getUM().unRegisterHorse(targetUUID, userID)) {
 						if (samePlayer) {
 							zh.getMM().sendMessageHorse(s, LocaleEnum.horseCleared, horseName);

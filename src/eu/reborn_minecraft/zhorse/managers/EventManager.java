@@ -136,9 +136,11 @@ public class EventManager implements Listener {
 		if (e.getEntity() instanceof Horse) {
 			Horse horse = (Horse)e.getEntity();
 			if (zh.getUM().isRegistered(horse)) {
-				zh.getHM().teleport(horse, e.getTo());
 				e.setCancelled(true);
 				System.out.println("cancelled portal teleportation of " + zh.getUM().getHorseName(horse));
+				if (zh.getCM().isWorldEnabled(e.getTo().getWorld())) {
+					zh.getHM().teleport(horse, e.getTo());
+				}
 			}
 		}
 	}

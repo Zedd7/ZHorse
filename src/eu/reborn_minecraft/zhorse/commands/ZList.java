@@ -28,7 +28,7 @@ public class ZList extends Command {
 
 	private void execute() {
 		if (zh.getEM().canAffordCommand(p, command)) {
-			List<String> horseList = zh.getUM().getHorseList(targetUUID);
+			List<String> horseNameList = zh.getUM().getHorseNameList(targetUUID);
 			String remainingClaimsMessage = getRemainingClaimsMessage(targetUUID);
 			if (displayConsole) {
 				if (ownsHorse(targetUUID, true)) {
@@ -41,9 +41,9 @@ public class ZList extends Command {
 						horseListHeader = zh.getMM().getMessagePlayerValue(s, LocaleEnum.horseListOtherHeader, targetName, remainingClaimsMessage, true);
 					}
 					zh.getMM().sendMessageValue(s, LocaleEnum.headerFormat, horseListHeader, true);
-					for (int i=1; i<=horseList.size(); i++) {
+					for (int i=1; i<=horseNameList.size(); i++) {
 						String userID = Integer.toString(i);
-						String horseName = horseList.get(i-1);						
+						String horseName = horseNameList.get(i-1);						
 						String status = "";
 						if (zh.getUM().isProtected(targetUUID, userID)) {
 							status += zh.getMM().getMessageSpacer(s, LocaleEnum.modeProtected, 1, true);

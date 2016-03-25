@@ -39,7 +39,7 @@ public class ZGive extends Command {
 					}
 					else {
 						if (isRegistered(p.getUniqueId(), userID, true)) {
-							horse = zh.getUM().getHorse(p.getUniqueId(), userID);
+							horse = zh.getHM().getHorse(p.getUniqueId(), userID);
 							if (isHorseLoaded()) {
 								execute();
 							}

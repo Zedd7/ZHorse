@@ -7,14 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Horse;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
@@ -23,8 +20,8 @@ import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 public class UserManager {
 	
 	private ZHorse zh;
-	private Map<UUID, UUID> cachedPlayerUUID = new HashMap<>();
-	private Map<UUID, UUID> cachedIsClaimedBy = new HashMap<>();
+	private Map<UUID, UUID> cachedPlayerUUID = new HashMap<>(); // <horseUUID, playerUUID>
+	private Map<UUID, UUID> cachedIsClaimedBy = new HashMap<>();  // <horseUUID, playerUUID>
 	
 	public UserManager(ZHorse zh) {
 		this.zh = zh;
@@ -46,7 +43,7 @@ public class UserManager {
 	
 	public Horse getFavoriteHorse(UUID playerUUID) {
 		if (playerUUID != null) {
-			return getHorse(playerUUID, getFavoriteUserID(playerUUID));
+			return zh.getHM().getHorse(playerUUID, getFavoriteUserID(playerUUID));
 		}
 		return null;
 	}
@@ -58,7 +55,7 @@ public class UserManager {
 		return getDefaultFavoriteUserID();
 	}
 	
-	public Horse getHorse(UUID playerUUID, String userID) {
+	/*public Horse getHorse(UUID playerUUID, String userID) {
 		if (playerUUID != null && userID != null) {
 			UUID horseUUID = getHorseUUID(playerUUID, userID);
 			if (horseUUID != null) {
@@ -93,9 +90,9 @@ public class UserManager {
 			}
 		}
 		return null;
-	}
+	}*/
 	
-	public Horse getHorseInChunk(Chunk chunk, UUID horseUUID) {
+	/*public Horse getHorseInChunk(Chunk chunk, UUID horseUUID) {
 		boolean unloadChunk = false;
 		if (!chunk.isLoaded()) {
 			chunk.load();
@@ -110,9 +107,9 @@ public class UserManager {
 			chunk.unload(true, true);
 		}
 		return null;
-	}
+	}*/
 	
-	public List<String> getHorseList(UUID playerUUID) {
+	public List<String> getHorseNameList(UUID playerUUID) {
 		if (isRegistered(playerUUID)) {
 			List<String> horseList = new ArrayList<String>();
 			ConfigurationSection cs = zh.getUsers().getConfigurationSection(getPlayerPath(playerUUID, KeyWordEnum.horses.getValue()));
@@ -223,7 +220,7 @@ public class UserManager {
 		return null;
 	}
 	
-	private List<Chunk> getNeighboringChunks(Location loc) {
+	/*private List<Chunk> getNeighboringChunks(Location loc) {
 		if (loc != null) {
 			List<Chunk> neighboringChunks = new ArrayList<Chunk>();
 			neighboringChunks.add(loc.getWorld().getChunkAt(loc.add(0, 0, -16)));
@@ -237,7 +234,7 @@ public class UserManager {
 			return neighboringChunks;
 		}
 		return null;
-	}
+	}*/
 	
 	public String getNextUserID(UUID playerUUID) {
         int userID = 1;
@@ -395,8 +392,9 @@ public class UserManager {
 	}
 	
 	public boolean isClaimedBy(UUID playerUUID, Horse horse) {
-		if (cachedIsClaimedBy.containsKey(horse.getUniqueId()) && cachedIsClaimedBy.get(horse.getUniqueId()) == playerUUID)
+		if (cachedIsClaimedBy.containsKey(horse.getUniqueId()) && cachedIsClaimedBy.get(horse.getUniqueId()).equals(playerUUID)) {
 			return true;
+		}
 		if (isRegistered(playerUUID)) {
 			ConfigurationSection cs = zh.getUsers().getConfigurationSection(getPlayerPath(playerUUID, KeyWordEnum.horses.getValue()));
 			if (cs != null) {
@@ -474,7 +472,7 @@ public class UserManager {
 	}
 	
 	public boolean isSpawned(UUID playerUUID, String userID) {
-		return playerUUID != null && userID != null && getHorse(playerUUID, userID) != null;
+		return playerUUID != null && userID != null && zh.getHM().getLoadedHorse(getHorseUUID(playerUUID, userID)) != null;
 	}
 	
 	public void lock(UUID playerUUID, Horse horse) {
@@ -514,7 +512,7 @@ public class UserManager {
 			if (!isRegistered(playerUUID)) {
 				registerPlayer(playerUUID);
 			}
-			if (isRegistered(horse)) { // retire l'enregistrement pr�c�dent en cas de give
+			if (isRegistered(horse)) { // if horse is given, unregister it from giver's list
 				unRegisterHorse(horse);
 			}
 			String userID = getNextUserID(playerUUID);
@@ -525,6 +523,8 @@ public class UserManager {
 			setHorseData(playerUUID, userID, KeyWordEnum.modeShared.getValue(), share);
 			setHorseData(playerUUID, userID, KeyWordEnum.uuid.getValue(), horseUUID.toString());
 			saveLocation(playerUUID, horse, userID);
+			
+			zh.getHM().loadHorse(horse);
 			zh.saveUsers();
 		}
 	}
@@ -704,47 +704,43 @@ public class UserManager {
 	
 	public boolean unRegisterHorse(UUID playerUUID, String userID) {
 		if (playerUUID != null && userID != null) {
+			zh.getHM().unloadHorse(getHorseUUID(playerUUID, userID));
 			int claimsAmount = getClaimsAmount(playerUUID);
 			if (claimsAmount <= 1) {
+				removeCachedEntries(playerUUID);
 				setPlayerData(playerUUID, KeyWordEnum.horses.getValue(), null);
-				zh.saveUsers();
 			}
 			else {
-				if (userID.equals(getFavoriteUserID(playerUUID))) { // r�initialisation du favori si rel�ch�
+				removeCachedEntry(getHorseUUID(playerUUID, userID));
+				if (userID.equals(getFavoriteUserID(playerUUID))) { // update favorite horse ID if horse was freed
 					saveFavorite(playerUUID, getDefaultFavoriteUserID());
 				}
-				else if (Integer.valueOf(userID) < Integer.valueOf(getFavoriteUserID(playerUUID))) { // d�sincr�mentation du favori si maj de l'ID
+				else if (Integer.valueOf(userID) < Integer.valueOf(getFavoriteUserID(playerUUID))) { // update favorite horse ID if horse ID has changed
 					saveFavorite(playerUUID, String.valueOf(Integer.valueOf(getFavoriteUserID(playerUUID))-1));
 				}
-				for (int i=Integer.valueOf(userID); i<claimsAmount; i++) { // i == ID -> != iterator
+				for (int i=Integer.valueOf(userID); i<claimsAmount; i++) { // i := horseID = {1,...,n}
 					ConfigurationSection cs = zh.getUsers().getConfigurationSection(getHorsePath(playerUUID, Integer.toString(i+1)));
 					setHorseData(playerUUID, Integer.toString(i), cs);
 				}
-				setHorseData(playerUUID, Integer.toString(claimsAmount), null);
-				zh.saveUsers();
-				removeCachedEntries(playerUUID);
+				setHorseData(playerUUID, Integer.toString(claimsAmount), null);				
 			}
+			zh.saveUsers();
 			return true;
 		}
 		return false;
 	}
 	
-	public boolean unRegisterPlayer(UUID playerUUID) {
-		if (playerUUID != null) {
-			setPlayerData(playerUUID, KeyWordEnum.horses.getValue(), null);
-			zh.saveUsers();
-			removeCachedEntries(playerUUID);
-			return true;
-		}
-		return false;
+	private void removeCachedEntry(UUID horseUUID) {
+		cachedPlayerUUID.remove(horseUUID);
+		cachedIsClaimedBy.remove(horseUUID);
 	}
 	
 	private void removeCachedEntries(UUID playerUUID) {
-		removeCachedEntry(cachedPlayerUUID, playerUUID);
-		removeCachedEntry(cachedIsClaimedBy, playerUUID);
+		removeCachedEntries(cachedPlayerUUID, playerUUID);
+		removeCachedEntries(cachedIsClaimedBy, playerUUID);
 	}
 
-	private void removeCachedEntry(Map<UUID, UUID> cachedEntries, UUID playerUUID) {
+	private void removeCachedEntries(Map<UUID, UUID> cachedEntries, UUID playerUUID) {
 		Iterator<Map.Entry<UUID, UUID>> cachedEntriesItr = cachedEntries.entrySet().iterator();
 		while (cachedEntriesItr.hasNext()) {
 		    Map.Entry<UUID, UUID> entry = cachedEntriesItr.next();

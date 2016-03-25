@@ -32,7 +32,7 @@ public class ZHere extends Command {
 			}
 			else {
 				if (isRegistered(targetUUID, userID)) {
-					horse = zh.getUM().getHorse(targetUUID, userID);
+					horse = zh.getHM().getHorse(targetUUID, userID);
 					if (isHorseLoaded()) {
 						execute();
 					}
@@ -48,14 +48,21 @@ public class ZHere extends Command {
 				Block block = destination.getWorld().getHighestBlockAt(destination);
 				destination = new Location(destination.getWorld(), block.getX(), block.getY(), block.getZ());
 			}
-//			horse.teleport(destination);
+//			if old_method:
+//				horse.teleport(destination);
+//				zh.getUM().saveLocation(p.getUniqueId(), horse, userID);
+//			else:	
 			if (!horse.isCarryingChest()) { // TODO handle chests
 				horse = zh.getHM().teleport(horse, destination);
-				zh.getUM().saveLocation(p.getUniqueId(), horse, userID);
-				if (displayConsole) {
-					zh.getMM().sendMessageHorse(s, LocaleEnum.horseTeleported, horseName);
+				if (horse != null) {
+					if (displayConsole) {
+						zh.getMM().sendMessageHorse(s, LocaleEnum.horseTeleported, horseName);
+					}
+					zh.getEM().payCommand(p, command);
 				}
-				zh.getEM().payCommand(p, command);
+				else {
+					s.sendMessage(ChatColor.RED + "It seems that horses cannot spawn here, please report this to ZHorse's dev.");
+				}
 			}
 			else {
 				s.sendMessage(ChatColor.RED + "The new teleportation method has not been adapted to Donkeys or Mules yet.");
