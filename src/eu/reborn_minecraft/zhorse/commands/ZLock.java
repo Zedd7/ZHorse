@@ -28,7 +28,7 @@ public class ZLock extends Command {
 					else if (ownsHorse) {
 						userID = zh.getUM().getFavoriteUserID(p.getUniqueId());
 						if (isRegistered(p.getUniqueId(), userID)) {
-							horse = zh.getUM().getFavoriteHorse(p.getUniqueId());
+							horse = zh.getHM().getFavoriteHorse(p.getUniqueId());
 							if (isHorseLoaded()) {
 								execute();
 							}

@@ -4,11 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
+import org.bukkit.entity.LeashHitch;
+import org.bukkit.inventory.ItemStack;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 
@@ -21,6 +23,10 @@ public class HorseManager {
 		this.zh = zh;
 	}
 	
+	public Horse getFavoriteHorse(UUID playerUUID) {
+		return getHorse(playerUUID, zh.getUM().getFavoriteUserID(playerUUID));
+	}
+	
 	public Horse getHorse(UUID playerUUID, String userID) {
 		Horse horse = null;
 		if (playerUUID != null && userID != null) {
@@ -30,29 +36,17 @@ public class HorseManager {
 				if (horse == null) {
 					Location location = zh.getUM().getLocation(playerUUID, userID);
 					if (location != null) {
-						horse = getHorseInChunk(location.getChunk(), horseUUID);
+						Entity[] entities = location.getChunk().getEntities();
+						for (int i=0; i < entities.length && horse == null; ++i) {
+							if (entities[i].getUniqueId().equals(horseUUID)) {
+								horse = (Horse) entities[i];
+							}
+						}
 					}
 				}
 			}
 		}
 		return horse;
-	}
-	
-	public Horse getHorseInChunk(Chunk chunk, UUID horseUUID) {
-		boolean unloadChunk = false;
-		if (!chunk.isLoaded()) {
-			chunk.load();
-			unloadChunk = true;
-		}
-		for (Entity entity : chunk.getEntities()) {
-			if (entity.getUniqueId().equals(horseUUID)) {
-				return (Horse) entity;
-			}
-		}
-		if (unloadChunk) {
-			chunk.unload(true);
-		}
-		return null;
 	}
 	
 	public Horse getLoadedHorse(UUID horseUUID) {
@@ -83,14 +77,26 @@ public class HorseManager {
 			String userID = zh.getUM().getUserID(playerUUID, sourceHorse);
 			zh.getUM().updateHorse(playerUUID, userID, copyHorse);
 			copyAttributes(sourceHorse, copyHorse);
-			loadHorse(copyHorse);
+			removeLeash(sourceHorse);
 			unloadHorse(sourceHorse);
+			loadHorse(copyHorse);
 			sourceHorse.remove();
 		}
 		return copyHorse;
 	}
 	
-	private void copyAttributes(Horse sourceHorse, Horse copyHorse) {		
+	private void removeLeash(Horse horse) {
+		if (horse.isLeashed()) {
+			Entity leashHolder = horse.getLeashHolder();
+			if (leashHolder instanceof LeashHitch) {
+				leashHolder.remove();
+			}
+			ItemStack leash = new ItemStack(Material.LEASH);
+			horse.getWorld().dropItem(horse.getLocation(), leash);
+		}
+	}
+
+	private void copyAttributes(Horse sourceHorse, Horse copyHorse) {	
 		// Define maximum before value to keep it in valid range
 		copyHorse.setMaxDomestication(sourceHorse.getMaxDomestication());
 		copyHorse.setMaxHealth(sourceHorse.getMaxHealth());
@@ -123,8 +129,6 @@ public class HorseManager {
 		copyHorse.setTamed(sourceHorse.isTamed());
 		copyHorse.setTicksLived(sourceHorse.getTicksLived());
 		copyHorse.setVariant(sourceHorse.getVariant());
-		
-//		copyHorse.setMetadata(metadataKey);
 	}
 
 }

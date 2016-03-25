@@ -41,73 +41,12 @@ public class UserManager {
 		return "1";
 	}
 	
-	public Horse getFavoriteHorse(UUID playerUUID) {
-		if (playerUUID != null) {
-			return zh.getHM().getHorse(playerUUID, getFavoriteUserID(playerUUID));
-		}
-		return null;
-	}
-	
 	public String getFavoriteUserID(UUID playerUUID) {
 		if (playerUUID != null) {
 			return getPlayerData(playerUUID, KeyWordEnum.favorite.getValue(), getDefaultFavoriteUserID());
 		}
 		return getDefaultFavoriteUserID();
 	}
-	
-	/*public Horse getHorse(UUID playerUUID, String userID) {
-		if (playerUUID != null && userID != null) {
-			UUID horseUUID = getHorseUUID(playerUUID, userID);
-			if (horseUUID != null) {
-				Location location = getLocation(playerUUID, userID);
-				if (location != null) {
-					Chunk chunk = location.getChunk();
-					Horse horse = getHorseInChunk(chunk, horseUUID);
-					if (horse != null) {
-						return horse;
-					}
-					else {
-						List<Chunk> neighboringChunks = getNeighboringChunks(location);
-						for (Chunk neighboringChunk : neighboringChunks) {
-							horse = getHorseInChunk(neighboringChunk, horseUUID);
-							if (horse != null) {
-								return horse;
-							}
-						}
-					}
-					World world = location.getWorld();
-					for (LivingEntity livingEntity : world.getLivingEntities()) {
-						if (livingEntity.getUniqueId().equals(horseUUID)) {
-							return (Horse) livingEntity;
-						}
-						for (Entity entity : world.getEntities()) {
-							if (entity.getUniqueId().equals(horseUUID)) {
-								return (Horse)entity;
-							}
-						}
-					}
-				}
-			}
-		}
-		return null;
-	}*/
-	
-	/*public Horse getHorseInChunk(Chunk chunk, UUID horseUUID) {
-		boolean unloadChunk = false;
-		if (!chunk.isLoaded()) {
-			chunk.load();
-			unloadChunk = true;
-		}
-		for (Entity entity : chunk.getEntities()) {
-			if (entity.getUniqueId().equals(horseUUID)) {
-				return (Horse)entity;
-			}
-		}
-		if (unloadChunk) {
-			chunk.unload(true, true);
-		}
-		return null;
-	}*/
 	
 	public List<String> getHorseNameList(UUID playerUUID) {
 		if (isRegistered(playerUUID)) {
@@ -219,22 +158,6 @@ public class UserManager {
 		}
 		return null;
 	}
-	
-	/*private List<Chunk> getNeighboringChunks(Location loc) {
-		if (loc != null) {
-			List<Chunk> neighboringChunks = new ArrayList<Chunk>();
-			neighboringChunks.add(loc.getWorld().getChunkAt(loc.add(0, 0, -16)));
-			neighboringChunks.add(loc.getWorld().getChunkAt(loc.add(-16, 0, 0)));
-			neighboringChunks.add(loc.getWorld().getChunkAt(loc.add(0, 0, 16)));
-			neighboringChunks.add(loc.getWorld().getChunkAt(loc.add(0, 0, 16)));
-			neighboringChunks.add(loc.getWorld().getChunkAt(loc.add(16, 0, 0)));
-			neighboringChunks.add(loc.getWorld().getChunkAt(loc.add(16, 0, 0)));
-			neighboringChunks.add(loc.getWorld().getChunkAt(loc.add(0, 0, -16)));
-			neighboringChunks.add(loc.getWorld().getChunkAt(loc.add(0, 0, -16)));
-			return neighboringChunks;
-		}
-		return null;
-	}*/
 	
 	public String getNextUserID(UUID playerUUID) {
         int userID = 1;
