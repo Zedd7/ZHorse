@@ -83,7 +83,7 @@ public class ZAdmin extends Command {
 								horse.setCustomName(null);
 								horse.setCustomNameVisible(false);
 							}
-							if (zh.getUM().unRegisterHorse(targetUUID, Integer.toString(userID))) {
+							if (!zh.getUM().unRegisterHorse(targetUUID, Integer.toString(userID))) {
 								success = false;
 							}
 						}
