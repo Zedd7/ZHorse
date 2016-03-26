@@ -46,7 +46,7 @@ Messages:
   horseNameForbidden: "<yellow>You are not allowed to give this horse a name."
   horseNameMandatory: "<yellow>You must give a name to this horse."
   horseNameTooLong: "<yellow>The name can't exeed <gold><amount><yellow> characters."
-  horseNameTooShort: "<yellow>The name must be longer than <gold><amount><yellow> characters."
+  horseNameTooShort: "<yellow>The name must be at least <gold><amount><yellow> characters."
   horseNotClaimed: "<yellow>You must claim this horse first."
   horseNotFound: "<gold><horse><yellow> could not be found in this server."
   horseNotTamed: "<yellow>You must tame this horse first."

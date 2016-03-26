@@ -1,7 +1,5 @@
 package eu.reborn_minecraft.zhorse.managers;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Location;
@@ -17,7 +15,6 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 public class HorseManager {
 	
 	private ZHorse zh;
-	private Map<UUID, Horse> loadedHorses = new HashMap<UUID, Horse>();
 	
 	public HorseManager(ZHorse zh) {
 		this.zh = zh;
@@ -50,13 +47,13 @@ public class HorseManager {
 	}
 	
 	public Horse getLoadedHorse(UUID horseUUID) {
-		return loadedHorses.get(horseUUID);
+		return zh.getLoadedHorses().get(horseUUID);
 	}
 	
 	public void loadHorse(Horse horse) {
 		UUID horseUUID = horse.getUniqueId();
-		if (!loadedHorses.containsKey(horseUUID)) {
-			loadedHorses.put(horseUUID, horse);
+		if (!zh.getLoadedHorses().containsKey(horseUUID)) {
+			zh.getLoadedHorses().put(horseUUID, horse);
 		}
 	}
 	
@@ -65,8 +62,8 @@ public class HorseManager {
 	}
 	
 	public void unloadHorse(UUID horseUUID) {
-		if (loadedHorses.containsKey(horseUUID)) {
-			loadedHorses.remove(horseUUID);
+		if (zh.getLoadedHorses().containsKey(horseUUID)) {
+			zh.getLoadedHorses().remove(horseUUID);
 		}
 	}
 	

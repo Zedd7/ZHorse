@@ -63,27 +63,32 @@ Commands:
 
 Groups:
 
-  # The list of groups with which ZHorse tries to bind.
-  # The value of color is applied before the horse's name.
+  # The list of permission groups with which ZHorse tries to bind.
+  # The value of color is applied to the horse's name.
   # Following formats are available : "&4", <4>, <dark_red>, <DARKRED>.
+  # Set color-bypass to allow color tags in horse names.
   # The value of claims-limit defines how much horses a player can claim.
   # The permission is optional if the group is defined in a perms plugin.
   # Membership of the group is simulated for whoever has the permission.
   
   default:
     color: <f>
+    color-bypass: false
     claims-limit: 0
     permission: zh.group.default
   player:
     color: <dark_aqua>
+    color-bypass: false
     claims-limit: 5
     permission: zh.what.ever.you.want
   vip:
     color: <3><BOLD>
+    color-bypass: false
     claims-limit: 10
     permission: prefix.zh.is.not.required
   admin:
     color: "&c"
+    color-bypass: true
     claims-limit: -1
     permission: deleting.this.line.is.fine.too
 

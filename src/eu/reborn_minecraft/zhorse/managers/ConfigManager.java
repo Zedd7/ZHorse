@@ -171,6 +171,16 @@ public class ConfigManager {
 		return command != null && zh.getConfig().getBoolean(KeyWordEnum.commandsPrefix.getValue() + command + KeyWordEnum.autoAdminSuffix.getValue(), false);
 	}
 	
+	public boolean isColorBypassEnabled(UUID playerUUID) {
+		if (playerUUID != null) {
+			String groupName = getGroupName(playerUUID);
+			if (groupName != null) {
+				return zh.getConfig().getBoolean(KeyWordEnum.groupsPrefix.getValue() + groupName + KeyWordEnum.colorBypassSuffix.getValue(), false);
+			}
+		}
+		return false;
+	}
+	
 	public boolean isConsoleMuted() {
 		return zh.getConfig().getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.muteConsole.getValue(), false);
 	}
@@ -289,7 +299,7 @@ public class ConfigManager {
 			for (String group : cs.getKeys(false)) {
 				String color = zh.getConfig().getString("Groups." + group + ".color");
 		        if (color != null) {
-					if (!MessageManager.isColor(color)) {
+					if (!zh.getMM().isColor(color)) {
 		        		zh.getLogger().severe("The color \"" + color + "\" used for the group \"" + group + "\" is not a color !");
 		        		conform = false;
 		        	}

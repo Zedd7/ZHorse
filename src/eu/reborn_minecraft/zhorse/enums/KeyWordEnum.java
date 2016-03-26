@@ -13,6 +13,7 @@ public enum KeyWordEnum {
 	bannedNames("banned-names"),
 	claimsLimitSuffix(".claims-limit"),
 	claimOnTame("claim-on-tame"),
+	colorBypassSuffix(".color-bypass"),
 	colorSuffix(".color"),
 	commands("Commands"),
 	commandsPrefix("Commands."),

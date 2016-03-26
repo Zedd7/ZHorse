@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Horse;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -28,6 +30,7 @@ public class ZHorse extends JavaPlugin {
 	private static final String USERS_PATH = "users.yml";
 	private static final String LOCALE_PATH = "locale_%s.yml";
 	private static final String[] PROVIDED_LANGUAGES = {"EN", "FR", "NL"};
+	private Map<UUID, Horse> loadedHorses = new HashMap<UUID, Horse>();
 	private Permission vaultPerms;
 	private Economy vaultEcon;
 	private FileConfiguration config;
@@ -211,6 +214,10 @@ public class ZHorse extends JavaPlugin {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public Map<UUID, Horse> getLoadedHorses() {
+		return loadedHorses;
 	}
 	
 	public CommandManager getCmdM() {

@@ -1,6 +1,5 @@
 package eu.reborn_minecraft.zhorse.managers;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
@@ -339,7 +338,7 @@ public class MessageManager {
 		return space;
 	}
 	
-	private static String populateFlags(String rawMessage, int amount, String horse, String lang, int max, String perm, String player, String userID, String value) {
+	private String populateFlags(String rawMessage, int amount, String horse, String lang, int max, String perm, String player, String userID, String value) {
 		String message = rawMessage;
 		message = message.replace(KeyWordEnum.amountFlag.getValue(), Integer.toString(amount));
 		message = message.replace(KeyWordEnum.horseFlag.getValue(), horse);
@@ -349,27 +348,40 @@ public class MessageManager {
 		message = message.replace(KeyWordEnum.playerFlag.getValue(), player);		
 		message = message.replace(KeyWordEnum.userIDFlag.getValue(), userID);		
 		message = message.replace(KeyWordEnum.valueFlag.getValue(), value);		
-		message = populateColors(message);
+		message = applyColors(message);
 		return message;
 	}
 	
-	private static String populateColors(String rawMessage) {
+	public String applyColors(String rawMessage) {
 		String message = rawMessage;
 		for (ColorEnum color : ColorEnum.values()) {
 			for (String code : color.getCodes()) {
 				message = message.replaceAll("(?i)" + code, color.getColor().toString()); // (?i) makes replaceAll case insensitive
 			}
 		}
-		message += ChatColor.RESET.toString();
 		return message;
 	}
 	
-	public static String applyColors(String message, String colorCode) {
-		return populateColors(colorCode + message);
+	public String applyColors(String message, String colorCode) {
+		return applyColors(colorCode + message);
 	}
 	
-	public static boolean isColor(String colorCode) {
-		return !colorCode.equals(populateColors((colorCode)));
+	public String removeColors(String rawMessage) {
+		String message = rawMessage;
+		for (ColorEnum color : ColorEnum.values()) {
+			for (String code : color.getCodes()) {
+				message = message.replaceAll("(?i)" + code, ""); // (?i) makes replaceAll case insensitive
+			}
+		}
+		return message;
+	}
+	
+	public boolean isColor(String colorCode) {
+		return !colorCode.equals(applyColors((colorCode)));
+	}
+	
+	public boolean isColorized(String message) {
+		return !(message.isEmpty() || message.equals(applyColors((message))));
 	}
 
 }

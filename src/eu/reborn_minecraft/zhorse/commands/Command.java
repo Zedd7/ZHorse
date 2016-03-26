@@ -12,7 +12,6 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.CommandEnum;
 import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
-import eu.reborn_minecraft.zhorse.managers.MessageManager;
 
 public class Command {
 	protected ZHorse zh;
@@ -48,7 +47,7 @@ public class Command {
 		adminMode = false;
 		idMode = false;
 		targetMode = false;
-		for (int i=1; i<a.length; i++) { // d�part � 1 pour retirer la commande
+		for (int i=1; i<a.length; i++) { // start at 1 to skip the command
 			boolean valid = true;
 			if (a[i].equalsIgnoreCase("-a")) {
 				valid = !adminMode;
@@ -56,21 +55,21 @@ public class Command {
 			}
 			else if (a[i].equalsIgnoreCase("-i")) {
 				valid = (!idMode) && (i != a.length-1) && (!a[i+1].startsWith("-"));
-				if (valid) { // �vite une sortie de la cha�ne
+				if (valid) { // avoid to exit the loop
 					idMode = true;
 					userID = a[i+1];
-					i++; // saut de l'id
+					i++; // skip the id
 				}
 			}
 			else if (a[i].equalsIgnoreCase("-t")) {
 				valid = (!targetMode) && (i != a.length-1) && (!a[i+1].startsWith("-"));
-				if (valid) { // �vite une sortie de la cha�ne
+				if (valid) { // avoid to exit the loop
 					targetMode = true;
 					targetName = a[i+1];
 					i++; // saut du target
 				}
 			}
-			else { // ajout de l'argument si pas une balise
+			else { // add argument if not a flag
 				if (!argument.isEmpty()) {
 					argument += " ";
 				}
@@ -136,62 +135,77 @@ public class Command {
 	}
 	
 	protected void applyHorseName() {
-		String colorCode = zh.getCM().getGroupColorCode(targetUUID);
-		String customHorseName = MessageManager.applyColors(horseName, colorCode);
+		String customHorseName;
+		if (zh.getMM().isColorized(argument) && zh.getCM().isColorBypassEnabled(p.getUniqueId())) {
+			customHorseName = zh.getMM().applyColors(argument);
+		}
+		else {
+			String groupColorCode = zh.getCM().getGroupColorCode(targetUUID);
+			customHorseName = zh.getMM().applyColors(horseName, groupColorCode);
+		}
 		horse.setCustomName(customHorseName);
 	}
 	
 	protected boolean craftHorseName(boolean keepPreviousName) {
 		if (!argument.isEmpty()) {
-			if (zh.getCM().isHorseNameAllowed() || adminMode) {
-				horseName = argument;
-				int maximumLength = zh.getCM().getMaximumHorseNameLength();
-				int minimumLength = zh.getCM().getMinimumHorseNameLength();
-				int length = horseName.length();
-				if ((length >= minimumLength && (length <= maximumLength || maximumLength == -1)) || adminMode) {
-					if (!zh.getCM().isHorseNameBanned(horseName) || adminMode) {
-						return true;
-					}
-					else if (displayConsole) {
-						zh.getMM().sendMessageHorse(s, LocaleEnum.horseNameBanned, horseName);
-					}
-				}
-				else if (displayConsole) {
-					if (length < minimumLength) {
-						zh.getMM().sendMessageAmount(s, LocaleEnum.horseNameTooShort, minimumLength);
-					}
-					else if (length > maximumLength) {
-						zh.getMM().sendMessageAmount(s, LocaleEnum.horseNameTooLong, maximumLength);
-					}
-				}
-			}
-			else if (displayConsole) {
-				zh.getMM().sendMessage(s, LocaleEnum.horseNameForbidden);
-			}
+			return craftCustomHorseName();
 		}
 		else {
-			if (!zh.getCM().isHorseNameRequired() || adminMode) {
-				if (keepPreviousName && zh.getUM().isRegistered(horse)) {
-					horseName = zh.getUM().getHorseName(horse);
+			return craftPreviousHorseName(keepPreviousName);
+		}
+	}
+
+	private boolean craftCustomHorseName() {
+		if (zh.getCM().isHorseNameAllowed() || adminMode) {
+			horseName = zh.getMM().removeColors(argument);
+			int maximumLength = zh.getCM().getMaximumHorseNameLength();
+			int minimumLength = zh.getCM().getMinimumHorseNameLength();
+			int length = horseName.length();
+			if ((length >= minimumLength && (length <= maximumLength || maximumLength == -1)) || adminMode) {
+				if (!zh.getCM().isHorseNameBanned(horseName) || adminMode) {
 					return true;
 				}
-				else {
-					if (zh.getCM().isRandomHorseNameEnabled()) {
-						horseName = zh.getCM().getRandomHorseName();
-					}
-					else {
-						horseName = zh.getCM().getDefaultHorseName();
-					}
-					return true;
+				else if (displayConsole) {
+					zh.getMM().sendMessageHorse(s, LocaleEnum.horseNameBanned, horseName);
 				}
 			}
 			else if (displayConsole) {
-				zh.getMM().sendMessage(s, LocaleEnum.horseNameMandatory);
+				if (length < minimumLength) {
+					zh.getMM().sendMessageAmount(s, LocaleEnum.horseNameTooShort, minimumLength);
+				}
+				else if (length > maximumLength) {
+					zh.getMM().sendMessageAmount(s, LocaleEnum.horseNameTooLong, maximumLength);
+				}
 			}
+		}
+		else if (displayConsole) {
+			zh.getMM().sendMessage(s, LocaleEnum.horseNameForbidden);
 		}
 		return false;
 	}
 	
+	private boolean craftPreviousHorseName(boolean keepPreviousName) {
+		if (!zh.getCM().isHorseNameRequired() || adminMode) {
+			if (keepPreviousName && zh.getUM().isRegistered(horse)) {
+				horseName = zh.getUM().getHorseName(horse);
+				return true;
+			}
+			else {
+				if (zh.getCM().isRandomHorseNameEnabled()) {
+					horseName = zh.getCM().getRandomHorseName();
+				}
+				else {
+					horseName = zh.getCM().getDefaultHorseName();
+				}
+				return true;
+			}
+		}
+		else if (displayConsole) {
+			zh.getMM().sendMessage(s, LocaleEnum.horseNameMandatory);
+		}
+		return false;
+	}
+
 	protected void displayCommandList(List<CommandEnum> commandList, String header, boolean subCommands) {
 		if (displayConsole) {
 			zh.getMM().sendMessageValue(s, LocaleEnum.headerFormat, header, true);

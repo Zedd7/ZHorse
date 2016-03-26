@@ -48,7 +48,7 @@ Messages:
   horseNameForbidden: "<yellow>Je hebt geen toestemming om dit paard een naam te geven."
   horseNameMandatory: "<yellow>Je moet een naam geven aan dit paard."
   horseNameTooLong: "<yellow>De naam mag niet langer dan <gold><amount><yellow> karakters zijn."
-  horseNameTooShort: "<yellow>De naam moet langer zijn dan <gold><amount><yellow> karakters."
+  horseNameTooShort: "<yellow>De naam moet langer zijn dan <gold><amount><yellow> karakters.TODO"
   horseNotClaimed: "<yellow>Je moet dit paard eerst claimen."
   horseNotFound: "<gold><horse><yellow> is niet gevonden op deze server."
   horseNotTamed: "<yellow>Je moet dit paard eerst temmen."
