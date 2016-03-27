@@ -44,6 +44,7 @@ public class ZHorse extends JavaPlugin {
 	private MessageManager messageManager;
 	private UserManager userManager;
 	
+	@Override
 	public void onEnable() {
 		initDependencies();
 		initPermissions();
@@ -52,7 +53,13 @@ public class ZHorse extends JavaPlugin {
 		initManagers();
 		getCommand(this.getName().toLowerCase()).setExecutor(commandManager);
 		getServer().getPluginManager().registerEvents(new EventManager(this), this);
+		horseManager.loadHorses();
 	}
+	
+	@Override
+    public void onDisable() {
+        // TODO Insert logic to be performed when the plugin is disabled
+    }
 	
 	private void initDependencies() {
 		Plugin vault = getServer().getPluginManager().getPlugin("Vault");

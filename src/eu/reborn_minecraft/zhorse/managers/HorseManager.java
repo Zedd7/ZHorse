@@ -2,8 +2,10 @@ package eu.reborn_minecraft.zhorse.managers;
 
 import java.util.UUID;
 
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
@@ -11,6 +13,7 @@ import org.bukkit.entity.LeashHitch;
 import org.bukkit.inventory.ItemStack;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.utils.AsyncChunckLoad;
 
 public class HorseManager {
 	
@@ -57,12 +60,28 @@ public class HorseManager {
 		}
 	}
 	
+	public void loadHorses() {
+		for (World world : zh.getServer().getWorlds()) {
+			for (Chunk chunk : world.getLoadedChunks()) {
+				AsyncChunckLoad.asyncChunkLoadScheduler(zh, chunk);
+			}
+		}
+	}
+	
 	public void unloadHorse(Horse horse) {
 		unloadHorse(horse.getUniqueId());
 	}
 	
 	public void unloadHorse(UUID horseUUID) {
 		if (zh.getLoadedHorses().containsKey(horseUUID)) {
+			zh.getLoadedHorses().remove(horseUUID);
+		}
+	}
+	
+	public void unloadHorses() {
+		for (UUID horseUUID : zh.getLoadedHorses().keySet()) {
+			Horse horse = zh.getLoadedHorses().get(horseUUID);
+			zh.getUM().saveLocation(horse);
 			zh.getLoadedHorses().remove(horseUUID);
 		}
 	}

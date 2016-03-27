@@ -1,6 +1,7 @@
 package eu.reborn_minecraft.zhorse.utils;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Horse;
 import org.bukkit.event.world.ChunkUnloadEvent;
@@ -9,17 +10,12 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 
 public class AsyncChunckUnload {
 	
-	private ZHorse zh;
-	private ChunkUnloadEvent e;
-	
 	public AsyncChunckUnload(ZHorse zh, ChunkUnloadEvent e) {
-		this.zh = zh;
-		this.e = e;		
-		asyncChunkUnloadScheduler();
+		asyncChunkUnloadScheduler(zh, e.getChunk());
 	}
 	
-	private void asyncChunkUnloadScheduler(){
-		final Entity[] entityArray = e.getChunk().getEntities();
+	public static void asyncChunkUnloadScheduler(ZHorse zh, Chunk chunk){
+		final Entity[] entityArray = chunk.getEntities();
 		Bukkit.getScheduler().runTaskAsynchronously(zh, new Runnable() {			
 			
 			@Override
