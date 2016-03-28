@@ -53,13 +53,11 @@ public class ZHorse extends JavaPlugin {
 		initManagers();
 		getCommand(this.getName().toLowerCase()).setExecutor(commandManager);
 		getServer().getPluginManager().registerEvents(new EventManager(this), this);
-//		NMSHorse.registerClass();
 	}
 	
 	@Override
     public void onDisable() {
 		horseManager.unloadHorses();
-//		NMSHorse.unregisterClass();
     }
 	
 	private void initDependencies() {

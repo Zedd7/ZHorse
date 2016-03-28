@@ -6,6 +6,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
@@ -87,9 +88,8 @@ public class HorseManager {
 		}
 	}
 	
-	public Horse teleport(Horse sourceHorse, Location destination) {
+	public Horse teleport(Horse sourceHorse, Location destination) { // TODO handle WorldGuard
 		Horse copyHorse = (Horse) destination.getWorld().spawnEntity(destination, EntityType.HORSE);
-//		Horse copyHorse = NMSHorse.spawn(destination);
 		if (copyHorse != null) {
 			UUID playerUUID = zh.getUM().getPlayerUUID(sourceHorse);
 			String userID = zh.getUM().getUserID(playerUUID, sourceHorse);
@@ -146,6 +146,9 @@ public class HorseManager {
 		copyHorse.setTamed(sourceHorse.isTamed());
 		copyHorse.setTicksLived(sourceHorse.getTicksLived());
 		copyHorse.setVariant(sourceHorse.getVariant());
+		
+		double speed = sourceHorse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
+		copyHorse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(speed);
 	}
 	
 	private void copyInventory(Horse sourceHorse, Horse copyHorse) {
