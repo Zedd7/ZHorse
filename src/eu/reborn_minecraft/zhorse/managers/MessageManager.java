@@ -37,6 +37,10 @@ public class MessageManager {
 		return getMessageFull(s, index, amount, COST, HORSE, LANG, max, PERM, PLAYER, SPACER, USERID, VALUE, hidePrefix);
 	}
 	
+	public String getMessageAmountSpacer(CommandSender s, LocaleEnum index, int amount, int spacer, boolean hidePrefix) {
+		return getMessageFull(s, index, amount, COST, HORSE, LANG, MAX, PERM, PLAYER, spacer, USERID, VALUE, hidePrefix);
+	}
+	
 	public String getMessageAmountMaxSpacer(CommandSender s, LocaleEnum index, int amount, int max, int spacer, boolean hidePrefix) {
 		return getMessageFull(s, index, amount, COST, HORSE, LANG, max, PERM, PLAYER, spacer, USERID, VALUE, hidePrefix);
 	}
@@ -143,6 +147,14 @@ public class MessageManager {
 	
 	public void sendMessageAmountMax(CommandSender s, LocaleEnum index, int amount, int max, boolean hidePrefix) {
 		s.sendMessage(getMessageAmountMax(s, index, amount, max, hidePrefix));
+	}
+	
+	public void sendMessageAmountSpacer(CommandSender s, LocaleEnum index, int amount, int spacer) {
+		s.sendMessage(getMessageAmountSpacer(s, index, amount, spacer, false));
+	}
+	
+	public void sendMessageAmountSpacer(CommandSender s, LocaleEnum index, int amount, int spacer, boolean hidePrefix) {
+		s.sendMessage(getMessageAmountSpacer(s, index, amount, spacer, hidePrefix));
 	}
 	
 	public void sendMessageAmountMaxSpacer(CommandSender s, LocaleEnum index, int amount, int max, int spacer) {

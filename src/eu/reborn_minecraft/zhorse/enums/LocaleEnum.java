@@ -98,12 +98,14 @@ public enum LocaleEnum {
 	/* horse informations */
 	health("Horse informations.health"),
 	id("Horse informations.id"),
+	jump("Horse informations.jump"),
 	location("Horse informations.location"),
 	modeLocked("Horse informations.modeLocked"),
 	modeProtected("Horse informations.modeProtected"),
 	modeShared("Horse informations.modeShared"),
 	name("Horse informations.name"),
 	owner("Horse informations.owner"),
+	speed("Horse informations.speed"),
 	status("Horse informations.status"),
 	
 	/* command descriptions */

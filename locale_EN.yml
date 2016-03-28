@@ -102,13 +102,15 @@ Economy:
 Horse informations:
   health: "<yellow>Health : <gold><amount><yellow>/<gold><max>"
   id: "<yellow>ID : <gold><id>"
+  jump: "<yellow>Jump strength : <gold><amount>%"
   location: "<yellow>Location : <gold><value>"
   modeLocked: "[Lo]"
   modeProtected: "[Pr]"
   modeShared: "[Sh]"
   name: "<yellow>Name : <gold><horse>"
   owner: "<yellow>Owner : <gold><player>"
-  status: "<yellow>Status :<gold><value>"
+  speed: "<yellow>Speed : <gold><amount>%"
+  status: "<yellow>Status : <gold><value>"
 
 Command descriptions:
   admin: "<gold>/zh admin<gray>: <yellow>Manages ZHorse files."

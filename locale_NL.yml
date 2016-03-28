@@ -104,13 +104,15 @@ Economy:
 Horse informations:
   health: "<yellow>Levens : <gold><amount><yellow>/<gold><max>"
   id: "<yellow>ID : <gold><id>"
+  jump: "<yellow>Spring kracht : <gold><amount>%"
   location: "<yellow>Locatie : <gold><value>"
   modeLocked: "[Gelocked]"
   modeProtected: "[Beschermd]"
   modeShared: "[Gedeeld]"
   name: "<yellow>Naam : <gold><horse>"
   owner: "<yellow>Eigenaar : <gold><player>"
-  status: "<yellow>Status :<gold><value>"
+  speed: "<yellow>Snelheid : <gold><amount>%"
+  status: "<yellow>Status : <gold><value>"
 
 Command descriptions:
   admin: "<gold>/zh admin<gray>: <yellow>Beheert Zhorse bestanden."
