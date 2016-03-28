@@ -51,21 +51,16 @@ public class ZHere extends Command {
 //			if old_method:
 //				horse.teleport(destination);
 //				zh.getUM().saveLocation(p.getUniqueId(), horse, userID);
-//			else:	
-			if (!horse.isCarryingChest()) { // TODO handle chests
-				horse = zh.getHM().teleport(horse, destination);
-				if (horse != null) {
-					if (displayConsole) {
-						zh.getMM().sendMessageHorse(s, LocaleEnum.horseTeleported, horseName);
-					}
-					zh.getEM().payCommand(p, command);
+//			else:
+			horse = zh.getHM().teleport(horse, destination);
+			if (horse != null) {
+				if (displayConsole) {
+					zh.getMM().sendMessageHorse(s, LocaleEnum.horseTeleported, horseName);
 				}
-				else {
-					s.sendMessage(ChatColor.RED + "It seems that horses cannot spawn here, please report this to ZHorse's dev.");
-				}
+				zh.getEM().payCommand(p, command);
 			}
 			else {
-				s.sendMessage(ChatColor.RED + "The new teleportation method has not been adapted to Donkeys or Mules yet.");
+				s.sendMessage(ChatColor.RED + "It seems that horses cannot spawn here, please report this to ZHorse's dev.");
 			}
 		}
 	}

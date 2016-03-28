@@ -91,16 +91,17 @@ public class HorseManager {
 		if (copyHorse != null) {
 			UUID playerUUID = zh.getUM().getPlayerUUID(sourceHorse);
 			String userID = zh.getUM().getUserID(playerUUID, sourceHorse);
-			zh.getUM().updateHorse(playerUUID, userID, copyHorse);
 			copyAttributes(sourceHorse, copyHorse);
+			copyInventory(sourceHorse, copyHorse);
 			removeLeash(sourceHorse);
 			unloadHorse(sourceHorse);
 			loadHorse(copyHorse);
 			sourceHorse.remove();
+			zh.getUM().updateHorse(playerUUID, userID, copyHorse);
 		}
 		return copyHorse;
 	}
-	
+
 	private void removeLeash(Horse horse) {
 		if (horse.isLeashed()) {
 			Entity leashHolder = horse.getLeashHolder();
@@ -113,19 +114,17 @@ public class HorseManager {
 	}
 
 	private void copyAttributes(Horse sourceHorse, Horse copyHorse) {	
-		// Define maximum before value to keep it in valid range
+		// Define maximumof value before actual value to keep it in valid range
 		copyHorse.setMaxDomestication(sourceHorse.getMaxDomestication());
 		copyHorse.setMaxHealth(sourceHorse.getMaxHealth());
 		copyHorse.setMaximumAir(sourceHorse.getMaximumAir());
 		copyHorse.setMaximumNoDamageTicks(sourceHorse.getMaximumNoDamageTicks());
 		
 		copyHorse.addPotionEffects(sourceHorse.getActivePotionEffects());
-		copyHorse.getInventory().setContents(sourceHorse.getInventory().getContents());
 		copyHorse.setAge(sourceHorse.getAge());
 		copyHorse.setAgeLock(sourceHorse.getAgeLock());
 		copyHorse.setBreed(sourceHorse.canBreed());
 		copyHorse.setCanPickupItems(sourceHorse.getCanPickupItems());
-		copyHorse.setCarryingChest(sourceHorse.isCarryingChest());
 		copyHorse.setColor(sourceHorse.getColor());
 		copyHorse.setCustomName(sourceHorse.getCustomName());
 		copyHorse.setCustomNameVisible(sourceHorse.isCustomNameVisible());
@@ -145,6 +144,11 @@ public class HorseManager {
 		copyHorse.setTamed(sourceHorse.isTamed());
 		copyHorse.setTicksLived(sourceHorse.getTicksLived());
 		copyHorse.setVariant(sourceHorse.getVariant());
+	}
+	
+	private void copyInventory(Horse sourceHorse, Horse copyHorse) {
+		copyHorse.setCarryingChest(sourceHorse.isCarryingChest());
+		copyHorse.getInventory().setContents(sourceHorse.getInventory().getContents());
 	}
 
 }
