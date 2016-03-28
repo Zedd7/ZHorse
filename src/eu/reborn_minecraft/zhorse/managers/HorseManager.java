@@ -21,6 +21,7 @@ public class HorseManager {
 	
 	public HorseManager(ZHorse zh) {
 		this.zh = zh;
+		loadHorses();
 	}
 	
 	public Horse getFavoriteHorse(UUID playerUUID) {
@@ -88,6 +89,7 @@ public class HorseManager {
 	
 	public Horse teleport(Horse sourceHorse, Location destination) {
 		Horse copyHorse = (Horse) destination.getWorld().spawnEntity(destination, EntityType.HORSE);
+//		Horse copyHorse = NMSHorse.spawn(destination);
 		if (copyHorse != null) {
 			UUID playerUUID = zh.getUM().getPlayerUUID(sourceHorse);
 			String userID = zh.getUM().getUserID(playerUUID, sourceHorse);

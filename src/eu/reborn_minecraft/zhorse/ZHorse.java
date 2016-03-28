@@ -53,12 +53,13 @@ public class ZHorse extends JavaPlugin {
 		initManagers();
 		getCommand(this.getName().toLowerCase()).setExecutor(commandManager);
 		getServer().getPluginManager().registerEvents(new EventManager(this), this);
-		horseManager.loadHorses();
+//		NMSHorse.registerClass();
 	}
 	
 	@Override
     public void onDisable() {
-        // TODO Insert logic to be performed when the plugin is disabled
+		horseManager.unloadHorses();
+//		NMSHorse.unregisterClass();
     }
 	
 	private void initDependencies() {
