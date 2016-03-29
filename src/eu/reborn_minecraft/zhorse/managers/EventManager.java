@@ -3,7 +3,9 @@ package eu.reborn_minecraft.zhorse.managers;
 import java.util.UUID;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Horse;
+import org.bukkit.entity.LeashHitch;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -16,6 +18,9 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.entity.EntityTameEvent;
 import org.bukkit.event.entity.PlayerLeashEntityEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.hanging.HangingBreakEvent;
+import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -66,10 +71,10 @@ public class EventManager implements Listener {
 					DamageCause damageCause = e.getCause();
 					
 					/* if the damage is not already handled by onEntityDamageByEntity */
-					if (!(damageCause == DamageCause.ENTITY_ATTACK
-							|| damageCause == DamageCause.ENTITY_EXPLOSION
-							|| damageCause == DamageCause.PROJECTILE
-							|| damageCause == DamageCause.MAGIC)) {
+					if (!(damageCause.equals(DamageCause.ENTITY_ATTACK)
+							|| damageCause.equals(DamageCause.ENTITY_EXPLOSION)
+							|| damageCause.equals(DamageCause.PROJECTILE)
+							|| damageCause.equals(DamageCause.MAGIC))) {
 						if (zh.getCM().isProtectionEnabled(damageCause.name())) {
 							e.setCancelled(true);
 						}
@@ -87,11 +92,11 @@ public class EventManager implements Listener {
 				if (zh.getUM().isProtected(horse)) {
 					if (e.getDamager() instanceof Player) {
 						Player p = (Player) e.getDamager();
-						e.setCancelled(!handlePlayerAttackHorse(p, horse));
+						e.setCancelled(!isPlayerAllowedToAttack(p, horse));
 					}
 					else if ((e.getDamager() instanceof Projectile) && ((Projectile) e.getDamager()).getShooter() instanceof Player) {
 						Player p = (Player)((Projectile) e.getDamager()).getShooter();
-						e.setCancelled(!handlePlayerAttackHorse(p, horse));
+						e.setCancelled(!isPlayerAllowedToAttack(p, horse));
 					}
 					else {
 						e.setCancelled(zh.getCM().isProtectionEnabled(e.getCause().name()));
@@ -148,32 +153,54 @@ public class EventManager implements Listener {
 			}
 		}
 	}
-
-	/*
+	
 	@EventHandler
-	public void onHangingBreak(HangingBreakEvent e) { // e.getEntity est une instance de LeashHitch
-		if (e.getEntity().getLeashedEntity() instanceof Horse) { // en attente d'impl�mentation pour getLeashedEntity()
-			Horse horse = (Horse) e.getEntity().getLeashedEntity();
-			if (zh.getUM().isRegistered(horse)) {
-				if (zh.getUM().isLocked(horse)) {
-					e.setCancelled(true);
+	public void onHangingBreak(HangingBreakEvent e) {
+		RemoveCause removeCause = e.getCause();
+		
+		/* if the remove cause is not already handled by onHangingBreakByEntity */
+		if (!removeCause.equals(RemoveCause.ENTITY)) {
+			if (e.getEntity() instanceof LeashHitch) {
+				LeashHitch leashHitch = (LeashHitch) e.getEntity();
+				for (Horse horse : zh.getLoadedHorses().values()) {
+					if (horse.isLeashed()) {
+						Entity leashHolder = horse.getLeashHolder();
+						if (leashHitch.equals(leashHolder)) {
+							e.setCancelled(zh.getUM().isLocked(horse));
+							break;
+						}
+					}
 				}
 			}
 		}
 	}
 
 	@EventHandler
-	public void onHangingBreakByEntity(HangingBreakByEntityEvent e) { // e.getEntity est une instance de LeashHitch
-		if (e.getRemover() instanceof Player && e.getEntity().getLeashedEntity() instanceof Horse) { // en attente d'impl�mentation pour getLeashedEntity()
-			e.setCancelled(handlePlayerInteractHorse((Player) e.getRemover(), (Horse) e.getEntity(), false));
+	public void onHangingBreakByEntity(HangingBreakByEntityEvent e) {
+		if (e.getEntity() instanceof LeashHitch) {
+			LeashHitch leashHitch = (LeashHitch) e.getEntity();
+			for (Horse horse : zh.getLoadedHorses().values()) {
+				if (horse.isLeashed()) {
+					Entity leashHolder = horse.getLeashHolder();
+					if (leashHitch.equals(leashHolder)) {
+						if (e.getRemover() instanceof Player) {
+							e.setCancelled(!isPlayerAllowedToInteract((Player) e.getRemover(), horse, false));
+							break;
+						}
+						else {
+							e.setCancelled(zh.getUM().isLocked(horse));
+						}
+					}
+				}
+			}
 		}
 	}
-	*/
+	
 	
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent e) {
 		if (e.getWhoClicked() instanceof Player && e.getInventory().getHolder() instanceof Horse) {
-			e.setCancelled(!handlePlayerInteractHorse((Player) e.getWhoClicked(), (Horse) e.getInventory().getHolder(), true));
+			e.setCancelled(!isPlayerAllowedToInteract((Player) e.getWhoClicked(), (Horse) e.getInventory().getHolder(), true));
 		}
 	}
 	
@@ -185,7 +212,7 @@ public class EventManager implements Listener {
 	@EventHandler
 	public void onPlayerLeashEntity(PlayerLeashEntityEvent e) {
 		if (e.getLeashHolder() instanceof Player && e.getEntity() instanceof Horse) {
-			e.setCancelled(!handlePlayerInteractHorse((Player) e.getPlayer(), (Horse) e.getEntity(), false));
+			e.setCancelled(!isPlayerAllowedToInteract((Player) e.getPlayer(), (Horse) e.getEntity(), false));
 		}
 	}
 	
@@ -202,18 +229,18 @@ public class EventManager implements Listener {
 	@EventHandler
 	public void onPlayerUnleashEntity(PlayerUnleashEntityEvent e) {
 		if (e.getEntity() instanceof Horse) {
-			e.setCancelled(!handlePlayerInteractHorse(e.getPlayer(), (Horse) e.getEntity(), false));
+			e.setCancelled(!isPlayerAllowedToInteract(e.getPlayer(), (Horse) e.getEntity(), false));
 		}
 	}
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onVehicleEnter(VehicleEnterEvent e) {
 		if (e.getEntered() instanceof Player && e.getVehicle() instanceof Horse) {
-			e.setCancelled(!handlePlayerInteractHorse((Player) e.getEntered(), (Horse) e.getVehicle(), false));
+			e.setCancelled(!isPlayerAllowedToInteract((Player) e.getEntered(), (Horse) e.getVehicle(), false));
 		}
 	}
 	
-	private boolean handlePlayerAttackHorse(Player p, Horse horse) {
+	private boolean isPlayerAllowedToAttack(Player p, Horse horse) {
 		boolean allowed = true;
 		if (zh.getCM().isProtectionEnabled(PLAYER_ATTACK)) {
 			if (!((zh.getUM().isClaimedBy(p.getUniqueId(), horse) && !zh.getCM().isProtectionEnabled(OWNER_ATTACK)) ||
@@ -228,7 +255,7 @@ public class EventManager implements Listener {
 		return allowed;
 	}
 	
-	private boolean handlePlayerInteractHorse(Player p, Horse horse, boolean mustBeShared) {
+	private boolean isPlayerAllowedToInteract(Player p, Horse horse, boolean mustBeShared) {
 		boolean allowed = true;
 		if (zh.getUM().isRegistered(horse)) {
 			if (!(zh.getUM().isClaimedBy(p.getUniqueId(), horse) || zh.getPerms().has(p, KeyWordEnum.zhPrefix.getValue() + CommandEnum.lock.getName() + KeyWordEnum.adminSuffix.getValue()))) {
