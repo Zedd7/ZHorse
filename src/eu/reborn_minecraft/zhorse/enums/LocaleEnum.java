@@ -13,6 +13,7 @@ public enum LocaleEnum {
 	horseListFormatFavorite("Headers.horseListFormatFavorite"),
 	horseListHeader("Headers.horseListHeader"),
 	horseListOtherHeader("Headers.horseListOtherHeader"),
+	pluginHeader("Headers.pluginHeader"),
 	pluginPrefix("Headers.pluginPrefix"),
 	remainingClaimsFormat("Headers.remainingClaimsFormat"),
 	settingsCommandListHeader("Headers.settingsCommandListHeader"),
