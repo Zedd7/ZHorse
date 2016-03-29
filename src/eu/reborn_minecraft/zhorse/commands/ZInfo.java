@@ -12,6 +12,9 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
 public class ZInfo extends Command {
+	
+	private static final double MAX_JUMP_STRENGTH = 1.2;
+	private static final double MAX_SPEED = 1.0;
 
 	public ZInfo(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
@@ -94,13 +97,15 @@ public class ZInfo extends Command {
 	}
 	
 	private void displayJumpStrength() {
-		int jumpStrength = (int) (horse.getJumpStrength() * 100);
-		zh.getMM().sendMessageAmountSpacer(s, LocaleEnum.jump, jumpStrength, 1, true);
+		double jumpStrength = horse.getJumpStrength();
+		int jumpRatio = (int) ((jumpStrength / MAX_JUMP_STRENGTH) * 100);
+		zh.getMM().sendMessageAmountSpacer(s, LocaleEnum.jump, jumpRatio, 1, true);
 	}
 	
 	private void displaySpeed() {
-		int speed = (int) (horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue() * 100);
-		zh.getMM().sendMessageAmountSpacer(s, LocaleEnum.speed, speed, 1, true);
+		double speed = horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
+		int speedRatio = (int) ((speed / MAX_SPEED) * 100);
+		zh.getMM().sendMessageAmountSpacer(s, LocaleEnum.speed, speedRatio, 1, true);
 	}
 	
 	private void displayLocation(UUID ownerUUID, String userID) {

@@ -369,7 +369,7 @@ public class Command {
 		return false;
 	}
 	
-	protected boolean isHorseMounted() {
+	protected boolean isHorseMounted() { // TODO ajouter config option : block tp if mounted
 		if (adminMode) {
 			horse.eject();
 		}
@@ -381,7 +381,7 @@ public class Command {
 			String passengerName = ((Player)passenger).getName();
 			zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.horseMountedBy, horseName, passengerName);
 		}
-		return false;
+		return true;
 	}
 	
 	protected boolean isHorseReachable() {
