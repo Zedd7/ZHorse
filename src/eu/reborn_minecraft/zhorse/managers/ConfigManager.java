@@ -225,6 +225,14 @@ public class ConfigManager {
 		return world != null && zh.getConfig().getBoolean(KeyWordEnum.worldsPrefix.getValue() + world.getName() + KeyWordEnum.enabledSuffix.getValue(), false);
 	}
 	
+	public boolean shouldBlockLeashedTeleport() {
+		return zh.getConfig().getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.blockLeashedTeleport.getValue(), false);
+	}
+	
+	public boolean shouldBlockMountedTeleport() {
+		return zh.getConfig().getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.blockMountedTeleport.getValue(), false);
+	}
+	
 	public boolean shouldClaimOnTame() {
 		return zh.getConfig().getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.claimOnTame.getValue(), false);
 	}

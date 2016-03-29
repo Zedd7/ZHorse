@@ -359,6 +359,27 @@ public class Command {
 		return false;
 	}
 	
+	protected boolean isHorseLeashed() {
+		boolean blockLeashedTeleport = zh.getCM().shouldBlockLeashedTeleport();
+		Entity leashHolder = horse.getLeashHolder();
+		if (leashHolder == null) {
+			return false;
+		}
+		else if (!blockLeashedTeleport || adminMode) {
+			return false;
+		}
+		else if (displayConsole) {
+			if (leashHolder instanceof Player) {
+				String leashHolderName = ((Player) leashHolder).getName();
+				zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.horseLeashedBy, horseName, leashHolderName);
+			}
+			else {
+				zh.getMM().sendMessageHorse(s, LocaleEnum.horseLeashed, horseName);
+			}
+		}
+		return true;
+	}
+	
 	protected boolean isHorseLoaded() {
 		if (horse != null) {
 			return true;
@@ -369,16 +390,18 @@ public class Command {
 		return false;
 	}
 	
-	protected boolean isHorseMounted() { // TODO ajouter config option : block tp if mounted
-		if (adminMode) {
-			horse.eject();
-		}
+	protected boolean isHorseMounted() {
+		boolean blockMountedTeleport = zh.getCM().shouldBlockMountedTeleport();
 		Entity passenger = horse.getPassenger();
 		if (passenger == null) {
 			return false;
 		}
+		else if (!blockMountedTeleport || adminMode) {
+			horse.eject();
+			return false;
+		}		
 		else if (displayConsole) {
-			String passengerName = ((Player)passenger).getName();
+			String passengerName = ((Player) passenger).getName();
 			zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.horseMountedBy, horseName, passengerName);
 		}
 		return true;

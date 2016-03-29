@@ -34,6 +34,8 @@ public enum LocaleEnum {
 	horseGiven("Messages.horseGiven"),
 	horseHealed("Messages.horseHealed"),
 	horseIsProtected("Messages.horseIsProtected"),
+	horseLeashed("Messages.horseLeashed"),
+	horseLeashedBy("Messages.horseLeashedBy"),
 	horseLocked("Messages.horseLocked"),
 	horseManuallyTamed("Messages.horseManuallyTamed"),
 	horseMounted("Messages.horseMounted"),

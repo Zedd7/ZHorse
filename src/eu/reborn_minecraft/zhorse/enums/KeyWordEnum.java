@@ -11,6 +11,8 @@ public enum KeyWordEnum {
 	available(".available"),
 	autoAdminSuffix(".auto-admin"),
 	bannedNames("banned-names"),
+	blockLeashedTeleport("block-leashed-teleport"),
+	blockMountedTeleport("block-mounted-teleport"),
 	claimsLimitSuffix(".claims-limit"),
 	claimOnTame("claim-on-tame"),
 	colorBypassSuffix(".color-bypass"),

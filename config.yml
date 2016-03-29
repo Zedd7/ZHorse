@@ -216,6 +216,12 @@ Settings:
 
   # Set to true to make player execute /zh share on horse claim.
   share-on-claim: false
+  
+  # Set to true to block /zh here on leashed horses.
+  block-leashed-teleport: false
+  
+  # Set to true to block /zh here on mounted horses.
+  block-mounted-teleport: false
 
 Worlds:
 

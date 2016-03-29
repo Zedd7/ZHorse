@@ -38,6 +38,8 @@ Messages:
   horseGiven: "<yellow>You gave <gold><horse><yellow> to <gold><player><yellow>."
   horseHealed: "<gold><horse><yellow> has been fully healed."
   horseIsProtected: "<gold><horse><yellow> is protected against attacks."
+  horseLeashed: "<gold><horse><yellow> is leashed to a fence."
+  horseLeashed: "<gold><horse><yellow> is leashed by <gold><player><yellow>."
   horseLocked: "<gold><horse><yellow> is now protected against thieves."
   horseManuallyTamed: "<yellow>Congratulation ! You can now use <gold>/zh claim (name)<yellow> if you want."
   horseMounted: "<yellow>You are already mounting <gold><horse><yellow>."

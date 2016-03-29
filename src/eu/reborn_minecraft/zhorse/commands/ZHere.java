@@ -42,7 +42,7 @@ public class ZHere extends Command {
 	}
 	
 	private void execute() {
-		if (isOwner() && isHorseReachable() && isNotOnHorse() && !isHorseMounted() && zh.getEM().canAffordCommand(p, command)) {
+		if (isOwner() && isHorseReachable() && isNotOnHorse() && !isHorseMounted() && !isHorseLeashed() && zh.getEM().canAffordCommand(p, command)) {
 			Location destination = p.getLocation();
 			if (p.isFlying()) {
 				Block block = destination.getWorld().getHighestBlockAt(destination);
