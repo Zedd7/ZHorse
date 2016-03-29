@@ -59,15 +59,17 @@ public class ZLock extends Command {
 						zh.getMM().sendMessageHorse(s, LocaleEnum.horseUnShared, horseName);
 					}
 				}
-				zh.getUM().lock(targetUUID, horse);
 				Entity passenger = horse.getPassenger();
 				if (passenger != null && passenger instanceof Player) {
 					adminMode = false;
-					if (!isOwner(passenger.getUniqueId(), true)) {
+					boolean passengerIsOwner = isOwner(passenger.getUniqueId(), true);
+					boolean passengerHasPerm = hasPermissionAdmin(passenger.getUniqueId(), command, true);
+					if (!(passengerIsOwner || passengerHasPerm)) {
 						horse.eject();
 						zh.getMM().sendMessagePlayer((CommandSender)passenger, LocaleEnum.horseBelongsTo, zh.getUM().getPlayerName(horse));
 					}
 				}
+				zh.getUM().lock(targetUUID, horse);
 				if (displayConsole) {
 					zh.getMM().sendMessageHorse(s, LocaleEnum.horseLocked, horseName);
 				}

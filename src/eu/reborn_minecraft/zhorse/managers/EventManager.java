@@ -63,6 +63,8 @@ public class EventManager implements Listener {
 			if (zh.getUM().isRegistered(horse)) {
 				if (zh.getUM().isProtected(horse)) {
 					DamageCause damageCause = e.getCause();
+					
+					/* if the damage is not already handled by onEntityDamageByEntity */
 					if (!(damageCause == DamageCause.ENTITY_ATTACK
 							|| damageCause == DamageCause.ENTITY_EXPLOSION
 							|| damageCause == DamageCause.PROJECTILE

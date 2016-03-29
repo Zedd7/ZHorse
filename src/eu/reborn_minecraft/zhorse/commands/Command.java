@@ -361,14 +361,14 @@ public class Command {
 	
 	protected boolean isHorseLeashed() {
 		boolean blockLeashedTeleport = zh.getCM().shouldBlockLeashedTeleport();
-		Entity leashHolder = horse.getLeashHolder();
-		if (leashHolder == null) {
+		if (!horse.isLeashed()) {
 			return false;
 		}
 		else if (!blockLeashedTeleport || adminMode) {
 			return false;
 		}
 		else if (displayConsole) {
+			Entity leashHolder = horse.getLeashHolder();
 			if (leashHolder instanceof Player) {
 				String leashHolderName = ((Player) leashHolder).getName();
 				zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.horseLeashedBy, horseName, leashHolderName);
@@ -445,12 +445,12 @@ public class Command {
 		return isOwner(p.getUniqueId(), false, false);
 	}
 	
-	protected boolean isOwner(UUID playerUUID, boolean hideConsole) {
-		return isOwner(p.getUniqueId(), false, hideConsole);
-	}
-	
 	protected boolean isOwner(boolean ignoreModes, boolean hideConsole) {
 		return isOwner(p.getUniqueId(), ignoreModes, hideConsole);
+	}
+	
+	protected boolean isOwner(UUID playerUUID, boolean hideConsole) {
+		return isOwner(playerUUID, false, hideConsole);
 	}
 	
 	protected boolean isOwner(UUID playerUUID, boolean ignoreModes, boolean hideConsole) {
