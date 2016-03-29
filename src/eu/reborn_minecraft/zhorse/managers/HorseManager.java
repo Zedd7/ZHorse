@@ -1,5 +1,7 @@
 package eu.reborn_minecraft.zhorse.managers;
 
+import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Chunk;
@@ -81,10 +83,11 @@ public class HorseManager {
 	}
 	
 	public void unloadHorses() {
-		for (UUID horseUUID : zh.getLoadedHorses().keySet()) {
-			Horse horse = zh.getLoadedHorses().get(horseUUID);
+		Iterator<Entry<UUID, Horse>> loadedHorsesItr = zh.getLoadedHorses().entrySet().iterator();
+		while (loadedHorsesItr.hasNext()) {
+			Horse horse = loadedHorsesItr.next().getValue();
 			zh.getUM().saveLocation(horse);
-			zh.getLoadedHorses().remove(horseUUID);
+			loadedHorsesItr.remove();
 		}
 	}
 	
