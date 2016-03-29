@@ -18,6 +18,7 @@ import org.bukkit.event.entity.EntityTameEvent;
 import org.bukkit.event.entity.PlayerLeashEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerUnleashEntityEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
@@ -185,6 +186,16 @@ public class EventManager implements Listener {
 	public void onPlayerLeashEntity(PlayerLeashEntityEvent e) {
 		if (e.getLeashHolder() instanceof Player && e.getEntity() instanceof Horse) {
 			e.setCancelled(!handlePlayerInteractHorse((Player) e.getPlayer(), (Horse) e.getEntity(), false));
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerQuit(PlayerQuitEvent e) {
+		if (e.getPlayer().getVehicle() instanceof Horse) {
+			Horse horse = (Horse) e.getPlayer().getVehicle();
+			if (zh.getUM().isRegistered(horse)) {
+				horse.eject();
+			}
 		}
 	}
 	

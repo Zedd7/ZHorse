@@ -91,7 +91,7 @@ public class HorseManager {
 		}
 	}
 	
-	public Horse teleport(Horse sourceHorse, Location destination) { // TODO handle WorldGuard
+	public Horse teleport(Horse sourceHorse, Location destination) {
 		Horse copyHorse = (Horse) destination.getWorld().spawnEntity(destination, EntityType.HORSE);
 		if (copyHorse != null) {
 			UUID playerUUID = zh.getUM().getPlayerUUID(sourceHorse);
