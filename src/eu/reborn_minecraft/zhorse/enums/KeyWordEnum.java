@@ -42,6 +42,7 @@ public enum KeyWordEnum {
 	randomNames("random-names"),
 	settingsPrefix("Settings."),
 	shareOnClaim("share-on-claim"),
+	useOldTeleportMethod("use-old-teleport-method"),
 	worldsPrefix("Worlds."),
 	
 	/* locale.yml keywords */

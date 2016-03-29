@@ -3,6 +3,7 @@ package eu.reborn_minecraft.zhorse.managers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.OfflinePlayer;
@@ -249,6 +250,10 @@ public class ConfigManager {
 		return zh.getConfig().getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.shareOnClaim.getValue(), false);
 	}
 	
+	public boolean shouldUseOldTeleportMethod() {
+		return zh.getConfig().getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.useOldTeleportMethod.getValue(), false);
+	}
+	
 	public boolean checkConformity() {
 		if (!(checkCommandsConformity()
 				&& checkGroupsConformity()
@@ -412,15 +417,16 @@ public class ConfigManager {
 		boolean conform = true;
 		ConfigurationSection cs = zh.getConfig().getConfigurationSection("Protections");
 		if (cs != null) {
+			Set<String> registeredDamageCauseList = cs.getKeys(false);
+			List<String> existingDamageCauseList = new ArrayList<String>();
 			DamageCause[] damageCauseEnum = DamageCause.values();
-			List<String> damageCauseList = new ArrayList<String>();
-			damageCauseList.add("OWNER_ATTACK");
-			damageCauseList.add("PLAYER_ATTACK");
-			for (DamageCause damageCause : damageCauseEnum) {
-				damageCauseList.add(damageCause.name());
+			for (DamageCause existingDamageCause : damageCauseEnum) {
+				existingDamageCauseList.add(existingDamageCause.name());
 			}
-			for (String damageCause : cs.getKeys(false)) {
-				if (damageCauseList.contains(damageCause)) {
+			existingDamageCauseList.add("OWNER_ATTACK");
+			existingDamageCauseList.add("PLAYER_ATTACK");
+			for (String damageCause : existingDamageCauseList) {
+				if (registeredDamageCauseList.contains(damageCause)) {
 					if (!zh.getConfig().isSet("Protections." + damageCause + ".enabled")) {
 						zh.getLogger().severe("The \"Protections." + damageCause + ".enabled\" option is missing from the config !");
 			        	conform = false;
@@ -441,8 +447,12 @@ public class ConfigManager {
 	
 	private boolean checkSettingsConformity() {
 		boolean conform = true;
-		if (!zh.getConfig().isSet("Settings.mute-console")) {
-			zh.getLogger().severe("The \"Settings.mute-console\" option is missing from the config !");
+		if (!zh.getConfig().isSet("Settings.block-leashed-teleport")) {
+			zh.getLogger().severe("The \"Settings.block-leashed-teleport\" option is missing from the config !");
+			conform = false;
+		}
+		if (!zh.getConfig().isSet("Settings.block-mounted-teleport")) {
+			zh.getLogger().severe("The \"Settings.block-mounted-teleport\" option is missing from the config !");
 			conform = false;
 		}
 		if (!zh.getConfig().isSet("Settings.claim-on-tame")) {
@@ -459,6 +469,14 @@ public class ConfigManager {
 		}
 		if (!zh.getConfig().isSet("Settings.share-on-claim")) {
 			zh.getLogger().severe("The \"Settings.share-on-claim\" option is missing from the config !");
+			conform = false;
+		}
+		if (!zh.getConfig().isSet("Settings.mute-console")) {
+			zh.getLogger().severe("The \"Settings.mute-console\" option is missing from the config !");
+			conform = false;
+		}
+		if (!zh.getConfig().isSet("Settings.use-old-teleport-method")) {
+			zh.getLogger().severe("The \"Settings.use-old-teleport-method\" option is missing from the config !");
 			conform = false;
 		}
 		boolean lockOnClaim = zh.getConfig().getBoolean("Settings.lock-on-claim");
