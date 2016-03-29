@@ -419,21 +419,20 @@ public class ConfigManager {
 		if (cs != null) {
 			Set<String> registeredDamageCauseList = cs.getKeys(false);
 			List<String> existingDamageCauseList = new ArrayList<String>();
-			DamageCause[] damageCauseEnum = DamageCause.values();
-			for (DamageCause existingDamageCause : damageCauseEnum) {
+			for (DamageCause existingDamageCause : DamageCause.values()) {
 				existingDamageCauseList.add(existingDamageCause.name());
 			}
 			existingDamageCauseList.add("OWNER_ATTACK");
 			existingDamageCauseList.add("PLAYER_ATTACK");
-			for (String damageCause : existingDamageCauseList) {
-				if (registeredDamageCauseList.contains(damageCause)) {
-					if (!zh.getConfig().isSet("Protections." + damageCause + ".enabled")) {
-						zh.getLogger().severe("The \"Protections." + damageCause + ".enabled\" option is missing from the config !");
+			for (String registeredDamageCause : registeredDamageCauseList) {
+				if (existingDamageCauseList.contains(registeredDamageCause)) {
+					if (!zh.getConfig().isSet("Protections." + registeredDamageCause + ".enabled")) {
+						zh.getLogger().severe("The \"Protections." + registeredDamageCause + ".enabled\" option is missing from the config !");
 			        	conform = false;
 			        }
 				}
 				else {
-					zh.getLogger().severe("The damage cause \"Protections." + damageCause + "\" is not a valid damage cause !");
+					zh.getLogger().severe("The damage cause \"Protections." + registeredDamageCause + "\" is not a valid damage cause !");
 					conform = false;
 				}
 			}

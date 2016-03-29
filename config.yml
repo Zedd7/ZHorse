@@ -161,6 +161,8 @@ Protections:
     enabled: false
   CUSTOM:
     enabled: false
+  DRAGON_BREATH:
+    enabled: false
   DROWNING:
     enabled: false
   ENTITY_ATTACK:
@@ -174,6 +176,8 @@ Protections:
   FIRE:
     enabled: false
   FIRE_TICK:
+    enabled: false
+  FLY_INTO_WALL:
     enabled: false
   LAVA:
     enabled: false
