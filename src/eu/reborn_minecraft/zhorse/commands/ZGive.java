@@ -22,7 +22,7 @@ public class ZGive extends Command {
 					if (!idMode) {
 						boolean ownsHorse = ownsHorse(p.getUniqueId(), true);
 						if (isOnHorse(ownsHorse)) {
-							horse = (Horse)p.getVehicle();
+							horse = (Horse) p.getVehicle();
 							if (isRegistered(horse)) {
 								execute();
 							}

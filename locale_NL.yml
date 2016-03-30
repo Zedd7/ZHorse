@@ -59,6 +59,7 @@ Messages:
   horseReceived: "<gold><player><yellow> heeft je <gold><horse><yellow> gegeven!"
   horseRenamed: "<yellow>Dit paard heeft de naam <gold><horse><yellow> gekregen."
   horseShared: "<gold><horse><yellow> kan nu door iedereen gebruikt worden."
+  horseSpawned: "<yellow>A new horse has been successfully summoned."
   horseTamed: "<yellow>Je heb dit paard succesvol getemt."
   horseTeleported: "<gold><horse> <yellow>is naar jouw geteleporteert."
   horseUnLocked: "<gold><horse><yellow> is niet langer beveiligd tegen dieven."
@@ -134,6 +135,7 @@ Command descriptions:
   reload: "<gold>/zh reload<gray>: <yellow>Herlaad ZHorse's bestanden."
   settings: "<gold>/zh settings<gray>: <yellow>Persoonlijke bestanden aanpassen."
   share: "<gold>/zh share<gray>: <yellow>Deelt het paard met andere spelers."
+  spawn: "<gold>/zh spawn<gray>: <yellow>Spawn a custom horse at your location."
   tame: "<gold>/zh tame<gray>: <yellow>Temt je paard."
   tp: "<gold>/zh tp<gray>: <yellow>Teleporteert je naar je paard."
 
@@ -161,12 +163,13 @@ Command usages:
   reload: "<gold>/zh reload<yellow> (-a)"
   settings: "<gold>/zh settings<yellow> option value (-t spelerNaam) (-a)"
   share: "<gold>/zh share<yellow> (-i paardID) (-t spelerNaam) (-a)"
+  spawn: "<gold>/zh spawn<yellow> ???"
   tame: "<gold>/zh tame<yellow> (-i paardID) (-t spelerNaam) (-a)"
   tp: "<gold>/zh tp<yellow> (-i paardID) (-t spelerNaam) (-a)"
   
 Admin command usages:
-  clear: "<gold>/zh admin<yellow> clear (-t) spelerNaam (-i horseID)"
+  clear: "<gold>/zh admin clear<yellow> (-t) spelerNaam (-i horseID)"
 
 Settings command usages:
-  favorite: "<gold>/zh settings<yellow> favorite (-i) horseID"
-  language: "<gold>/zh settings<yellow> language value"
+  favorite: "<gold>/zh settings favorite<yellow> (-i) horseID"
+  language: "<gold>/zh settings language<yellow> value"

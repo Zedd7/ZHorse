@@ -40,7 +40,6 @@ import eu.reborn_minecraft.zhorse.utils.AsyncPlayerJoin;
 
 public class EventManager implements Listener {
 	
-	private static final String CLAIM = "claim";
 	private static final String OWNER_ATTACK = "OWNER_ATTACK";
 	private static final String PLAYER_ATTACK = "PLAYER_ATTACK";
 	
@@ -130,7 +129,7 @@ public class EventManager implements Listener {
 		if (e.getOwner() instanceof Player && e.getEntity() instanceof Horse) {
 			if (zh.getCM().shouldClaimOnTame()) {
 				((Horse) e.getEntity()).setTamed(true);
-				String[] a = {CLAIM};
+				String[] a = {CommandEnum.claim.getName()};
 				new ZClaim(zh, (CommandSender) e.getOwner(), a);
 			}
 			else if (zh.getPerms().has((Player) e.getOwner(), KeyWordEnum.zhPrefix.getValue() + CommandEnum.claim.getName())) {

@@ -4,7 +4,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Horse;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
-import eu.reborn_minecraft.zhorse.enums.CommandEnum;
+import eu.reborn_minecraft.zhorse.enums.CommandAdminEnum;
 import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
@@ -19,7 +19,7 @@ public class ZAdmin extends Command {
 		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {			
 			if (!idMode) {
 				if (isOnHorse(true)) { // select horse w/ or w/o target
-					horse = (Horse)p.getVehicle();
+					horse = (Horse) p.getVehicle();
 					if (isOwner(targetUUID, true, true)) {
 						idMode = true;
 						userID = zh.getUM().getUserID(targetUUID, horse);
@@ -40,24 +40,24 @@ public class ZAdmin extends Command {
 				if (argument.contains(" ")) {
 					subCommand = argument.substring(0, argument.indexOf(" "));
 				}
-				if (subCommand.equals(CommandEnum.clear.name())) {
+				if (subCommand.equals(CommandAdminEnum.clear.name())) {
 					clear();
 				}
 				else {
 					if (displayConsole) {
 						zh.getMM().sendMessageValue(s, LocaleEnum.unknownAdminCommand, subCommand);
 					}
-					displayCommandList(zh.getCmdM().getAdminCommandList(), zh.getMM().getMessage(s, LocaleEnum.adminCommandListHeader, true), true);
+					sendCommandAdminDescriptionList();
 				}
 			}
 			else {
-				displayCommandList(zh.getCmdM().getAdminCommandList(), zh.getMM().getMessage(s, LocaleEnum.adminCommandListHeader, true), true);
+				sendCommandAdminDescriptionList();
 			}
 		}
 	}
-	
+
 	private void clear() {
-		fullCommand = command + KeyWordEnum.dot.getValue() + CommandEnum.favorite.getName().toLowerCase();
+		fullCommand = command + KeyWordEnum.dot.getValue() + CommandAdminEnum.clear.getName().toLowerCase(); // TODO vérifier fonctionnement
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (argument.split(" ").length >= 2) {
 				targetMode = true;

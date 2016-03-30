@@ -20,7 +20,7 @@ public class ZLock extends Command {
 				if (!targetMode) {
 					boolean ownsHorse = ownsHorse(targetUUID, true);
 					if (isOnHorse(ownsHorse)) {
-						horse = (Horse)p.getVehicle();
+						horse = (Horse) p.getVehicle();
 						if (isRegistered(horse)) {
 							execute();
 						}

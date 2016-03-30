@@ -12,7 +12,7 @@ public class ZHelp extends Command {
 		playerOnly = true;
 		needTarget = false;
 		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {
-			if (!idMode) { // sur deux lignes pour ne pas appeler sendCommandUsage si cible introuvable
+			if (!idMode) { // on 2 lines to avoid calling sendCommandUsage if horse is lost
 				if (!targetMode || (isRegistered(targetUUID) && isPlayerOnline(targetUUID, false))) {
 					execute();
 				}
@@ -26,7 +26,7 @@ public class ZHelp extends Command {
 	private void execute() {
 		if (zh.getEM().canAffordCommand(p, command)) {
 			if (argument.isEmpty()) {
-				displayCommandList(zh.getCmdM().getCommandList(), zh.getMM().getMessage(s, LocaleEnum.commandListHeader, true), false);
+				sendCommandDescriptionList();
 				zh.getEM().payCommand(p, command);
 			}
 			else {

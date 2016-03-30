@@ -1,6 +1,5 @@
 package eu.reborn_minecraft.zhorse.commands;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.command.CommandSender;
@@ -9,7 +8,9 @@ import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.enums.CommandAdminEnum;
 import eu.reborn_minecraft.zhorse.enums.CommandEnum;
+import eu.reborn_minecraft.zhorse.enums.CommandSettingsEnum;
 import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
@@ -204,31 +205,6 @@ public class Command {
 			zh.getMM().sendMessage(s, LocaleEnum.horseNameMandatory);
 		}
 		return false;
-	}
-
-	protected void displayCommandList(List<CommandEnum> commandList, String header, boolean subCommands) {
-		if (displayConsole) {
-			zh.getMM().sendMessageValue(s, LocaleEnum.headerFormat, header, true);
-			for (CommandEnum command : commandList) {
-				String commandName = command.getName();
-				String permission = commandName;
-				LocaleEnum commandDescription = LocaleEnum.valueOf(commandName + KeyWordEnum.description.getValue());
-				if (subCommands) {
-					commandName = this.command;
-					permission = commandName + KeyWordEnum.dot.getValue() + command.getName();
-				}
-				if (hasPermission(targetUUID, permission, true, true)) {
-					if (zh.getEM().isCommandFree(targetUUID, commandName)) {
-						zh.getMM().sendMessageSpacer(s, commandDescription, 1, true);
-					}
-					else {
-						int cost = zh.getCM().getCommandCost(commandName);
-						String currencySymbol = zh.getMM().getMessage(s, LocaleEnum.currencySymbol, true);
-						zh.getMM().sendMessageCostSpacerValue(s, commandDescription, cost, 1, currencySymbol, true);
-					}
-				}
-			}
-		}
 	}
 	
 	@SuppressWarnings("deprecation")	
@@ -580,6 +556,60 @@ public class Command {
 			}
 		}
 		return false;
+	}
+	
+	protected void sendCommandDescription(String command, String permission) {
+		LocaleEnum commandDescription = LocaleEnum.valueOf(command + KeyWordEnum.description.getValue());
+		if (zh.getEM().isCommandFree(targetUUID, command)) {
+			zh.getMM().sendMessageSpacer(s, commandDescription, 1, true);
+		}
+		else {
+			int cost = zh.getCM().getCommandCost(command);
+			String currencySymbol = zh.getMM().getMessage(s, LocaleEnum.currencySymbol, true);
+			zh.getMM().sendMessageCostSpacerValue(s, commandDescription, cost, 1, currencySymbol, true);
+		}
+	}
+
+	protected void sendCommandDescriptionList() {
+		if (displayConsole) {
+			String header = zh.getMM().getMessage(s, LocaleEnum.commandListHeader, true);
+			zh.getMM().sendMessageValue(s, LocaleEnum.headerFormat, header, true);
+			for (CommandEnum command : CommandEnum.values()) {
+				String commandName = command.getName();
+				String permission = commandName;
+				if (hasPermission(targetUUID, permission, true, true)) {
+					sendCommandDescription(commandName, permission);
+				}
+			}
+		}
+	}
+	
+	protected void sendCommandAdminDescriptionList() {
+		if (displayConsole) {
+			String header = zh.getMM().getMessage(s, LocaleEnum.adminCommandListHeader, true);
+			zh.getMM().sendMessageValue(s, LocaleEnum.headerFormat, header, true);
+			for (CommandAdminEnum command : CommandAdminEnum.values()) {
+				String commandName = this.command;
+				String permission = commandName + KeyWordEnum.dot.getValue() + command.getName();				
+				if (hasPermission(targetUUID, permission, true, true)) {
+					sendCommandDescription(commandName, permission);
+				}
+			}
+		}
+	}
+	
+	protected void sendCommandSettingsDescriptionList() {
+		if (displayConsole) {
+			String header = zh.getMM().getMessage(s, LocaleEnum.settingsCommandListHeader, true);
+			zh.getMM().sendMessageValue(s, LocaleEnum.headerFormat, header, true);
+			for (CommandSettingsEnum command : CommandSettingsEnum.values()) {
+				String commandName = this.command;
+				String permission = commandName + KeyWordEnum.dot.getValue() + command.getName();
+				if (hasPermission(targetUUID, permission, true, true)) {
+					sendCommandDescription(commandName, permission);
+				}
+			}
+		}
 	}
 	
 	protected void sendCommandUsage() {

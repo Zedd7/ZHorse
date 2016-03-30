@@ -54,6 +54,9 @@ Commands:
   share:
     auto-admin: false
     cost: 0
+  spawn:
+    auto-admin: false
+    cost: 0
   tame:
     auto-admin: false
     cost: 0

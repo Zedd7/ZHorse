@@ -57,6 +57,7 @@ Messages:
   horseReceived: "<gold><player><yellow> gave you <gold><horse><yellow> !"
   horseRenamed: "<yellow>This horse is now known as <gold><horse><yellow>."
   horseShared: "<gold><horse><yellow> can now be used by everyone."
+  horseSpawned: "<yellow>A new horse has been successfully summoned."
   horseTamed: "<yellow>You successfully tamed this horse."
   horseTeleported: "<gold><horse> <yellow>has been teleported to you."
   horseUnLocked: "<gold><horse><yellow> is no longer protected against thieves."
@@ -132,6 +133,7 @@ Command descriptions:
   rename: "<gold>/zh rename<gray>: <yellow>Renames the horse."
   settings: "<gold>/zh settings<gray>: <yellow>Adjusts personal settings."
   share: "<gold>/zh share<gray>: <yellow>Shares the horse with other players."
+  spawn: "<gold>/zh spawn<gray>: <yellow>Spawn a custom horse at your location."
   tame: "<gold>/zh tame<gray>: <yellow>Tames the horse."
   tp: "<gold>/zh tp<gray>: <yellow>Teleports you to the horse."
 
@@ -159,12 +161,13 @@ Command usages:
   reload: "<gold>/zh reload<yellow> (-a)"
   settings: "<gold>/zh settings<yellow> option value (-t playerName) (-a)"
   share: "<gold>/zh share<yellow> (-i horseID) (-t playerName) (-a)"
+  spawn: "<gold>/zh spawn<yellow> ???"
   tame: "<gold>/zh tame<yellow> (-i horseID) (-t playerName) (-a)"
   tp: "<gold>/zh tp<yellow> (-i horseID) (-t playerName) (-a)"
 
 Admin command usages:
-  clear: "<gold>/zh admin<yellow> clear (-t) playerName (-i horseID)"
+  clear: "<gold>/zh admin clear<yellow> (-t) playerName (-i horseID)"
 
 Settings command usages:
-  favorite: "<gold>/zh settings<yellow> favorite (-i) horseID"
-  language: "<gold>/zh settings<yellow> language value"
+  favorite: "<gold>/zh settings favorite<yellow> (-i) horseID"
+  language: "<gold>/zh settings language<yellow> value"

@@ -15,40 +15,9 @@ import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
 public class CommandManager implements CommandExecutor {
 	private ZHorse zh;
-	private List<CommandEnum> commandList;
-	private List<CommandEnum> adminCommandList;
-	private List<CommandEnum> settingsCommandList;
 	
 	public CommandManager(ZHorse zh) {
 		this.zh = zh;
-		initCommands();
-	}
-
-	private void initCommands() {
-		commandList = new ArrayList<CommandEnum>();
-		adminCommandList = new ArrayList<CommandEnum>();
-		settingsCommandList = new ArrayList<CommandEnum>();
-		commandList.add(CommandEnum.admin);
-		commandList.add(CommandEnum.claim);
-		commandList.add(CommandEnum.free);
-		commandList.add(CommandEnum.give);
-		commandList.add(CommandEnum.heal);
-		commandList.add(CommandEnum.help);
-		commandList.add(CommandEnum.here);
-	    commandList.add(CommandEnum.info);
-		commandList.add(CommandEnum.kill);
-		commandList.add(CommandEnum.list);
-		commandList.add(CommandEnum.lock);
-		commandList.add(CommandEnum.rename);
-		commandList.add(CommandEnum.protect);
-		commandList.add(CommandEnum.reload);
-		commandList.add(CommandEnum.settings);
-		commandList.add(CommandEnum.share);
-		commandList.add(CommandEnum.tame);
-		commandList.add(CommandEnum.tp);
-		adminCommandList.add(CommandEnum.clear);
-		settingsCommandList.add(CommandEnum.favorite);
-		settingsCommandList.add(CommandEnum.language);
 	}
 
 	@Override
@@ -65,7 +34,7 @@ public class CommandManager implements CommandExecutor {
 		else {
 			String command = a[0].toLowerCase();
 			boolean commandValid = false;
-			for (CommandEnum commandEnum : commandList) {
+			for (CommandEnum commandEnum : CommandEnum.values()) {
 				if (command.equals(commandEnum.getName())) {
 					commandValid = true;
 					try {
@@ -83,44 +52,12 @@ public class CommandManager implements CommandExecutor {
 		return true;
 	}
 	
-	public List<CommandEnum> getCommandList() {
-		return commandList;
-	}
-	
 	public List<String> getCommandNameList() {
 		List<String> commandNameList = new ArrayList<String>();
-		for (CommandEnum command : commandList) {
+		for (CommandEnum command : CommandEnum.values()) {
 			commandNameList.add(command.getName());
 		}
 		return commandNameList;
 	}
-	
-	public List<CommandEnum> getAdminCommandList() {
-		return adminCommandList;
-	}
-	
-	/*
-	public List<String> getAdminCommandNameList() {
-		List<String> adminCommandNameList = new ArrayList<String>();
-		for (CommandEnum command : adminCommandList) {
-			adminCommandNameList.add(command.getName());
-		}
-		return adminCommandNameList;
-	}
-	*/
-	
-	public List<CommandEnum> getSettingsCommandList() {
-		return settingsCommandList;
-	}
-	
-	/*
-	public List<String> getSettingsCommandNameList() {
-		List<String> settingsCommandNameList = new ArrayList<String>();
-		for (CommandEnum command : settingsCommandList) {
-			settingsCommandNameList.add(command.getName());
-		}
-		return settingsCommandNameList;
-	}
-	*/
 	
 }

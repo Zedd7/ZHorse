@@ -53,6 +53,7 @@ public enum LocaleEnum {
 	horseReceived("Messages.horseReceived"),
 	horseRenamed("Messages.horseRenamed"),
 	horseShared("Messages.horseShared"),
+	horseSpawned("Messages.horseSpawned"),
 	horseTamed("Messages.horseTamed"),
 	horseTeleported("Messages.horseTeleported"),
 	horseUnLocked("Messages.horseUnLocked"),
@@ -128,6 +129,7 @@ public enum LocaleEnum {
 	reloadDescription("Command descriptions.reload"),
 	settingsDescription("Command descriptions.settings"),
 	shareDescription("Command descriptions.share"),
+	spawnDescription("Command descriptions.spawn"),
 	tameDescription("Command descriptions.tame"),
 	tpDescription("Command descriptions.tp"),
 	
@@ -155,6 +157,7 @@ public enum LocaleEnum {
 	reloadUsage("Command usages.reload"),
 	settingsUsage("Command usages.settings"),
 	shareUsage("Command usages.share"),
+	spawnUsage("Command usages.spawn"),
 	tameUsage("Command usages.tame"),
 	tpUsage("Command usages.tp"),
 	

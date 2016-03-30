@@ -1,7 +1,6 @@
 package eu.reborn_minecraft.zhorse.enums;
 
 public enum CommandEnum {
-	/* main commands */
 	admin("eu.reborn_minecraft.zhorse.commands.ZAdmin", "admin"),
 	claim("eu.reborn_minecraft.zhorse.commands.ZClaim", "claim"),
 	free("eu.reborn_minecraft.zhorse.commands.ZFree", "free"),
@@ -18,15 +17,9 @@ public enum CommandEnum {
 	reload("eu.reborn_minecraft.zhorse.commands.ZReload", "reload"),
 	settings("eu.reborn_minecraft.zhorse.commands.ZSettings", "settings"),
 	share("eu.reborn_minecraft.zhorse.commands.ZShare", "share"),
+	spawn("eu.reborn_minecraft.zhorse.commands.ZSpawn", "spawn"),
 	tame("eu.reborn_minecraft.zhorse.commands.ZTame", "tame"),
-	tp("eu.reborn_minecraft.zhorse.commands.ZTp", "tp"),
-	
-	/* admin commands */
-	clear("eu.reborn_minecraft.zhorse.commands.ZSettings", "clear"),
-	
-	/* settings commands */
-	favorite("eu.reborn_minecraft.zhorse.commands.ZSettings", "favorite"),
-	language("eu.reborn_minecraft.zhorse.commands.ZSettings", "language");
+	tp("eu.reborn_minecraft.zhorse.commands.ZTp", "tp");
 	
 	private String classPath;
 	private String name;

@@ -7,7 +7,7 @@ import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
-import eu.reborn_minecraft.zhorse.enums.CommandEnum;
+import eu.reborn_minecraft.zhorse.enums.CommandSettingsEnum;
 import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 import net.md_5.bungee.api.ChatColor;
@@ -22,8 +22,8 @@ public class ZSettings extends Command {
 		needTarget = false;
 		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {			
 			if (!idMode) {
-				if (isOnHorse(true)) { // sélection du cheval avec ou sans target
-					horse = (Horse)p.getVehicle();
+				if (isOnHorse(true)) { // select the horse w/ or w/o target
+					horse = (Horse) p.getVehicle();
 					if (isOwner(targetUUID, true, true)) {
 						idMode = true;
 						userID = zh.getUM().getUserID(targetUUID, horse);
@@ -44,27 +44,27 @@ public class ZSettings extends Command {
 				if (argument.contains(" ")) {
 					subCommand = argument.substring(0, argument.indexOf(" "));
 				}
-				if (subCommand.equals(CommandEnum.language.name())) {
+				if (subCommand.equals(CommandSettingsEnum.language.name())) {
 					setLanguage();
 				}
-				else if (subCommand.equals((CommandEnum.favorite.name()))) {
+				else if (subCommand.equals((CommandSettingsEnum.favorite.name()))) {
 					setFavorite();
 				}
 				else {
 					if (displayConsole) {
 						zh.getMM().sendMessageValue(s, LocaleEnum.unknownSettingsCommand, subCommand);
 					}
-					displayCommandList(zh.getCmdM().getSettingsCommandList(), zh.getMM().getMessage(s, LocaleEnum.settingsCommandListHeader, true), true);
+					sendCommandSettingsDescriptionList();
 				}
 			}
 			else {
-				displayCommandList(zh.getCmdM().getSettingsCommandList(), zh.getMM().getMessage(s, LocaleEnum.settingsCommandListHeader, true), true);
+				sendCommandSettingsDescriptionList();
 			}
 		}
 	}
 	
 	private void setFavorite() {
-		fullCommand = command + KeyWordEnum.dot.getValue() + CommandEnum.favorite.getName().toLowerCase();
+		fullCommand = command + KeyWordEnum.dot.getValue() + CommandSettingsEnum.favorite.getName().toLowerCase();
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (argument.split(" ").length >= 2) {
 				idMode = true;
@@ -104,7 +104,7 @@ public class ZSettings extends Command {
 	}
 
 	private void setLanguage() {
-		fullCommand = command + KeyWordEnum.dot.getValue() + CommandEnum.language.getName().toLowerCase();
+		fullCommand = command + KeyWordEnum.dot.getValue() + CommandSettingsEnum.language.getName().toLowerCase();
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (argument.split(" ").length >= 2) {
 				String language = argument.substring(argument.indexOf(" ")+1).toUpperCase();

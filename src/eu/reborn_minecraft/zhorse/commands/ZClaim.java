@@ -16,7 +16,7 @@ public class ZClaim extends Command {
 			if (!idMode) {
 				if (!targetMode) {
 					if (isOnHorse(false)) {
-						horse = (Horse)p.getVehicle();
+						horse = (Horse) p.getVehicle();
 						execute();
 					}
 				}
@@ -50,5 +50,5 @@ public class ZClaim extends Command {
 			}
 			zh.getEM().payCommand(p, command);
 		}
-	}	
+	}
 }

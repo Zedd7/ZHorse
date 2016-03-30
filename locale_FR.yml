@@ -57,6 +57,7 @@ Messages:
   horseReceived: "<gold><player><yellow> vous a offert <gold><horse><yellow> !"
   horseRenamed: "<yellow>Ce cheval s'appelle à présent <gold><horse><yellow>."
   horseShared: "<gold><horse><yellow> est maintenant libre d'utilisation pour les autres joueurs."
+  horseSpawned: "<yellow>Un nouveau cheval a été invoqué avec succès."
   horseTamed: "<yellow>Vous avez dompté ce cheval avec succès."
   horseTeleported: "<gold><horse> <yellow>a été téléporté vers vous."
   horseUnLocked: "<gold><horse><yellow> n'est plus protégé contre le vol."
@@ -132,6 +133,7 @@ Command descriptions:
   reload: "<gold>/zh reload<gray>: <yellow>Recharge les fichiers de ZHorse."
   settings: "<gold>/zh settings<gray>: <yellow>Ajuste les paramètres personnels."
   share: "<gold>/zh share<gray>: <yellow>Partage le cheval avec les autres joueurs."
+  spawn: "<gold>/zh spawn<gray>: <yellow>Fait apparaître un cheval à votre position."
   tame: "<gold>/zh tame<gray>: <yellow>Dompte le cheval."
   tp: "<gold>/zh tp<gray>: <yellow>Vous téléporte au cheval."
 
@@ -159,12 +161,13 @@ Command usages:
   reload: "<gold>/zh reload<yellow> (-a)"
   settings: "<gold>/zh settings<yellow> option valeur (-t nomJoueur) (-a)"
   share: "<gold>/zh share<yellow> (-i chevalID) (-t nomJoueur) (-a)"
+  spawn: "<gold>/zh spawn<yellow> ???"
   tame: "<gold>/zh tame<yellow> (-i chevalID) (-t nomJoueur) (-a)"
   tp: "<gold>/zh tp<yellow> (-i chevalID) (-t nomJoueur) (-a)"
 
 Admin command usages:
-  clear: "<gold>/zh admin<yellow> clear (-t) nomJoueur (-i chevalID)"
+  clear: "<gold>/zh admin clear<yellow> (-t) nomJoueur (-i chevalID)"
 
 Settings command usages:
-  favorite: "<gold>/zh settings<yellow> favorite (-i) chevalID"
-  language: "<gold>/zh settings<yellow> language valeur"
+  favorite: "<gold>/zh settings favorite<yellow> (-i) chevalID"
+  language: "<gold>/zh settings language<yellow> valeur"
