@@ -4,7 +4,7 @@ Version: 1.5.0
 
 # Je kunt op de volgende manier kleuren aangeven: "&4", <4>, <dark_red>, <DARKRED>.
 # Je kan alle berichten in dit bestand aanpassen, maar verwijder of voeg geen codes toe wat geen kleurcodes zijn!
-# Hoe dan ook, je kunt twee of meer codes verwisselen met elkaar in dezelfde lijn. Dat is hun functie.
+# Hoe dan ook, je kunt twee of meer codes verwisselen met elkaar in dezelfde lijn. Dat is hun originele functie.
 # Voorbeeld: "<player> heeft je net <horse> gegeven" of "<horse> is net aan jou gegeven door <player>".
 
 Headers:
@@ -19,7 +19,7 @@ Headers:
   horseListFormatFavorite: "<yellow><id><green> - <yellow><horse><value> <green>(favoriet)"
   horseListHeader: "<gold>Jouw paarden <value>"
   horseListOtherHeader: "<gold><player>'s paarden <value>"
-  pluginHeader: "<gold><value> <yellow>(by <gold><player><yellow>)"
+  pluginHeader: "<gold><value> <yellow>(door <gold><player><yellow>)"
   pluginPrefix: "<green>[ZHorse]"
   remainingClaimsFormat: "<yellow>(<gold><amount><yellow>/<gold><max><yellow>)"
   settingsCommandListHeader: "<gold>ZHorse's commandos voor instellingen"   
@@ -41,8 +41,8 @@ Messages:
   horseGiven: "<yellow>Je hebt <gold><horse><yellow> aan <gold><player><yellow> gegeven."
   horseHealed: "<gold><horse><yellow> is volledig genezen."
   horseIsProtected: "<gold><horse><yellow> is beschermd tegen aanvallen van de speler."
-  horseLeashed: "<gold><horse><yellow> is leashed to a fence."
-  horseLeashedBy: "<gold><horse><yellow> is leashed by <gold><player><yellow>."
+  horseLeashed: "<gold><horse><yellow> is gelijnd aan een hek."
+  horseLeashedBy: "<gold><horse><yellow> is aangelijnd door <gold><player><yellow>."
   horseLocked: "<gold><horse><yellow> is nu beschermd tegen dieven."
   horseManuallyTamed: "<yellow>Proficiat! Je kan nu <gold>/zh claim (name)<yellow> als je dat wil."
   horseMounted: "<yellow>Je zit al op <gold><horse><yellow>."
@@ -51,12 +51,12 @@ Messages:
   horseNameForbidden: "<yellow>Je hebt geen toestemming om dit paard een naam te geven."
   horseNameMandatory: "<yellow>Je moet een naam geven aan dit paard."
   horseNameTooLong: "<yellow>De naam mag niet langer dan <gold><amount><yellow> karakters zijn."
-  horseNameTooShort: "<yellow>De naam moet langer zijn dan <gold><amount><yellow> karakters.TODO"
+  horseNameTooShort: "<yellow>De naam moet langer zijn dan <gold><amount><yellow> karakters."
   horseNotClaimed: "<yellow>Je moet dit paard eerst claimen."
   horseNotFound: "<gold><horse><yellow> is niet gevonden op deze server."
   horseNotTamed: "<yellow>Je moet dit paard eerst temmen."
   horseProtected: "<gold><horse><yellow> is nu berschermd tegen sommige soorten schade."
-  horseReceived: "<gold><player><yellow> heeft je een <gold><horse> <yellow>gegeven!"
+  horseReceived: "<gold><player><yellow> heeft je <gold><horse><yellow> gegeven!"
   horseRenamed: "<yellow>Dit paard heeft de naam <gold><horse><yellow> gekregen."
   horseShared: "<gold><horse><yellow> kan nu door iedereen gebruikt worden."
   horseTamed: "<yellow>Je heb dit paard succesvol getemt."
@@ -76,17 +76,17 @@ Messages:
   missingPermissionOther: "<gold><player><yellow> heeft de <gold><perm><yellow> toestemming niet."
   missingTarget: "<yellow>Je moet een spelernaam opgeven."
   noHorseOwned: "<yellow>Je hebt geen paarden. <value>"
-  noHorseOwnedOther: "<gold><player><yellow> heeft geen paarden. <value>"
+  noHorseOwnedOther: "<gold><player><yellow> heeft geen paarden. <amount>"
   notOnHorse: "<yellow>Je moet op een paard zijn om dit commando uit te voeren."
   playerCleared: "<yellow>Al je paarden zijn verwijderd uit de database."
   playerClearedOther: "<yellow>Alle paarden van <gold><player><yellow> zijn verwijderd uit de database."
   playerCommand: "<yellow>Je moet een speler zijn om dit commando uit te voeren."
   playerOffline: "<gold><player><yellow> moet online zijn om dit commando uit te voeren."
   pluginReloaded: "<gold><value><yellow> is succesvol herladen."
-  pluginReloadedWithErrors: "<gold><value><yellow> heeft herladen met fouten."
+  pluginReloadedWithErrors: "<gold><value><yellow> is herladen met fouten."
   samePlayer: "<yellow>Je kan jezelf niet selecteren."
   teleportedToHorse: "<yellow>Je bent naar <gold><horse><yellow> geteleporteerd."
-  unknownAdminCommand: "<gold><value><yellow> is geen Zhorse admin commando."
+  unknownAdminCommand: "<gold><value><yellow> is geen ZHorse admin commando."
   unknownCommand: "<yellow>Dit is geen ZHorse commando."
   unknownHorseId: "<yellow>Je hebt geen paard met <gold><id> <yellow> als id."
   unknownHorseIdOther: "<gold><player><yellow> heeft geen paard met <gold><id><yellow> als id."
@@ -118,7 +118,7 @@ Horse informations:
   status: "<yellow>Status : <gold><value>"
 
 Command descriptions:
-  admin: "<gold>/zh admin<gray>: <yellow>Beheert Zhorse bestanden."
+  admin: "<gold>/zh admin<gray>: <yellow>Beheert ZHorse bestanden."
   claim: "<gold>/zh claim<gray>: <yellow>Claimt een paard."
   free: "<gold>/zh free<gray>: <yellow>Laat een paard vrij."
   give: "<gold>/zh give<gray>: <yellow>Geeft een paard aan een andere speler."

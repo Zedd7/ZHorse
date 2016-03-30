@@ -41,6 +41,7 @@ public class ZClaim extends Command {
 			boolean protect = zh.getCM().shouldProtectOnClaim();
 			boolean share = zh.getCM().shouldShareOnClaim();
 			zh.getUM().registerHorse(p.getUniqueId(), horse, horseName, lock, protect, share);
+			targetUUID = p.getUniqueId(); // uses the player group for the horse name color
 			applyHorseName();
 			horse.setCustomNameVisible(true);
 			horse.setTamed(true);

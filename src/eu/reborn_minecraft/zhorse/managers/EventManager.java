@@ -243,8 +243,10 @@ public class EventManager implements Listener {
 	private boolean isPlayerAllowedToAttack(Player p, Horse horse) {
 		boolean allowed = true;
 		if (zh.getCM().isProtectionEnabled(PLAYER_ATTACK)) {
-			if (!((zh.getUM().isClaimedBy(p.getUniqueId(), horse) && !zh.getCM().isProtectionEnabled(OWNER_ATTACK)) ||
-					zh.getPerms().has(p, KeyWordEnum.zhPrefix.getValue() + CommandEnum.protect.getName() + KeyWordEnum.adminSuffix.getValue()))) {
+			boolean isOwner = zh.getUM().isClaimedBy(p.getUniqueId(), horse);
+			boolean isOwnerAttackBlocked = zh.getCM().isProtectionEnabled(OWNER_ATTACK);
+			boolean hasAdminPerm = zh.getPerms().has(p, KeyWordEnum.zhPrefix.getValue() + CommandEnum.protect.getName() + KeyWordEnum.adminSuffix.getValue());
+			if (!((isOwner && !isOwnerAttackBlocked) ||	hasAdminPerm)) {
 				if (displayConsole) {
 					String horseName = zh.getUM().getHorseName(horse);
 					zh.getMM().sendMessageHorse((CommandSender)p, LocaleEnum.horseIsProtected, horseName);
