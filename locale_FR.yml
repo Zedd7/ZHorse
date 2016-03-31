@@ -101,6 +101,7 @@ Messages:
   unknownLanguage: "<gold><lang><yellow> n'est pas une langue supportée, veuillez utiliser l'une des suivantes : <value><yellow>."
   unknownPlayer: "<gold><player><yellow> n'est pas un joueur enregistré."
   unknownSettingsCommand: "<gold><value><yellow> n'est pas une commande de paramétrage de ZHorse."
+  unknownSpawnArgument: "<gold><value><yellow> n'est pas un argument valide pour /zh spawn."
   worldDisabled: "<gold>ZHorse<yellow> est désactivé sur ce monde."
   worldUnreachable: "<yellow>Votre monde et celui de <gold><horse><yellow> ne sont pas connectés."
 
@@ -168,7 +169,7 @@ Command usages:
   reload: "<gold>/zh reload<yellow> (-a)"
   settings: "<gold>/zh settings<yellow> option valeur (-t nomJoueur) (-a)"
   share: "<gold>/zh share<yellow> (-i chevalID) (-t nomJoueur) (-a)"
-  spawn: "<gold>/zh spawn<yellow> (variante) (couleur) (style) (tamed) (baby) (vie):(vitesse%):(saut%)"
+  spawn: "<gold>/zh spawn<yellow> (variante) (couleur) (style) ('tamed') ('baby') (vie):(vitesse%):(saut%)"
   tame: "<gold>/zh tame<yellow> (-i chevalID) (-t nomJoueur) (-a)"
   tp: "<gold>/zh tp<yellow> (-i chevalID) (-t nomJoueur) (-a)"
 

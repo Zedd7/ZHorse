@@ -97,6 +97,7 @@ public enum LocaleEnum {
 	unknownLanguage("Messages.unknownLanguage"),
 	unknownPlayer("Messages.unknownPlayer"),
 	unknownSettingsCommand("Messages.unknownSettingsCommand"),
+	unknownSpawnArgument("Messages.unknownSpawnArgument"),
 	worldDisabled("Messages.worldDisabled"),
 	worldUnreachable("Messages.worldUnreachable"),
 	

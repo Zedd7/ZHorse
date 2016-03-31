@@ -2,7 +2,7 @@ Version: 1.5.0
 
 # Translated by Sikatsu1997
 
-# Je kunt op de volgende manier kleuren aangeven: "&4", <4>, <dark_red>, <DARKRED>.
+# Je kunt op de volgende manier kleuren aangeven: <4>, ^4, §4, <dark_red>, <darkred>
 # Je kan alle berichten in dit bestand aanpassen, maar verwijder of voeg geen codes toe wat geen kleurcodes zijn!
 # Hoe dan ook, je kunt twee of meer codes verwisselen met elkaar in dezelfde lijn. Dat is hun originele functie.
 # Voorbeeld: "<player> heeft je net <horse> gegeven" of "<horse> is net aan jou gegeven door <player>".
@@ -60,22 +60,22 @@ Messages:
   horseReceived: "<gold><player><yellow> heeft je <gold><horse><yellow> gegeven!"
   horseRenamed: "<yellow>Dit paard heeft de naam <gold><horse><yellow> gekregen."
   horseShared: "<gold><horse><yellow> kan nu door iedereen gebruikt worden."
-  horseSpawned: "<yellow>A new horse has been successfully summoned."
+  horseSpawned: "<yellow>Een nieuw paard is succesvol opgeroepen."
   horseTamed: "<yellow>Je heb dit paard succesvol getemt."
   horseTeleported: "<gold><horse> <yellow>is naar jouw geteleporteert."
   horseUnLocked: "<gold><horse><yellow> is niet langer beveiligd tegen dieven."
   horseUnProtected: "<gold><horse><yellow> is niet langer beveiligd tegen schade."
   horseUnShared: "<gold><horse><yellow> is niet langer gedeeld met andere mensen."
   horseUnTamed: "<yellow>Het paard is succesvol verwilderd."
-  invalidHealthArgument: "<yellow>The health must be between <gold><amount><yellow> and <gold><max><yellow>."
-  invalidJumpArgument: "<yellow>The jump strength must be between <gold><amount>%<yellow> and <gold><max>%<yellow>."
-  invalidSpeedArgument: "<yellow>The speed must be between <gold><amount>%<yellow> and <gold><max>%<yellow>."
+  invalidHealthArgument: "<yellow>Het aantal levens moet tussen <gold><amount><yellow> en <gold><max><yellow>."
+  invalidJumpArgument: "<yellow>De spring kracht moet tussen <gold><amount>%<yellow> en <gold><max>%<yellow>."
+  invalidSpeedArgument: "<yellow>De snelheid moet tussen <gold><amount>%<yellow> en <gold><max>%<yellow>."
   languageAlreadyUsed: "<yellow>Je gebruikt de <gold><lang><yellow>taal al."
   languageAlreadyUsedOther: "<gold><player><yellow> gebruikt de <gold><lang><yellow>taal al."
   languageEdited: "<yellow>Je gebruikt nu <gold><lang><yellow> als taal."
   languageEditedOther: "<gold><player><yellow> gebruikt nu <gold><lang><yellow> als taal."
-  listHorseColor: "<yellow>Color: <value><yellow>"
-  listHorseStyle: "<yellow>Style: <value><yellow>"
+  listHorseColor: "<yellow>Kleur: <value><yellow>"
+  listHorseStyle: "<yellow>Stijl: <value><yellow>"
   listHorseVariant: "<yellow>Variant: <value><yellow>"
   missingArguments: "<yellow>Ongeldig aantal argumenten. Doe als volgt:"
   missingHorseId: "<yellow>Je moet een paard ID opgeven, typ <gold>/zh list<yellow> en kies een ID."
@@ -96,13 +96,14 @@ Messages:
   teleportedToHorse: "<yellow>Je bent naar <gold><horse><yellow> geteleporteerd."
   unknownAdminCommand: "<gold><value><yellow> is geen ZHorse admin commando."
   unknownCommand: "<yellow>Dit is geen ZHorse commando."
-  unknownHorseId: "<yellow>Je hebt geen paard met <gold><id> <yellow> als id."
+  unknownHorseId: "<yellow>Je hebt geen paard met <gold><id><yellow> als id."
   unknownHorseIdOther: "<gold><player><yellow> heeft geen paard met <gold><id><yellow> als id."
   unknownHorseName: "<yellow>Je hebt geen paard met de naam <gold><horse><yellow>."
   unknownHorseNameOther: "<gold><player><yellow> heeft geen paard met de naam <gold><horse><yellow>."
   unknownLanguage: "<yellow>Deze taal is niet ondersteund, gebruik a.u.b. een van de volgende : <lang><yellow>."
   unknownPlayer: "<gold><player><yellow> is niet geregistreerd."
   unknownSettingsCommand: "<yellow>Dit is geen ZHorse's instelling commando."
+  unknownSpawnArgument: "<gold><value><yellow> is geen geldig argument voor /zh spawn."
   worldDisabled: "<gold>ZHorse<yellow> is uitgeschakeld in deze wereld."
   worldUnreachable: "<yellow>Jouw wereld en <gold><horse><yellow>'s wereld zijn niet verbonden."
 
@@ -142,7 +143,7 @@ Command descriptions:
   reload: "<gold>/zh reload<gray>: <yellow>Herlaad ZHorse's bestanden."
   settings: "<gold>/zh settings<gray>: <yellow>Persoonlijke bestanden aanpassen."
   share: "<gold>/zh share<gray>: <yellow>Deelt het paard met andere spelers."
-  spawn: "<gold>/zh spawn<gray>: <yellow>Spawn a custom horse at your location."
+  spawn: "<gold>/zh spawn<gray>: <yellow>Spawnt een aangepast paard op je locatie."
   tame: "<gold>/zh tame<gray>: <yellow>Temt je paard."
   tp: "<gold>/zh tp<gray>: <yellow>Teleporteert je naar je paard."
 
@@ -170,7 +171,7 @@ Command usages:
   reload: "<gold>/zh reload<yellow> (-a)"
   settings: "<gold>/zh settings<yellow> option value (-t spelerNaam) (-a)"
   share: "<gold>/zh share<yellow> (-i paardID) (-t spelerNaam) (-a)"
-  spawn: "<gold>/zh spawn<yellow> (variant) (color) (style) (tamed) (baby) (health):(speed%):(jump%)"
+  spawn: "<gold>/zh spawn<yellow> (variant) (kleur) (stijl) ('tamed') ('baby') (levens):(snelheid%):(springkracht%)"
   tame: "<gold>/zh tame<yellow> (-i paardID) (-t spelerNaam) (-a)"
   tp: "<gold>/zh tp<yellow> (-i paardID) (-t spelerNaam) (-a)"
   

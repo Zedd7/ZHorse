@@ -85,6 +85,10 @@ public class ZSpawn extends Command {
 			if (!parsed) {
 				parseStyle(argument);
 			}
+			if (!parsed) { // if the argument was not used
+				valid = false;
+				zh.getMM().sendMessageValue(s, LocaleEnum.unknownSpawnArgument, argument);
+			}
 		}
 	}
 	
