@@ -77,13 +77,13 @@ public class ZSpawn extends Command {
 				parsed = parseDoubles(argument);
 			}
 			if (!parsed) {
-				parseColor(argument);
+				parsed = parseColor(argument);
 			}
 			if (!parsed) {
-				parseVariant(argument);
+				parsed = parseVariant(argument);
 			}
 			if (!parsed) {
-				parseStyle(argument);
+				parsed = parseStyle(argument);
 			}
 			if (!parsed) { // if the argument was not used
 				valid = false;
