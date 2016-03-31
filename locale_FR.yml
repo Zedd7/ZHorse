@@ -169,7 +169,7 @@ Command usages:
   reload: "<gold>/zh reload<yellow> (-a)"
   settings: "<gold>/zh settings<yellow> option valeur (-t nomJoueur) (-a)"
   share: "<gold>/zh share<yellow> (-i chevalID) (-t nomJoueur) (-a)"
-  spawn: "<gold>/zh spawn<yellow> (variante) (couleur) (style) ('tamed') ('baby') (vie):(vitesse%):(saut%)"
+  spawn: "<gold>/zh spawn<yellow> (variante) (style) (couleur) ('tamed') ('baby') (vie):(vitesse%):(saut%)"
   tame: "<gold>/zh tame<yellow> (-i chevalID) (-t nomJoueur) (-a)"
   tp: "<gold>/zh tp<yellow> (-i chevalID) (-t nomJoueur) (-a)"
 

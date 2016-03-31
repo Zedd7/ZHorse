@@ -36,8 +36,8 @@ public class ZHelp extends Command {
 					sendCommandUsage(command, true);
 					if (command.equals(CommandEnum.spawn.getName())) {
 						sendHorseVariantList();
-						sendHorseColorList();
 						sendHorseStyleList();
+						sendHorseColorList();
 					}
 					zh.getEM().payCommand(p, command);
 				}

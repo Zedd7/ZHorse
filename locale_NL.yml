@@ -171,7 +171,7 @@ Command usages:
   reload: "<gold>/zh reload<yellow> (-a)"
   settings: "<gold>/zh settings<yellow> option value (-t spelerNaam) (-a)"
   share: "<gold>/zh share<yellow> (-i paardID) (-t spelerNaam) (-a)"
-  spawn: "<gold>/zh spawn<yellow> (variant) (kleur) (stijl) ('tamed') ('baby') (levens):(snelheid%):(springkracht%)"
+  spawn: "<gold>/zh spawn<yellow> (variant) (stijl) (kleur) ('tamed') ('baby') (levens):(snelheid%):(springkracht%)"
   tame: "<gold>/zh tame<yellow> (-i paardID) (-t spelerNaam) (-a)"
   tp: "<gold>/zh tp<yellow> (-i paardID) (-t spelerNaam) (-a)"
   

@@ -77,13 +77,13 @@ public class ZSpawn extends Command {
 				parsed = parseDoubles(argument);
 			}
 			if (!parsed) {
-				parsed = parseColor(argument);
-			}
-			if (!parsed) {
 				parsed = parseVariant(argument);
 			}
 			if (!parsed) {
 				parsed = parseStyle(argument);
+			}
+			if (!parsed) {
+				parsed = parseColor(argument);
 			}
 			if (!parsed) { // if the argument was not used
 				valid = false;
@@ -167,21 +167,6 @@ public class ZSpawn extends Command {
 		return false;
 	}
 	
-	private boolean parseColor(String argument) {
-		for (Color existingColor : Color.values()) {
-			if (argument.equalsIgnoreCase(existingColor.name())) {
-				if (color == null) {
-					color = existingColor;
-					return true;
-				}
-				else {
-					valid = false;
-				}
-			}
-		}
-		return false;
-	}
-	
 	private boolean parseVariant(String argument) {
 		for (Variant existingVariant : Variant.values()) {
 			if (argument.equalsIgnoreCase(existingVariant.name())) {
@@ -205,7 +190,40 @@ public class ZSpawn extends Command {
 					return true;
 				}
 				else {
-					valid = false;
+					boolean matchColor = false;
+					for (Color existingColor : Color.values()) {
+						if (argument.equalsIgnoreCase(existingColor.name())) {
+							matchColor = true;
+							break;
+						}
+					}
+					if (!matchColor) {
+						valid = false;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	private boolean parseColor(String argument) {
+		for (Color existingColor : Color.values()) {
+			if (argument.equalsIgnoreCase(existingColor.name())) {
+				if (color == null) {
+					color = existingColor;
+					return true;
+				}
+				else {
+					boolean matchStyle = false;
+					for (Style existingStyle : Style.values()) {
+						if (argument.equalsIgnoreCase(existingStyle.name())) {
+							matchStyle = true;
+							break;
+						}
+					}
+					if (!matchStyle) {
+						valid = false;
+					}
 				}
 			}
 		}
@@ -222,15 +240,15 @@ public class ZSpawn extends Command {
 		if (speed == -1) {
 			speed = horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
 		}
-		if (color == null) {
-			color = horse.getColor();
-		}
 		if (variant == null) {
-			variant = horse.getVariant();
+			variant = (style == null && color == null) ? horse.getVariant() : Variant.HORSE;
 		}
 		if (style == null) {
 			style = horse.getStyle();
-		}		
+		}
+		if (color == null) {
+			color = horse.getColor();
+		}				
 		horse.setOwner(p);
 		horse.setRemoveWhenFarAway(false);
 		horse.setMaxHealth(health);
@@ -243,10 +261,10 @@ public class ZSpawn extends Command {
 		}
 		horse.setTamed(tamed);
 		horse.setJumpStrength(jumpStrength);
-		horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(speed);
-		horse.setColor(color);
+		horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(speed);		
 		horse.setVariant(variant);
 		horse.setStyle(style);
+		horse.setColor(color);
 	}
 
 }
