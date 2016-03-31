@@ -152,7 +152,7 @@ public class ZSettings extends Command {
 		String availableLanguagesMessage = "";
 		for (int i=0; i<availableLanguages.size(); i++) {
 			availableLanguagesMessage += zh.getMM().getMessageValue(s, LocaleEnum.availableLanguageFormat, availableLanguages.get(i), true);
-			if (i < availableLanguages.size()-1) {
+			if (i < availableLanguages.size() - 1) {
 				availableLanguagesMessage += ", ";
 			}
 		}

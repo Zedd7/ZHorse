@@ -3,6 +3,7 @@ package eu.reborn_minecraft.zhorse.commands;
 import org.bukkit.command.CommandSender;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.enums.CommandEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
 public class ZHelp extends Command {
@@ -30,15 +31,21 @@ public class ZHelp extends Command {
 				zh.getEM().payCommand(p, command);
 			}
 			else {
-				String subCommand = argument.toLowerCase();
-				if (zh.getCmdM().getCommandNameList().contains(subCommand)) {
-					sendCommandUsage(subCommand, true);
+				String command = argument.toLowerCase();
+				if (zh.getCmdM().getCommandNameList().contains(command)) {
+					sendCommandUsage(command, true);
+					if (command.equals(CommandEnum.spawn.getName())) {
+						sendHorseVariantList();
+						sendHorseColorList();
+						sendHorseStyleList();
+					}
 					zh.getEM().payCommand(p, command);
 				}
 				else if (displayConsole) {
-					zh.getMM().sendMessageValue(s, LocaleEnum.unknownCommand, subCommand);
+					zh.getMM().sendMessageValue(s, LocaleEnum.unknownCommand, command);
 				}
 			}
 		}
 	}
+
 }

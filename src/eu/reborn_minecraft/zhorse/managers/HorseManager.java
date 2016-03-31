@@ -20,6 +20,14 @@ import eu.reborn_minecraft.zhorse.utils.AsyncChunckLoad;
 
 public class HorseManager {
 	
+	public static final double MIN_HEALTH = 1.0;
+	public static final double MIN_JUMP_STRENGTH = 0.0;
+	public static final double MIN_SPEED = 0.0;
+	
+	public static final double MAX_HEALTH = 30.0;
+	public static final double MAX_JUMP_STRENGTH = 1.2;
+	public static final double MAX_SPEED = 1.0;
+	
 	private ZHorse zh;
 	
 	public HorseManager(ZHorse zh) {

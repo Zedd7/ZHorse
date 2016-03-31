@@ -1,10 +1,15 @@
 package eu.reborn_minecraft.zhorse.commands;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Horse;
+import org.bukkit.entity.Horse.Color;
+import org.bukkit.entity.Horse.Style;
+import org.bukkit.entity.Horse.Variant;
 import org.bukkit.entity.Player;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
@@ -13,6 +18,7 @@ import eu.reborn_minecraft.zhorse.enums.CommandEnum;
 import eu.reborn_minecraft.zhorse.enums.CommandSettingsEnum;
 import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
+import net.md_5.bungee.api.ChatColor;
 
 public class Command {
 	protected ZHorse zh;
@@ -558,15 +564,18 @@ public class Command {
 		return false;
 	}
 	
-	protected void sendCommandDescription(String command, String permission) {
-		LocaleEnum commandDescription = LocaleEnum.valueOf(command + KeyWordEnum.description.getValue());
-		if (zh.getEM().isCommandFree(targetUUID, command)) {
-			zh.getMM().sendMessageSpacer(s, commandDescription, 1, true);
-		}
-		else {
-			int cost = zh.getCM().getCommandCost(command);
-			String currencySymbol = zh.getMM().getMessage(s, LocaleEnum.currencySymbol, true);
-			zh.getMM().sendMessageCostSpacerValue(s, commandDescription, cost, 1, currencySymbol, true);
+	protected void sendCommandDescription(String command, String permission, boolean subCommand) {
+		if (hasPermission(targetUUID, permission, true, true)) {
+			LocaleEnum commandDescription = LocaleEnum.valueOf(command + KeyWordEnum.description.getValue());
+			command = subCommand ? this.command : command;
+			if (zh.getEM().isCommandFree(targetUUID, command)) {
+				zh.getMM().sendMessageSpacer(s, commandDescription, 1, true);
+			}
+			else {
+				int cost = zh.getCM().getCommandCost(command);
+				String currencySymbol = zh.getMM().getMessage(s, LocaleEnum.currencySymbol, true);
+				zh.getMM().sendMessageCostSpacerValue(s, commandDescription, cost, 1, currencySymbol, true);
+			}
 		}
 	}
 
@@ -577,9 +586,7 @@ public class Command {
 			for (CommandEnum command : CommandEnum.values()) {
 				String commandName = command.getName();
 				String permission = commandName;
-				if (hasPermission(targetUUID, permission, true, true)) {
-					sendCommandDescription(commandName, permission);
-				}
+				sendCommandDescription(commandName, permission, false);
 			}
 		}
 	}
@@ -589,11 +596,9 @@ public class Command {
 			String header = zh.getMM().getMessage(s, LocaleEnum.adminCommandListHeader, true);
 			zh.getMM().sendMessageValue(s, LocaleEnum.headerFormat, header, true);
 			for (CommandAdminEnum command : CommandAdminEnum.values()) {
-				String commandName = this.command;
-				String permission = commandName + KeyWordEnum.dot.getValue() + command.getName();				
-				if (hasPermission(targetUUID, permission, true, true)) {
-					sendCommandDescription(commandName, permission);
-				}
+				String commandName = command.getName();
+				String permission = this.command + KeyWordEnum.dot.getValue() + command.getName();				
+				sendCommandDescription(commandName, permission, true);
 			}
 		}
 	}
@@ -603,11 +608,9 @@ public class Command {
 			String header = zh.getMM().getMessage(s, LocaleEnum.settingsCommandListHeader, true);
 			zh.getMM().sendMessageValue(s, LocaleEnum.headerFormat, header, true);
 			for (CommandSettingsEnum command : CommandSettingsEnum.values()) {
-				String commandName = this.command;
-				String permission = commandName + KeyWordEnum.dot.getValue() + command.getName();
-				if (hasPermission(targetUUID, permission, true, true)) {
-					sendCommandDescription(commandName, permission);
-				}
+				String commandName = command.getName();
+				String permission = this.command + KeyWordEnum.dot.getValue() + command.getName();
+				sendCommandDescription(commandName, permission, true);
 			}
 		}
 	}
@@ -625,6 +628,51 @@ public class Command {
 			String commandUsage = zh.getMM().getMessage(s, LocaleEnum.valueOf(command + KeyWordEnum.usage.getValue()), true);
 			zh.getMM().sendMessageSpacerValue(s, LocaleEnum.commandUsageFormat, 1, commandUsage, true);
 		}
+	}
+	
+	protected void sendHorseColorList() {
+		if (displayConsole) {
+			Color[] horseColorArray = Horse.Color.values();
+			List<String> horseColorList = new ArrayList<String>();
+			for (int i = 0; i < horseColorArray.length; ++i) {
+				horseColorList.add(horseColorArray[i].name().toLowerCase());
+			}
+			sendHorseOptionList(horseColorList, LocaleEnum.listHorseColor);
+		}
+	}
+
+	protected void sendHorseStyleList() {
+		if (displayConsole) {
+			Style[] horseStyleArray = Horse.Style.values();
+			List<String> horseStyleList = new ArrayList<String>();
+			for (int i = 0; i < horseStyleArray.length; ++i) {
+				horseStyleList.add(horseStyleArray[i].name().toLowerCase());
+			}
+			sendHorseOptionList(horseStyleList, LocaleEnum.listHorseStyle);
+		}
+	}
+
+	protected void sendHorseVariantList() {
+		if (displayConsole) {
+			Variant[] horseVariantArray = Horse.Variant.values();
+			List<String> horseVariantList = new ArrayList<String>();
+			for (int i = 0; i < horseVariantArray.length; ++i) {
+				horseVariantList.add(horseVariantArray[i].name().toLowerCase());
+			}
+			sendHorseOptionList(horseVariantList, LocaleEnum.listHorseVariant);
+		}
+	}
+	
+	protected void sendHorseOptionList(List<String> horseOptionList, LocaleEnum index) {
+		String horseOptionListMessage = "";
+		for (int i = 0; i < horseOptionList.size(); ++i) {
+			horseOptionListMessage += zh.getMM().getMessageValue(s, LocaleEnum.horseOptionFormat, horseOptionList.get(i), true);
+			if (i < horseOptionList.size() - 1) {
+				horseOptionListMessage += ", ";
+			}
+		}
+		horseOptionListMessage += ChatColor.RESET;
+		zh.getMM().sendMessageSpacerValue(s, index, 1, horseOptionListMessage, true);
 	}
 
 }

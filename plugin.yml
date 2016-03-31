@@ -1,6 +1,6 @@
  main: eu.reborn_minecraft.zhorse.ZHorse
  name: ZHorse
- version: 1.5.0 snapshot 5
+ version: 1.5.0 snapshot 6
  depend: [Vault]
  description: This plugin provides an enhanced management of horses
  author: Z3dd7
@@ -19,6 +19,7 @@
             zh.*.free: true
             zh.admin.*: true
             zh.reload: true
+            zh.spawn: true
             zh.tame: true
             zh.use: true
 
@@ -73,6 +74,7 @@
             zh.rename.admin: true
             zh.settings.admin: true
             zh.share.admin: true
+            zh.spawn.admin: true
             zh.tame.admin: true
             zh.tp.admin: true
             
@@ -95,5 +97,6 @@
             zh.rename.free: true
             zh.settings.free: true
             zh.share.free: true
+            zh.spawn.free: true
             zh.tame.free: true
             zh.tp.free: true
