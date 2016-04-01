@@ -2,12 +2,17 @@ package eu.reborn_minecraft.zhorse.managers;
 
 import java.util.UUID;
 
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Horse;
+import org.bukkit.entity.Horse.Variant;
 import org.bukkit.entity.LeashHitch;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -22,12 +27,15 @@ import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerUnleashEntityEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.commands.ZClaim;
@@ -40,6 +48,9 @@ import eu.reborn_minecraft.zhorse.utils.AsyncPlayerJoin;
 
 public class EventManager implements Listener {
 	
+	private static final int NONE = -1;
+	private static final int MAIN_HAND = 0;
+	private static final int OFF_HAND = 1;
 	private static final String OWNER_ATTACK = "OWNER_ATTACK";
 	private static final String PLAYER_ATTACK = "PLAYER_ATTACK";
 	
@@ -49,6 +60,13 @@ public class EventManager implements Listener {
 	public EventManager(ZHorse zh) {
 		this.zh = zh;
 		this.displayConsole = !(zh.getCM().isConsoleMuted());
+	}
+	
+	/* Allows ZHorse to cancel onPlayerLeashEntityEvent */
+	private class PlayerLeashDeadEntityEvent extends PlayerLeashEntityEvent {
+		public PlayerLeashDeadEntityEvent(Entity leashedEntity, Entity leashHolder, Player p) {
+			super(leashedEntity, leashHolder, p);
+		}
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -193,13 +211,34 @@ public class EventManager implements Listener {
 				}
 			}
 		}
-	}
-	
+	}	
 	
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent e) {
 		if (e.getWhoClicked() instanceof Player && e.getInventory().getHolder() instanceof Horse) {
 			e.setCancelled(!isPlayerAllowedToInteract((Player) e.getWhoClicked(), (Horse) e.getInventory().getHolder(), true));
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	public void onPlayerInteractEntity(PlayerInteractEntityEvent e) {
+		if (e.getRightClicked() instanceof Horse) {
+			Horse horse = (Horse) e.getRightClicked();
+			if (horse.getVariant() == Variant.SKELETON_HORSE || horse.getVariant() == Variant.UNDEAD_HORSE) {
+				Player p = e.getPlayer();
+				if (!horse.isLeashed()) {
+					int holdingHand = getHoldingHand(p, new ItemStack(Material.LEASH));
+					if (holdingHand == MAIN_HAND || holdingHand == OFF_HAND) { // if player is holding leash
+						cancelEvent(e, p, true, true);
+						PlayerLeashDeadEntityEvent ev = new PlayerLeashDeadEntityEvent(horse, p, p);
+						zh.getServer().getPluginManager().callEvent(ev);
+						if (!ev.isCancelled()) {
+							consumeItem(p, holdingHand);
+							horse.setLeashHolder(p);
+						}
+					}
+				}					
+			}
 		}
 	}
 	
@@ -211,10 +250,17 @@ public class EventManager implements Listener {
 	@EventHandler
 	public void onPlayerLeashEntity(PlayerLeashEntityEvent e) {
 		if (e.getLeashHolder() instanceof Player && e.getEntity() instanceof Horse) {
-			e.setCancelled(!isPlayerAllowedToInteract((Player) e.getPlayer(), (Horse) e.getEntity(), false));
+			Player p = (Player) e.getPlayer();
+			ItemStack item = getItem(p, getHoldingHand(p, new ItemStack(Material.LEASH)));
+			int savedAmount = item.getAmount();
+			e.setCancelled(!isPlayerAllowedToInteract(p, (Horse) e.getEntity(), false));
+			if (e.isCancelled()) {
+				item.setAmount(savedAmount);
+				updateInventory(p);
+			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent e) {
 		if (e.getPlayer().getVehicle() instanceof Horse) {
@@ -235,8 +281,59 @@ public class EventManager implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onVehicleEnter(VehicleEnterEvent e) {
 		if (e.getEntered() instanceof Player && e.getVehicle() instanceof Horse) {
-			e.setCancelled(!isPlayerAllowedToInteract((Player) e.getEntered(), (Horse) e.getVehicle(), false));
+			Player p = (Player) e.getEntered();
+			boolean cancel = !isPlayerAllowedToInteract(p, (Horse) e.getVehicle(), false);
+			cancelEvent(e, p, cancel, true);
 		}
+	}
+	
+	private void cancelEvent(Cancellable e, Player p, boolean cancel, boolean restoreLocation) {
+		Location savedLocation = p.getLocation();
+		e.setCancelled(cancel);
+		if (cancel && restoreLocation) {
+			p.teleport(savedLocation);
+		}
+	}
+	
+	private void consumeItem(Player p, int holdingHand) {
+		if (p.getGameMode() != GameMode.CREATIVE) {
+			ItemStack item = getItem(p, holdingHand);
+			if (item != null) {
+				int amount = item.getAmount();
+				if (amount > 1) {
+					item.setAmount(amount - 1);
+				}
+				else {
+					p.getInventory().remove(item);
+				}
+				updateInventory(p);
+			}
+		}
+	}
+	
+	private int getHoldingHand(Player p, ItemStack item) {
+		ItemStack mainHandItem = p.getInventory().getItemInMainHand();
+		ItemStack offHandItem = p.getInventory().getItemInOffHand();
+		if (mainHandItem != null && mainHandItem.isSimilar(item)) {
+			return MAIN_HAND;
+		}
+		else if (offHandItem != null && offHandItem.isSimilar(item)) {
+			return OFF_HAND;
+		}
+		return NONE;
+	}
+	
+	private ItemStack getItem(Player p, int holdingHand) {
+		ItemStack item = null;
+		switch (holdingHand) {
+		case MAIN_HAND:
+			item = p.getInventory().getItemInMainHand();
+			break;
+		case OFF_HAND:
+			item = p.getInventory().getItemInOffHand();
+			break;
+		}
+		return item;
 	}
 	
 	private boolean isPlayerAllowedToAttack(Player p, Horse horse) {
@@ -257,18 +354,28 @@ public class EventManager implements Listener {
 	}
 	
 	private boolean isPlayerAllowedToInteract(Player p, Horse horse, boolean mustBeShared) {
-		boolean allowed = true;
 		if (zh.getUM().isRegistered(horse)) {
-			if (!(zh.getUM().isClaimedBy(p.getUniqueId(), horse) || zh.getPerms().has(p, KeyWordEnum.zhPrefix.getValue() + CommandEnum.lock.getName() + KeyWordEnum.adminSuffix.getValue()))) {
+			boolean isClaimedBy = zh.getUM().isClaimedBy(p.getUniqueId(), horse);
+			boolean hasPerm = zh.getPerms().has(p, KeyWordEnum.zhPrefix.getValue() + CommandEnum.lock.getName() + KeyWordEnum.adminSuffix.getValue());
+			if (!(isClaimedBy || hasPerm)) {
 				if (zh.getUM().isLocked(horse) || (!zh.getUM().isShared(horse) && (!horse.isEmpty() || mustBeShared))) {
 					if (displayConsole) {
 						String ownerName = zh.getUM().getPlayerName(horse);
 						zh.getMM().sendMessagePlayer((CommandSender)p, LocaleEnum.horseBelongsTo, ownerName);
 					}
-					allowed = false;
+					return false;
 				}
 			}
 		}
-		return allowed;
+		return true;
+	}
+	
+	private void updateInventory(Player p) {
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				p.updateInventory();
+			}
+		}.runTaskLater(zh, 0);
 	}
 }
