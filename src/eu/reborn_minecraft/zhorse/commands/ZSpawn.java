@@ -1,5 +1,8 @@
 package eu.reborn_minecraft.zhorse.commands;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
@@ -19,6 +22,8 @@ public class ZSpawn extends Command {
 	private static final String BABY = "baby";
 	private static final String TAMED = "tamed";
 	private static final String DOUBLE_SEPARATOR = ":";
+	private static final String[] SKELETON_ALIASES = {"skeleton", "skel"};
+	private static final String[] UNDEAD_ALIASES = {"undead", "zombie", "zomb"};
 	
 	private boolean valid = true;
 	
@@ -85,7 +90,7 @@ public class ZSpawn extends Command {
 			if (!parsed) {
 				parsed = parseColor(argument);
 			}
-			if (!parsed) { // if the argument was not used
+			if (!parsed) {
 				valid = false;
 				zh.getMM().sendMessageValue(s, LocaleEnum.unknownSpawnArgument, argument);
 			}
@@ -121,44 +126,46 @@ public class ZSpawn extends Command {
 	private boolean parseDoubles(String argument) {
 		if (StringUtils.countMatches(argument, DOUBLE_SEPARATOR) == 2) {
 			if (health == -1 && jumpStrength == -1 && speed == -1) {
-				String[] args = argument.split(DOUBLE_SEPARATOR);
-				if (args.length < 3) { // if jump field was empty and thus skipped
-					args = new String[] {args[0], args[1], ""};
+				Double[] doubles = buildDoubles(argument);
+				if (doubles != null) {
+					Double healthDouble = doubles[0];
+					Double speedDouble = doubles[1];
+					Double jumpDouble = doubles[2];
+					System.out.println(healthDouble + " " + speedDouble + " " + jumpDouble);
+					if (healthDouble != null) {
+						if (healthDouble >= HorseManager.MIN_HEALTH && healthDouble <= HorseManager.MAX_HEALTH) {
+							health = healthDouble;
+						}
+						else if (displayConsole) {
+							valid = false;
+							zh.getMM().sendMessageAmountMax(s, LocaleEnum.invalidHealthArgument, (int) HorseManager.MIN_HEALTH, (int) HorseManager.MAX_HEALTH);
+						}
+					}
+					if (speedDouble != null) {
+						speedDouble *= HorseManager.MAX_SPEED / 100;
+						if (speedDouble >= HorseManager.MIN_SPEED && speedDouble <= HorseManager.MAX_SPEED) {
+							speed = speedDouble;
+						}
+						else if (displayConsole) {
+							valid = false;
+							zh.getMM().sendMessageAmountMax(s, LocaleEnum.invalidSpeedArgument, (int) HorseManager.MIN_SPEED * 100, (int) HorseManager.MAX_SPEED * 100);
+						}
+					}
+					if (jumpDouble != null) {
+						jumpDouble *= HorseManager.MAX_JUMP_STRENGTH / 100;
+						if (jumpDouble >= HorseManager.MIN_JUMP_STRENGTH && jumpDouble <= HorseManager.MAX_JUMP_STRENGTH) {
+							jumpStrength = jumpDouble;
+						}
+						else if (displayConsole) {
+							valid = false;
+							zh.getMM().sendMessageAmountMax(s, LocaleEnum.invalidJumpArgument, (int) HorseManager.MIN_JUMP_STRENGTH * 100, (int) HorseManager.MAX_JUMP_STRENGTH * 100);
+						}
+					}
+					return true;
 				}
-				String healthArg = args[0].replace("%", "");
-				String speedArg = args[1].replace("%", "");
-				String jumpArg = args[2].replace("%", "");
-				if (!healthArg.isEmpty() && StringUtils.isNumeric(healthArg)) {
-					double healthDouble = Double.parseDouble(healthArg);
-					if (healthDouble >= HorseManager.MIN_HEALTH && healthDouble <= HorseManager.MAX_HEALTH) {
-						health = healthDouble;
-					}
-					else if (displayConsole) {
-						valid = false;
-						zh.getMM().sendMessageAmountMax(s, LocaleEnum.invalidHealthArgument, (int) HorseManager.MIN_HEALTH, (int) HorseManager.MAX_HEALTH);
-					}
+				else {
+					valid = false;
 				}
-				if (!speedArg.isEmpty() && StringUtils.isNumeric(speedArg)) {
-					double speedDouble = Double.parseDouble(speedArg) * HorseManager.MAX_SPEED / 100;
-					if (speedDouble >= HorseManager.MIN_SPEED && speedDouble <= HorseManager.MAX_SPEED) {
-						speed = speedDouble;
-					}
-					else if (displayConsole) {
-						valid = false;
-						zh.getMM().sendMessageAmountMax(s, LocaleEnum.invalidSpeedArgument, (int) HorseManager.MIN_SPEED * 100, (int) HorseManager.MAX_SPEED * 100);
-					}
-				}
-				if (!jumpArg.isEmpty() && StringUtils.isNumeric(jumpArg)) {
-					double jumpDouble = Double.parseDouble(jumpArg) * HorseManager.MAX_JUMP_STRENGTH / 100;
-					if (jumpDouble >= HorseManager.MIN_JUMP_STRENGTH && jumpDouble <= HorseManager.MAX_JUMP_STRENGTH) {
-						jumpStrength = jumpDouble;
-					}
-					else if (displayConsole) {
-						valid = false;
-						zh.getMM().sendMessageAmountMax(s, LocaleEnum.invalidJumpArgument, (int) HorseManager.MIN_JUMP_STRENGTH * 100, (int) HorseManager.MAX_JUMP_STRENGTH * 100);
-					}
-				}
-				return true;
 			}
 			else {
 				valid = false;
@@ -167,11 +174,40 @@ public class ZSpawn extends Command {
 		return false;
 	}
 	
+	private Double[] buildDoubles(String argument) {
+		int firstSeparatorIndex = argument.indexOf(DOUBLE_SEPARATOR);
+		int secondSeparatorIndex = argument.indexOf(DOUBLE_SEPARATOR, firstSeparatorIndex + 1);
+		String healthArg = argument.substring(0, firstSeparatorIndex);
+		String speedArg = argument.substring(firstSeparatorIndex + 1, secondSeparatorIndex);
+		String jumpArg = argument.substring(secondSeparatorIndex + 1);		
+		healthArg.replace("%", "");
+		speedArg.replace("%", "");
+		jumpArg.replace("%", "");
+		Double healthDouble = null;
+		Double speedDouble = null;
+		Double jumpDouble = null;
+		try {
+			if (!healthArg.isEmpty()) {
+				healthDouble = Double.parseDouble(healthArg);
+			}
+			if (!speedArg.isEmpty()) {
+				speedDouble = Double.parseDouble(speedArg);
+			}
+			if (!jumpArg.isEmpty()) {
+				jumpDouble = Double.parseDouble(jumpArg);
+			}
+		} catch (NumberFormatException e) {
+			return null;
+		}
+		return new Double[] {healthDouble, speedDouble, jumpDouble};
+	}
+
 	private boolean parseVariant(String argument) {
-		for (Variant existingVariant : Variant.values()) {
-			if (argument.equalsIgnoreCase(existingVariant.name())) {
+		Map<String, Variant> variantMap = buildVariant();
+		for (String existingVariant : variantMap.keySet()) {
+			if (argument.equalsIgnoreCase(existingVariant)) {
 				if (variant == null) {
-					variant = existingVariant;
+					variant = variantMap.get(existingVariant);
 					return true;
 				}
 				else {
@@ -180,6 +216,20 @@ public class ZSpawn extends Command {
 			}
 		}
 		return false;
+	}
+	
+	private Map<String, Variant> buildVariant() {
+		Map<String, Variant> variantMap = new HashMap<String, Variant>();
+		for (Variant variant : Variant.values()) {
+			variantMap.put(variant.name(), variant);
+		}
+		for (String skeletonAliase : SKELETON_ALIASES) {
+			variantMap.put(skeletonAliase, Variant.SKELETON_HORSE);
+		}
+		for (String undeadAliase : UNDEAD_ALIASES) {
+			variantMap.put(undeadAliase, Variant.UNDEAD_HORSE);
+		}
+		return variantMap;
 	}
 	
 	private boolean parseStyle(String argument) {
