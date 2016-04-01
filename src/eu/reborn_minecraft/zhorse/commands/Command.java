@@ -54,7 +54,7 @@ public class Command {
 		adminMode = false;
 		idMode = false;
 		targetMode = false;
-		for (int i=1; i<a.length; i++) { // start at 1 to skip the command
+		for (int i = 1; i < a.length; ++i) { // start at 1 to skip the command
 			boolean valid = true;
 			if (a[i].equalsIgnoreCase("-a")) {
 				valid = !adminMode;

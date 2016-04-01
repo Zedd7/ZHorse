@@ -60,6 +60,7 @@ public class EventManager implements Listener {
 	public EventManager(ZHorse zh) {
 		this.zh = zh;
 		this.displayConsole = !(zh.getCM().isConsoleMuted());
+		zh.getServer().getPluginManager().registerEvents(this, zh);
 	}
 	
 	/* Allows ZHorse to cancel onPlayerLeashEntityEvent */
@@ -226,7 +227,7 @@ public class EventManager implements Listener {
 			Horse horse = (Horse) e.getRightClicked();
 			if (horse.getVariant() == Variant.SKELETON_HORSE || horse.getVariant() == Variant.UNDEAD_HORSE) {
 				Player p = e.getPlayer();
-				if (!horse.isLeashed()) {
+				if (!horse.isLeashed() && zh.getCM().isLeashOnDeadHorseAllowed()) {
 					int holdingHand = getHoldingHand(p, new ItemStack(Material.LEASH));
 					if (holdingHand == MAIN_HAND || holdingHand == OFF_HAND) { // if player is holding leash
 						cancelEvent(e, p, true, true);

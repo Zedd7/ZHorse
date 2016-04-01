@@ -209,6 +209,9 @@ Protections:
 
 Settings:
 
+  # Set to false to block leashes on dead horses.
+  allow-leash-on-dead-horse: true
+
   # Set to true to block /zh here on leashed horses.
   block-leashed-teleport: false
   

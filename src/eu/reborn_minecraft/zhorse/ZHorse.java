@@ -39,6 +39,7 @@ public class ZHorse extends JavaPlugin {
 	private CommandManager commandManager;
 	private ConfigManager configManager;
 	private EconomyManager economyManager;
+	private EventManager eventManager;
 	private HorseManager horseManager;
 	private LocaleManager localeManager;
 	private MessageManager messageManager;
@@ -51,8 +52,6 @@ public class ZHorse extends JavaPlugin {
 		initEconomy();
 		initMetrics();
 		initManagers();
-		getCommand(this.getName().toLowerCase()).setExecutor(commandManager);
-		getServer().getPluginManager().registerEvents(new EventManager(this), this);
 	}
 	
 	@Override
@@ -122,6 +121,7 @@ public class ZHorse extends JavaPlugin {
 		configManager = new ConfigManager(this);
 		userManager = new UserManager(this);
 		economyManager = new EconomyManager(this);
+		eventManager = new EventManager(this);
 		horseManager = new HorseManager(this);
 		loadLocales();
 		
@@ -240,6 +240,10 @@ public class ZHorse extends JavaPlugin {
 	
 	public EconomyManager getEM() {
 		return economyManager;
+	}
+	
+	public EventManager getEvM() {
+		return eventManager;
 	}
 	
 	public HorseManager getHM() {

@@ -8,6 +8,7 @@ public enum KeyWordEnum {
 	zhPrefix("zh."),
 	
 	/* config.yml keywords */
+	allowLeashOnDeadHorse("allow-leash-on-dead-horse"),
 	available(".available"),
 	autoAdminSuffix(".auto-admin"),
 	bannedNames("banned-names"),

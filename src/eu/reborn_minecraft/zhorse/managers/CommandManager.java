@@ -18,6 +18,7 @@ public class CommandManager implements CommandExecutor {
 	
 	public CommandManager(ZHorse zh) {
 		this.zh = zh;
+		zh.getCommand(zh.getDescription().getName().toLowerCase()).setExecutor(this);
 	}
 
 	@Override

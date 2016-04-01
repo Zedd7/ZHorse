@@ -210,6 +210,10 @@ public class ConfigManager {
 		return language != null && getAvailableLanguages().contains(language);
 	}
 	
+	public boolean isLeashOnDeadHorseAllowed() {
+		return zh.getConfig().getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.allowLeashOnDeadHorse.getValue(), true);
+	}
+	
 	public boolean isProtectionEnabled(String protection) {
 		return protection != null && zh.getConfig().getBoolean(KeyWordEnum.protectionsPrefix.getValue() + protection + KeyWordEnum.enabledSuffix.getValue(), false);
 	}
@@ -446,6 +450,10 @@ public class ConfigManager {
 	
 	private boolean checkSettingsConformity() {
 		boolean conform = true;
+		if (!zh.getConfig().isSet("Settings.allow-leash-on-dead-horse")) {
+			zh.getLogger().severe("The \"Settings.allow-leash-on-dead-horse\" option is missing from the config !");
+			conform = false;
+		}
 		if (!zh.getConfig().isSet("Settings.block-leashed-teleport")) {
 			zh.getLogger().severe("The \"Settings.block-leashed-teleport\" option is missing from the config !");
 			conform = false;

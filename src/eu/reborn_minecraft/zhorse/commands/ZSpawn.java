@@ -69,30 +69,33 @@ public class ZSpawn extends Command {
 	}
 
 	private void parseArguments() {
-		for (int i = 1; i < a.length; ++i) {
-			String argument = a[i];
-			boolean parsed = false;
-			if (!parsed) {
-				parsed = parseBaby(argument);
-			}
-			if (!parsed) {
-				parsed = parseTamed(argument);
-			}
-			if (!parsed) {
-				parsed = parseDoubles(argument);
-			}
-			if (!parsed) {
-				parsed = parseVariant(argument);
-			}
-			if (!parsed) {
-				parsed = parseStyle(argument);
-			}
-			if (!parsed) {
-				parsed = parseColor(argument);
-			}
-			if (!parsed) {
-				valid = false;
-				zh.getMM().sendMessageValue(s, LocaleEnum.unknownSpawnArgument, argument);
+		if (!argument.isEmpty()) {
+			String[] argumentArray = argument.split(" "); // not using super.a to skip flags
+			for (int i = 0; i < argumentArray.length; ++i) {
+				String argument = argumentArray[i];
+				boolean parsed = false;
+				if (!parsed) {
+					parsed = parseBaby(argument);
+				}
+				if (!parsed) {
+					parsed = parseTamed(argument);
+				}
+				if (!parsed) {
+					parsed = parseDoubles(argument);
+				}
+				if (!parsed) {
+					parsed = parseVariant(argument);
+				}
+				if (!parsed) {
+					parsed = parseStyle(argument);
+				}
+				if (!parsed) {
+					parsed = parseColor(argument);
+				}
+				if (!parsed) {
+					valid = false;
+					zh.getMM().sendMessageValue(s, LocaleEnum.unknownSpawnArgument, argument);
+				}
 			}
 		}
 	}
