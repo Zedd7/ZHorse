@@ -14,9 +14,12 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.LeashHitch;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.utils.AsyncChunckLoad;
+import net.md_5.bungee.api.ChatColor;
 
 public class HorseManager {
 	
@@ -27,6 +30,8 @@ public class HorseManager {
 	public static final double MAX_HEALTH = 30.0;
 	public static final double MAX_JUMP_STRENGTH = 1.2;
 	public static final double MAX_SPEED = 1.0;
+	
+	private static final int TICK_PER_SECOND = 20;
 	
 	private ZHorse zh;
 	
@@ -109,7 +114,7 @@ public class HorseManager {
 			removeLeash(sourceHorse);
 			unloadHorse(sourceHorse);
 			loadHorse(copyHorse);
-			sourceHorse.remove();
+			removeHorse(sourceHorse);
 			zh.getUM().updateHorse(playerUUID, userID, copyHorse);
 		}
 		return copyHorse;
@@ -125,9 +130,32 @@ public class HorseManager {
 			horse.getWorld().dropItem(horse.getLocation(), leash);
 		}
 	}
+	
+	private void removeHorse(Horse horse) {
+		World world = horse.getWorld();
+		int effectDuration = 3;
+		horse.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, effectDuration * TICK_PER_SECOND, 0));
+		horse.remove();
+		new Thread() {
+			public void run() {
+				try {
+					sleep(effectDuration * 1000);
+					if (world.getEntitiesByClass(horse.getClass()).contains(horse)) {
+						Location location = horse.getLocation();
+						int x = (int) location.getX();
+						int y = (int) location.getY();
+						int z = (int) location.getZ();
+						String warning = "A horse was duplicated at location %s:%s:%s in world %s, killing it.";
+						zh.getServer().broadcast(ChatColor.RED + String.format(warning, x, y, z, world.getName()), "zh.admin");
+						horse.setHealth(0);
+					}
+				} catch (Exception e) {}
+			}
+		}.start();
+	}
 
 	private void copyAttributes(Horse sourceHorse, Horse copyHorse) {	
-		// Define maximumof value before actual value to keep it in valid range
+		// Define maximum of value before actual value to keep it in valid range
 		copyHorse.setMaxDomestication(sourceHorse.getMaxDomestication());
 		copyHorse.setMaxHealth(sourceHorse.getMaxHealth());
 		copyHorse.setMaximumAir(sourceHorse.getMaximumAir());
