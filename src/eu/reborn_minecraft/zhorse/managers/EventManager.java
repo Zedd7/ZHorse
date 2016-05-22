@@ -29,6 +29,7 @@ import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerUnleashEntityEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
@@ -264,12 +265,12 @@ public class EventManager implements Listener {
 
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent e) {
-		if (e.getPlayer().getVehicle() instanceof Horse) {
-			Horse horse = (Horse) e.getPlayer().getVehicle();
-			if (zh.getUM().isRegistered(horse)) {
-				horse.eject();
-			}
-		}
+		ejectPlayer(e.getPlayer());
+	}
+
+	@EventHandler
+	public void onPlayerKick(PlayerKickEvent e) {
+		ejectPlayer(e.getPlayer());
 	}
 	
 	@EventHandler
@@ -308,6 +309,15 @@ public class EventManager implements Listener {
 					p.getInventory().remove(item);
 				}
 				updateInventory(p);
+			}
+		}
+	}
+	
+	private void ejectPlayer(Player p) {
+		if (p.getVehicle() instanceof Horse) {
+			Horse horse = (Horse) p.getVehicle();
+			if (zh.getUM().isRegistered(horse)) {
+				horse.eject();
 			}
 		}
 	}
