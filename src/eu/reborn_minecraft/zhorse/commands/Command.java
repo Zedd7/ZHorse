@@ -100,7 +100,7 @@ public class Command {
 			targetName = s.getName();
 		}
 		else {
-			targetName = zh.getUM().getPlayerName(targetName); // correction de la casse
+			targetName = zh.getUM().getPlayerName(targetName); // make the case match
 			targetUUID = getPlayerUUID(targetName);
 		}
 		adminMode = adminMode || (zh.getCM().isAutoAdminModeEnabled(command) && hasPermissionAdmin(true));
