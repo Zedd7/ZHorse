@@ -226,11 +226,9 @@ public class Command {
 	
 	protected String getRemainingClaimsMessage(UUID playerUUID) {
 		String message = "";
-		//if (samePlayer || isPlayerOnline(playerUUID, true)) {
-			int claimsAmount = zh.getUM().getClaimsAmount(playerUUID);
-			int maxClaims = zh.getCM().getClaimsLimit(playerUUID);
-			message = zh.getMM().getMessageAmountMax(s, LocaleEnum.remainingClaimsFormat, claimsAmount, maxClaims, true);
-		//}
+		int claimsAmount = zh.getUM().getClaimsAmount(playerUUID);
+		int maxClaims = zh.getCM().getClaimsLimit(playerUUID);
+		message = zh.getMM().getMessageAmountMax(s, LocaleEnum.remainingClaimsFormat, claimsAmount, maxClaims, true);
 		return message;
 	}
 	
