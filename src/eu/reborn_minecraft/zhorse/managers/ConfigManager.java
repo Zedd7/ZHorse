@@ -109,11 +109,9 @@ public class ConfigManager {
 					groupName = zh.getPerms().getPrimaryGroup(world, op);
 				}
 			}
+			groupName = getExactGroupName(groupName);
 			if (p != null && p.hasPlayedBefore() && (groupName == null || !zh.getConfig().contains(KeyWordEnum.groupsPrefix.getValue() + groupName))) {
 				groupName = getSurrogateGroupName(p);
-			}
-			else {
-				groupName = getExactGroupName(groupName);
 			}
 		}
 		return groupName;

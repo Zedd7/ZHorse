@@ -74,11 +74,11 @@ Groups:
   # The permission is optional if the group is defined in a perms plugin.
   # Membership of the group is simulated for whoever has the permission.
   
-  default:
+  visitor:
     color: <f>
     color-bypass: false
     claims-limit: 0
-    permission: zh.group.default
+    permission: zh.group.visitor
   player:
     color: <dark_aqua>
     color-bypass: false
