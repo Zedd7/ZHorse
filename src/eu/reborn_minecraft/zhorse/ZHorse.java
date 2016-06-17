@@ -14,6 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import eu.reborn_minecraft.zhorse.managers.CommandManager;
 import eu.reborn_minecraft.zhorse.managers.ConfigManager;
+import eu.reborn_minecraft.zhorse.managers.DataManager;
 import eu.reborn_minecraft.zhorse.managers.EconomyManager;
 import eu.reborn_minecraft.zhorse.managers.EventManager;
 import eu.reborn_minecraft.zhorse.managers.HorseManager;
@@ -44,6 +45,7 @@ public class ZHorse extends JavaPlugin {
 	private LocaleManager localeManager;
 	private MessageManager messageManager;
 	private UserManager userManager;
+	private DataManager dataManager;
 	
 	@Override
 	public void onEnable() {
@@ -120,6 +122,7 @@ public class ZHorse extends JavaPlugin {
 		commandManager = new CommandManager(this);
 		configManager = new ConfigManager(this);
 		userManager = new UserManager(this);
+		dataManager = new DataManager(this);
 		economyManager = new EconomyManager(this);
 		eventManager = new EventManager(this);
 		horseManager = new HorseManager(this);
@@ -232,6 +235,10 @@ public class ZHorse extends JavaPlugin {
 	
     public ConfigManager getCM() {
     	return configManager;
+    }
+    
+    public DataManager getDM() {
+    	return dataManager;
     }
     
 	public Economy getEcon() {
