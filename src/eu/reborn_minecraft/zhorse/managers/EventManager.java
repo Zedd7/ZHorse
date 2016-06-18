@@ -73,12 +73,12 @@ public class EventManager implements Listener {
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onChunkLoad(ChunkLoadEvent e) {
-		new AsyncChunckLoad(zh, e);
+		new AsyncChunckLoad(zh, e.getChunk());
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onChunkUnload(ChunkUnloadEvent e) {
-		new AsyncChunckUnload(zh, e);
+		new AsyncChunckUnload(zh, e.getChunk());
 	}
 	
 	@EventHandler
@@ -181,7 +181,7 @@ public class EventManager implements Listener {
 		if (!removeCause.equals(RemoveCause.ENTITY)) {
 			if (e.getEntity() instanceof LeashHitch) {
 				LeashHitch leashHitch = (LeashHitch) e.getEntity();
-				for (Horse horse : zh.getLoadedHorses().values()) {
+				for (Horse horse : zh.getHM().getLoadedHorses().values()) {
 					if (horse.isLeashed()) {
 						Entity leashHolder = horse.getLeashHolder();
 						if (leashHitch.equals(leashHolder)) {
@@ -198,7 +198,7 @@ public class EventManager implements Listener {
 	public void onHangingBreakByEntity(HangingBreakByEntityEvent e) {
 		if (e.getEntity() instanceof LeashHitch) {
 			LeashHitch leashHitch = (LeashHitch) e.getEntity();
-			for (Horse horse : zh.getLoadedHorses().values()) {
+			for (Horse horse : zh.getHM().getLoadedHorses().values()) {
 				if (horse.isLeashed()) {
 					Entity leashHolder = horse.getLeashHolder();
 					if (leashHitch.equals(leashHolder)) {

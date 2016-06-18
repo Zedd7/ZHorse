@@ -314,6 +314,18 @@ public class UserManager {
 		return null;
 	}
 	
+	private boolean hasLocationChanged(Location oldLoc, Location newLoc) {
+		int oldX = oldLoc.getBlockX();
+		int oldY = oldLoc.getBlockY();
+		int oldZ = oldLoc.getBlockZ();
+		
+		int newX = newLoc.getBlockX();
+		int newY = newLoc.getBlockY();
+		int newZ = newLoc.getBlockZ();
+		
+		return oldX != newX || oldY != newY || oldZ != newZ;
+	}
+	
 	public boolean isClaimedBy(UUID playerUUID, Horse horse) {
 		if (cachedIsClaimedBy.containsKey(horse.getUniqueId()) && cachedIsClaimedBy.get(horse.getUniqueId()).equals(playerUUID)) {
 			return true;
@@ -400,33 +412,41 @@ public class UserManager {
 	
 	public void lock(UUID playerUUID, Horse horse) {
 		if (playerUUID != null && horse != null) {
-			String userId = getUserID(playerUUID, horse);
-	        setHorseData(playerUUID, userId, KeyWordEnum.modeLocked.getValue(), true);
-			zh.saveUsers();
+			String userID = getUserID(playerUUID, horse);
+			if (!isLocked(playerUUID, userID)) {
+				setHorseData(playerUUID, userID, KeyWordEnum.modeLocked.getValue(), true);
+				zh.saveUsers();
+			}
 		}
 	}
 	
 	public void unLock(UUID playerUUID, Horse horse) {
 		if (playerUUID != null && horse != null) {
-			String userId = getUserID(playerUUID, horse);
-			setHorseData(playerUUID, userId, KeyWordEnum.modeLocked.getValue(), false);
-			zh.saveUsers();
+			String userID = getUserID(playerUUID, horse);
+			if (isLocked(playerUUID, userID)) {
+				setHorseData(playerUUID, userID, KeyWordEnum.modeLocked.getValue(), false);
+				zh.saveUsers();
+			}
 		}
 	}
 	
 	public void protect(UUID playerUUID, Horse horse) {
 		if (playerUUID != null && horse != null) {
 			String userID = getUserID(playerUUID, horse);
-			setHorseData(playerUUID, userID, KeyWordEnum.modeProtected.getValue(), true);
-			zh.saveUsers();
+			if (!isProtected(playerUUID, userID)) {
+				setHorseData(playerUUID, userID, KeyWordEnum.modeProtected.getValue(), true);
+				zh.saveUsers();
+			}
 		}
 	}
 	
 	public void unProtect(UUID playerUUID, Horse horse) {
 		if (playerUUID != null && horse != null) {
 			String userID = getUserID(playerUUID, horse);
-			setHorseData(playerUUID, userID, KeyWordEnum.modeProtected.getValue(), false);
-			zh.saveUsers();
+			if (isProtected(playerUUID, userID)) {
+				setHorseData(playerUUID, userID, KeyWordEnum.modeProtected.getValue(), false);
+				zh.saveUsers();
+			}
 		}
 	}
 	
@@ -435,7 +455,7 @@ public class UserManager {
 			if (!isRegistered(playerUUID)) {
 				registerPlayer(playerUUID);
 			}
-			if (isRegistered(horse)) { // if horse is given, unregister it from giver's list
+			if (isRegistered(horse)) { // if horse is a gift, unregister it from giver's list
 				unRegisterHorse(horse);
 			}
 			String userID = getNextUserID(playerUUID);
@@ -448,7 +468,6 @@ public class UserManager {
 			saveLocation(playerUUID, horse, userID);
 			
 			zh.getHM().loadHorse(horse);
-			zh.saveUsers();
 		}
 	}
 	
@@ -469,22 +488,28 @@ public class UserManager {
 	public void rename(UUID playerUUID, Horse horse, String horseName) {
 		if (playerUUID != null && horse != null && horseName != null) {
 			String userID = getUserID(playerUUID, horse);
-			setHorseData(playerUUID, userID, KeyWordEnum.name.getValue(), horseName);
-			zh.saveUsers();
+			if (!getHorseName(playerUUID, userID).equals(horseName)) {
+				setHorseData(playerUUID, userID, KeyWordEnum.name.getValue(), horseName);
+				zh.saveUsers();
+			}
 		}
 	}
 	
 	public void saveFavorite(UUID playerUUID, String userID) {
 		if (playerUUID != null && userID != null) {
-			setPlayerData(playerUUID, KeyWordEnum.favorite.getValue(), userID);
-			zh.saveUsers();
+			if (!getFavoriteUserID(playerUUID).equals(userID)) {
+				setPlayerData(playerUUID, KeyWordEnum.favorite.getValue(), userID);
+				zh.saveUsers();
+			}
 		}
 	}
 	
 	public void saveLanguage(UUID playerUUID, String language) {
 		if (playerUUID != null && language != null) {
-			setPlayerData(playerUUID, KeyWordEnum.language.getValue(), language);
-			zh.saveUsers();
+			if (!getLanguage(playerUUID).equals(language)) {
+				setPlayerData(playerUUID, KeyWordEnum.language.getValue(), language);
+				zh.saveUsers();
+			}
 		}
 	}
 	
@@ -493,26 +518,28 @@ public class UserManager {
 			UUID playerUUID = getPlayerUUID(horse);
 			String userID = getUserID(playerUUID, horse);
 			saveLocation(playerUUID, horse, userID);
-			zh.saveUsers();
 		}
 	}
 	
 	public void saveLocation(UUID playerUUID, Horse horse, String userID) {
 		if (playerUUID != null && horse != null && userID != null) {
-			String world = horse.getWorld().getName();
-			Double xLoc = horse.getLocation().getX();
-			Double yLoc = horse.getLocation().getY();
-			Double zLoc = horse.getLocation().getZ();
-			String xPos = Integer.toString(xLoc.intValue());
-			String yPos = Integer.toString(yLoc.intValue());
-			String zPos = Integer.toString(zLoc.intValue());
-			setHorseData(playerUUID, userID, KeyWordEnum.location.getValue() + KeyWordEnum.dot.getValue() + KeyWordEnum.world.getValue(), world);
-			setHorseData(playerUUID, userID, KeyWordEnum.location.getValue() + KeyWordEnum.dot.getValue() + KeyWordEnum.x.getValue(), xPos);
-			setHorseData(playerUUID, userID, KeyWordEnum.location.getValue() + KeyWordEnum.dot.getValue() + KeyWordEnum.y.getValue(), yPos);
-			setHorseData(playerUUID, userID, KeyWordEnum.location.getValue() + KeyWordEnum.dot.getValue() + KeyWordEnum.z.getValue(), zPos);
+			if (hasLocationChanged(getLocation(playerUUID, userID), horse.getLocation())) {
+				String world = horse.getWorld().getName();
+				Double xLoc = horse.getLocation().getX();
+				Double yLoc = horse.getLocation().getY();
+				Double zLoc = horse.getLocation().getZ();
+				String xPos = Integer.toString(xLoc.intValue());
+				String yPos = Integer.toString(yLoc.intValue());
+				String zPos = Integer.toString(zLoc.intValue());
+				setHorseData(playerUUID, userID, KeyWordEnum.location.getValue() + KeyWordEnum.dot.getValue() + KeyWordEnum.world.getValue(), world);
+				setHorseData(playerUUID, userID, KeyWordEnum.location.getValue() + KeyWordEnum.dot.getValue() + KeyWordEnum.x.getValue(), xPos);
+				setHorseData(playerUUID, userID, KeyWordEnum.location.getValue() + KeyWordEnum.dot.getValue() + KeyWordEnum.y.getValue(), yPos);
+				setHorseData(playerUUID, userID, KeyWordEnum.location.getValue() + KeyWordEnum.dot.getValue() + KeyWordEnum.z.getValue(), zPos);
+				zh.saveUsers();
+			}
 		}
 	}
-	
+
 	private void setHorseData(UUID playerUUID, String userID, String path, String value) {
 		if (playerUUID != null && userID != null && path != null) {
 			setStringData(getHorsePath(playerUUID, userID, path), value);
@@ -572,16 +599,20 @@ public class UserManager {
 	public void share(UUID playerUUID, Horse horse) {
 		if (playerUUID != null && horse != null) {
 			String userID = getUserID(playerUUID, horse);
-			setHorseData(playerUUID, userID, KeyWordEnum.modeShared.getValue(), true);
-			zh.saveUsers();
+			if (!isShared(playerUUID, userID)) {
+				setHorseData(playerUUID, userID, KeyWordEnum.modeShared.getValue(), true);
+				zh.saveUsers();
+			}
 		}
 	}
 	
 	public void unShare(UUID playerUUID, Horse horse) {
 		if (playerUUID != null && horse != null) {
 			String userID = getUserID(playerUUID, horse);
-			setHorseData(playerUUID, userID, KeyWordEnum.modeShared.getValue(), false);
-			zh.saveUsers();
+			if (isShared(playerUUID, userID)) {
+				setHorseData(playerUUID, userID, KeyWordEnum.modeShared.getValue(), false);
+				zh.saveUsers();
+			}
 		}
 	}
 	
@@ -596,7 +627,6 @@ public class UserManager {
 		if (playerUUID != null && userID != null && horse != null) {
 			setHorseData(playerUUID, userID, KeyWordEnum.uuid.getValue(), horse.getUniqueId().toString());
 			saveLocation(playerUUID, horse, userID);
-			zh.saveUsers();
 		}
 	}
 	
