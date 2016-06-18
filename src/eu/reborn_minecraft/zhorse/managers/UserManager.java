@@ -148,12 +148,14 @@ public class UserManager {
 	public Location getLocation(UUID playerUUID, String userID) {
 		if (playerUUID != null && userID != null) {
 			String worldName = getHorseData(playerUUID, userID, KeyWordEnum.location.getValue() + KeyWordEnum.dot.getValue() + KeyWordEnum.world.getValue(), null);
-			World world = zh.getServer().getWorld(worldName);
-			if (world != null) {
-				double x = Double.parseDouble(getHorseData(playerUUID, userID, KeyWordEnum.location.getValue() + KeyWordEnum.dot.getValue() + KeyWordEnum.x.getValue(), null));
-				double y = Double.parseDouble(getHorseData(playerUUID, userID, KeyWordEnum.location.getValue() + KeyWordEnum.dot.getValue() + KeyWordEnum.y.getValue(), null));
-				double z = Double.parseDouble(getHorseData(playerUUID, userID, KeyWordEnum.location.getValue() + KeyWordEnum.dot.getValue() + KeyWordEnum.z.getValue(), null));
-				return new Location(world, x, y, z);
+			if (worldName != null) {
+				World world = zh.getServer().getWorld(worldName);
+				if (world != null) {
+					double x = Double.parseDouble(getHorseData(playerUUID, userID, KeyWordEnum.location.getValue() + KeyWordEnum.dot.getValue() + KeyWordEnum.x.getValue(), null));
+					double y = Double.parseDouble(getHorseData(playerUUID, userID, KeyWordEnum.location.getValue() + KeyWordEnum.dot.getValue() + KeyWordEnum.y.getValue(), null));
+					double z = Double.parseDouble(getHorseData(playerUUID, userID, KeyWordEnum.location.getValue() + KeyWordEnum.dot.getValue() + KeyWordEnum.z.getValue(), null));
+					return new Location(world, x, y, z);
+				}
 			}
 		}
 		return null;
@@ -315,15 +317,18 @@ public class UserManager {
 	}
 	
 	private boolean hasLocationChanged(Location oldLoc, Location newLoc) {
-		int oldX = oldLoc.getBlockX();
-		int oldY = oldLoc.getBlockY();
-		int oldZ = oldLoc.getBlockZ();
-		
-		int newX = newLoc.getBlockX();
-		int newY = newLoc.getBlockY();
-		int newZ = newLoc.getBlockZ();
-		
-		return oldX != newX || oldY != newY || oldZ != newZ;
+		if (oldLoc != null && newLoc != null) {
+			int oldX = oldLoc.getBlockX();
+			int oldY = oldLoc.getBlockY();
+			int oldZ = oldLoc.getBlockZ();
+			
+			int newX = newLoc.getBlockX();
+			int newY = newLoc.getBlockY();
+			int newZ = newLoc.getBlockZ();
+			
+			return oldX != newX || oldY != newY || oldZ != newZ;
+		}
+		return true;
 	}
 	
 	public boolean isClaimedBy(UUID playerUUID, Horse horse) {
