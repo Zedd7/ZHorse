@@ -70,12 +70,7 @@ public class HorseManager {
 			horse = getHorseInChunk(horseUUID, location.getChunk());
 			if (horse == null) {
 				List<Chunk> neighboringChunks = getChunksInRegion(location, 2);
-				for (Chunk chunk : neighboringChunks) {
-					horse = getHorseInChunk(horseUUID, chunk);
-					if (horse != null) {
-						break;
-					}
-				}
+				horse = getHorseInRegion(horseUUID, neighboringChunks);
 			}
 		}
 		return horse;
@@ -88,6 +83,17 @@ public class HorseManager {
 			}
 		}
 		return null;
+	}
+	
+	private Horse getHorseInRegion(UUID horseUUID, List<Chunk> region) {
+		Horse horse = null;
+		for (Chunk chunk : region) {
+			horse = getHorseInChunk(horseUUID, chunk);
+			if (horse != null) {
+				return horse;
+			}
+		}
+		return horse;
 	}
 	
 	private List<Chunk> getChunksInRegion(Location center, int chunkRange) {
@@ -168,6 +174,7 @@ public class HorseManager {
 			if (leashHolder instanceof LeashHitch) {
 				leashHolder.remove();
 			}
+			horse.setLeashHolder(null);
 			ItemStack leash = new ItemStack(Material.LEASH);
 			horse.getWorld().dropItem(horse.getLocation(), leash);
 		}
@@ -175,21 +182,30 @@ public class HorseManager {
 	
 	private void removeHorse(Horse horse) {
 		World world = horse.getWorld();
-		int effectDuration = 3;
-		horse.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, effectDuration * TICK_PER_SECOND, 0));
+		int invisibilityDuration = 3;
+		horse.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, invisibilityDuration * TICK_PER_SECOND, 0));
+		horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0);
+		horse.getInventory().clear();
+		horse.setAI(false);
+		
+		UUID horseUUID = horse.getUniqueId();
+		Location horseLocation = horse.getLocation();
 		horse.remove();
 		new Thread() {
 			public void run() {
 				try {
-					sleep(effectDuration * 1000);
-					if (world.getEntitiesByClass(horse.getClass()).contains(horse)) {
-						Location location = horse.getLocation();
-						int x = (int) location.getX();
-						int y = (int) location.getY();
-						int z = (int) location.getZ();
-						String warning = "A horse was duplicated at location %s:%s:%s in world %s, killing it.";
-						zh.getServer().broadcast(ChatColor.RED + String.format(warning, x, y, z, world.getName()), "zh.admin");
-						horse.setHealth(0);
+					sleep(invisibilityDuration * 1000);
+					List<Chunk> neighboringChunks = getChunksInRegion(horseLocation, 1);
+					Horse duplicatedHorse = getHorseInRegion(horseUUID, neighboringChunks);
+					if (duplicatedHorse != null) {
+						Location location = duplicatedHorse.getLocation();
+						int x = location.getBlockX();
+						int y = location.getBlockY();
+						int z = location.getBlockZ();
+						String warning = String.format("A horse was duplicated at location %s:%s:%s in world %s, killing it.", x, y, z, world.getName());
+						zh.getServer().broadcast(ChatColor.RED + warning, "zh.admin");
+						zh.getLogger().severe(warning);
+						duplicatedHorse.setHealth(0);
 					}
 				} catch (Exception e) {}
 			}
