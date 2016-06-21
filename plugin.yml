@@ -1,6 +1,6 @@
  main: eu.reborn_minecraft.zhorse.ZHorse
  name: ZHorse
- version: 1.5.2 snapshot 4
+ version: 1.5.2 snapshot
  depend: [Vault]
  description: This plugin provides an enhanced management of horses
  author: Z3dd7

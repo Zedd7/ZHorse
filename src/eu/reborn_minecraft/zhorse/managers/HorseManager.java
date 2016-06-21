@@ -95,20 +95,6 @@ public class HorseManager {
 		}
 		return horse;
 	}
-	
-	private List<Chunk> getChunksInRegion(Location center, int chunkRange) {
-		World world = center.getWorld();
-		Location NWCorner = new Location(world, center.getX() - 16 * chunkRange, 0, center.getZ() - 16 * chunkRange);
-		Location SECorner = new Location(world, center.getX() + 16 * chunkRange, 0, center.getZ() + 16 * chunkRange);
-		List<Chunk> chunkList = new ArrayList<Chunk>();
-		for (int x = NWCorner.getBlockX(); x <= SECorner.getBlockX(); x += 16) {
-			for (int z = NWCorner.getBlockZ(); z <= SECorner.getBlockZ(); z += 16) {
-				// WARN w.getChunkAt(x, z) uses chunk coordinates (loc % 16)
-				chunkList.add(world.getChunkAt(new Location(world, x, 0, z)));
-			}
-		}
-		return chunkList;
-	}
 
 	public Horse getLoadedHorse(UUID horseUUID) {
 		return loadedHorses.get(horseUUID);
@@ -251,6 +237,20 @@ public class HorseManager {
 	private void copyInventory(Horse sourceHorse, Horse copyHorse) {
 		copyHorse.setCarryingChest(sourceHorse.isCarryingChest());
 		copyHorse.getInventory().setContents(sourceHorse.getInventory().getContents());
+	}
+	
+	private List<Chunk> getChunksInRegion(Location center, int chunkRange) {
+		World world = center.getWorld();
+		Location NWCorner = new Location(world, center.getX() - 16 * chunkRange, 0, center.getZ() - 16 * chunkRange);
+		Location SECorner = new Location(world, center.getX() + 16 * chunkRange, 0, center.getZ() + 16 * chunkRange);
+		List<Chunk> chunkList = new ArrayList<Chunk>();
+		for (int x = NWCorner.getBlockX(); x <= SECorner.getBlockX(); x += 16) {
+			for (int z = NWCorner.getBlockZ(); z <= SECorner.getBlockZ(); z += 16) {
+				// WARN : w.getChunkAt(x, z) uses chunk coordinates (loc % 16)
+				chunkList.add(world.getChunkAt(new Location(world, x, 0, z)));
+			}
+		}
+		return chunkList;
 	}
 
 }
