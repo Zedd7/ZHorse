@@ -1,6 +1,10 @@
 package eu.reborn_minecraft.zhorse.managers;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
@@ -34,6 +38,7 @@ public class HorseManager {
 	private static final int TICK_PER_SECOND = 20;
 	
 	private ZHorse zh;
+	private Map<UUID, Horse> loadedHorses = new HashMap<UUID, Horse>();
 	
 	public HorseManager(ZHorse zh) {
 		this.zh = zh;
@@ -52,35 +57,64 @@ public class HorseManager {
 				horse = getLoadedHorse(horseUUID);
 				if (horse == null) {
 					Location location = zh.getUM().getLocation(playerUUID, userID);
-					if (location != null) {
-						Entity[] entities = location.getChunk().getEntities();
-						for (int i=0; i < entities.length && horse == null; ++i) {
-							if (entities[i].getUniqueId().equals(horseUUID)) {
-								horse = (Horse) entities[i];
-							}
-						}
-					}
+					horse = getHorseFromLocation(horseUUID, location);
 				}
 			}
 		}
 		return horse;
 	}
 	
+	private Horse getHorseFromLocation(UUID horseUUID, Location location) {
+		Horse horse = null;
+		if (location != null) {
+			horse = getHorseInChunk(horseUUID, location.getChunk());
+			if (horse == null) {
+				List<Chunk> neighboringChunks = getChunksInRegion(location, 2);
+				horse = getHorseInRegion(horseUUID, neighboringChunks);
+			}
+		}
+		return horse;
+	}
+
+	private Horse getHorseInChunk(UUID horseUUID, Chunk chunk) {
+		for (Entity entity : chunk.getEntities()) {
+			if (entity.getUniqueId().equals(horseUUID)) {
+				return (Horse) entity;
+			}
+		}
+		return null;
+	}
+	
+	private Horse getHorseInRegion(UUID horseUUID, List<Chunk> region) {
+		Horse horse = null;
+		for (Chunk chunk : region) {
+			horse = getHorseInChunk(horseUUID, chunk);
+			if (horse != null) {
+				return horse;
+			}
+		}
+		return horse;
+	}
+
 	public Horse getLoadedHorse(UUID horseUUID) {
-		return zh.getLoadedHorses().get(horseUUID);
+		return loadedHorses.get(horseUUID);
+	}
+	
+	public Map<UUID, Horse> getLoadedHorses() {
+		return loadedHorses;
 	}
 	
 	public void loadHorse(Horse horse) {
 		UUID horseUUID = horse.getUniqueId();
-		if (!zh.getLoadedHorses().containsKey(horseUUID)) {
-			zh.getLoadedHorses().put(horseUUID, horse);
+		if (!loadedHorses.containsKey(horseUUID)) {
+			loadedHorses.put(horseUUID, horse);
 		}
 	}
 	
 	public void loadHorses() {
 		for (World world : zh.getServer().getWorlds()) {
 			for (Chunk chunk : world.getLoadedChunks()) {
-				AsyncChunckLoad.asyncChunkLoadScheduler(zh, chunk);
+				new AsyncChunckLoad(zh, chunk);
 			}
 		}
 	}
@@ -90,13 +124,13 @@ public class HorseManager {
 	}
 	
 	public void unloadHorse(UUID horseUUID) {
-		if (zh.getLoadedHorses().containsKey(horseUUID)) {
-			zh.getLoadedHorses().remove(horseUUID);
+		if (loadedHorses.containsKey(horseUUID)) {
+			loadedHorses.remove(horseUUID);
 		}
 	}
 	
 	public void unloadHorses() {
-		Iterator<Entry<UUID, Horse>> loadedHorsesItr = zh.getLoadedHorses().entrySet().iterator();
+		Iterator<Entry<UUID, Horse>> loadedHorsesItr = loadedHorses.entrySet().iterator();
 		while (loadedHorsesItr.hasNext()) {
 			Horse horse = loadedHorsesItr.next().getValue();
 			zh.getUM().saveLocation(horse);
@@ -126,6 +160,7 @@ public class HorseManager {
 			if (leashHolder instanceof LeashHitch) {
 				leashHolder.remove();
 			}
+			horse.setLeashHolder(null);
 			ItemStack leash = new ItemStack(Material.LEASH);
 			horse.getWorld().dropItem(horse.getLocation(), leash);
 		}
@@ -133,21 +168,30 @@ public class HorseManager {
 	
 	private void removeHorse(Horse horse) {
 		World world = horse.getWorld();
-		int effectDuration = 3;
-		horse.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, effectDuration * TICK_PER_SECOND, 0));
+		int invisibilityDuration = 3;
+		horse.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, invisibilityDuration * TICK_PER_SECOND, 0));
+		horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0);
+		horse.getInventory().clear();
+		horse.setAI(false);
+		
+		UUID horseUUID = horse.getUniqueId();
+		Location horseLocation = horse.getLocation();
 		horse.remove();
 		new Thread() {
 			public void run() {
 				try {
-					sleep(effectDuration * 1000);
-					if (world.getEntitiesByClass(horse.getClass()).contains(horse)) {
-						Location location = horse.getLocation();
-						int x = (int) location.getX();
-						int y = (int) location.getY();
-						int z = (int) location.getZ();
-						String warning = "A horse was duplicated at location %s:%s:%s in world %s, killing it.";
-						zh.getServer().broadcast(ChatColor.RED + String.format(warning, x, y, z, world.getName()), "zh.admin");
-						horse.setHealth(0);
+					sleep(invisibilityDuration * 1000);
+					List<Chunk> neighboringChunks = getChunksInRegion(horseLocation, 1);
+					Horse duplicatedHorse = getHorseInRegion(horseUUID, neighboringChunks);
+					if (duplicatedHorse != null) {
+						Location location = duplicatedHorse.getLocation();
+						int x = location.getBlockX();
+						int y = location.getBlockY();
+						int z = location.getBlockZ();
+						String warning = String.format("A horse was duplicated at location %s:%s:%s in world %s, killing it.", x, y, z, world.getName());
+						zh.getServer().broadcast(ChatColor.RED + warning, "zh.admin");
+						zh.getLogger().severe(warning);
+						duplicatedHorse.setHealth(0);
 					}
 				} catch (Exception e) {}
 			}
@@ -193,6 +237,20 @@ public class HorseManager {
 	private void copyInventory(Horse sourceHorse, Horse copyHorse) {
 		copyHorse.setCarryingChest(sourceHorse.isCarryingChest());
 		copyHorse.getInventory().setContents(sourceHorse.getInventory().getContents());
+	}
+	
+	private List<Chunk> getChunksInRegion(Location center, int chunkRange) {
+		World world = center.getWorld();
+		Location NWCorner = new Location(world, center.getX() - 16 * chunkRange, 0, center.getZ() - 16 * chunkRange);
+		Location SECorner = new Location(world, center.getX() + 16 * chunkRange, 0, center.getZ() + 16 * chunkRange);
+		List<Chunk> chunkList = new ArrayList<Chunk>();
+		for (int x = NWCorner.getBlockX(); x <= SECorner.getBlockX(); x += 16) {
+			for (int z = NWCorner.getBlockZ(); z <= SECorner.getBlockZ(); z += 16) {
+				// WARN : w.getChunkAt(x, z) uses chunk coordinates (loc % 16)
+				chunkList.add(world.getChunkAt(new Location(world, x, 0, z)));
+			}
+		}
+		return chunkList;
 	}
 
 }
