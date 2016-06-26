@@ -18,6 +18,7 @@ import eu.reborn_minecraft.zhorse.enums.CommandEnum;
 import eu.reborn_minecraft.zhorse.enums.CommandSettingsEnum;
 import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
+import eu.reborn_minecraft.zhorse.managers.MessageManager;
 import net.md_5.bungee.api.ChatColor;
 
 public class Command {
@@ -143,8 +144,8 @@ public class Command {
 	
 	protected void applyHorseName() {
 		String customHorseName;
-		if (zh.getMM().isColorized(argument) && zh.getCM().isColorBypassEnabled(p.getUniqueId())) {
-			customHorseName = zh.getMM().applyColors(argument);
+		if (MessageManager.isColorized(argument) && zh.getCM().isColorBypassEnabled(p.getUniqueId())) {
+			customHorseName = MessageManager.applyColors(argument);
 		}
 		else {
 			String groupColorCode = zh.getCM().getGroupColorCode(targetUUID);
@@ -271,7 +272,7 @@ public class Command {
     	if (!ignoreModes && (adminMode || (targetMode && !needTarget)) ) {
     		return hasPermissionAdmin(s, command, hideConsole);
     	}
-    	if (zh.getPerms().has(s, permission)) {
+    	if (zh.getPM().has(s, permission)) {
     		return true;
     	}
     	else if (displayConsole && !hideConsole) {
@@ -294,7 +295,7 @@ public class Command {
 	
 	protected boolean hasPermissionAdmin(CommandSender s, String command, boolean hideConsole) {
 		String permission = KeyWordEnum.zhPrefix.getValue() + command + KeyWordEnum.adminSuffix.getValue();
-		if (zh.getPerms().has(s, permission)) {
+		if (zh.getPM().has(s, permission)) {
         	return true;
 		}
         else if (displayConsole && !hideConsole) {

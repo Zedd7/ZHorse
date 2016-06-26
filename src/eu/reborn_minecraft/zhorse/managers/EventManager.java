@@ -152,7 +152,7 @@ public class EventManager implements Listener {
 				String[] a = {CommandEnum.claim.getName()};
 				new ZClaim(zh, (CommandSender) e.getOwner(), a);
 			}
-			else if (zh.getPerms().has((Player) e.getOwner(), KeyWordEnum.zhPrefix.getValue() + CommandEnum.claim.getName())) {
+			else if (zh.getPM().has((Player) e.getOwner(), KeyWordEnum.zhPrefix.getValue() + CommandEnum.claim.getName())) {
 				if (displayConsole) {
 					zh.getMM().sendMessage((CommandSender) e.getOwner(), LocaleEnum.horseManuallyTamed);
 				}
@@ -352,7 +352,7 @@ public class EventManager implements Listener {
 		if (zh.getCM().isProtectionEnabled(PLAYER_ATTACK)) {
 			boolean isOwner = zh.getUM().isClaimedBy(p.getUniqueId(), horse);
 			boolean isOwnerAttackBlocked = zh.getCM().isProtectionEnabled(OWNER_ATTACK);
-			boolean hasAdminPerm = zh.getPerms().has(p, KeyWordEnum.zhPrefix.getValue() + CommandEnum.protect.getName() + KeyWordEnum.adminSuffix.getValue());
+			boolean hasAdminPerm = zh.getPM().has(p, KeyWordEnum.zhPrefix.getValue() + CommandEnum.protect.getName() + KeyWordEnum.adminSuffix.getValue());
 			if (!((isOwner && !isOwnerAttackBlocked) ||	hasAdminPerm)) {
 				if (displayConsole) {
 					String horseName = zh.getUM().getHorseName(horse);
@@ -367,7 +367,7 @@ public class EventManager implements Listener {
 	private boolean isPlayerAllowedToInteract(Player p, Horse horse, boolean mustBeShared) {
 		if (zh.getUM().isRegistered(horse)) {
 			boolean isClaimedBy = zh.getUM().isClaimedBy(p.getUniqueId(), horse);
-			boolean hasPerm = zh.getPerms().has(p, KeyWordEnum.zhPrefix.getValue() + CommandEnum.lock.getName() + KeyWordEnum.adminSuffix.getValue());
+			boolean hasPerm = zh.getPM().has(p, KeyWordEnum.zhPrefix.getValue() + CommandEnum.lock.getName() + KeyWordEnum.adminSuffix.getValue());
 			if (!(isClaimedBy || hasPerm)) {
 				if (zh.getUM().isLocked(horse) || (!zh.getUM().isShared(horse) && (!horse.isEmpty() || mustBeShared))) {
 					if (displayConsole) {

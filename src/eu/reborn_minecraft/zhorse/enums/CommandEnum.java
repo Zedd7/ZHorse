@@ -1,5 +1,8 @@
 package eu.reborn_minecraft.zhorse.enums;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum CommandEnum {
 	admin("eu.reborn_minecraft.zhorse.commands.ZAdmin", "admin"),
 	claim("eu.reborn_minecraft.zhorse.commands.ZClaim", "claim"),
@@ -35,5 +38,13 @@ public enum CommandEnum {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public static List<String> getCommandNameList() {
+		List<String> commandNameList = new ArrayList<String>();
+		for (CommandEnum command : CommandEnum.values()) {
+			commandNameList.add(command.getName());
+		}
+		return commandNameList;
 	}
 }

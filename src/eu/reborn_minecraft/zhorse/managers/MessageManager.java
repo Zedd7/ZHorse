@@ -364,7 +364,7 @@ public class MessageManager {
 		return message;
 	}
 	
-	public String applyColors(String rawMessage) {
+	public static String applyColors(String rawMessage) {
 		String message = rawMessage;
 		for (ColorEnum color : ColorEnum.values()) {
 			for (String code : color.getCodes()) {
@@ -388,11 +388,11 @@ public class MessageManager {
 		return message;
 	}
 	
-	public boolean isColor(String colorCode) {
+	public static boolean isColor(String colorCode) {
 		return !colorCode.equals(applyColors((colorCode)));
 	}
 	
-	public boolean isColorized(String message) {
+	public static boolean isColorized(String message) {
 		return !(message.isEmpty() || message.equals(applyColors((message))));
 	}
 

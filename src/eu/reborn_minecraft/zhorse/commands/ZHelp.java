@@ -32,7 +32,7 @@ public class ZHelp extends Command {
 			}
 			else {
 				String command = argument.toLowerCase();
-				if (zh.getCmdM().getCommandNameList().contains(command)) {
+				if (CommandEnum.getCommandNameList().contains(command)) {
 					sendCommandUsage(command, true);
 					if (command.equals(CommandEnum.spawn.getName())) {
 						sendHorseVariantList();

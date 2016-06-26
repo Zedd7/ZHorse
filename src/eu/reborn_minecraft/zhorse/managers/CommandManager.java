@@ -1,8 +1,5 @@
 package eu.reborn_minecraft.zhorse.managers;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -51,14 +48,6 @@ public class CommandManager implements CommandExecutor {
 			}
 		}
 		return true;
-	}
-	
-	public List<String> getCommandNameList() {
-		List<String> commandNameList = new ArrayList<String>();
-		for (CommandEnum command : CommandEnum.values()) {
-			commandNameList.add(command.getName());
-		}
-		return commandNameList;
 	}
 	
 }
