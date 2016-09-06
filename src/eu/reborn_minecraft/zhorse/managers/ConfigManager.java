@@ -16,6 +16,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.CommandEnum;
+import eu.reborn_minecraft.zhorse.enums.DatabaseEnum;
 import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 import eu.reborn_minecraft.zhorse.utils.Utf8YamlConfiguration;
 
@@ -74,6 +75,11 @@ public class ConfigManager {
 			}
 		}
 		return value;
+	}
+	
+	public DatabaseEnum getDatabaseType() {
+		// TODO
+		return DatabaseEnum.SQLITE;
 	}
 	
 	public String getDefaultHorseName() {

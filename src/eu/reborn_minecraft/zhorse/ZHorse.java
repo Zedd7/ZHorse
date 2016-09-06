@@ -35,11 +35,13 @@ public class ZHorse extends JavaPlugin {
 		initDependencies();
 		initMetrics();
 		initManagers();
+		loadDatabase();
 	}
 	
 	@Override
     public void onDisable() {
 		horseManager.unloadHorses();
+		dataManager.closeDatabase();
     }
 	
 	private void initDependencies() {
@@ -74,8 +76,14 @@ public class ZHorse extends JavaPlugin {
 		permissionManager = new PermissionManager(this);
 		userManager = new UserManager(this);
 		
-		return configManager.checkConformity() && localeManager.checkConformity();
+		boolean conformConfig = configManager.checkConformity();
+		boolean conformLocale = localeManager.checkConformity();
+		return conformConfig && conformLocale;
 	}
+    
+    private void loadDatabase() {
+    	dataManager.openDatabase();
+    }
     
 	public boolean reload() {
 		return initManagers();
