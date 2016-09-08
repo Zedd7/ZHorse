@@ -35,7 +35,6 @@ public class ZHorse extends JavaPlugin {
 		initDependencies();
 		initMetrics();
 		initManagers();
-		loadDatabase();
 	}
 	
 	@Override
@@ -76,14 +75,12 @@ public class ZHorse extends JavaPlugin {
 		permissionManager = new PermissionManager(this);
 		userManager = new UserManager(this);
 		
+		dataManager.openDatabase();
+		
 		boolean conformConfig = configManager.checkConformity();
 		boolean conformLocale = localeManager.checkConformity();
 		return conformConfig && conformLocale;
 	}
-    
-    private void loadDatabase() {
-    	dataManager.openDatabase();
-    }
     
 	public boolean reload() {
 		return initManagers();
