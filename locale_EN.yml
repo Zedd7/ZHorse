@@ -26,6 +26,8 @@ Headers:
 Messages:
   claimsLimitReached: "<yellow>Your claims limit has been reached."
   claimsLimitReachedOther: "<gold><player><yellow>'s claims limit has been reached."
+  databaseImportSuccess: "<yellow>The <gold><value><yellow> data have been successfully imported into your current database."
+  databaseImportFailure: "<yellow>The <gold><value><yellow> data could not be imported into your current database. See logs for details."
   favoriteAlreadySet: "<yellow>You have already defined <gold><horse><yellow> as favorite horse."
   favoriteAlreadySetOther: "<gold><player><yellow> has already defined <gold><horse><yellow> as favorite horse."
   favoriteEdited: "<gold><horse><yellow> is now your favorite horse."

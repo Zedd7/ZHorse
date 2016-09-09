@@ -8,6 +8,7 @@ import eu.reborn_minecraft.zhorse.enums.CommandAdminEnum;
 import eu.reborn_minecraft.zhorse.enums.DatabaseEnum;
 import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
+import eu.reborn_minecraft.zhorse.utils.YAMLImporter;
 import net.md_5.bungee.api.ChatColor;
 
 public class ZAdmin extends Command {
@@ -137,8 +138,22 @@ public class ZAdmin extends Command {
 					database = DatabaseEnum.valueOf(databaseName.toUpperCase());
 				} catch (Exception e) {}
 				if (database != null) {
-					new YAMLImporter();
-					// send confirmation message
+					boolean success = false;
+					switch (database) {
+					case YAML:
+						success = YAMLImporter.importData(zh);
+						break;
+					default:
+						zh.getLogger().severe(String.format("Data import from %s database is not supported yet !", database.getName()));
+					}
+					if (displayConsole) {
+						if (success) {
+							zh.getMM().sendMessageValue(s, LocaleEnum.databaseImportSuccess, database.getName());
+						}
+						else {
+							zh.getMM().sendMessageValue(s, LocaleEnum.databaseImportFailure, database.getName());
+						}
+					}
 				}
 				else if (displayConsole) {
 					displayAvailableDatabases(LocaleEnum.unknownDatabase);

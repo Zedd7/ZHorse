@@ -22,6 +22,8 @@ public enum LocaleEnum {
 	/* messages */
 	claimsLimitReached("Messages.claimsLimitReached"),
 	claimsLimitReachedOther("Messages.claimsLimitReachedOther"),
+	databaseImportSuccess("Messages.databaseImportSuccess"),
+	databaseImportFailure("Messages.databaseImportFailure"),
 	favoriteAlreadySet("Messages.favoriteAlreadySet"),
 	favoriteAlreadySetOther("Messages.favoriteAlreadySetOther"),
 	favoriteEdited("Messages.favoriteEdited"),
