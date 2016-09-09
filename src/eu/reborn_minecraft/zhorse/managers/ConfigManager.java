@@ -77,7 +77,7 @@ public class ConfigManager {
 		return value;
 	}
 	
-	public DatabaseEnum getDatabaseType() {
+	public DatabaseEnum getDatabase() {
 		// TODO
 		return DatabaseEnum.SQLITE;
 	}

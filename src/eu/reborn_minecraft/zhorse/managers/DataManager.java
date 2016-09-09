@@ -1,21 +1,19 @@
 package eu.reborn_minecraft.zhorse.managers;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 
 import org.apache.commons.io.IOUtils;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.enums.DatabaseEnum;
 import eu.reborn_minecraft.zhorse.utils.MySQLConnector;
 import eu.reborn_minecraft.zhorse.utils.SQLDatabaseConnector;
 import eu.reborn_minecraft.zhorse.utils.SQLiteConnector;
 
 public class DataManager {
 	
-	private static final String CREATE_TABLES_SCRIPT_PATH = "res\\sql\\create-tables.sql";
-	@SuppressWarnings("unused")
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd hh:MM:ss");
-		
+	private static final String UPDATE_TABLES_SCRIPT_PATH = "res\\sql\\update-tables.sql";
+	
 	private ZHorse zh;
 	private SQLDatabaseConnector db;
 	
@@ -24,25 +22,29 @@ public class DataManager {
 	}
 	
 	public void openDatabase() {
-		switch (zh.getCM().getDatabaseType()) {
+		DatabaseEnum database = zh.getCM().getDatabase();
+		switch (database) {
 		case MYSQL:
 			db = new MySQLConnector(zh);
 			break;
 		case SQLITE:
 			db = new SQLiteConnector(zh);
 			break;
+		default:
+			zh.getLogger().severe(String.format("The database %s is not supported ! Disabling %s...", database.getName(), zh.getDescription().getName()));
+			zh.getServer().getPluginManager().disablePlugin(zh);
 		}
-		createTables();
+		updateTables();
 	}
 	
 	public void closeDatabase() {
 		db.closeConnection();
 	}
 	
-	private boolean createTables() {
+	private boolean updateTables() {
 		String update = "";
 		try {
-			String scriptPath = CREATE_TABLES_SCRIPT_PATH.replace('\\', '/'); // WTF Magic Industries
+			String scriptPath = UPDATE_TABLES_SCRIPT_PATH.replace('\\', '/'); // Dark Magic Industries
 			update = IOUtils.toString(zh.getResource(scriptPath), "utf-8");
 		} catch (IOException e) {
 			e.printStackTrace();

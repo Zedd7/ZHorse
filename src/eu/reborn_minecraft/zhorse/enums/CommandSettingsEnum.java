@@ -1,22 +1,23 @@
 package eu.reborn_minecraft.zhorse.enums;
 
 public enum CommandSettingsEnum {
-	favorite("eu.reborn_minecraft.zhorse.commands.ZSettings", "favorite"),
-	language("eu.reborn_minecraft.zhorse.commands.ZSettings", "language");
 	
-	private String classPath;
-	private String name;
+	FAVORITE("favorite", "eu.reborn_minecraft.zhorse.commands.ZSettings"),
+	LANGUAGE("language", "eu.reborn_minecraft.zhorse.commands.ZSettings");
 	
-	CommandSettingsEnum(String classPath, String name) {
-		this.classPath = classPath;
+	private final String name;
+	private final String classPath;
+	
+	CommandSettingsEnum(final String name, final String classPath) {
 		this.name = name;
-	}
-	
-	public String getClassPath() {
-		return classPath;
+		this.classPath = classPath;
 	}
 	
 	public String getName() {
 		return name;
+	}
+	
+	public String getClassPath() {
+		return classPath;
 	}
 }

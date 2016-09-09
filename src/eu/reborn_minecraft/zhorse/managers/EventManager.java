@@ -149,10 +149,10 @@ public class EventManager implements Listener {
 		if (e.getOwner() instanceof Player && e.getEntity() instanceof Horse) {
 			if (zh.getCM().shouldClaimOnTame()) {
 				((Horse) e.getEntity()).setTamed(true);
-				String[] a = {CommandEnum.claim.getName()};
+				String[] a = {CommandEnum.CLAIM.getName()};
 				new ZClaim(zh, (CommandSender) e.getOwner(), a);
 			}
-			else if (zh.getPM().has((Player) e.getOwner(), KeyWordEnum.zhPrefix.getValue() + CommandEnum.claim.getName())) {
+			else if (zh.getPM().has((Player) e.getOwner(), KeyWordEnum.zhPrefix.getValue() + CommandEnum.CLAIM.getName())) {
 				if (displayConsole) {
 					zh.getMM().sendMessage((CommandSender) e.getOwner(), LocaleEnum.horseManuallyTamed);
 				}
@@ -352,7 +352,7 @@ public class EventManager implements Listener {
 		if (zh.getCM().isProtectionEnabled(PLAYER_ATTACK)) {
 			boolean isOwner = zh.getUM().isClaimedBy(p.getUniqueId(), horse);
 			boolean isOwnerAttackBlocked = zh.getCM().isProtectionEnabled(OWNER_ATTACK);
-			boolean hasAdminPerm = zh.getPM().has(p, KeyWordEnum.zhPrefix.getValue() + CommandEnum.protect.getName() + KeyWordEnum.adminSuffix.getValue());
+			boolean hasAdminPerm = zh.getPM().has(p, KeyWordEnum.zhPrefix.getValue() + CommandEnum.PROTECT.getName() + KeyWordEnum.adminSuffix.getValue());
 			if (!((isOwner && !isOwnerAttackBlocked) ||	hasAdminPerm)) {
 				if (displayConsole) {
 					String horseName = zh.getUM().getHorseName(horse);
@@ -367,7 +367,7 @@ public class EventManager implements Listener {
 	private boolean isPlayerAllowedToInteract(Player p, Horse horse, boolean mustBeShared) {
 		if (zh.getUM().isRegistered(horse)) {
 			boolean isClaimedBy = zh.getUM().isClaimedBy(p.getUniqueId(), horse);
-			boolean hasPerm = zh.getPM().has(p, KeyWordEnum.zhPrefix.getValue() + CommandEnum.lock.getName() + KeyWordEnum.adminSuffix.getValue());
+			boolean hasPerm = zh.getPM().has(p, KeyWordEnum.zhPrefix.getValue() + CommandEnum.LOCK.getName() + KeyWordEnum.adminSuffix.getValue());
 			if (!(isClaimedBy || hasPerm)) {
 				if (zh.getUM().isLocked(horse) || (!zh.getUM().isShared(horse) && (!horse.isEmpty() || mustBeShared))) {
 					if (displayConsole) {

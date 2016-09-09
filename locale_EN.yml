@@ -2,12 +2,12 @@ Version: 1.6.0
 
 # You can use any of the following color flag formats : "&4", <4>, <dark_red>, <DARKRED>.
 # You can rework any message in this file but DO NOT add/remove flags that are not color flags !
-# However, you can swap any flag within the same line. That's their main purpose.
+# However, you can swap any flag within the same line. This is their main purpose.
 # Example: "<player> just gave you <horse>" or "<horse> has been given to you by <player>".
 
 Headers:
   adminCommandListHeader: "<gold>ZHorse's admin commands"
-  availableLanguageFormat: "<gold><value><yellow>"
+  availableOptionFormat: "<gold><value><yellow>"
   commandListHeader: "<gold>ZHorse's commands"
   commandUsageFormat: "<green>Usage : <value>"
   commandUsageHeader: "<green>Legend : <gold>/command <yellow>mandatoryParams (optionalParams)"
@@ -76,8 +76,9 @@ Messages:
   listHorseStyle: "<yellow>Style: <value><yellow>"
   listHorseVariant: "<yellow>Variant: <value><yellow>"
   missingArguments: "<yellow>Incorrect number of arguments. Do as follows :"
+  missingDatabase: "<yellow>You must provide a database. Please use one of the followings : <value><yellow>."
   missingHorseId: "<yellow>You must provide a horse ID, please type <gold>/zh list<yellow> and choose an ID."
-  missingLanguage: "<yellow>You must provide a language. Please use one the followings: <value><yellow>."
+  missingLanguage: "<yellow>You must provide a language. Please use one the followings : <value><yellow>."
   missingPermission: "<yellow>You don't have the <gold><perm><yellow> permission."
   missingPermissionOther: "<gold><player><yellow> doesn't have the <gold><perm><yellow> permission."
   missingTarget: "<yellow>You must provide a player name."
@@ -94,11 +95,12 @@ Messages:
   teleportedToHorse: "<yellow>You have been teleported to <gold><horse><yellow>."
   unknownAdminCommand: "<gold><value><yellow> is not a ZHorse's admin command."
   unknownCommand: "<gold><value><yellow> is not a ZHorse command."
+  unknownDatabase: "<yellow>This is not a supported database. Please use one the followings : <value><yellow>."
   unknownHorseId: "<yellow>You don't own any horse with ID <gold><id><yellow>."
   unknownHorseIdOther: "<gold><player><yellow> don't own any horse with ID <gold><id><yellow>."
   unknownHorseName: "<yellow>You don't own any horse named <gold><horse><yellow>."
   unknownHorseNameOther: "<gold><player><yellow> don't own any horse named <gold><horse><yellow>."
-  unknownLanguage: "<gold><lang><yellow> is not a supported language, please use one the followings : <value><yellow>."
+  unknownLanguage: "<gold><lang><yellow> is not a supported language. Please use one the followings : <value><yellow>."
   unknownPlayer: "<gold><player><yellow> is not a registered player."
   unknownSettingsCommand: "<gold><value><yellow> is not a ZHorse's settings command."
   unknownSpawnArgument: "<gold><value><yellow> is not a valid argument for /zh spawn."
@@ -147,6 +149,7 @@ Command descriptions:
 
 Admin command descriptions:
   clear: "<gold>/zh admin clear<gray>: <yellow>Clear a horse from database."
+  import: "<gold>/zh admin import<gray>: <yellow>Import external data in your current database."
 
 Settings command descriptions:
   favorite: "<gold>/zh settings favorite<gray>: <yellow>Defines your favorite horse."
@@ -175,6 +178,7 @@ Command usages:
 
 Admin command usages:
   clear: "<gold>/zh admin clear<yellow> (-t) playerName (-i horseID)"
+  import: "<gold>/zh admin import<yellow> database"
 
 Settings command usages:
   favorite: "<gold>/zh settings favorite<yellow> (-i) horseID"

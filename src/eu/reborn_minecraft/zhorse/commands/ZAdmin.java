@@ -5,8 +5,10 @@ import org.bukkit.entity.Horse;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.CommandAdminEnum;
+import eu.reborn_minecraft.zhorse.enums.DatabaseEnum;
 import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
+import net.md_5.bungee.api.ChatColor;
 
 public class ZAdmin extends Command {
 	String fullCommand;
@@ -40,8 +42,11 @@ public class ZAdmin extends Command {
 				if (argument.contains(" ")) {
 					subCommand = argument.substring(0, argument.indexOf(" "));
 				}
-				if (subCommand.equals(CommandAdminEnum.clear.name())) {
+				if (subCommand.equals(CommandAdminEnum.CLEAR.getName())) {
 					clear();
+				}
+				else if (subCommand.equals(CommandAdminEnum.IMPORT.getName())) {
+					importDB();
 				}
 				else {
 					if (displayConsole) {
@@ -57,7 +62,7 @@ public class ZAdmin extends Command {
 	}
 
 	private void clear() {
-		fullCommand = command + KeyWordEnum.dot.getValue() + CommandAdminEnum.clear.getName().toLowerCase(); // TODO vérifier fonctionnement
+		fullCommand = command + KeyWordEnum.dot.getValue() + CommandAdminEnum.CLEAR.getName().toLowerCase();
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (argument.split(" ").length >= 2) {
 				targetMode = true;
@@ -120,6 +125,43 @@ public class ZAdmin extends Command {
 				sendCommandUsage(subCommand, true);
 			}
 		}
+	}
+	
+	private void importDB() {
+		fullCommand = command + KeyWordEnum.dot.getValue() + CommandAdminEnum.IMPORT.getName().toLowerCase();
+		if (hasPermission(s, fullCommand , true, false)) {
+			if (argument.split(" ").length >= 2) {
+				String databaseName = argument.substring(argument.indexOf(" ") + 1);
+				DatabaseEnum database = null;
+				try {
+					database = DatabaseEnum.valueOf(databaseName.toUpperCase());
+				} catch (Exception e) {}
+				if (database != null) {
+					new YAMLImporter();
+					// send confirmation message
+				}
+				else if (displayConsole) {
+					displayAvailableDatabases(LocaleEnum.unknownDatabase);
+				}
+			}
+			else if (displayConsole) {
+				displayAvailableDatabases(LocaleEnum.missingDatabase);
+				sendCommandUsage(subCommand, true);
+			}
+		}
+	}
+	
+	private void displayAvailableDatabases(LocaleEnum index) {
+		DatabaseEnum[] availableDatabaseArray = DatabaseEnum.values();
+		String availableDatabasesMessage = "";
+		for (int i = 0; i < availableDatabaseArray.length; ++i) {
+			availableDatabasesMessage += zh.getMM().getMessageValue(s, LocaleEnum.availableOptionFormat, availableDatabaseArray[i].getName(), true);
+			if (i < availableDatabaseArray.length - 1) {
+				availableDatabasesMessage += ", ";
+			}
+		}
+		availableDatabasesMessage += ChatColor.RESET;
+		zh.getMM().sendMessageValue(s, index, availableDatabasesMessage);
 	}
 
 }

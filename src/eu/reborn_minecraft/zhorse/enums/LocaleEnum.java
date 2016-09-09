@@ -3,7 +3,7 @@ package eu.reborn_minecraft.zhorse.enums;
 public enum LocaleEnum {
 	/* headers */
 	adminCommandListHeader("Headers.adminCommandListHeader"),
-	availableLanguageFormat("Headers.availableLanguageFormat"),
+	availableOptionFormat("Headers.availableOptionFormat"),
 	commandListHeader("Headers.commandListHeader"),
 	commandUsageFormat("Headers.commandUsageFormat"),
 	commandUsageHeader("Headers.commandUsageHeader"),
@@ -72,6 +72,7 @@ public enum LocaleEnum {
 	listHorseStyle("Messages.listHorseStyle"),
 	listHorseVariant("Messages.listHorseVariant"),
 	missingArguments("Messages.missingArguments"),
+	missingDatabase("Messages.missingDatabase"),
 	missingHorseId("Messages.missingHorseId"),
 	missingLanguage("Messages.missingLanguage"),
 	missingPermission("Messages.missingPermission"),
@@ -90,6 +91,7 @@ public enum LocaleEnum {
 	teleportedToHorse("Messages.teleportedToHorse"),
 	unknownAdminCommand("Messages.unknownAdminCommand"),
 	unknownCommand("Messages.unknownCommand"),
+	unknownDatabase("Messages.unknownDatabase"),
 	unknownHorseId("Messages.unknownHorseId"),
 	unknownHorseIdOther("Messages.unknownHorseIdOther"),
 	unknownHorseName("Messages.unknownHorseName"),
@@ -143,6 +145,7 @@ public enum LocaleEnum {
 	
 	/* admin command descriptions */
 	clearDescription("Admin command descriptions.clear"),
+	importDescription("Admin command descriptions.import"),
 	
 	/* settings command descriptions */
 	favoriteDescription("Settings command descriptions.favorite"),
@@ -171,6 +174,7 @@ public enum LocaleEnum {
 	
 	/* admin command usages */
 	clearUsage("Admin command usages.clear"),
+	importUsage("Admin command usages.import"),
 	
 	/* settings command usages */
 	favoriteUsage("Settings command usages.favorite"),

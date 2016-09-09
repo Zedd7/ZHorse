@@ -44,10 +44,10 @@ public class ZSettings extends Command {
 				if (argument.contains(" ")) {
 					subCommand = argument.substring(0, argument.indexOf(" "));
 				}
-				if (subCommand.equals(CommandSettingsEnum.language.name())) {
+				if (subCommand.equals(CommandSettingsEnum.LANGUAGE.getName())) {
 					setLanguage();
 				}
-				else if (subCommand.equals((CommandSettingsEnum.favorite.name()))) {
+				else if (subCommand.equals((CommandSettingsEnum.FAVORITE.getName()))) {
 					setFavorite();
 				}
 				else {
@@ -64,7 +64,7 @@ public class ZSettings extends Command {
 	}
 	
 	private void setFavorite() {
-		fullCommand = command + KeyWordEnum.dot.getValue() + CommandSettingsEnum.favorite.getName().toLowerCase();
+		fullCommand = command + KeyWordEnum.dot.getValue() + CommandSettingsEnum.FAVORITE.getName().toLowerCase();
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (argument.split(" ").length >= 2) {
 				idMode = true;
@@ -104,7 +104,7 @@ public class ZSettings extends Command {
 	}
 
 	private void setLanguage() {
-		fullCommand = command + KeyWordEnum.dot.getValue() + CommandSettingsEnum.language.getName().toLowerCase();
+		fullCommand = command + KeyWordEnum.dot.getValue() + CommandSettingsEnum.LANGUAGE.getName().toLowerCase();
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (argument.split(" ").length >= 2) {
 				String language = argument.substring(argument.indexOf(" ")+1).toUpperCase();
@@ -150,8 +150,8 @@ public class ZSettings extends Command {
 	private void displayAvailableLanguages(LocaleEnum index, String language) {
 		List<String> availableLanguages = zh.getCM().getAvailableLanguages();
 		String availableLanguagesMessage = "";
-		for (int i=0; i<availableLanguages.size(); i++) {
-			availableLanguagesMessage += zh.getMM().getMessageValue(s, LocaleEnum.availableLanguageFormat, availableLanguages.get(i), true);
+		for (int i = 0; i < availableLanguages.size(); ++i) {
+			availableLanguagesMessage += zh.getMM().getMessageValue(s, LocaleEnum.availableOptionFormat, availableLanguages.get(i), true);
 			if (i < availableLanguages.size() - 1) {
 				availableLanguagesMessage += ", ";
 			}

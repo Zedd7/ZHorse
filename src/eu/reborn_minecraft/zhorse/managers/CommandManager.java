@@ -25,7 +25,7 @@ public class CommandManager implements CommandExecutor {
 			String pluginNameAndVersion = String.format("%s %s", pluginDescription.getName(), pluginDescription.getVersion());
 			String author = pluginDescription.getAuthors().get(0);
 			String pluginHeader = zh.getMM().getMessagePlayerValue(s, LocaleEnum.pluginHeader, author, pluginNameAndVersion, true);			
-			LocaleEnum helpDescription = LocaleEnum.valueOf(CommandEnum.help.getName() + KeyWordEnum.description.getValue());
+			LocaleEnum helpDescription = LocaleEnum.valueOf(CommandEnum.HELP.getName() + KeyWordEnum.description.getValue());
 			zh.getMM().sendMessageValue(s, LocaleEnum.headerFormat, pluginHeader, true);
 			zh.getMM().sendMessageSpacer(s, helpDescription, 1, true);
 		}

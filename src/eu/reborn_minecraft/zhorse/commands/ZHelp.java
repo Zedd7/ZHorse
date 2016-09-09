@@ -34,7 +34,7 @@ public class ZHelp extends Command {
 				String command = argument.toLowerCase();
 				if (CommandEnum.getCommandNameList().contains(command)) {
 					sendCommandUsage(command, true);
-					if (command.equals(CommandEnum.spawn.getName())) {
+					if (command.equals(CommandEnum.SPAWN.getName())) {
 						sendHorseVariantList();
 						sendHorseStyleList();
 						sendHorseColorList();
