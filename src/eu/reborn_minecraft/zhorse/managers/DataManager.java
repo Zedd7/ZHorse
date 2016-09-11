@@ -55,13 +55,13 @@ public class DataManager {
 	
 	public boolean insertHorse(String horseUUID, String ownerUUID, int horseID, String horseName,
 			boolean modeLocked, boolean modeProtected, boolean modeShared, String locationWorld, int locationX, int locationY, int locationZ) {
-		String update = String.format("INSERT INTO horse VALUES ('%s', '%s', %d, '%s', '%s', '%s', '%s', '%s', %d, %d, %d)",
+		String update = String.format("INSERT INTO horse VALUES (\"%s\", \"%s\", %d, \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", %d, %d, %d)",
 				horseUUID, ownerUUID, horseID, horseName, modeLocked, modeProtected, modeShared, locationWorld, locationX, locationY, locationZ);
 		return db.executeUpdate(update);
 	}
 	
 	public boolean insertPlayer(String playerUUID, String playerName, String language, Integer favorite) {
-		String update = String.format("INSERT INTO player VALUES ('%s', '%s', '%s', %d)",
+		String update = String.format("INSERT INTO player VALUES (\"%s\", \"%s\", \"%s\", %d)",
 				playerUUID, playerName, language, favorite);
 		return db.executeUpdate(update);
 	}
@@ -75,7 +75,7 @@ public class DataManager {
 	}
 	
 	private boolean entryExists(String table, String primaryKey, String value) {
-		String query = String.format("SELECT 1 FROM %s WHERE %s = '%s'", table, primaryKey, value);
+		String query = String.format("SELECT 1 FROM %s WHERE %s = \"%s\"", table, primaryKey, value);
 		ResultSet resultSet = db.executeQuery(query);
 		try {
 			return resultSet.next();
