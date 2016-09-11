@@ -1,6 +1,7 @@
 package eu.reborn_minecraft.zhorse.managers;
 
 import java.io.IOException;
+import java.sql.ResultSet;
 
 import org.apache.commons.io.IOUtils;
 
@@ -50,6 +51,38 @@ public class DataManager {
 			e.printStackTrace();
 		}
 		return db.executeUpdate(update);
+	}
+	
+	public boolean insertHorse(String horseUUID, String ownerUUID, int horseID, String horseName,
+			boolean modeLocked, boolean modeProtected, boolean modeShared, String locationWorld, int locationX, int locationY, int locationZ) {
+		String update = String.format("INSERT INTO horse VALUES ('%s', '%s', %d, '%s', '%s', '%s', '%s', '%s', %d, %d, %d)",
+				horseUUID, ownerUUID, horseID, horseName, modeLocked, modeProtected, modeShared, locationWorld, locationX, locationY, locationZ);
+		return db.executeUpdate(update);
+	}
+	
+	public boolean insertPlayer(String playerUUID, String playerName, String language, Integer favorite) {
+		String update = String.format("INSERT INTO player VALUES ('%s', '%s', '%s', %d)",
+				playerUUID, playerName, language, favorite);
+		return db.executeUpdate(update);
+	}
+
+	public boolean horseExists(String horseUUID) {
+		return entryExists("horse", "uuid", horseUUID);
+	}
+	
+	public boolean playerExists(String playerUUID) {
+		return entryExists("player", "uuid", playerUUID);
+	}
+	
+	private boolean entryExists(String table, String primaryKey, String value) {
+		String query = String.format("SELECT 1 FROM %s WHERE %s = '%s'", table, primaryKey, value);
+		ResultSet resultSet = db.executeQuery(query);
+		try {
+			return resultSet.next();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 }

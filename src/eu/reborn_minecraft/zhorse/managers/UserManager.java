@@ -35,7 +35,7 @@ public class UserManager {
 		File usersFile = new File(zh.getDataFolder(), USERS_PATH);    
 		if (!usersFile.exists()) {
 			zh.getLogger().info(USERS_PATH + " is missing... Creating it.");
-			zh.saveResource(USERS_PATH, false);			
+			zh.saveResource(USERS_PATH, false);
 		}
 		users = Utf8YamlConfiguration.loadConfiguration(usersFile);
 	}

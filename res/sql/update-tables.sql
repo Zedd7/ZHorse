@@ -13,13 +13,13 @@ CREATE TABLE IF NOT EXISTS horse
 	owner VARCHAR(36) NOT NULL,
 	id INT NOT NULL,
 	name VARCHAR(36) NOT NULL,
-	world VARCHAR(16) NOT NULL,
-	x INT NOT NULL,
-	y INT NOT NULL,
-	z INT NOT NULL,
 	locked TINYINT(1) NOT NULL,
 	protected TINYINT(1) NOT NULL,
 	shared TINYINT(1) NOT NULL,
+	locationWorld VARCHAR(16) NOT NULL,
+	locationX INT NOT NULL,
+	locationY INT NOT NULL,
+	locationZ INT NOT NULL,
 	PRIMARY KEY (uuid),
 	CONSTRAINT fk_horse_player
 		FOREIGN KEY (owner)
