@@ -30,8 +30,8 @@ public class Command {
 	protected String[] a;
 	protected String argument;
 	protected String command;
+	protected String horseID;
 	protected String horseName;
-	protected String userID;
 	protected String targetName;
 	protected boolean displayConsole;
 	protected boolean adminMode;
@@ -65,7 +65,7 @@ public class Command {
 				valid = (!idMode) && (i != a.length-1) && (!a[i+1].startsWith("-"));
 				if (valid) { // avoid to exit the loop
 					idMode = true;
-					userID = a[i+1];
+					horseID = a[i+1];
 					i++; // skip the id
 				}
 			}
@@ -101,7 +101,7 @@ public class Command {
 			targetName = s.getName();
 		}
 		else {
-			targetName = zh.getUM().getPlayerName(targetName); // make the case match
+			targetName = zh.getDM().getPlayerName(targetName); // make the case match
 			targetUUID = getPlayerUUID(targetName);
 		}
 		adminMode = adminMode || (zh.getCM().isAutoAdminModeEnabled(command) && hasPermissionAdmin(true));
@@ -109,11 +109,11 @@ public class Command {
 		return true;
 	}
 	
-	protected void applyArgument(boolean userIDFirst) {
+	protected void applyArgument(boolean horseIDFirst) {
 		if (!argument.isEmpty()) {
-			if (userIDFirst) {
+			if (horseIDFirst) {
 				if (!idMode) {
-					applyArgumentToUserID();
+					applyArgumentToHorseID();
 				}
 				else if (!targetMode) {
 					applyArgumentToTarget();
@@ -124,16 +124,16 @@ public class Command {
 					applyArgumentToTarget();
 				}
 				else if (!idMode) {
-					applyArgumentToUserID();
+					applyArgumentToHorseID();
 				}
 			}
 		}
 	}
 	
-	protected void applyArgumentToUserID() {
+	protected void applyArgumentToHorseID() {
 		idMode = true;
 		horseName = argument;
-		userID = zh.getUM().getUserID(targetUUID, horseName);
+		horseID = zh.getDM().getHorseID(targetUUID, horseName).toString();
 	}
 	
 	protected void applyArgumentToTarget() {
@@ -194,8 +194,8 @@ public class Command {
 	
 	private boolean craftPreviousHorseName(boolean keepPreviousName) {
 		if (!zh.getCM().isHorseNameRequired() || adminMode) {
-			if (keepPreviousName && zh.getUM().isRegistered(horse)) {
-				horseName = zh.getUM().getHorseName(horse);
+			if (keepPreviousName && zh.getDM().isHorseRegistered(horse.getUniqueId())) {
+				horseName = zh.getDM().getHorseName(horse.getUniqueId());
 				return true;
 			}
 			else {
@@ -216,8 +216,8 @@ public class Command {
 	
 	@SuppressWarnings("deprecation")	
 	protected UUID getPlayerUUID(String playerName) {
-		if (zh.getUM().isRegistered(playerName)) {
-			return zh.getUM().getPlayerUUID(playerName);
+		if (zh.getDM().isPlayerRegistered(playerName)) {
+			return zh.getDM().getPlayerUUID(playerName);
 		}
 		else if (zh.getServer().getOfflinePlayer(playerName).hasPlayedBefore()) {
 			return zh.getServer().getOfflinePlayer(playerName).getUniqueId();
@@ -227,21 +227,19 @@ public class Command {
 	
 	protected String getRemainingClaimsMessage(UUID playerUUID) {
 		String message = "";
-		int claimsAmount = zh.getUM().getClaimsAmount(playerUUID);
+		int horseCount = zh.getDM().getHorseCount(playerUUID);
 		int maxClaims = zh.getCM().getClaimsLimit(playerUUID);
-		message = zh.getMM().getMessageAmountMax(s, LocaleEnum.remainingClaimsFormat, claimsAmount, maxClaims, true);
+		message = zh.getMM().getMessageAmountMax(s, LocaleEnum.remainingClaimsFormat, horseCount, maxClaims, true);
 		return message;
 	}
 	
-	protected boolean hasReachedMaxClaims(UUID playerUUID) {
+	protected boolean hasReachedClaimsLimit(UUID playerUUID) {
 		if (adminMode) {
 			return false;
 		}
-		int claimsAmount;
-		int maxClaims;
-		claimsAmount = zh.getUM().getClaimsAmount(playerUUID);
-		maxClaims = zh.getCM().getClaimsLimit(playerUUID);
-		if (claimsAmount < maxClaims || maxClaims == -1) {
+		int horseCount = zh.getDM().getHorseCount(playerUUID);
+		int claimsLimit = zh.getCM().getClaimsLimit(playerUUID);
+		if (horseCount < claimsLimit || claimsLimit == -1) {
 			return false;
 		}
 		else if (displayConsole) {
@@ -310,16 +308,16 @@ public class Command {
 				return true;
 			}
 			if (horse.isTamed()) {
-				if (!zh.getUM().isRegistered(horse)) {
+				if (!zh.getDM().isHorseRegistered(horse.getUniqueId())) {
 					return true;
 				}
 				else if (displayConsole) {
-					if (zh.getUM().isClaimedBy(p.getUniqueId(), horse)) {
+					if (zh.getDM().isHorseOwnedBy(p.getUniqueId(), horse.getUniqueId())) {
 						zh.getMM().sendMessage(s, LocaleEnum.horseAlreadyClaimed);
 					}
 					else {
 						if (!targetMode) {
-							targetName = zh.getUM().getPlayerName(horse);
+							targetName = zh.getDM().getOwnerName(horse.getUniqueId());
 						}
 						zh.getMM().sendMessagePlayer(s, LocaleEnum.horseBelongsTo, targetName);
 					}
@@ -331,10 +329,10 @@ public class Command {
 		}
 		else if (displayConsole) {
 			if (idMode && !targetMode) {
-				zh.getMM().sendMessageUserID(s, LocaleEnum.unknownHorseId, userID);
+				zh.getMM().sendMessageHorseID(s, LocaleEnum.unknownHorseId, horseID);
 			}
 			else if (idMode && targetMode) {
-				zh.getMM().sendMessagePlayerUserID(s, LocaleEnum.unknownHorseIdOther, targetName, userID);
+				zh.getMM().sendMessageHorseIDPlayer(s, LocaleEnum.unknownHorseIdOther, horseID, targetName);
 			}
 		}
 		return false;
@@ -366,7 +364,7 @@ public class Command {
 			return true;
 		}
 		else if (displayConsole) {
-			zh.getMM().sendMessageHorse(s, LocaleEnum.horseNotFound, zh.getUM().getHorseName(targetUUID, userID));
+			zh.getMM().sendMessageHorse(s, LocaleEnum.horseNotFound, zh.getDM().getHorseName(targetUUID, horseID));
 		}
 		return false;
 	}
@@ -435,11 +433,11 @@ public class Command {
 	}
 	
 	protected boolean isOwner(UUID playerUUID, boolean ignoreModes, boolean hideConsole) {
-		if (zh.getUM().isClaimedBy(playerUUID, horse) || (!ignoreModes && adminMode)) {
+		if (zh.getDM().isHorseOwnedBy(playerUUID, horse.getUniqueId()) || (!ignoreModes && adminMode)) {
 			return true;
 		}
 		else if (displayConsole && !hideConsole) {
-			String ownerName = zh.getUM().getPlayerName(horse);
+			String ownerName = zh.getDM().getOwnerName(horse.getUniqueId());
 			zh.getMM().sendMessagePlayer(s, LocaleEnum.horseBelongsTo, ownerName);
 		}
 		return false;
@@ -483,8 +481,8 @@ public class Command {
 	}
 	
 	protected boolean isRegistered(Horse horse) {
-		if (zh.getUM().isRegistered(horse)) {
-			horseName = zh.getUM().getHorseName(horse);
+		if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
+			horseName = zh.getDM().getHorseName(horse.getUniqueId());
 			return true;
 		}
 		else if (displayConsole) {
@@ -494,7 +492,7 @@ public class Command {
 	}
 	
 	protected boolean isRegistered(UUID targetUUID) {
-		if (zh.getUM().isRegistered(targetUUID)) {
+		if (zh.getDM().isPlayerRegistered(targetUUID)) {
 			return true;
 		}
 		else if (displayConsole) {
@@ -503,13 +501,13 @@ public class Command {
 		return false;
 	}
 	
-	protected boolean isRegistered(UUID targetUUID, String userID) {
-		return isRegistered(targetUUID, userID, false);
+	protected boolean isRegistered(UUID targetUUID, String horseID) {
+		return isRegistered(targetUUID, horseID, false);
 	}
 	
-	protected boolean isRegistered(UUID targetUUID, String userID, boolean isOwner) {
-		if (zh.getUM().isRegistered(targetUUID, userID)) {
-			horseName = zh.getUM().getHorseName(targetUUID, userID);
+	protected boolean isRegistered(UUID targetUUID, String horseID, boolean isOwner) {
+		if (zh.getDM().isHorseRegistered(targetUUID, horseID)) {
+			horseName = zh.getDM().getHorseName(targetUUID, horseID);
 			return true;
 		}
 		else if (displayConsole) {
@@ -517,7 +515,7 @@ public class Command {
 				zh.getMM().sendMessagePlayer(s, LocaleEnum.unknownPlayer, targetName);
 			}
 			else {
-				if (userID == null) {
+				if (horseID == null) {
 					if (samePlayer || isOwner) {
 						zh.getMM().sendMessageHorse(s, LocaleEnum.unknownHorseName, horseName);
 					}
@@ -527,10 +525,10 @@ public class Command {
 				}
 				else {
 					if (samePlayer || isOwner) {
-						zh.getMM().sendMessageUserID(s, LocaleEnum.unknownHorseId, userID);
+						zh.getMM().sendMessageHorseID(s, LocaleEnum.unknownHorseId, horseID);
 					}
 					else {
-						zh.getMM().sendMessagePlayerUserID(s, LocaleEnum.unknownHorseIdOther, targetName, userID);
+						zh.getMM().sendMessageHorseIDPlayer(s, LocaleEnum.unknownHorseIdOther, horseID, targetName);
 					}
 				}
 			}
@@ -549,7 +547,7 @@ public class Command {
 	}
 	
 	protected boolean ownsHorse(UUID playerUUID, boolean hideConsole) {
-		if (zh.getUM().getClaimsAmount(playerUUID) > 0) {
+		if (zh.getDM().getHorseCount(playerUUID) > 0) {
 			return true;
 		}
 		else if (displayConsole && !hideConsole) {

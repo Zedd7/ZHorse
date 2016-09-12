@@ -14,21 +14,19 @@ import eu.reborn_minecraft.zhorse.managers.HorseManager;
 import eu.reborn_minecraft.zhorse.managers.LocaleManager;
 import eu.reborn_minecraft.zhorse.managers.MessageManager;
 import eu.reborn_minecraft.zhorse.managers.PermissionManager;
-import eu.reborn_minecraft.zhorse.managers.UserManager;
 import eu.reborn_minecraft.zhorse.utils.Metrics;
 
 public class ZHorse extends JavaPlugin {
 	
 	private CommandManager commandManager;
 	private ConfigManager configManager;
+	private DataManager dataManager;
 	private EconomyManager economyManager;
 	private EventManager eventManager;
 	private HorseManager horseManager;
 	private LocaleManager localeManager;
 	private MessageManager messageManager;
 	private PermissionManager permissionManager;
-	private UserManager userManager;
-	private DataManager dataManager;
 	
 	@Override
 	public void onEnable() {
@@ -73,7 +71,6 @@ public class ZHorse extends JavaPlugin {
 		localeManager = new LocaleManager(this);
 		messageManager = new MessageManager(this);
 		permissionManager = new PermissionManager(this);
-		userManager = new UserManager(this);
 		
 		dataManager.openDatabase();
 		
@@ -120,10 +117,6 @@ public class ZHorse extends JavaPlugin {
 	
 	public PermissionManager getPM() {
 		return permissionManager;
-	}
-	
-	public UserManager getUM() {
-		return userManager;
 	}
 
 }

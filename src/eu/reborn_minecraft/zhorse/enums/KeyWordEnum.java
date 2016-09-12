@@ -50,12 +50,12 @@ public enum KeyWordEnum {
 	amountFlag("<amount>"),
 	description("Description"),
 	horseFlag("<horse>"),
+	horseIDFlag("<id>"),
 	langFlag("<lang>"),
 	maxFlag("<max>"),
 	permFlag("<perm>"),
 	playerFlag("<player>"),
 	usage("Usage"),
-	userIDFlag("<id>"),
 	valueFlag("<value>"),
 	
 	/* users.yml keywords */
