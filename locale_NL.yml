@@ -27,9 +27,9 @@ Headers:
 
 Messages:
   claimsLimitReached: "<yellow>Je hebt je claims-limiet berijkt."
-  claimsLimitReachedOther: "<gold><player><yellow> heeft zijn claim-limiet berijkt."
-  databaseImportSuccess: "<yellow>The <gold><value><yellow> data have been successfully imported into your current database."
-  databaseImportFailure: "<yellow>The <gold><value><yellow> data could not be imported into your current database. See logs for details."
+  claimsLimitReachedOther: "<gold><player><yellow> heeft zijn claim-limiet bereikt."
+  databaseImportSuccess: "<yellow>De <gold><value><yellow> gegevens zijn succesvol geimporteert in je huidige database."
+  databaseImportFailure: "<yellow>De <gold><value><yellow> gegevens konden niet worden geimporteert in je huidige database. Bekijk de logs voor details."
   favoriteAlreadySet: "<yellow>Je hebt <gold><horse><yellow> al gekozen als je favoriete paard."
   favoriteAlreadySetOther: "<gold><player><yellow> heeft <gold><horse><yellow> al gekozen als favoriete paard."
   favoriteEdited: "<gold><horse><yellow> is nu je favoriete paard."
@@ -80,9 +80,9 @@ Messages:
   listHorseStyle: "<yellow>Stijl: <value><yellow>"
   listHorseVariant: "<yellow>Variant: <value><yellow>"
   missingArguments: "<yellow>Ongeldig aantal argumenten. Doe als volgt:"
-  missingDatabase: "<yellow>You must provide a database. Please use one of the followings : <value><yellow>."
+  missingDatabase: "<yellow>Je moet een database opgeven. Gebruik één van de volgende : <value><yellow>."
   missingHorseId: "<yellow>Je moet een paard ID opgeven, typ <gold>/zh list<yellow> en kies een ID."
-  missingLanguage: "<yellow>Je moet een taal meegeven. Kies een van de volgende : <value><yellow>."
+  missingLanguage: "<yellow>Je moet een taal meegeven. Kies één van de volgende : <value><yellow>."
   missingPermission: "<yellow>Je hebt de <gold><perm><yellow> toestemming niet."
   missingPermissionOther: "<gold><player><yellow> heeft de <gold><perm><yellow> toestemming niet."
   missingTarget: "<yellow>Je moet een spelernaam opgeven."
@@ -99,7 +99,7 @@ Messages:
   teleportedToHorse: "<yellow>Je bent naar <gold><horse><yellow> geteleporteerd."
   unknownAdminCommand: "<gold><value><yellow> is geen ZHorse admin commando."
   unknownCommand: "<yellow>Dit is geen ZHorse commando."
-  unknownDatabase: "<yellow>This is not a supported database. Please use one the followings : <value><yellow>."
+  unknownDatabase: "<yellow>Deze database word niet ondersteund. Gebruik één van de volgende : <value><yellow>."
   unknownHorseId: "<yellow>Je hebt geen paard met <gold><id><yellow> als id."
   unknownHorseIdOther: "<gold><player><yellow> heeft geen paard met <gold><id><yellow> als id."
   unknownHorseName: "<yellow>Je hebt geen paard met de naam <gold><horse><yellow>."
@@ -153,7 +153,7 @@ Command descriptions:
 
 Admin command descriptions:
   clear: "<gold>/zh admin clear<gray>: <yellow>Verwijder een paard uit de database."
-  import: "<gold>/zh admin import<gray>: <yellow>Import external data in your current database."
+  import: "<gold>/zh admin import<gray>: <yellow>Importeer externe gegevens in je huidige database."
   
 Settings command descriptions:
   favorite: "<gold>/zh settings favorite<gray>: <yellow>Bepaal je favoriete paard."
