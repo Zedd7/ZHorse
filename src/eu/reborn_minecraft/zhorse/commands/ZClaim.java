@@ -25,8 +25,8 @@ public class ZClaim extends Command {
 				}
 			}
 			else {
-				if (isRegistered(targetUUID, userID)) {
-					horse = zh.getHM().getHorse(targetUUID, userID);
+				if (isRegistered(targetUUID, horseID)) {
+					horse = zh.getHM().getHorse(targetUUID, Integer.parseInt(horseID));
 					if (isHorseLoaded()) {
 						execute();
 					}
@@ -36,11 +36,11 @@ public class ZClaim extends Command {
 	}
 	
 	private void execute() {
-		if (!hasReachedMaxClaims(p.getUniqueId()) && isClaimable() && craftHorseName(true) && zh.getEM().canAffordCommand(p, command)) {
+		if (!hasReachedClaimsLimit(p.getUniqueId()) && isClaimable() && craftHorseName(true) && zh.getEM().canAffordCommand(p, command)) {
 			boolean lock = zh.getCM().shouldLockOnClaim();
 			boolean protect = zh.getCM().shouldProtectOnClaim();
 			boolean share = zh.getCM().shouldShareOnClaim();
-			zh.getUM().registerHorse(p.getUniqueId(), horse, horseName, lock, protect, share);
+			zh.getDM().registerHorse(horse, p.getUniqueId(), horseName, lock, protect, share);
 			targetUUID = p.getUniqueId(); // uses the player group for the horse name color
 			applyHorseName();
 			horse.setCustomNameVisible(true);

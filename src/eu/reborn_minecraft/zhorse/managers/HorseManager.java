@@ -35,7 +35,7 @@ public class HorseManager {
 	public static final double MAX_JUMP_STRENGTH = 1.2;
 	public static final double MAX_SPEED = 1.0;
 	
-	private static final int TICK_PER_SECOND = 20;
+	private static final int TICKS_PER_SECOND = 20;
 	
 	private ZHorse zh;
 	private Map<UUID, Horse> loadedHorses = new HashMap<UUID, Horse>();
@@ -46,19 +46,17 @@ public class HorseManager {
 	}
 	
 	public Horse getFavoriteHorse(UUID playerUUID) {
-		return getHorse(playerUUID, zh.getUM().getFavoriteUserID(playerUUID));
+		return getHorse(playerUUID, zh.getDM().getFavoriteHorseID(playerUUID));
 	}
 	
-	public Horse getHorse(UUID playerUUID, String userID) {
+	public Horse getHorse(UUID playerUUID, Integer horseID) {
 		Horse horse = null;
-		if (playerUUID != null && userID != null) {
-			UUID horseUUID = zh.getUM().getHorseUUID(playerUUID, userID);
-			if (horseUUID != null) {
-				horse = getLoadedHorse(horseUUID);
-				if (horse == null) {
-					Location location = zh.getUM().getLocation(playerUUID, userID);
-					horse = getHorseFromLocation(horseUUID, location);
-				}
+		if (playerUUID != null && horseID != null) {
+			UUID horseUUID = zh.getDM().getHorseUUID(playerUUID, horseID);
+			horse = getLoadedHorse(horseUUID);
+			if (horse == null) {
+				Location location = zh.getDM().getHorseLocation(playerUUID, horseID);
+				horse = getHorseFromLocation(horseUUID, location);
 			}
 		}
 		return horse;
@@ -133,7 +131,7 @@ public class HorseManager {
 		Iterator<Entry<UUID, Horse>> loadedHorsesItr = loadedHorses.entrySet().iterator();
 		while (loadedHorsesItr.hasNext()) {
 			Horse horse = loadedHorsesItr.next().getValue();
-			zh.getUM().saveLocation(horse);
+			zh.getDM().updateHorseLocation(horse.getUniqueId(), horse.getLocation());
 			loadedHorsesItr.remove();
 		}
 	}
@@ -141,15 +139,14 @@ public class HorseManager {
 	public Horse teleport(Horse sourceHorse, Location destination) {
 		Horse copyHorse = (Horse) destination.getWorld().spawnEntity(destination, EntityType.HORSE);
 		if (copyHorse != null) {
-			UUID playerUUID = zh.getUM().getPlayerUUID(sourceHorse);
-			String userID = zh.getUM().getUserID(playerUUID, sourceHorse);
+			zh.getDM().updateHorseUUID(sourceHorse.getUniqueId(), copyHorse.getUniqueId());
+			zh.getDM().updateHorseLocation(copyHorse.getUniqueId(), copyHorse.getLocation());
 			copyAttributes(sourceHorse, copyHorse);
 			copyInventory(sourceHorse, copyHorse);
 			removeLeash(sourceHorse);
 			unloadHorse(sourceHorse);
 			loadHorse(copyHorse);
 			removeHorse(sourceHorse);
-			zh.getUM().updateHorse(playerUUID, userID, copyHorse);
 		}
 		return copyHorse;
 	}
@@ -169,7 +166,7 @@ public class HorseManager {
 	private void removeHorse(Horse horse) {
 		World world = horse.getWorld();
 		int invisibilityDuration = 3;
-		horse.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, invisibilityDuration * TICK_PER_SECOND, 0));
+		horse.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, invisibilityDuration * TICKS_PER_SECOND, 0));
 		horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0);
 		horse.getInventory().clear();
 		horse.setAI(false);

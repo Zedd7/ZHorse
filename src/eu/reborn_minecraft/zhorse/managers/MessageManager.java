@@ -1,6 +1,7 @@
 package eu.reborn_minecraft.zhorse.managers;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.ColorEnum;
@@ -339,7 +340,8 @@ public class MessageManager {
 	}
 	
 	private String getFromLocale(CommandSender s, LocaleEnum index, boolean hidePrefix) {
-		return zh.getLM().getMessage(index.getIndex(), zh.getUM().getLanguage(s), hidePrefix);
+		String language = s instanceof Player ? zh.getDM().getPlayerLanguage(((Player)s).getUniqueId()) : zh.getCM().getDefaultLanguage();
+		return zh.getLM().getMessage(index.getIndex(), language, hidePrefix);
 	}
 	
 	private String getSpace(int spacer) {

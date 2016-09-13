@@ -38,7 +38,8 @@ public class EconomyManager {
 			if (isCommandFree(p, command) || econ.has(zh.getServer().getOfflinePlayer(p.getUniqueId()), amount)) {
 				return true;
 			}
-			String currencySymbol = zh.getLM().getMessage(LocaleEnum.currencySymbol.getIndex(), zh.getUM().getLanguage(p.getUniqueId()), true);
+			String language = zh.getDM().getPlayerLanguage(p.getUniqueId());
+			String currencySymbol = zh.getLM().getMessage(LocaleEnum.currencySymbol.getIndex(), language, true);
 			zh.getMM().sendMessageAmountValue((CommandSender)p, LocaleEnum.notEnoughMoney, amount, currencySymbol);
 		}
 		return false;
@@ -73,7 +74,8 @@ public class EconomyManager {
 		int amount = zh.getCM().getCommandCost(command);
 		if (!isCommandFree(p, command)) {
 			econ.withdrawPlayer(zh.getServer().getOfflinePlayer(p.getUniqueId()), amount);
-			String currencySymbol = zh.getLM().getMessage(LocaleEnum.currencySymbol.getIndex(), zh.getUM().getLanguage(p.getUniqueId()), true);
+			String language = zh.getDM().getPlayerLanguage(p.getUniqueId());
+			String currencySymbol = zh.getLM().getMessage(LocaleEnum.currencySymbol.getIndex(), language, true);
 			zh.getMM().sendMessageAmountValue((CommandSender)p, LocaleEnum.commandPaid, amount, currencySymbol);
 		}
 	}

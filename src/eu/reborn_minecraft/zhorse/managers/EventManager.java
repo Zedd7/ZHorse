@@ -64,7 +64,7 @@ public class EventManager implements Listener {
 		zh.getServer().getPluginManager().registerEvents(this, zh);
 	}
 	
-	/* Allows ZHorse to cancel onPlayerLeashEntityEvent */
+	/* Allows to cancel onPlayerLeashEntityEvent */
 	private class PlayerLeashDeadEntityEvent extends PlayerLeashEntityEvent {
 		public PlayerLeashDeadEntityEvent(Entity leashedEntity, Entity leashHolder, Player p) {
 			super(leashedEntity, leashHolder, p);
@@ -85,8 +85,8 @@ public class EventManager implements Listener {
 	public void onEntityDamage(EntityDamageEvent e) {
 		if (e.getEntity() instanceof Horse) {
 			Horse horse = (Horse) e.getEntity();
-			if (zh.getUM().isRegistered(horse)) {
-				if (zh.getUM().isProtected(horse)) {
+			if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
+				if (zh.getDM().isHorseProtected(horse.getUniqueId())) {
 					DamageCause damageCause = e.getCause();
 					
 					/* if the damage is not already handled by onEntityDamageByEntity */
@@ -107,8 +107,8 @@ public class EventManager implements Listener {
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
 		if (e.getEntity() instanceof Horse) {
 			Horse horse = (Horse) e.getEntity();
-			if (zh.getUM().isRegistered(horse)) {
-				if (zh.getUM().isProtected(horse)) {
+			if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
+				if (zh.getDM().isHorseProtected(horse.getUniqueId())) {
 					if (e.getDamager() instanceof Player) {
 						Player p = (Player) e.getDamager();
 						e.setCancelled(!isPlayerAllowedToAttack(p, horse));
@@ -129,17 +129,17 @@ public class EventManager implements Listener {
 	public void onEntityDeath(EntityDeathEvent e) {
 		if (e.getEntity() instanceof Horse) {
 			Horse horse = (Horse) e.getEntity();
-			if (zh.getUM().isRegistered(horse)) {
-				UUID ownerUUID = zh.getUM().getPlayerUUID(horse);
+			if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
+				UUID ownerUUID = zh.getDM().getOwnerUUID(horse.getUniqueId());
 				for (Player p : zh.getServer().getOnlinePlayers()) {
 					if (p.getUniqueId().equals(ownerUUID)) {
 						if (displayConsole) {
-							String horseName = zh.getUM().getHorseName(ownerUUID, horse);
-							zh.getMM().sendMessageHorse((CommandSender)p, LocaleEnum.horseDied, horseName);
+							String horseName = zh.getDM().getHorseName(horse.getUniqueId());
+							zh.getMM().sendMessageHorse((CommandSender) p, LocaleEnum.horseDied, horseName);
 						}
 					}
 				}
-				zh.getUM().unRegisterHorse(horse);
+				zh.getDM().removeHorse(horse.getUniqueId());
 			}
 		}
 	}
@@ -164,7 +164,7 @@ public class EventManager implements Listener {
 	public void onEntityPortal(EntityPortalEvent e) {
 		if (e.getEntity() instanceof Horse) {
 			Horse horse = (Horse) e.getEntity();
-			if (zh.getUM().isRegistered(horse)) {
+			if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
 				e.setCancelled(true);
 				if (zh.getCM().isWorldEnabled(e.getTo().getWorld())) {
 					zh.getHM().teleport(horse, e.getTo());
@@ -185,7 +185,7 @@ public class EventManager implements Listener {
 					if (horse.isLeashed()) {
 						Entity leashHolder = horse.getLeashHolder();
 						if (leashHitch.equals(leashHolder)) {
-							e.setCancelled(zh.getUM().isLocked(horse));
+							e.setCancelled(zh.getDM().isHorseLocked(horse.getUniqueId()));
 							break;
 						}
 					}
@@ -207,7 +207,7 @@ public class EventManager implements Listener {
 							break;
 						}
 						else {
-							e.setCancelled(zh.getUM().isLocked(horse));
+							e.setCancelled(zh.getDM().isHorseLocked(horse.getUniqueId()));
 						}
 					}
 				}
@@ -316,7 +316,7 @@ public class EventManager implements Listener {
 	private void ejectPlayer(Player p) {
 		if (p.getVehicle() instanceof Horse) {
 			Horse horse = (Horse) p.getVehicle();
-			if (zh.getUM().isRegistered(horse)) {
+			if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
 				horse.eject();
 			}
 		}
@@ -350,12 +350,12 @@ public class EventManager implements Listener {
 	private boolean isPlayerAllowedToAttack(Player p, Horse horse) {
 		boolean allowed = true;
 		if (zh.getCM().isProtectionEnabled(PLAYER_ATTACK)) {
-			boolean isOwner = zh.getUM().isClaimedBy(p.getUniqueId(), horse);
+			boolean isOwner = zh.getDM().isHorseOwnedBy(p.getUniqueId(), horse.getUniqueId());
 			boolean isOwnerAttackBlocked = zh.getCM().isProtectionEnabled(OWNER_ATTACK);
 			boolean hasAdminPerm = zh.getPM().has(p, KeyWordEnum.zhPrefix.getValue() + CommandEnum.PROTECT.getName() + KeyWordEnum.adminSuffix.getValue());
-			if (!((isOwner && !isOwnerAttackBlocked) ||	hasAdminPerm)) {
+			if ((!isOwner || isOwnerAttackBlocked) && !hasAdminPerm) {
 				if (displayConsole) {
-					String horseName = zh.getUM().getHorseName(horse);
+					String horseName = zh.getDM().getHorseName(horse.getUniqueId());
 					zh.getMM().sendMessageHorse((CommandSender)p, LocaleEnum.horseIsProtected, horseName);
 				}
 				allowed = false;
@@ -365,13 +365,13 @@ public class EventManager implements Listener {
 	}
 	
 	private boolean isPlayerAllowedToInteract(Player p, Horse horse, boolean mustBeShared) {
-		if (zh.getUM().isRegistered(horse)) {
-			boolean isClaimedBy = zh.getUM().isClaimedBy(p.getUniqueId(), horse);
-			boolean hasPerm = zh.getPM().has(p, KeyWordEnum.zhPrefix.getValue() + CommandEnum.LOCK.getName() + KeyWordEnum.adminSuffix.getValue());
-			if (!(isClaimedBy || hasPerm)) {
-				if (zh.getUM().isLocked(horse) || (!zh.getUM().isShared(horse) && (!horse.isEmpty() || mustBeShared))) {
+		if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
+			boolean isOwner = zh.getDM().isHorseOwnedBy(p.getUniqueId(), horse.getUniqueId());
+			boolean hasAdminPerm = zh.getPM().has(p, KeyWordEnum.zhPrefix.getValue() + CommandEnum.LOCK.getName() + KeyWordEnum.adminSuffix.getValue());
+			if (!isOwner && !hasAdminPerm) {
+				if (zh.getDM().isHorseLocked(horse.getUniqueId()) || (!zh.getDM().isHorseShared(horse.getUniqueId()) && (!horse.isEmpty() || mustBeShared))) {
 					if (displayConsole) {
-						String ownerName = zh.getUM().getPlayerName(horse);
+						String ownerName = zh.getDM().getOwnerName(horse.getUniqueId());
 						zh.getMM().sendMessagePlayer((CommandSender)p, LocaleEnum.horseBelongsTo, ownerName);
 					}
 					return false;

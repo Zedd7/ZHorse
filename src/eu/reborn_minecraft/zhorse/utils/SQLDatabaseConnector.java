@@ -32,7 +32,7 @@ public class SQLDatabaseConnector {
 		}
 	}
 	
-	private ResultSet executeQuery(String query) {
+	public ResultSet executeQuery(String query) {
 		ResultSet resultSet = null;
 		try {
 			statement = connection.createStatement();
@@ -55,14 +55,16 @@ public class SQLDatabaseConnector {
 		return result;
 	}
 	
-	public boolean getBooleanResult(String query) {
+	public Boolean getBooleanResult(String query) {
 		ResultSet resultSet = executeQuery(query);
 		try {
-			return resultSet.next();
+			if (resultSet.next()) {
+				return resultSet.getBoolean(1);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return null;
 	}
 	
 	public Integer getIntegerResult(String query) {
@@ -100,6 +102,16 @@ public class SQLDatabaseConnector {
 			e.printStackTrace();
 		}
 		return resultList;
+	}
+	
+	public boolean hasResult(String query) {
+		ResultSet resultSet = executeQuery(query);
+		try {
+			return resultSet.next();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 }

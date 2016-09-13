@@ -25,12 +25,12 @@ public class ZAdmin extends Command {
 					horse = (Horse) p.getVehicle();
 					if (isOwner(targetUUID, true, true)) {
 						idMode = true;
-						userID = zh.getUM().getUserID(targetUUID, horse);
+						horseID = zh.getDM().getHorseID(horse.getUniqueId()).toString();
 					}
 				}
 				execute();
 			}
-			else if (isRegistered(targetUUID, userID)) {
+			else if (isRegistered(targetUUID, horseID)) {
 				execute();
 			}
 		}
@@ -71,7 +71,7 @@ public class ZAdmin extends Command {
 				if (subArgument.split(" ").length >= 2) {
 					idMode = true;
 					targetName = subArgument.substring(0, subArgument.indexOf(" "));
-					userID = subArgument.substring(subArgument.indexOf(" ") + 1);
+					horseID = subArgument.substring(subArgument.indexOf(" ") + 1);
 				}
 				else {
 					targetName = subArgument;
@@ -83,13 +83,13 @@ public class ZAdmin extends Command {
 				if (!idMode) {
 					if (isRegistered(targetUUID)) {
 						boolean success = true;
-						for (int userID = 1; userID <= zh.getUM().getClaimsAmount(targetUUID); ++userID) {
-							Horse horse = zh.getHM().getHorse(targetUUID, Integer.toString(userID));
+						for (int horseID = 1; horseID <= zh.getDM().getHorseCount(targetUUID); ++horseID) {
+							Horse horse = zh.getHM().getHorse(targetUUID, horseID);
 							if (horse != null) {
 								horse.setCustomName(null);
 								horse.setCustomNameVisible(false);
 							}
-							if (!zh.getUM().unRegisterHorse(targetUUID, Integer.toString(userID))) {
+							if (!zh.getDM().removeHorse(targetUUID, horseID)) {
 								success = false;
 							}
 						}
@@ -104,13 +104,13 @@ public class ZAdmin extends Command {
 						}
 					}
 				}
-				else if (isRegistered(targetUUID, userID)) {
-					Horse horse = zh.getHM().getHorse(targetUUID, userID);
+				else if (isRegistered(targetUUID, horseID)) {
+					Horse horse = zh.getHM().getHorse(targetUUID, Integer.parseInt(horseID));
 					if (horse != null) {
 						horse.setCustomName(null);
 						horse.setCustomNameVisible(false);
 					}
-					if (zh.getUM().unRegisterHorse(targetUUID, userID)) {
+					if (zh.getDM().removeHorse(targetUUID, Integer.parseInt(horseID))) {
 						if (samePlayer) {
 							zh.getMM().sendMessageHorse(s, LocaleEnum.horseCleared, horseName);
 						}

@@ -364,7 +364,7 @@ public class Command {
 			return true;
 		}
 		else if (displayConsole) {
-			zh.getMM().sendMessageHorse(s, LocaleEnum.horseNotFound, zh.getDM().getHorseName(targetUUID, horseID));
+			zh.getMM().sendMessageHorse(s, LocaleEnum.horseNotFound, zh.getDM().getHorseName(targetUUID, Integer.parseInt(horseID)));
 		}
 		return false;
 	}
@@ -506,8 +506,8 @@ public class Command {
 	}
 	
 	protected boolean isRegistered(UUID targetUUID, String horseID, boolean isOwner) {
-		if (zh.getDM().isHorseRegistered(targetUUID, horseID)) {
-			horseName = zh.getDM().getHorseName(targetUUID, horseID);
+		if (zh.getDM().isHorseRegistered(targetUUID, Integer.parseInt(horseID))) {
+			horseName = zh.getDM().getHorseName(targetUUID, Integer.parseInt(horseID));
 			return true;
 		}
 		else if (displayConsole) {
