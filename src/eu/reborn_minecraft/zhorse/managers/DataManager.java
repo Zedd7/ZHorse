@@ -1,13 +1,11 @@
 package eu.reborn_minecraft.zhorse.managers;
 
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
 import org.bukkit.Location;
-import org.bukkit.World;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.DatabaseEnum;
@@ -78,20 +76,7 @@ public class DataManager {
 	
 	public Location getHorseLocation(UUID horseUUID) {
 		String query = String.format("SELECT locationWorld, locationX, locationY, locationZ FROM horse WHERE uuid = \"%s\"", horseUUID);
-		ResultSet resultSet = db.executeQuery(query);
-		try {
-			if (resultSet.next()) {
-				String worldName = resultSet.getString("locationWorld");
-				int x = resultSet.getInt("locationX");
-				int y = resultSet.getInt("locationY");
-				int z = resultSet.getInt("locationZ");
-				World world = zh.getServer().getWorld(worldName);
-				return new Location(world, x, y, z);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
+		return db.getLocationResult(query);
 	}
 	
 	public Location getHorseLocation(UUID ownerUUID, Integer horseID) {

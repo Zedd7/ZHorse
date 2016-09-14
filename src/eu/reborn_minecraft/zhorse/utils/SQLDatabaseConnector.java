@@ -6,6 +6,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Location;
+import org.bukkit.World;
+
 import eu.reborn_minecraft.zhorse.ZHorse;
 
 public class SQLDatabaseConnector {
@@ -32,7 +35,7 @@ public class SQLDatabaseConnector {
 		}
 	}
 	
-	public ResultSet executeQuery(String query) {
+	public synchronized ResultSet executeQuery(String query) {
 		ResultSet resultSet = null;
 		try {
 			statement = connection.createStatement();
@@ -43,7 +46,7 @@ public class SQLDatabaseConnector {
 		return resultSet;
 	}
 	
-	public boolean executeUpdate(String update) {
+	public synchronized boolean executeUpdate(String update) {
 		boolean result = false;
 		try {
 			statement = connection.createStatement();
@@ -55,7 +58,7 @@ public class SQLDatabaseConnector {
 		return result;
 	}
 	
-	public Boolean getBooleanResult(String query) {
+	public synchronized Boolean getBooleanResult(String query) {
 		ResultSet resultSet = executeQuery(query);
 		try {
 			if (resultSet.next()) {
@@ -67,7 +70,7 @@ public class SQLDatabaseConnector {
 		return null;
 	}
 	
-	public Integer getIntegerResult(String query) {
+	public synchronized Integer getIntegerResult(String query) {
 		ResultSet resultSet = executeQuery(query);
 		try {
 			if (resultSet.next()) {
@@ -79,7 +82,24 @@ public class SQLDatabaseConnector {
 		return null;
 	}
 	
-	public String getStringResult(String query) {
+	public synchronized Location getLocationResult(String query) {
+		ResultSet resultSet = executeQuery(query);
+		try {
+			if (resultSet.next()) {
+				String worldName = resultSet.getString(1);
+				int x = resultSet.getInt(2);
+				int y = resultSet.getInt(3);
+				int z = resultSet.getInt(4);
+				World world = zh.getServer().getWorld(worldName);
+				return new Location(world, x, y, z);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public synchronized String getStringResult(String query) {
 		ResultSet resultSet = executeQuery(query);
 		try {
 			if (resultSet.next()) {
@@ -91,7 +111,7 @@ public class SQLDatabaseConnector {
 		return null;
 	}
 	
-	public List<String> getStringResultList(String query) {
+	public synchronized List<String> getStringResultList(String query) {
 		List<String> resultList = new ArrayList<String>();
 		ResultSet resultSet = executeQuery(query);
 		try {
@@ -104,7 +124,7 @@ public class SQLDatabaseConnector {
 		return resultList;
 	}
 	
-	public boolean hasResult(String query) {
+	public synchronized boolean hasResult(String query) {
 		ResultSet resultSet = executeQuery(query);
 		try {
 			return resultSet.next();
