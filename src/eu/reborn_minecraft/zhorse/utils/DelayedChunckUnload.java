@@ -7,20 +7,20 @@ import org.bukkit.entity.Horse;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 
-public class AsyncChunckUnload {
+public class DelayedChunckUnload {
 	
-	public AsyncChunckUnload(ZHorse zh, Chunk chunk) {
+	public DelayedChunckUnload(ZHorse zh, Chunk chunk) {
 		final Entity[] entityArray = chunk.getEntities();
-		Bukkit.getScheduler().runTaskAsynchronously(zh, new Runnable() {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(zh, new Runnable() {
 			
 			@Override
 			public void run() {
 				for (Entity entity : entityArray) {
 					if (entity instanceof Horse) {
 						Horse horse = (Horse) entity;
-						if (zh.getUM().isRegistered(horse)) {
+						if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
 							zh.getHM().unloadHorse(horse);
-							zh.getUM().saveLocation(horse);
+							zh.getDM().updateHorseLocation(horse.getUniqueId(), horse.getLocation(), true);
 						}
 					}
 				}
