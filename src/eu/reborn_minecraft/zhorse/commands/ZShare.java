@@ -24,8 +24,8 @@ public class ZShare extends Command {
 						}
 					}
 					else if (ownsHorse) {
-						userID = zh.getUM().getFavoriteUserID(p.getUniqueId());
-						if (isRegistered(p.getUniqueId(), userID)) {
+						horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId()).toString();
+						if (isRegistered(p.getUniqueId(), horseID)) {
 							horse = zh.getHM().getFavoriteHorse(p.getUniqueId());
 							if (isHorseLoaded()) {
 								execute();
@@ -38,8 +38,8 @@ public class ZShare extends Command {
 				}
 			}
 			else {
-				if (isRegistered(targetUUID, userID)) {
-					horse = zh.getHM().getHorse(targetUUID, userID);
+				if (isRegistered(targetUUID, horseID)) {
+					horse = zh.getHM().getHorse(targetUUID, Integer.parseInt(horseID));
 					if (isHorseLoaded()) {
 						execute();
 					}
@@ -50,20 +50,20 @@ public class ZShare extends Command {
 
 	private void execute() {
 		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
-			if (!zh.getUM().isShared(horse)) {
-				if (zh.getUM().isLocked(horse)) {
-					zh.getUM().unLock(targetUUID, horse);
+			if (!zh.getDM().isHorseShared(horse.getUniqueId())) {
+				if (zh.getDM().isHorseLocked(horse.getUniqueId())) {
+					zh.getDM().updateHorseLocked(horse.getUniqueId(), false);
 					if (displayConsole) {
 						zh.getMM().sendMessageHorse(s, LocaleEnum.horseUnLocked, horseName);
 					}
 				}
-				zh.getUM().share(targetUUID, horse);
+				zh.getDM().updateHorseShared(horse.getUniqueId(), true);
 				if (displayConsole) {
 					zh.getMM().sendMessageHorse(s, LocaleEnum.horseShared, horseName);
 				}
 			}
 			else {
-				zh.getUM().unShare(targetUUID, horse);
+				zh.getDM().updateHorseShared(horse.getUniqueId(), false);
 				if (displayConsole) {
 					zh.getMM().sendMessageHorse(s, LocaleEnum.horseUnShared, horseName);
 				}

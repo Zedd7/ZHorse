@@ -24,14 +24,14 @@ public class ZFree extends Command {
 						}
 					}
 					else if (ownsHorse) {
-						horseID = zh.getDM().getFavoriteHorseID(p.getUniqueId()).toString();
+						horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId()).toString();
 						if (isRegistered(p.getUniqueId(), horseID)) {
 							horse = zh.getHM().getFavoriteHorse(p.getUniqueId());
 							if (isHorseLoaded()) {
 								execute();
 							}
 							else {
-								zh.getDM().removeHorse(targetUUID, Integer.parseInt(horseID));
+								zh.getDM().removeHorse(horse.getUniqueId(), targetUUID, Integer.parseInt(horseID));
 								if (samePlayer) {
 									zh.getMM().sendMessageHorse(s, LocaleEnum.horseCleared, horseName);
 								}
@@ -54,7 +54,7 @@ public class ZFree extends Command {
 						execute();
 					}
 					else {
-						zh.getDM().removeHorse(targetUUID, Integer.parseInt(horseID));
+						zh.getDM().removeHorse(horse.getUniqueId(), targetUUID, Integer.parseInt(horseID));
 						if (samePlayer) {
 							zh.getMM().sendMessageHorse(s, LocaleEnum.horseCleared, horseName);
 						}
@@ -70,7 +70,7 @@ public class ZFree extends Command {
 
 	private void execute() {
 		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
-			if (zh.getDM().removeHorse(targetUUID, Integer.parseInt(horseID))) {
+			if (zh.getDM().removeHorse(horse.getUniqueId(), targetUUID, Integer.parseInt(horseID))) {
 				horse.setCustomName(null);
 				horse.setCustomNameVisible(false);
 				if (displayConsole) {

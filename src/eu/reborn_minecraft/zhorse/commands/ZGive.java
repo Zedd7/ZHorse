@@ -28,8 +28,8 @@ public class ZGive extends Command {
 							}
 						}
 						else if (ownsHorse) {
-							userID = zh.getUM().getFavoriteUserID(p.getUniqueId());
-							if (isRegistered(p.getUniqueId(), userID)) {
+							horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId()).toString();
+							if (isRegistered(p.getUniqueId(), horseID)) {
 								horse = zh.getHM().getFavoriteHorse(p.getUniqueId());
 								if (isHorseLoaded()) {
 									execute();
@@ -38,8 +38,8 @@ public class ZGive extends Command {
 						}
 					}
 					else {
-						if (isRegistered(p.getUniqueId(), userID, true)) {
-							horse = zh.getHM().getHorse(p.getUniqueId(), userID);
+						if (isRegistered(p.getUniqueId(), horseID, true)) {
+							horse = zh.getHM().getHorse(p.getUniqueId(), Integer.parseInt(horseID));
 							if (isHorseLoaded()) {
 								execute();
 							}
@@ -51,18 +51,19 @@ public class ZGive extends Command {
 	}
 	
 	private void execute() {
-		if (!hasReachedMaxClaims(targetUUID) && isOwner() && isPlayerDifferent() && zh.getEM().canAffordCommand(p, command)) {
-			horseName = zh.getUM().getHorseName(horse);
-			boolean locked = zh.getUM().isLocked(p.getUniqueId(), horse);
-			boolean protect = zh.getUM().isProtected(p.getUniqueId(), horse);
-			boolean shared = zh.getUM().isShared(p.getUniqueId(), horse);
-			zh.getUM().registerHorse(targetUUID, horse, horseName, locked, protect, shared);
-			applyHorseName();
-			zh.getEM().payCommand(p, command);
-			if (displayConsole) {
-				zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.horseGiven, horseName, targetName);
-				if (isPlayerOnline(targetUUID, true)) {
-					zh.getMM().sendMessageHorsePlayer(((CommandSender)zh.getServer().getPlayer(targetUUID)), LocaleEnum.horseReceived, horseName, p.getName());
+		if (!hasReachedClaimsLimit(targetUUID) && isOwner() && isPlayerDifferent() && zh.getEM().canAffordCommand(p, command)) {
+			horseName = zh.getDM().getHorseName(horse.getUniqueId());
+			boolean locked = zh.getDM().isHorseLocked(horse.getUniqueId());
+			boolean protect = zh.getDM().isHorseProtected(horse.getUniqueId());
+			boolean shared = zh.getDM().isHorseShared(horse.getUniqueId());
+			if (zh.getDM().registerHorse(horse.getUniqueId(), targetUUID, horseName, locked, protect, shared, horse.getLocation())) {
+				applyHorseName();
+				zh.getEM().payCommand(p, command);
+				if (displayConsole) {
+					zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.horseGiven, horseName, targetName);
+					if (isPlayerOnline(targetUUID, true)) {
+						zh.getMM().sendMessageHorsePlayer(((CommandSender)zh.getServer().getPlayer(targetUUID)), LocaleEnum.horseReceived, horseName, p.getName());
+					}
 				}
 			}
 		}

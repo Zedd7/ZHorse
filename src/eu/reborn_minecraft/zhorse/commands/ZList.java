@@ -1,6 +1,7 @@
 package eu.reborn_minecraft.zhorse.commands;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.command.CommandSender;
 
@@ -28,11 +29,11 @@ public class ZList extends Command {
 
 	private void execute() {
 		if (zh.getEM().canAffordCommand(p, command)) {
-			List<String> horseNameList = zh.getUM().getHorseNameList(targetUUID);
+			List<String> horseNameList = zh.getDM().getHorseNameList(targetUUID);
 			String remainingClaimsMessage = getRemainingClaimsMessage(targetUUID);
 			if (displayConsole) {
 				if (ownsHorse(targetUUID, true)) {
-					String favorite = zh.getUM().getFavoriteUserID(targetUUID);
+					String favorite = zh.getDM().getPlayerFavoriteHorseID(targetUUID).toString();
 					String horseListHeader;
 					if (samePlayer) {
 						horseListHeader = zh.getMM().getMessageValue(s, LocaleEnum.horseListHeader, remainingClaimsMessage, true);
@@ -41,24 +42,25 @@ public class ZList extends Command {
 						horseListHeader = zh.getMM().getMessagePlayerValue(s, LocaleEnum.horseListOtherHeader, targetName, remainingClaimsMessage, true);
 					}
 					zh.getMM().sendMessageValue(s, LocaleEnum.headerFormat, horseListHeader, true);
-					for (int i=1; i<=horseNameList.size(); i++) {
-						String userID = Integer.toString(i);
-						String horseName = horseNameList.get(i-1);						
+					for (int i = 1; i <= horseNameList.size(); ++i) {
+						String horseID = Integer.toString(i); // order verified with "ORDER BY" SQL instruction
+						String horseName = horseNameList.get(i - 1);	
+						UUID horseUUID = zh.getDM().getHorseUUID(targetUUID, Integer.parseInt(horseID));
 						String status = "";
-						if (zh.getUM().isProtected(targetUUID, userID)) {
+						if (zh.getDM().isHorseProtected(horseUUID)) {
 							status += zh.getMM().getMessageSpacer(s, LocaleEnum.modeProtected, 1, true);
 						}
-						if (zh.getUM().isLocked(targetUUID, userID)) {
+						if (zh.getDM().isHorseLocked(horseUUID)) {
 							status += zh.getMM().getMessageSpacer(s, LocaleEnum.modeLocked, 1, true);
 						}
-						else if (zh.getUM().isShared(targetUUID, userID)) {
+						else if (zh.getDM().isHorseShared(horseUUID)) {
 							status += zh.getMM().getMessageSpacer(s, LocaleEnum.modeShared, 1, true);
 						}
-						if (userID.equals(favorite)) {
-							zh.getMM().sendMessageHorseSpacerUserIDValue(s, LocaleEnum.horseListFormatFavorite, horseName, 1, userID, status, true);
+						if (horseID.equals(favorite)) {
+							zh.getMM().sendMessageHorseHorseIDSpacerValue(s, LocaleEnum.horseListFormatFavorite, horseName, horseID, 1, status, true);
 						}
 						else {
-							zh.getMM().sendMessageHorseSpacerUserIDValue(s, LocaleEnum.horseListFormat, horseName, 1, userID, status, true);
+							zh.getMM().sendMessageHorseHorseIDSpacerValue(s, LocaleEnum.horseListFormat, horseName, horseID, 1, status, true);
 						}
 					}
 				}

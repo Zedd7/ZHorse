@@ -23,8 +23,8 @@ public class ZRename extends Command {
 						}
 					}
 					else if (ownsHorse) {
-						userID = zh.getUM().getFavoriteUserID(p.getUniqueId());
-						if (isRegistered(p.getUniqueId(), userID)) {
+						horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId()).toString();
+						if (isRegistered(p.getUniqueId(), horseID)) {
 							horse = zh.getHM().getFavoriteHorse(p.getUniqueId());
 							if (isHorseLoaded()) {
 								execute();
@@ -37,8 +37,8 @@ public class ZRename extends Command {
 				}
 			}
 			else {
-				if (isRegistered(targetUUID, userID)) {
-					horse = zh.getHM().getHorse(targetUUID, userID);
+				if (isRegistered(targetUUID, horseID)) {
+					horse = zh.getHM().getHorse(targetUUID, Integer.parseInt(horseID));
 					if (isHorseLoaded()) {
 						execute();
 					}
@@ -51,7 +51,7 @@ public class ZRename extends Command {
 		if (isOwner() && craftHorseName(false) && zh.getEM().canAffordCommand(p, command)) {
 			applyHorseName();
 			horse.setCustomNameVisible(true);
-			zh.getUM().rename(targetUUID, horse, horseName);
+			zh.getDM().updateHorseName(horse.getUniqueId(), horseName);
 			if (displayConsole) {
 				zh.getMM().sendMessageHorse(s, LocaleEnum.horseRenamed, horseName);
 			}

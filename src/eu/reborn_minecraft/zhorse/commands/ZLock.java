@@ -26,8 +26,8 @@ public class ZLock extends Command {
 						}
 					}
 					else if (ownsHorse) {
-						userID = zh.getUM().getFavoriteUserID(p.getUniqueId());
-						if (isRegistered(p.getUniqueId(), userID)) {
+						horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId()).toString();
+						if (isRegistered(p.getUniqueId(), horseID)) {
 							horse = zh.getHM().getFavoriteHorse(p.getUniqueId());
 							if (isHorseLoaded()) {
 								execute();
@@ -40,8 +40,8 @@ public class ZLock extends Command {
 				}
 			}
 			else {
-				if (isRegistered(targetUUID, userID)) {
-					horse = zh.getHM().getHorse(targetUUID, userID);
+				if (isRegistered(targetUUID, horseID)) {
+					horse = zh.getHM().getHorse(targetUUID, Integer.parseInt(horseID));
 					if (isHorseLoaded()) {
 						execute();
 					}
@@ -52,9 +52,9 @@ public class ZLock extends Command {
 
 	private void execute() {
 		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
-			if (!zh.getUM().isLocked(horse)) {
-				if (zh.getUM().isShared(horse)) {
-					zh.getUM().unShare(targetUUID, horse);
+			if (!zh.getDM().isHorseLocked(horse.getUniqueId())) {
+				if (zh.getDM().isHorseShared(horse.getUniqueId())) {
+					zh.getDM().updateHorseShared(horse.getUniqueId(), false);
 					if (displayConsole) {
 						zh.getMM().sendMessageHorse(s, LocaleEnum.horseUnShared, horseName);
 					}
@@ -66,16 +66,17 @@ public class ZLock extends Command {
 					boolean passengerHasPerm = hasPermissionAdmin(passenger.getUniqueId(), command, true);
 					if (!(passengerIsOwner || passengerHasPerm)) {
 						horse.eject();
-						zh.getMM().sendMessagePlayer((CommandSender)passenger, LocaleEnum.horseBelongsTo, zh.getUM().getPlayerName(horse));
+						String ownerName = zh.getDM().getOwnerName(horse.getUniqueId());
+						zh.getMM().sendMessagePlayer((CommandSender) passenger, LocaleEnum.horseBelongsTo, ownerName);
 					}
 				}
-				zh.getUM().lock(targetUUID, horse);
+				zh.getDM().updateHorseLocked(horse.getUniqueId(), true);
 				if (displayConsole) {
 					zh.getMM().sendMessageHorse(s, LocaleEnum.horseLocked, horseName);
 				}
 			}
 			else {
-				zh.getUM().unLock(targetUUID, horse);
+				zh.getDM().updateHorseLocked(horse.getUniqueId(), false);
 				if (displayConsole) {
 					zh.getMM().sendMessageHorse(s, LocaleEnum.horseUnLocked, horseName);
 				}

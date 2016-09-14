@@ -30,8 +30,8 @@ public class ZInfo extends Command {
 						}
 					}
 					else if (ownsHorse) {
-						userID = zh.getUM().getFavoriteUserID(p.getUniqueId());
-						if (isRegistered(p.getUniqueId(), userID)) {
+						horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId()).toString();
+						if (isRegistered(p.getUniqueId(), horseID)) {
 							horse = zh.getHM().getFavoriteHorse(p.getUniqueId());
 							if (isHorseLoaded()) {
 								execute();
@@ -44,8 +44,8 @@ public class ZInfo extends Command {
 				}
 			}
 			else {
-				if (isRegistered(targetUUID, userID)) {
-					horse = zh.getHM().getHorse(targetUUID, userID);
+				if (isRegistered(targetUUID, horseID)) {
+					horse = zh.getHM().getHorse(targetUUID, Integer.parseInt(horseID));
 					if (isHorseLoaded()) {
 						execute();
 					}
@@ -56,16 +56,14 @@ public class ZInfo extends Command {
 
 	private void execute() {
 		if (zh.getEM().canAffordCommand(p, command)) {
-			UUID ownerUUID = zh.getUM().getPlayerUUID(horse);
-			String userID = zh.getUM().getUserID(ownerUUID, horse);
 			displayHeader();
-			displayID(ownerUUID, userID);
-			displayNames(ownerUUID, userID);
+			displayHorseID();
+			displayNames();
 			displayHealth();
 			displayJumpStrength();
 			displaySpeed();
-			displayLocation(ownerUUID, userID);
-			displayStatus(ownerUUID, userID);
+			displayLocation();
+			displayStatus();
 			zh.getEM().payCommand(p, command);
 		}
 	}
@@ -74,15 +72,17 @@ public class ZInfo extends Command {
 		zh.getMM().sendMessageValue(s, LocaleEnum.headerFormat, zh.getMM().getMessage(s, LocaleEnum.horseInfoHeader, true), true);
 	}
 	
-	private void displayID(UUID ownerUUID, String userID) {
+	private void displayHorseID() {
 		if (isOwner(false, true)) {
-			zh.getMM().sendMessageSpacerUserID(s, LocaleEnum.id, 1, userID, true);
+			String horseID = zh.getDM().getHorseID(horse.getUniqueId()).toString();
+			zh.getMM().sendMessageHorseIDSpacer(s, LocaleEnum.id, horseID, 1, true);
 		}
 	}
 	
-	private void displayNames(UUID ownerUUID, String userID) {
-		String ownerName = zh.getUM().getPlayerName(ownerUUID);
-		String horseName = zh.getUM().getHorseName(ownerUUID, userID);
+	private void displayNames() {
+		UUID ownerUUID = zh.getDM().getOwnerUUID(horse.getUniqueId());
+		String ownerName = zh.getDM().getPlayerName(ownerUUID);
+		String horseName = zh.getDM().getHorseName(horse.getUniqueId());
 		zh.getMM().sendMessagePlayerSpacer(s, LocaleEnum.owner, ownerName, 1, true);
 		zh.getMM().sendMessageHorseSpacer(s, LocaleEnum.name, horseName, 1, true);
 	}
@@ -106,7 +106,7 @@ public class ZInfo extends Command {
 		zh.getMM().sendMessageAmountSpacer(s, LocaleEnum.speed, speedRatio, 1, true);
 	}
 	
-	private void displayLocation(UUID ownerUUID, String userID) {
+	private void displayLocation() {
 		if (isNotOnHorse(true)) {
 			Location loc = horse.getLocation();
 			int x = (int) Math.round(loc.getX());
@@ -118,16 +118,16 @@ public class ZInfo extends Command {
 		}
 	}
 	
-	private void displayStatus(UUID ownerUUID, String userID) {
+	private void displayStatus() {
 		String status = "";
-		if (zh.getUM().isProtected(ownerUUID, userID)) {
+		if (zh.getDM().isHorseProtected(horse.getUniqueId())) {
 			status += zh.getMM().getMessageSpacer(s, LocaleEnum.modeProtected, 0, true);
 		}
 		int spacer = status.isEmpty() ? 0 : 1;
-		if (zh.getUM().isLocked(ownerUUID, userID)) {
+		if (zh.getDM().isHorseLocked(horse.getUniqueId())) {
 			status += zh.getMM().getMessageSpacer(s, LocaleEnum.modeLocked, spacer, true);
 		}
-		else if (zh.getUM().isShared(ownerUUID, userID)) {
+		else if (zh.getDM().isHorseShared(horse.getUniqueId())) {
 			status += zh.getMM().getMessageSpacer(s, LocaleEnum.modeShared, spacer, true);
 		}
 		if (!status.isEmpty()) {

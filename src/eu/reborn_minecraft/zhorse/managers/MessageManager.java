@@ -340,7 +340,7 @@ public class MessageManager {
 	}
 	
 	private String getFromLocale(CommandSender s, LocaleEnum index, boolean hidePrefix) {
-		String language = s instanceof Player ? zh.getDM().getPlayerLanguage(((Player)s).getUniqueId()) : zh.getCM().getDefaultLanguage();
+		String language = s instanceof Player ? zh.getDM().getPlayerLanguage(((Player) s).getUniqueId()) : zh.getCM().getDefaultLanguage();
 		return zh.getLM().getMessage(index.getIndex(), language, hidePrefix);
 	}
 	

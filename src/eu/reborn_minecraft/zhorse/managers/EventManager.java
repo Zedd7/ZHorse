@@ -43,9 +43,9 @@ import eu.reborn_minecraft.zhorse.commands.ZClaim;
 import eu.reborn_minecraft.zhorse.enums.CommandEnum;
 import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
-import eu.reborn_minecraft.zhorse.utils.AsyncChunckLoad;
-import eu.reborn_minecraft.zhorse.utils.AsyncChunckUnload;
-import eu.reborn_minecraft.zhorse.utils.AsyncPlayerJoin;
+import eu.reborn_minecraft.zhorse.utils.DelayedChunckLoad;
+import eu.reborn_minecraft.zhorse.utils.DelayedChunckUnload;
+import eu.reborn_minecraft.zhorse.utils.DelayedPlayerJoin;
 
 public class EventManager implements Listener {
 	
@@ -73,12 +73,12 @@ public class EventManager implements Listener {
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onChunkLoad(ChunkLoadEvent e) {
-		new AsyncChunckLoad(zh, e.getChunk());
+		new DelayedChunckLoad(zh, e.getChunk());
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onChunkUnload(ChunkUnloadEvent e) {
-		new AsyncChunckUnload(zh, e.getChunk());
+		new DelayedChunckUnload(zh, e.getChunk());
 	}
 	
 	@EventHandler
@@ -246,7 +246,7 @@ public class EventManager implements Listener {
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(PlayerJoinEvent e) {
-		new AsyncPlayerJoin(zh, e);
+		new DelayedPlayerJoin(zh, e);
 	}
 	
 	@EventHandler
@@ -356,7 +356,7 @@ public class EventManager implements Listener {
 			if ((!isOwner || isOwnerAttackBlocked) && !hasAdminPerm) {
 				if (displayConsole) {
 					String horseName = zh.getDM().getHorseName(horse.getUniqueId());
-					zh.getMM().sendMessageHorse((CommandSender)p, LocaleEnum.horseIsProtected, horseName);
+					zh.getMM().sendMessageHorse((CommandSender) p, LocaleEnum.horseIsProtected, horseName);
 				}
 				allowed = false;
 			}
@@ -372,7 +372,7 @@ public class EventManager implements Listener {
 				if (zh.getDM().isHorseLocked(horse.getUniqueId()) || (!zh.getDM().isHorseShared(horse.getUniqueId()) && (!horse.isEmpty() || mustBeShared))) {
 					if (displayConsole) {
 						String ownerName = zh.getDM().getOwnerName(horse.getUniqueId());
-						zh.getMM().sendMessagePlayer((CommandSender)p, LocaleEnum.horseBelongsTo, ownerName);
+						zh.getMM().sendMessagePlayer((CommandSender) p, LocaleEnum.horseBelongsTo, ownerName);
 					}
 					return false;
 				}

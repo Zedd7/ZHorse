@@ -40,15 +40,16 @@ public class ZClaim extends Command {
 			boolean lock = zh.getCM().shouldLockOnClaim();
 			boolean protect = zh.getCM().shouldProtectOnClaim();
 			boolean share = zh.getCM().shouldShareOnClaim();
-			zh.getDM().registerHorse(horse, p.getUniqueId(), horseName, lock, protect, share);
-			targetUUID = p.getUniqueId(); // uses the player group for the horse name color
-			applyHorseName();
-			horse.setCustomNameVisible(true);
-			horse.setTamed(true);
-			if (displayConsole) {
-				zh.getMM().sendMessageHorse(s, LocaleEnum.horseClaimed, horseName);
+			if (zh.getDM().registerHorse(horse.getUniqueId(), p.getUniqueId(), horseName, lock, protect, share, horse.getLocation())) {
+				targetUUID = p.getUniqueId(); // uses the player group for the horse name color
+				applyHorseName();
+				horse.setCustomNameVisible(true);
+				horse.setTamed(true);
+				if (displayConsole) {
+					zh.getMM().sendMessageHorse(s, LocaleEnum.horseClaimed, horseName);
+				}
+				zh.getEM().payCommand(p, command);
 			}
-			zh.getEM().payCommand(p, command);
 		}
 	}
 }

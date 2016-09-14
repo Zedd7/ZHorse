@@ -22,7 +22,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
-import eu.reborn_minecraft.zhorse.utils.AsyncChunckLoad;
+import eu.reborn_minecraft.zhorse.utils.DelayedChunckLoad;
 import net.md_5.bungee.api.ChatColor;
 
 public class HorseManager {
@@ -46,7 +46,7 @@ public class HorseManager {
 	}
 	
 	public Horse getFavoriteHorse(UUID playerUUID) {
-		return getHorse(playerUUID, zh.getDM().getFavoriteHorseID(playerUUID));
+		return getHorse(playerUUID, zh.getDM().getPlayerFavoriteHorseID(playerUUID));
 	}
 	
 	public Horse getHorse(UUID playerUUID, Integer horseID) {
@@ -112,7 +112,7 @@ public class HorseManager {
 	public void loadHorses() {
 		for (World world : zh.getServer().getWorlds()) {
 			for (Chunk chunk : world.getLoadedChunks()) {
-				new AsyncChunckLoad(zh, chunk);
+				new DelayedChunckLoad(zh, chunk);
 			}
 		}
 	}
@@ -131,7 +131,7 @@ public class HorseManager {
 		Iterator<Entry<UUID, Horse>> loadedHorsesItr = loadedHorses.entrySet().iterator();
 		while (loadedHorsesItr.hasNext()) {
 			Horse horse = loadedHorsesItr.next().getValue();
-			zh.getDM().updateHorseLocation(horse.getUniqueId(), horse.getLocation());
+			zh.getDM().updateHorseLocation(horse.getUniqueId(), horse.getLocation(), true);
 			loadedHorsesItr.remove();
 		}
 	}
@@ -140,7 +140,7 @@ public class HorseManager {
 		Horse copyHorse = (Horse) destination.getWorld().spawnEntity(destination, EntityType.HORSE);
 		if (copyHorse != null) {
 			zh.getDM().updateHorseUUID(sourceHorse.getUniqueId(), copyHorse.getUniqueId());
-			zh.getDM().updateHorseLocation(copyHorse.getUniqueId(), copyHorse.getLocation());
+			zh.getDM().updateHorseLocation(copyHorse.getUniqueId(), copyHorse.getLocation(), true);
 			copyAttributes(sourceHorse, copyHorse);
 			copyInventory(sourceHorse, copyHorse);
 			removeLeash(sourceHorse);

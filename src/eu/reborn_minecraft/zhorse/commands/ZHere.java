@@ -18,8 +18,8 @@ public class ZHere extends Command {
 			applyArgument(true);
 			if (!idMode) {
 				if (!targetMode) {
-					userID = zh.getUM().getFavoriteUserID(p.getUniqueId());
-					if (isRegistered(p.getUniqueId(), userID)) {
+					horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId()).toString();
+					if (isRegistered(p.getUniqueId(), horseID)) {
 						horse = zh.getHM().getFavoriteHorse(p.getUniqueId());
 						if (isHorseLoaded()) {
 							execute();
@@ -31,8 +31,8 @@ public class ZHere extends Command {
 				}
 			}
 			else {
-				if (isRegistered(targetUUID, userID)) {
-					horse = zh.getHM().getHorse(targetUUID, userID);
+				if (isRegistered(targetUUID, horseID)) {
+					horse = zh.getHM().getHorse(targetUUID, Integer.parseInt(horseID));
 					if (isHorseLoaded()) {
 						execute();
 					}
@@ -50,7 +50,7 @@ public class ZHere extends Command {
 			}
 			if (zh.getCM().shouldUseOldTeleportMethod()) {
 				horse.teleport(destination);
-				zh.getUM().saveLocation(p.getUniqueId(), horse, userID);
+				zh.getDM().updateHorseLocation(horse.getUniqueId(), horse.getLocation(), true);
 			}
 			else {
 				horse = zh.getHM().teleport(horse, destination);

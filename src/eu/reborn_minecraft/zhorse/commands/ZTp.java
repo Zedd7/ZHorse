@@ -15,8 +15,8 @@ public class ZTp extends Command {
 			applyArgument(true);
 			if (!idMode) {
 				if (!targetMode) {
-					userID = zh.getUM().getFavoriteUserID(p.getUniqueId());
-					if (isRegistered(p.getUniqueId(), userID)) {
+					horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId()).toString();
+					if (isRegistered(p.getUniqueId(), horseID)) {
 						horse = zh.getHM().getFavoriteHorse(p.getUniqueId());
 						if (isHorseLoaded()) {
 							execute();
@@ -28,8 +28,8 @@ public class ZTp extends Command {
 				}
 			}
 			else {
-				if (isRegistered(targetUUID, userID)) {
-					horse = zh.getHM().getHorse(targetUUID, userID);
+				if (isRegistered(targetUUID, horseID)) {
+					horse = zh.getHM().getHorse(targetUUID, Integer.parseInt(horseID));
 					if (isHorseLoaded()) {
 						execute();
 					}

@@ -101,8 +101,17 @@ public class Command {
 			targetName = s.getName();
 		}
 		else {
-			targetName = zh.getDM().getPlayerName(targetName); // make the case match
-			targetUUID = getPlayerUUID(targetName);
+			String fixedTargetName = zh.getDM().getPlayerName(targetName); // fix potential case errors
+			if (fixedTargetName != null) {
+				targetName = fixedTargetName;
+				targetUUID = getPlayerUUID(targetName);
+			}
+			if (targetName == null || targetUUID == null) {
+				if (displayConsole) {
+					zh.getMM().sendMessagePlayer(s, LocaleEnum.unknownPlayer, targetName);
+				}
+				return false;
+			}
 		}
 		adminMode = adminMode || (zh.getCM().isAutoAdminModeEnabled(command) && hasPermissionAdmin(true));
 		samePlayer = !targetMode || (playerCommand && p.getUniqueId().equals(targetUUID));

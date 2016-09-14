@@ -26,12 +26,12 @@ public class ZSettings extends Command {
 					horse = (Horse) p.getVehicle();
 					if (isOwner(targetUUID, true, true)) {
 						idMode = true;
-						userID = zh.getUM().getUserID(targetUUID, horse);
+						horseID = zh.getDM().getHorseID(horse.getUniqueId()).toString();
 					}
 				}
 				execute();
 			}
-			else if (isRegistered(targetUUID, userID)) {
+			else if (isRegistered(targetUUID, horseID)) {
 				execute();
 			}
 		}
@@ -68,12 +68,12 @@ public class ZSettings extends Command {
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (argument.split(" ").length >= 2) {
 				idMode = true;
-				userID = argument.substring(argument.indexOf(" ")+1);
+				horseID = argument.substring(argument.indexOf(" ") + 1);
 			}
 			if (idMode) {
-				if (isRegistered(targetUUID, userID)) {
-					if (!zh.getUM().getFavoriteUserID(targetUUID).equals(userID)) {
-						zh.getUM().saveFavorite(targetUUID, userID);
+				if (isRegistered(targetUUID, horseID)) {
+					if (!zh.getDM().getPlayerFavoriteHorseID(targetUUID).toString().equals(horseID)) {
+						zh.getDM().updatePlayerFavorite(targetUUID, Integer.parseInt(horseID));
 						if (samePlayer) {
 							zh.getMM().sendMessageHorse(s, LocaleEnum.favoriteEdited, horseName);
 						}
@@ -109,8 +109,8 @@ public class ZSettings extends Command {
 			if (argument.split(" ").length >= 2) {
 				String language = argument.substring(argument.indexOf(" ")+1).toUpperCase();
 				if (zh.getCM().isLanguageAvailable(language)) {
-					if (!zh.getUM().getLanguage(targetUUID).equals(language)) {
-						zh.getUM().saveLanguage(targetUUID, language);
+					if (!zh.getDM().getPlayerLanguage(targetUUID).equals(language)) {
+						zh.getDM().updatePlayerLanguage(targetUUID, language);
 						if (samePlayer) {
 							zh.getMM().sendMessageLang(s, LocaleEnum.languageEdited, language);
 						}
