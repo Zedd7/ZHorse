@@ -15,7 +15,6 @@ public class SQLDatabaseConnector {
 	
 	protected ZHorse zh;
 	protected Connection connection;
-	protected Statement statement;
 	
 	public SQLDatabaseConnector(ZHorse zh) {
 		this.zh = zh;
@@ -23,9 +22,6 @@ public class SQLDatabaseConnector {
 	
 	public void closeConnection() {									
 		try {
-			if (statement != null) {
-				statement.close();
-			}
 			if (connection != null) {
 				connection.close();
 			}
@@ -35,21 +31,9 @@ public class SQLDatabaseConnector {
 		}
 	}
 	
-	public ResultSet executeQuery(String query) {
-		ResultSet resultSet = null;
-		try {
-			statement = connection.createStatement();
-			resultSet = statement.executeQuery(query);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return resultSet;
-	}
-	
 	public boolean executeUpdate(String update) {
 		boolean result = false;
-		try {
-			statement = connection.createStatement();
+		try (Statement statement = connection.createStatement()) {
 			statement.executeUpdate(update);
 			result = true;
 		} catch (Exception e) {
@@ -59,8 +43,8 @@ public class SQLDatabaseConnector {
 	}
 	
 	public Boolean getBooleanResult(String query) {
-		ResultSet resultSet = executeQuery(query);
-		try {
+		try (Statement statement = connection.createStatement()) {
+			ResultSet resultSet = statement.executeQuery(query);
 			if (resultSet.next()) {
 				return resultSet.getInt(1) == 1;
 			}
@@ -71,8 +55,8 @@ public class SQLDatabaseConnector {
 	}
 	
 	public Integer getIntegerResult(String query) {
-		ResultSet resultSet = executeQuery(query);
-		try {
+		try (Statement statement = connection.createStatement()) {
+			ResultSet resultSet = statement.executeQuery(query);
 			if (resultSet.next()) {
 				return resultSet.getInt(1);
 			}
@@ -83,8 +67,8 @@ public class SQLDatabaseConnector {
 	}
 	
 	public Location getLocationResult(String query) {
-		ResultSet resultSet = executeQuery(query);
-		try {
+		try (Statement statement = connection.createStatement()) {
+			ResultSet resultSet = statement.executeQuery(query);
 			if (resultSet.next()) {
 				String worldName = resultSet.getString(1);
 				int x = resultSet.getInt(2);
@@ -100,8 +84,8 @@ public class SQLDatabaseConnector {
 	}
 	
 	public String getStringResult(String query) {
-		ResultSet resultSet = executeQuery(query);
-		try {
+		try (Statement statement = connection.createStatement()) {
+			ResultSet resultSet = statement.executeQuery(query);
 			if (resultSet.next()) {
 				return resultSet.getString(1);
 			}
@@ -113,8 +97,8 @@ public class SQLDatabaseConnector {
 	
 	public List<String> getStringResultList(String query) {
 		List<String> resultList = new ArrayList<String>();
-		ResultSet resultSet = executeQuery(query);
-		try {
+		try (Statement statement = connection.createStatement()) {
+			ResultSet resultSet = statement.executeQuery(query);
 			while (resultSet.next()) {
 				resultList.add(resultSet.getString(1));
 			}
@@ -125,8 +109,8 @@ public class SQLDatabaseConnector {
 	}
 	
 	public boolean hasResult(String query) {
-		ResultSet resultSet = executeQuery(query);
-		try {
+		try (Statement statement = connection.createStatement()) {
+			ResultSet resultSet = statement.executeQuery(query);
 			return resultSet.next();
 		} catch (Exception e) {
 			e.printStackTrace();
