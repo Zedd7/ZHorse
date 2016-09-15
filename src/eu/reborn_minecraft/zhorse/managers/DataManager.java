@@ -216,8 +216,11 @@ public class DataManager {
 		if (isHorseRegistered(horseUUID)) { // if horse was given, unregister it from giver's list
 			removeHorse(horseUUID);
 		}
-		String update = String.format("INSERT INTO horse VALUES (\"%s\", \"%s\", %d, \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", %d, %d, %d)",
-				horseUUID, ownerUUID, horseID, horseName, modeLocked, modeProtected, modeShared, locationWorld, locationX, locationY, locationZ);
+		int lockedFlag = modeLocked ? 1 : 0;
+		int protectedFlag = modeProtected ? 1 : 0;
+		int sharedFlag = modeShared ? 1 : 0;
+		String update = String.format("INSERT INTO horse VALUES (\"%s\", \"%s\", %d, \"%s\", %d, %d, %d, \"%s\", %d, %d, %d)",
+				horseUUID, ownerUUID, horseID, horseName, lockedFlag, protectedFlag, sharedFlag, locationWorld, locationX, locationY, locationZ);
 		return db.executeUpdate(update);
 	}
 	
@@ -261,7 +264,8 @@ public class DataManager {
 	}
 	
 	public boolean updateHorseLocked(UUID horseUUID, boolean modeLocked) {
-		String update = String.format("UPDATE horse SET locked = \"%s\" WHERE uuid = \"%s\"", modeLocked, horseUUID);
+		int lockedFlag = modeLocked ? 1 : 0;
+		String update = String.format("UPDATE horse SET locked = %d WHERE uuid = \"%s\"", lockedFlag, horseUUID);
 		return db.executeUpdate(update);
 	}
 	
@@ -271,12 +275,14 @@ public class DataManager {
 	}
 	
 	public boolean updateHorseProtected(UUID horseUUID, boolean modeProtected) {
-		String update = String.format("UPDATE horse SET protected = \"%s\" WHERE uuid = \"%s\"", modeProtected, horseUUID);
+		int protectedFlag = modeProtected ? 1 : 0;
+		String update = String.format("UPDATE horse SET protected = %d WHERE uuid = \"%s\"", protectedFlag, horseUUID);
 		return db.executeUpdate(update);
 	}
 	
 	public boolean updateHorseShared(UUID horseUUID, boolean modeShared) {
-		String update = String.format("UPDATE horse SET shared = \"%s\" WHERE uuid = \"%s\"", modeShared, horseUUID);
+		int sharedFlag = modeShared ? 1 : 0;
+		String update = String.format("UPDATE horse SET shared = %d WHERE uuid = \"%s\"", sharedFlag, horseUUID);
 		return db.executeUpdate(update);
 	}
 	

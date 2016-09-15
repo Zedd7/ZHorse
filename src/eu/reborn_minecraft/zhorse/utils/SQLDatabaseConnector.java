@@ -62,7 +62,7 @@ public class SQLDatabaseConnector {
 		ResultSet resultSet = executeQuery(query);
 		try {
 			if (resultSet.next()) {
-				return resultSet.getBoolean(1);
+				return resultSet.getInt(1) == 1;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
