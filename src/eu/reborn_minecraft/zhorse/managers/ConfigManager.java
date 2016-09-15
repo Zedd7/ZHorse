@@ -23,13 +23,14 @@ import eu.reborn_minecraft.zhorse.utils.Utf8YamlConfiguration;
 public class ConfigManager {
 	
 	private static final String CONFIG_PATH = "config.yml";
+	private static final int HORSE_NAME_LENGTH_LIMIT = 36; // limited by db
 	
 	private ZHorse zh;
 	private FileConfiguration config;
 	
 	public ConfigManager(ZHorse zh) {
 		this.zh = zh;
-		File configFile = new File(zh.getDataFolder(), CONFIG_PATH);	
+		File configFile = new File(zh.getDataFolder(), CONFIG_PATH);
     	if (!configFile.exists()) {
 			zh.getLogger().info(CONFIG_PATH + " is missing... Creating it.");
 			zh.saveResource(CONFIG_PATH, false);
@@ -138,13 +139,10 @@ public class ConfigManager {
 	}
 	
 	public int getMaximumHorseNameLength() {
-		int value = -1;
+		int value = 0;
 		String maximumHorseNameLength = config.getString(KeyWordEnum.horsenamesPrefix.getValue() + KeyWordEnum.maximumLength.getValue());
 		if (maximumHorseNameLength != null) {
 			value = Integer.parseInt(maximumHorseNameLength);
-			if (value < 0 && value != -1) {
-				value = -1;
-			}
 		}
 		return value;
 	}
@@ -369,8 +367,12 @@ public class ConfigManager {
 		String maximumHorseNameLength = config.getString("HorseNames.maximum-length");
 		if (maximumHorseNameLength != null) {
 			int value = Integer.parseInt(maximumHorseNameLength);
-			if (value < 0 && value != -1) {
-				zh.getLogger().severe("The \"HorseNames.maximum-length\" value must be positive or -1 !");
+			if (value < 0) {
+				zh.getLogger().severe("The \"HorseNames.maximum-length\" value must be positive !");
+				conform = false;
+			}
+			else if (value > HORSE_NAME_LENGTH_LIMIT) {
+				zh.getLogger().severe(String.format("The \"HorseNames.maximum-length\" value must be less than %d !", HORSE_NAME_LENGTH_LIMIT));
 				conform = false;
 			}
 		}

@@ -178,7 +178,7 @@ public class Command {
 			int maximumLength = zh.getCM().getMaximumHorseNameLength();
 			int minimumLength = zh.getCM().getMinimumHorseNameLength();
 			int length = horseName.length();
-			if ((length >= minimumLength && (length <= maximumLength || maximumLength == -1)) || adminMode) {
+			if ((length >= minimumLength || adminMode) && length <= maximumLength) {
 				if (!zh.getCM().isHorseNameBanned(horseName) || adminMode) {
 					return true;
 				}

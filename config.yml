@@ -104,10 +104,9 @@ HorseNames:
   give-random-names: true
 
   # The maximum lenght of a horse's name.
-  # If set to more than 0, length of horse's name is limited.
+  # If set to 1-36, horse naming is optional.
   # If set to 0, horse naming is forbbiden.
-  # If set to -1, horse naming is optional.
-  maximum-length: 30
+  maximum-length: 36
 
   # The minimum lenght of a horse's name.
   # If set to more than 0, horse naming is mandatory.
@@ -121,15 +120,31 @@ HorseNames:
   # The names that are given randomly if random naming is enabled.
   random-names:
   - Arod
-  - Ashufel
-  - Grispoil
-  - Eclair
+  - Arroch
+  - Asfaloth
+  - Bill
+  - Brego
+  - Bumpkin
+  - Felaróf
+  - Firefoot
+  - Hasufel
+  - Lightfoot
   - Lightning
-  - Pegase
-  - Ponyta
+  - Nahar
+  - Pegasus
+  - Rochallor
+  - Roheryn
+  - Shadowfax
+  - Sharp-ears
+  - Snowmane
+  - Strider
+  - Stybba
+  - Swish-tail
   - Thunderstorm
-  - Tonnerre
   - Tornado
+  - White-socks
+  - Windfola
+  - Wise-nose
 
 Languages:
 

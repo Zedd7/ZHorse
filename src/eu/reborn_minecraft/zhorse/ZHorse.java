@@ -83,8 +83,7 @@ public class ZHorse extends JavaPlugin {
 	public boolean reload() {
 		horseManager.unloadHorses();
 		dataManager.closeDatabase();
-		initManagers();
-		return true;
+		return initManagers();
 	}
 	
 	public ConfigManager getCM() {

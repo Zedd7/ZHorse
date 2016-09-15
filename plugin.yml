@@ -47,6 +47,7 @@
         children:
             zh.admin: true
             zh.settings.clear: true
+            zh.settings.import: true
             
     zh.settings.* :
         description: Grants access to all settings subcommands
