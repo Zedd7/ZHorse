@@ -19,19 +19,22 @@ public class DataManager {
 	
 	private ZHorse zh;
 	private SQLDatabaseConnector db;
+	private boolean connected = false;
 	
 	public DataManager(ZHorse zh) {
 		this.zh = zh;
 	}
 	
 	public void openDatabase() {
-		DatabaseEnum database = zh.getCM().getDatabase();
+		DatabaseEnum database = zh.getCM().getDatabaseType();
 		switch (database) {
 		case MYSQL:
 			db = new MySQLConnector(zh);
+			connected = true;
 			break;
 		case SQLITE:
 			db = new SQLiteConnector(zh);
+			connected = true;
 			break;
 		default:
 			zh.getLogger().severe(String.format("The database %s is not supported ! Disabling %s...", database.getName(), zh.getDescription().getName()));
@@ -41,7 +44,9 @@ public class DataManager {
 	}
 	
 	public void closeDatabase() {
-		db.closeConnection();
+		if (connected) {
+			db.closeConnection();
+		}
 	}
 	
 	private boolean updateTables() {

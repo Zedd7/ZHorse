@@ -72,11 +72,12 @@ public class ZHorse extends JavaPlugin {
 		messageManager = new MessageManager(this);
 		permissionManager = new PermissionManager(this);
 		
+		boolean conformConfig = configManager.checkConformity();
+		boolean conformLocale = localeManager.checkConformity();
+		
 		dataManager.openDatabase();
 		horseManager.loadHorses();
 		
-		boolean conformConfig = configManager.checkConformity();
-		boolean conformLocale = localeManager.checkConformity();
 		return conformConfig && conformLocale;
 	}
     

@@ -7,13 +7,18 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 
 public class SQLiteConnector extends SQLDatabaseConnector {
 	
-	private static final String DATABASE_NAME = "zhorse.db";
 	private static final String JDBC_DRIVER = "org.sqlite.JDBC";
+	private static final String FILE_EXTENSION = ".db";
 
 	public SQLiteConnector(ZHorse zh) {
 		super(zh);
-		String url = new File(zh.getDataFolder(), DATABASE_NAME).getPath();			 
-    	openConnection(url);
+		String filename = zh.getCM().getDatabaseFileName();
+		if (filename != null) {
+			filename += FILE_EXTENSION;
+			String url = new File(zh.getDataFolder(), filename).getPath();			 
+			openConnection(url);
+		}
+		
 	}
 	
 	public void openConnection(String url) {									

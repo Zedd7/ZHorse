@@ -39,7 +39,7 @@ public class ConfigManager {
 	}
 
 	public List<String> getAvailableLanguages() {
-		List<String> availableLanguages = config.getStringList(KeyWordEnum.languagesPrefix.getValue() + KeyWordEnum.available.getValue());
+		List<String> availableLanguages = config.getStringList(KeyWordEnum.languagesPrefix.getValue() + KeyWordEnum.availableSuffix.getValue());
 		if (availableLanguages == null || availableLanguages.isEmpty()) {
 			availableLanguages = new ArrayList<String>();
 			availableLanguages.add(getDefaultLanguage());
@@ -78,9 +78,39 @@ public class ConfigManager {
 		return value;
 	}
 	
-	public DatabaseEnum getDatabase() {
-		// TODO
-		return DatabaseEnum.SQLITE;
+	public String getDatabaseFileName() {
+		return config.getString(KeyWordEnum.databasesPrefix.getValue() + KeyWordEnum.sqliteConfig.getValue() + KeyWordEnum.filenameSuffix.getValue());
+	}
+	
+	public String getDatabaseHost() {
+		return config.getString(KeyWordEnum.databasesPrefix.getValue() + KeyWordEnum.mysqlConfig.getValue() + KeyWordEnum.hostSuffix.getValue());
+	}
+	
+	public String getDatabaseName() {
+		return config.getString(KeyWordEnum.databasesPrefix.getValue() + KeyWordEnum.mysqlConfig.getValue() + KeyWordEnum.databaseSuffix.getValue());
+	}
+	
+	public String getDatabasePassword() {
+		return config.getString(KeyWordEnum.databasesPrefix.getValue() + KeyWordEnum.mysqlConfig.getValue() + KeyWordEnum.passwordSuffix.getValue());
+	}
+	
+	public String getDatabasePort() {
+		return config.getString(KeyWordEnum.databasesPrefix.getValue() + KeyWordEnum.mysqlConfig.getValue() + KeyWordEnum.portSuffix.getValue());
+	}
+	
+	public DatabaseEnum getDatabaseType() {
+		String databaseType = config.getString(KeyWordEnum.databasesPrefix.getValue() + KeyWordEnum.typeSuffix.getValue());
+		if (databaseType.equalsIgnoreCase(DatabaseEnum.MYSQL.getName())) {
+			return DatabaseEnum.MYSQL;
+		}
+		else if (databaseType.equalsIgnoreCase(DatabaseEnum.SQLITE.getName())) {
+			return DatabaseEnum.SQLITE;
+		}
+		return null;
+	}
+	
+	public String getDatabaseUser() {
+		return config.getString(KeyWordEnum.databasesPrefix.getValue() + KeyWordEnum.mysqlConfig.getValue() + KeyWordEnum.userSuffix.getValue());
 	}
 	
 	public String getDefaultHorseName() {
@@ -276,6 +306,7 @@ public class ConfigManager {
 	
 	public boolean checkConformity() {
 		if (!(checkCommandsConformity()
+				&& checkDatabaseConformity()
 				&& checkGroupsConformity()
 				&& checkHorseNamesConformity()
 				&& checkLanguagesConformity()
@@ -320,6 +351,54 @@ public class ConfigManager {
 		}
 		else {
 			zh.getLogger().severe("The \"Commands\" section is missing from the config !");
+			conform = false;
+		}
+		return conform;
+	}
+	
+	private boolean checkDatabaseConformity() {
+		boolean conform = true;
+		ConfigurationSection cs = config.getConfigurationSection("Databases");
+		if (cs != null) {
+			if (!config.isSet("Databases.type")) {
+				zh.getLogger().severe("The \"Databases.type\" option is missing from the config !");
+	        	conform = false;
+	        }
+			else if (getDatabaseType().equals(DatabaseEnum.MYSQL)) {
+				if (!config.isSet("Databases.mysql-config.host")) {
+					zh.getLogger().severe("The \"Databases.mysql-config.host\" option is missing from the config !");
+					conform = false;
+				}
+				if (!config.isSet("Databases.mysql-config.port")) {
+					zh.getLogger().severe("The \"Databases.mysql-config.port\" option is missing from the config !");
+					conform = false;
+				}
+				if (!config.isSet("Databases.mysql-config.user")) {
+					zh.getLogger().severe("The \"Databases.mysql-config.user\" option is missing from the config !");
+					conform = false;
+				}
+				if (!config.isSet("Databases.mysql-config.password")) {
+					zh.getLogger().severe("The \"Databases.mysql-config.password\" option is missing from the config !");
+					conform = false;
+				}
+				if (!config.isSet("Databases.mysql-config.database")) {
+					zh.getLogger().severe("The \"Databases.mysql-config.database\" option is missing from the config !");
+					conform = false;
+				}
+	        }
+			else if (getDatabaseType().equals(DatabaseEnum.SQLITE)) {
+				if (!config.isSet("Databases.sqlite-config.filename")) {
+					zh.getLogger().severe("The \"Databases.sqlite-config.filename\" option is missing from the config !");
+					conform = false;
+				}
+			}
+			else {
+				zh.getLogger().severe("The database type must be MySQL or SQLite !");
+				conform = false;
+			}
+		}
+		else {
+			zh.getLogger().severe("The \"Databases\" section is missing from the config !");
 			conform = false;
 		}
 		return conform;
@@ -392,11 +471,9 @@ public class ConfigManager {
 			zh.getLogger().severe("The \"HorseNames.minimum-length\" option is missing from the config !");
 			conform = false;
 		}
-		if (conform) {
-			if (Integer.parseInt(maximumHorseNameLength) < Integer.parseInt(minimumHorseNameLength) && Integer.parseInt(maximumHorseNameLength) != -1) {
-				zh.getLogger().severe("The \"HorseNames.maximum-length\" must be greater than the \"HorseNames.minimum-length\" !");
-				conform = false;
-			}
+		if (conform && Integer.parseInt(maximumHorseNameLength) < Integer.parseInt(minimumHorseNameLength)) {
+			zh.getLogger().severe("The \"HorseNames.maximum-length\" must be greater than the \"HorseNames.minimum-length\" !");
+			conform = false;
 		}
 		List<String> bannedNameList = config.getStringList("HorseNames.banned-names");
 		if (bannedNameList == null) {
@@ -411,7 +488,7 @@ public class ConfigManager {
 		if (conform) {
 			for (String bannedName : bannedNameList) {
 				if (randomNameList.contains(bannedName)) {
-					zh.getLogger().severe("The banned name \"" + bannedName + "\" can't exist in the random-names list !");
+					zh.getLogger().severe("The banned name \"" + bannedName + "\" can't be part of the random-names list !");
 					conform = false;
 				}
 			}

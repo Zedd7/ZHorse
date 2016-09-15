@@ -2,7 +2,7 @@ Version: 1.6.0
 
 Commands:
 
-  # The list of the ZHorse's commands. You can remove unused commands.
+  # The list of ZHorse's commands. You can remove unused commands.
   # Set auto-admin to true to force admin mode for authorized users.
   # The value of cost defines how much will be charged per use.
 
@@ -63,6 +63,25 @@ Commands:
   tp:
     auto-admin: true
     cost: 0
+
+Databases:
+
+  # The type of SQL database that ZHorse should use.
+  # Available databases types are MySQL, SQLite.
+  type: SQLite
+
+  # Configuration section for MySQL. You can remove it if MySQL is disabled.
+  mysql-config:
+    host: 127.0.0.1
+    port: 3306
+    user: ZHorse
+    password: ''
+    database: zhorse
+
+  # Configuration section for SQLite. You can remove it if SQLite is disabled.
+  sqlite-config:
+    # The name of the database file without extension
+    filename: zhorse
 
 Groups:
 
