@@ -73,6 +73,7 @@ public class ZHorse extends JavaPlugin {
 		permissionManager = new PermissionManager(this);
 		
 		dataManager.openDatabase();
+		horseManager.loadHorses();
 		
 		boolean conformConfig = configManager.checkConformity();
 		boolean conformLocale = localeManager.checkConformity();
@@ -80,7 +81,10 @@ public class ZHorse extends JavaPlugin {
 	}
     
 	public boolean reload() {
-		return initManagers();
+		horseManager.unloadHorses();
+		dataManager.closeDatabase();
+		initManagers();
+		return true;
 	}
 	
 	public ConfigManager getCM() {

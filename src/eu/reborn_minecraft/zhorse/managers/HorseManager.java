@@ -42,7 +42,6 @@ public class HorseManager {
 	
 	public HorseManager(ZHorse zh) {
 		this.zh = zh;
-		loadHorses();
 	}
 	
 	public Horse getFavoriteHorse(UUID playerUUID) {

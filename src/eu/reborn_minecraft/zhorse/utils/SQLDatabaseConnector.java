@@ -35,7 +35,7 @@ public class SQLDatabaseConnector {
 		}
 	}
 	
-	public synchronized ResultSet executeQuery(String query) {
+	public ResultSet executeQuery(String query) {
 		ResultSet resultSet = null;
 		try {
 			statement = connection.createStatement();
@@ -46,7 +46,7 @@ public class SQLDatabaseConnector {
 		return resultSet;
 	}
 	
-	public synchronized boolean executeUpdate(String update) {
+	public boolean executeUpdate(String update) {
 		boolean result = false;
 		try {
 			statement = connection.createStatement();
@@ -58,7 +58,7 @@ public class SQLDatabaseConnector {
 		return result;
 	}
 	
-	public synchronized Boolean getBooleanResult(String query) {
+	public Boolean getBooleanResult(String query) {
 		ResultSet resultSet = executeQuery(query);
 		try {
 			if (resultSet.next()) {
@@ -70,7 +70,7 @@ public class SQLDatabaseConnector {
 		return null;
 	}
 	
-	public synchronized Integer getIntegerResult(String query) {
+	public Integer getIntegerResult(String query) {
 		ResultSet resultSet = executeQuery(query);
 		try {
 			if (resultSet.next()) {
@@ -82,7 +82,7 @@ public class SQLDatabaseConnector {
 		return null;
 	}
 	
-	public synchronized Location getLocationResult(String query) {
+	public Location getLocationResult(String query) {
 		ResultSet resultSet = executeQuery(query);
 		try {
 			if (resultSet.next()) {
@@ -99,7 +99,7 @@ public class SQLDatabaseConnector {
 		return null;
 	}
 	
-	public synchronized String getStringResult(String query) {
+	public String getStringResult(String query) {
 		ResultSet resultSet = executeQuery(query);
 		try {
 			if (resultSet.next()) {
@@ -111,7 +111,7 @@ public class SQLDatabaseConnector {
 		return null;
 	}
 	
-	public synchronized List<String> getStringResultList(String query) {
+	public List<String> getStringResultList(String query) {
 		List<String> resultList = new ArrayList<String>();
 		ResultSet resultSet = executeQuery(query);
 		try {
@@ -124,7 +124,7 @@ public class SQLDatabaseConnector {
 		return resultList;
 	}
 	
-	public synchronized boolean hasResult(String query) {
+	public boolean hasResult(String query) {
 		ResultSet resultSet = executeQuery(query);
 		try {
 			return resultSet.next();
