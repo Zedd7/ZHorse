@@ -37,8 +37,8 @@ public class DataManager {
 			connected = true;
 			break;
 		default:
-			zh.getLogger().severe(String.format("The database %s is not supported ! Disabling %s...", database.getName(), zh.getDescription().getName()));
-			zh.getServer().getPluginManager().disablePlugin(zh);
+			String databaseType = database != null ? database.getName() : "Unknown database";
+			zh.getLogger().severe(String.format("The database %s is not supported !", databaseType));
 		}
 		updateTables();
 	}

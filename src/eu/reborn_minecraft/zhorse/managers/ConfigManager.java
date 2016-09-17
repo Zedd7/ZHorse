@@ -106,6 +106,9 @@ public class ConfigManager {
 		else if (databaseType.equalsIgnoreCase(DatabaseEnum.SQLITE.getName())) {
 			return DatabaseEnum.SQLITE;
 		}
+		else if (databaseType.equalsIgnoreCase(DatabaseEnum.YAML.getName())) {
+			return DatabaseEnum.YAML;
+		}
 		return null;
 	}
 	

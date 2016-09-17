@@ -26,8 +26,7 @@ public class SQLiteConnector extends SQLDatabaseConnector {
 			Class.forName(JDBC_DRIVER);
 			connection = DriverManager.getConnection("jdbc:sqlite:" + url);
 		} catch (Exception e) {
-			zh.getLogger().severe(String.format("Failed to open %s ! Disabling %s...", url, zh.getDescription().getName()));
-	    	zh.getServer().getPluginManager().disablePlugin(zh);
+			zh.getLogger().severe(String.format("Failed to open connection with %s !", url));
 		}
 	}
 	
