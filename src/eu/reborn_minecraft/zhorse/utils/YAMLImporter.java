@@ -50,7 +50,7 @@ public class YAMLImporter {
 		String playerName = getPlayerData(db, playerUUID, KeyWordEnum.name.getValue(), null);
 		String language = getPlayerData(db, playerUUID, KeyWordEnum.language.getValue(), zh.getCM().getDefaultLanguage());
 		String favoriteString = getPlayerData(db, playerUUID, KeyWordEnum.favorite.getValue(), null);
-		Integer favorite = favoriteString != null ? Integer.parseInt(favoriteString) : null;
+		Integer favorite = favoriteString != null ? Integer.parseInt(favoriteString) : zh.getDM().getDefaultFavoriteHorseID();
 		return zh.getDM().registerPlayer(playerUUID, playerName, language, favorite);
 	}
 

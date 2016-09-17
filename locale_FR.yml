@@ -26,8 +26,9 @@ Headers:
 Messages:
   claimsLimitReached: "<yellow>Votre limite de chevaux revendicables a été atteinte."
   claimsLimitReachedOther: "<yellow>La limite de chevaux revendicables par <gold><player><yellow> a été atteinte."
-  databaseImportSuccess: "<yellow>Les données <gold><value><yellow> ont été importées avec succès dans votre base de données actuelle."
   databaseImportFailure: "<yellow>Les données <gold><value><yellow> n'ont pas pu être importées dans votre base de données actuelle. Plus de détails dans les logs."
+  databaseImportStarted: "<yellow>L'importation des données <gold><value><yellow> a commencé..."
+  databaseImportSuccess: "<yellow>Les données <gold><value><yellow> ont été importées avec succès dans votre base de données actuelle."
   favoriteAlreadySet: "<yellow>Vous avez déjà défini <gold><horse><yellow> en tant que cheval favori."
   favoriteAlreadySetOther: "<gold><player><yellow> a déjà défini <gold><horse><yellow> en tant que cheval favori."
   favoriteEdited: "<gold><horse><yellow> est désormais votre cheval favori."

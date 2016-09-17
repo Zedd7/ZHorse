@@ -133,25 +133,18 @@ public class ZAdmin extends Command {
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (argument.split(" ").length >= 2) {
 				String databaseName = argument.substring(argument.indexOf(" ") + 1);
-				DatabaseEnum database = null;
-				try {
-					database = DatabaseEnum.valueOf(databaseName.toUpperCase());
-				} catch (Exception e) {}
-				if (database != null) {
-					boolean success = false;
-					switch (database) {
-					case YAML:
-						success = YAMLImporter.importData(zh);
-						break;
-					default:
-						zh.getLogger().severe(String.format("Data import from %s database is not supported yet !", database.getName()));
-					}
+				boolean success = false;
+				if (databaseName.equalsIgnoreCase(DatabaseEnum.YAML.getName())) {
+					zh.getMM().sendMessageValue(s, LocaleEnum.databaseImportStarted, databaseName);
+					success = YAMLImporter.importData(zh);
+				}
+				if (success) {
 					if (displayConsole) {
 						if (success) {
-							zh.getMM().sendMessageValue(s, LocaleEnum.databaseImportSuccess, database.getName());
+							zh.getMM().sendMessageValue(s, LocaleEnum.databaseImportSuccess, databaseName);
 						}
 						else {
-							zh.getMM().sendMessageValue(s, LocaleEnum.databaseImportFailure, database.getName());
+							zh.getMM().sendMessageValue(s, LocaleEnum.databaseImportFailure, databaseName);
 						}
 					}
 				}

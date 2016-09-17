@@ -28,8 +28,9 @@ Headers:
 Messages:
   claimsLimitReached: "<yellow>Je hebt je claims-limiet berijkt."
   claimsLimitReachedOther: "<gold><player><yellow> heeft zijn claim-limiet bereikt."
-  databaseImportSuccess: "<yellow>De <gold><value><yellow> gegevens zijn succesvol geimporteert in je huidige database."
   databaseImportFailure: "<yellow>De <gold><value><yellow> gegevens konden niet worden geimporteert in je huidige database. Bekijk de logs voor details."
+  databaseImportStarted: "<yellow>The <gold><value><yellow> data import has started..."
+  databaseImportSuccess: "<yellow>De <gold><value><yellow> gegevens zijn succesvol geimporteert in je huidige database."
   favoriteAlreadySet: "<yellow>Je hebt <gold><horse><yellow> al gekozen als je favoriete paard."
   favoriteAlreadySetOther: "<gold><player><yellow> heeft <gold><horse><yellow> al gekozen als favoriete paard."
   favoriteEdited: "<gold><horse><yellow> is nu je favoriete paard."
