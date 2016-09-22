@@ -15,10 +15,10 @@ public class YAMLImporter {
 
 	public static boolean importData(ZHorse zh) {
 		FileConfiguration db = openDatabase(zh);
-		if (db == null) {
-			return false;
+		if (db != null) {
+			return importPlayers(zh, db);
 		}
-		return importPlayers(zh, db);
+		return false;
 	}
 
 	private static FileConfiguration openDatabase(ZHorse zh) {

@@ -8,6 +8,8 @@ import eu.reborn_minecraft.zhorse.enums.CommandAdminEnum;
 import eu.reborn_minecraft.zhorse.enums.DatabaseEnum;
 import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
+import eu.reborn_minecraft.zhorse.utils.MySQLImporter;
+import eu.reborn_minecraft.zhorse.utils.SQLiteImporter;
 import eu.reborn_minecraft.zhorse.utils.YAMLImporter;
 import net.md_5.bungee.api.ChatColor;
 
@@ -134,22 +136,28 @@ public class ZAdmin extends Command {
 			if (argument.split(" ").length >= 2) {
 				String databaseName = argument.substring(argument.indexOf(" ") + 1);
 				boolean success = false;
-				if (databaseName.equalsIgnoreCase(DatabaseEnum.YAML.getName())) {
+				if (databaseName.equalsIgnoreCase(DatabaseEnum.MYSQL.getName())) {
+					zh.getMM().sendMessageValue(s, LocaleEnum.databaseImportStarted, databaseName);
+					success = MySQLImporter.importData(zh);
+				}
+				else if (databaseName.equalsIgnoreCase(DatabaseEnum.SQLITE.getName())) {
+					zh.getMM().sendMessageValue(s, LocaleEnum.databaseImportStarted, databaseName);
+					success = SQLiteImporter.importData(zh);
+				}
+				else if (databaseName.equalsIgnoreCase(DatabaseEnum.YAML.getName())) {
 					zh.getMM().sendMessageValue(s, LocaleEnum.databaseImportStarted, databaseName);
 					success = YAMLImporter.importData(zh);
 				}
-				if (success) {
-					if (displayConsole) {
-						if (success) {
-							zh.getMM().sendMessageValue(s, LocaleEnum.databaseImportSuccess, databaseName);
-						}
-						else {
-							zh.getMM().sendMessageValue(s, LocaleEnum.databaseImportFailure, databaseName);
-						}
-					}
-				}
 				else if (displayConsole) {
 					displayAvailableDatabases(LocaleEnum.unknownDatabase);
+				}
+				if (displayConsole) {
+					if (success) {
+						zh.getMM().sendMessageValue(s, LocaleEnum.databaseImportSuccess, databaseName);
+					}
+					else {
+						zh.getMM().sendMessageValue(s, LocaleEnum.databaseImportFailure, databaseName);
+					}
 				}
 			}
 			else if (displayConsole) {

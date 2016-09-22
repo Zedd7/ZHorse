@@ -69,7 +69,9 @@ public class LocaleManager {
     	if (locales.containsKey(language)) {
     		return locales.get(language);
     	}
-    	zh.getLogger().severe("A player is using an unavailable language : \"" + language + "\" !");
+    	if (language != null) {
+    		zh.getLogger().severe("A player is using an unavailable language : \"" + language + "\" !");
+    	}
     	return locales.get(zh.getCM().getDefaultLanguage());
     }
 	

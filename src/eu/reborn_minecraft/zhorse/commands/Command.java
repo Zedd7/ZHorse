@@ -458,8 +458,11 @@ public class Command {
 	
 	protected boolean isPlayer(boolean hideConsole) {
 		if (s instanceof Player) {
-			p = (Player)s;
+			p = (Player) s;
 			playerCommand = true;
+			if (!zh.getDM().isPlayerRegistered(p.getUniqueId())) {
+				zh.getDM().registerPlayer(p.getUniqueId(), p.getName(), zh.getCM().getDefaultLanguage(), zh.getDM().getDefaultFavoriteHorseID());
+			}
 			return playerCommand;
 		}
 		if (displayConsole && !hideConsole) {
