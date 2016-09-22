@@ -15,7 +15,8 @@ import eu.reborn_minecraft.zhorse.utils.SQLiteConnector;
 
 public class DataManager {
 	
-	private static final String UPDATE_TABLES_SCRIPT_PATH = "res\\sql\\update-tables.sql";
+	private static final String TABLE_SCRIPTS_PATH = "res\\sql\\%s-table.sql";
+	private static final String[] TABLE_ARRAY = {"player", "horse"};
 	
 	private ZHorse zh;
 	private SQLDatabaseConnector db;
@@ -30,17 +31,15 @@ public class DataManager {
 		switch (database) {
 		case MYSQL:
 			db = new MySQLConnector(zh);
-			connected = true;
 			break;
 		case SQLITE:
 			db = new SQLiteConnector(zh);
-			connected = true;
 			break;
 		default:
 			String databaseType = database != null ? database.getName() : "Unknown database";
 			zh.getLogger().severe(String.format("The database %s is not supported !", databaseType));
 		}
-		updateTables();
+		connected = db != null && updateTables();
 	}
 	
 	public void closeDatabase() {
@@ -50,14 +49,19 @@ public class DataManager {
 	}
 	
 	private boolean updateTables() {
+		boolean success = true;
 		String update = "";
-		try {
-			String scriptPath = UPDATE_TABLES_SCRIPT_PATH.replace('\\', '/'); // Dark Magic Industries
-			update = IOUtils.toString(zh.getResource(scriptPath), "utf-8");
-		} catch (IOException e) {
-			e.printStackTrace();
+		String scriptsPath = TABLE_SCRIPTS_PATH.replace('\\', '/'); // Dark Magic Industries
+		for (String table : TABLE_ARRAY) {
+			try {
+				String scriptPath = String.format(scriptsPath, table);
+				update = IOUtils.toString(zh.getResource(scriptPath), "utf-8");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			success &= db.executeUpdate(update);
 		}
-		return db.executeUpdate(update);
+		return success;
 	}
 	
 	public Integer getDefaultFavoriteHorseID() {

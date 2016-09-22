@@ -94,8 +94,8 @@ public class ConfigManager {
 		return config.getString(KeyWordEnum.databasesPrefix.getValue() + KeyWordEnum.mysqlConfig.getValue() + KeyWordEnum.passwordSuffix.getValue());
 	}
 	
-	public String getDatabasePort() {
-		return config.getString(KeyWordEnum.databasesPrefix.getValue() + KeyWordEnum.mysqlConfig.getValue() + KeyWordEnum.portSuffix.getValue());
+	public int getDatabasePort() {
+		return config.getInt(KeyWordEnum.databasesPrefix.getValue() + KeyWordEnum.mysqlConfig.getValue() + KeyWordEnum.portSuffix.getValue());
 	}
 	
 	public DatabaseEnum getDatabaseType() {
