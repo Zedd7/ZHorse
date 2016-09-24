@@ -368,12 +368,13 @@ public class Command {
 		return true;
 	}
 	
-	protected boolean isHorseLoaded() {
+	protected boolean isHorseLoaded(boolean useTargetUUID) {
 		if (horse != null) {
 			return true;
 		}
 		else if (displayConsole) {
-			zh.getMM().sendMessageHorse(s, LocaleEnum.horseNotFound, zh.getDM().getHorseName(targetUUID, Integer.parseInt(horseID)));
+			UUID ownerUUID = useTargetUUID ? targetUUID : p.getUniqueId();
+			zh.getMM().sendMessageHorse(s, LocaleEnum.horseNotFound, zh.getDM().getHorseName(ownerUUID, Integer.parseInt(horseID)));
 		}
 		return false;
 	}

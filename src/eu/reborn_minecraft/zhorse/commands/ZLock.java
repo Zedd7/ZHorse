@@ -29,7 +29,7 @@ public class ZLock extends Command {
 						horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId()).toString();
 						if (isRegistered(p.getUniqueId(), horseID)) {
 							horse = zh.getHM().getFavoriteHorse(p.getUniqueId());
-							if (isHorseLoaded()) {
+							if (isHorseLoaded(true)) {
 								execute();
 							}
 						}
@@ -42,7 +42,7 @@ public class ZLock extends Command {
 			else {
 				if (isRegistered(targetUUID, horseID)) {
 					horse = zh.getHM().getHorse(targetUUID, Integer.parseInt(horseID));
-					if (isHorseLoaded()) {
+					if (isHorseLoaded(true)) {
 						execute();
 					}
 				}

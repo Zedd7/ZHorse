@@ -27,7 +27,7 @@ public class ZClaim extends Command {
 			else {
 				if (isRegistered(targetUUID, horseID)) {
 					horse = zh.getHM().getHorse(targetUUID, Integer.parseInt(horseID));
-					if (isHorseLoaded()) {
+					if (isHorseLoaded(true)) {
 						execute();
 					}
 				}

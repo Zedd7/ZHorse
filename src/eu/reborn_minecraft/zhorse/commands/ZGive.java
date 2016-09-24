@@ -31,7 +31,7 @@ public class ZGive extends Command {
 							horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId()).toString();
 							if (isRegistered(p.getUniqueId(), horseID)) {
 								horse = zh.getHM().getFavoriteHorse(p.getUniqueId());
-								if (isHorseLoaded()) {
+								if (isHorseLoaded(false)) {
 									execute();
 								}
 							}
@@ -40,7 +40,7 @@ public class ZGive extends Command {
 					else {
 						if (isRegistered(p.getUniqueId(), horseID, true)) {
 							horse = zh.getHM().getHorse(p.getUniqueId(), Integer.parseInt(horseID));
-							if (isHorseLoaded()) {
+							if (isHorseLoaded(false)) {
 								execute();
 							}
 						}
