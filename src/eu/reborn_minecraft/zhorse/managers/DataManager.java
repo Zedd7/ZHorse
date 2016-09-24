@@ -258,15 +258,19 @@ public class DataManager {
 		else if (horseID < favorite) {
 			updatePlayerFavorite(ownerUUID, favorite - 1);
 		}
-		String update = String.format("DELETE FROM horse WHERE uuid = \"%s\";", horseUUID) +
-				String.format("UPDATE horse SET id = id - 1 WHERE owner = \"%s\" AND id > %d;", ownerUUID, horseID);
-		return db.executeUpdate(update);
+		String deleteUpdate = String.format("DELETE FROM horse WHERE uuid = \"%s\";", horseUUID);
+		String idUpdate = String.format("UPDATE horse SET id = id - 1 WHERE owner = \"%s\" AND id > %d;", ownerUUID, horseID);
+		return db.executeUpdate(deleteUpdate) && db.executeUpdate(idUpdate);
 	}
 	
 	public boolean updateHorseLocation(UUID horseUUID, Location location, boolean checkForChanges) {
+		String horseName = getHorseName(horseUUID);///
+		System.out.println("UPDATED HORSE LOC WITH NAME = "+horseName);///
 		if (checkForChanges && !hasLocationChanged(horseUUID, location)) {
+			System.out.println("HORSE WITH NAME "+horseName+" HAS NOT MOVED");///
 			return true;
 		}
+		System.out.println("HORSE WITH NAME "+horseName+" HAS MOVED !");///
 		String update = String.format("UPDATE horse SET locationWorld = \"%s\", locationX = %d, locationY = %d, locationZ = %d WHERE uuid = \"%s\"",
 				location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), horseUUID);
 		return db.executeUpdate(update);
