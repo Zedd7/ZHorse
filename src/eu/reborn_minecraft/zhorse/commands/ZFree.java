@@ -1,5 +1,7 @@
 package eu.reborn_minecraft.zhorse.commands;
 
+import java.util.UUID;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Horse;
 
@@ -54,7 +56,8 @@ public class ZFree extends Command {
 						execute();
 					}
 					else {
-						zh.getDM().removeHorse(horse.getUniqueId(), targetUUID, Integer.parseInt(horseID));
+						UUID horseUUID = zh.getDM().getHorseUUID(targetUUID, Integer.parseInt(horseID));
+						zh.getDM().removeHorse(horseUUID, targetUUID, Integer.parseInt(horseID));
 						if (samePlayer) {
 							zh.getMM().sendMessageHorse(s, LocaleEnum.horseCleared, horseName);
 						}

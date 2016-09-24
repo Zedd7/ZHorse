@@ -50,7 +50,7 @@ public class ZHere extends Command {
 			}
 			if (zh.getCM().shouldUseOldTeleportMethod()) {
 				horse.teleport(destination);
-				zh.getDM().updateHorseLocation(horse.getUniqueId(), horse.getLocation(), true);
+				zh.getDM().updateHorseLocation(horse.getUniqueId(), horse.getLocation(), false);
 			}
 			else {
 				horse = zh.getHM().teleport(horse, destination);

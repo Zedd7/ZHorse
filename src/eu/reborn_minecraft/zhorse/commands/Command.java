@@ -142,7 +142,8 @@ public class Command {
 	protected void applyArgumentToHorseID() {
 		idMode = true;
 		horseName = argument;
-		horseID = zh.getDM().getHorseID(targetUUID, horseName).toString();
+		Integer horseIDInt = zh.getDM().getHorseID(targetUUID, horseName);
+		horseID = horseIDInt != null ? horseIDInt.toString() : null;
 	}
 	
 	protected void applyArgumentToTarget() {

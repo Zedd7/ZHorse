@@ -264,13 +264,9 @@ public class DataManager {
 	}
 	
 	public boolean updateHorseLocation(UUID horseUUID, Location location, boolean checkForChanges) {
-		String horseName = getHorseName(horseUUID);///
-		System.out.println("UPDATED HORSE LOC WITH NAME = "+horseName);///
 		if (checkForChanges && !hasLocationChanged(horseUUID, location)) {
-			System.out.println("HORSE WITH NAME "+horseName+" HAS NOT MOVED");///
 			return true;
 		}
-		System.out.println("HORSE WITH NAME "+horseName+" HAS MOVED !");///
 		String update = String.format("UPDATE horse SET locationWorld = \"%s\", locationX = %d, locationY = %d, locationZ = %d WHERE uuid = \"%s\"",
 				location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), horseUUID);
 		return db.executeUpdate(update);

@@ -10,11 +10,11 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 public class DelayedChunckUnload {
 	
 	public DelayedChunckUnload(ZHorse zh, Chunk chunk) {
-		final Entity[] entityArray = chunk.getEntities();
 		Bukkit.getScheduler().scheduleSyncDelayedTask(zh, new Runnable() {
 			
 			@Override
 			public void run() {
+				final Entity[] entityArray = chunk.getEntities();
 				for (Entity entity : entityArray) {
 					if (entity instanceof Horse) {
 						Horse horse = (Horse) entity;
