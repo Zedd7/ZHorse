@@ -108,7 +108,7 @@ Messages:
   unknownSettingsCommand: "<gold><value><yellow> is not a ZHorse's settings command."
   unknownSpawnArgument: "<gold><value><yellow> is not a valid argument for /zh spawn."
   worldDisabled: "<gold>ZHorse<yellow> is disabled on this world."
-  worldUnreachable: "<yellow>Your world and <gold><horse><yellow>'s world are not connected."
+  worldUncrossable: "<yellow>Teleportation between your world and <gold><horse><yellow>'s world is blocked."
 
 Economy:
   commandCost: "<green>(<value><amount>)"

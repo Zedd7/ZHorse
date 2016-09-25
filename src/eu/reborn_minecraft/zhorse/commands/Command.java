@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Horse;
@@ -397,16 +398,6 @@ public class Command {
 		return true;
 	}
 	
-	protected boolean isHorseReachable() {
-		if ((zh.getCM().isWorldCrossable(p.getWorld()) && zh.getCM().isWorldCrossable(horse.getWorld())) || adminMode) {
-			return true;
-		}
-		else if (displayConsole) {
-			zh.getMM().sendMessageHorse(s, LocaleEnum.worldUnreachable, horseName);
-		}
-		return false;
-	}
-	
 	protected boolean isNotOnHorse() {
 		return isNotOnHorse(false);
 	}
@@ -520,7 +511,7 @@ public class Command {
 	}
 	
 	protected boolean isRegistered(UUID targetUUID, String horseID, boolean isOwner) {
-		if (zh.getDM().isHorseRegistered(targetUUID, Integer.parseInt(horseID))) {
+		if (horseID != null && zh.getDM().isHorseRegistered(targetUUID, Integer.parseInt(horseID))) {
 			horseName = zh.getDM().getHorseName(targetUUID, Integer.parseInt(horseID));
 			return true;
 		}
@@ -546,6 +537,16 @@ public class Command {
 					}
 				}
 			}
+		}
+		return false;
+	}
+	
+	protected boolean isWorldCrossable(World world) {
+		if (zh.getCM().isWorldCrossable(world) || adminMode) {
+			return true;
+		}
+		else if (displayConsole) {
+			zh.getMM().sendMessageHorse(s, LocaleEnum.worldUncrossable, horseName);
 		}
 		return false;
 	}

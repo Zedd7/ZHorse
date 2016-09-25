@@ -110,7 +110,7 @@ Messages:
   unknownSettingsCommand: "<yellow>Dit is geen ZHorse's instelling commando."
   unknownSpawnArgument: "<gold><value><yellow> is geen geldig argument voor /zh spawn."
   worldDisabled: "<gold>ZHorse<yellow> is uitgeschakeld in deze wereld."
-  worldUnreachable: "<yellow>Jouw wereld en <gold><horse><yellow>'s wereld zijn niet verbonden."
+  worldUncrossable: "<yellow>Teleportation between your world and <gold><horse><yellow>'s world is blocked."
 
 Economy:
   commandCost: "<green>(<value><amount>)"

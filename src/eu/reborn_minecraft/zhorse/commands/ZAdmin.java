@@ -27,7 +27,8 @@ public class ZAdmin extends Command {
 					horse = (Horse) p.getVehicle();
 					if (isOwner(targetUUID, true, true)) {
 						idMode = true;
-						horseID = zh.getDM().getHorseID(horse.getUniqueId()).toString();
+						Integer horseIDInt = zh.getDM().getHorseID(horse.getUniqueId());
+						horseID = horseIDInt != null ? horseIDInt.toString() : null;
 					}
 				}
 				execute();

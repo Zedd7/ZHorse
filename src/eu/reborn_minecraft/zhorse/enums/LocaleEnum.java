@@ -104,7 +104,7 @@ public enum LocaleEnum {
 	unknownSettingsCommand("Messages.unknownSettingsCommand"),
 	unknownSpawnArgument("Messages.unknownSpawnArgument"),
 	worldDisabled("Messages.worldDisabled"),
-	worldUnreachable("Messages.worldUnreachable"),
+	worldUncrossable("Messages.worldUncrossable"),
 	
 	/* economy messages */
 	commandCost("Economy.commandCost"),

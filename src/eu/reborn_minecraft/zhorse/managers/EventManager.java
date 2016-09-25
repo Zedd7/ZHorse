@@ -22,6 +22,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.entity.EntityTameEvent;
+import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.entity.PlayerLeashEntityEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
@@ -174,9 +175,21 @@ public class EventManager implements Listener {
 	}
 	
 	@EventHandler
+	public void onEntityTeleport(EntityTeleportEvent e) {
+		if (e.getEntity() instanceof Horse) {
+			Horse horse = (Horse) e.getEntity();
+			if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
+				e.setCancelled(true);
+				if (zh.getCM().isWorldEnabled(e.getTo().getWorld())) {
+					zh.getHM().teleport(horse, e.getTo());
+				}
+			}
+		}
+	}
+	
+	@EventHandler
 	public void onHangingBreak(HangingBreakEvent e) {
-		RemoveCause removeCause = e.getCause();
-		
+		RemoveCause removeCause = e.getCause();		
 		/* if the remove cause is not already handled by onHangingBreakByEntity */
 		if (!removeCause.equals(RemoveCause.ENTITY)) {
 			if (e.getEntity() instanceof LeashHitch) {

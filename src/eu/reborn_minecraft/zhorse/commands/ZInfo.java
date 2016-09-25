@@ -74,7 +74,8 @@ public class ZInfo extends Command {
 	
 	private void displayHorseID() {
 		if (isOwner(false, true)) {
-			String horseID = zh.getDM().getHorseID(horse.getUniqueId()).toString();
+			Integer horseIDInt = zh.getDM().getHorseID(horse.getUniqueId());
+			String horseID = horseIDInt != null ? horseIDInt.toString() : null;
 			zh.getMM().sendMessageHorseIDSpacer(s, LocaleEnum.id, horseID, 1, true);
 		}
 	}
