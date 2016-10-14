@@ -7,6 +7,7 @@ public enum LocaleEnum {
 	commandListHeader("Headers.commandListHeader"),
 	commandUsageFormat("Headers.commandUsageFormat"),
 	commandUsageHeader("Headers.commandUsageHeader"),
+	friendCommandListHeader("Headers.friendCommandListHeader"),
 	headerFormat("Headers.headerFormat"),
 	horseInfoHeader("Headers.horseInfoHeader"),
 	horseListFormat("Headers.horseListFormat"),
@@ -148,12 +149,17 @@ public enum LocaleEnum {
 	tpDescription("Command descriptions.tp"),
 	
 	/* admin command descriptions */
-	clearDescription("Admin command descriptions.clear"),
-	importDescription("Admin command descriptions.import"),
+	adminClearDescription("Admin command descriptions.clear"),
+	adminImportDescription("Admin command descriptions.import"),
+	
+	/* friend command descriptions */
+	friendAddDescription("Friend command descriptions.add"),
+	friendListDescription("Friend command descriptions.list"),
+	friendRemoveDescription("Friend command descriptions.remove"),
 	
 	/* settings command descriptions */
-	favoriteDescription("Settings command descriptions.favorite"),
-	languageDescription("Settings command descriptions.language"),
+	settingsFavoriteDescription("Settings command descriptions.favorite"),
+	settingsLanguageDescription("Settings command descriptions.language"),
 	
 	/* command usages */
 	adminUsage("Command usages.admin"),
@@ -178,12 +184,17 @@ public enum LocaleEnum {
 	tpUsage("Command usages.tp"),
 	
 	/* admin command usages */
-	clearUsage("Admin command usages.clear"),
-	importUsage("Admin command usages.import"),
+	adminClearUsage("Admin command usages.clear"),
+	adminImportUsage("Admin command usages.import"),
+	
+	/* friend command usages */
+	friendAddUsage("Friend command usages.add"),
+	friendListUsage("Friend command usages.list"),
+	friendRemoveUsage("Friend command usages.remove"),
 	
 	/* settings command usages */
-	favoriteUsage("Settings command usages.favorite"),
-	languageUsage("Settings command usages.language");
+	settingsFavoriteUsage("Settings command usages.favorite"),
+	settingsLanguageUsage("Settings command usages.language");
 	
 	private String index;
 	

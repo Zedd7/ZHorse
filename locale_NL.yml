@@ -8,11 +8,12 @@ Version: 1.6.1
 # Voorbeeld: "<player> heeft je net <horse> gegeven" of "<horse> is net aan jou gegeven door <player>".
 
 Headers:
-  adminCommandListHeader: "<gold>ZHorse's admin commandos"
+  adminCommandListHeader: "<gold>/zh admin sub-commands"
   availableOptionFormat: "<gold><value><yellow>"
   commandListHeader: "<gold>ZHorse's commandos"
   commandUsageFormat: "<green>Gebruik : <value>"
   commandUsageHeader: "<green>Legende : <gold>/command <yellow>verplichtVeld (optioneelVeld)"
+  friendCommandListHeader: "<gold>/zh friend sub-commands"
   headerFormat: "<green>-+- <value>  <green>-+-"
   horseInfoHeader: "<gold>Paard gegevens"
   horseListFormat: "<yellow><id><green> - <yellow><horse><value>"
@@ -23,7 +24,7 @@ Headers:
   pluginHeader: "<gold><value> <yellow>(door <gold><player><yellow>)"
   pluginPrefix: "<green>[ZHorse]"
   remainingClaimsFormat: "<yellow>(<gold><amount><yellow>/<gold><max><yellow>)"
-  settingsCommandListHeader: "<gold>ZHorse's commandos voor instellingen"   
+  settingsCommandListHeader: "<gold>/zh settings sub-commands"  
 
 Messages:
   claimsLimitReached: "<yellow>Je hebt je claims-limiet berijkt."
@@ -156,6 +157,11 @@ Command descriptions:
 Admin command descriptions:
   clear: "<gold>/zh admin clear<gray>: <yellow>Verwijder een paard uit de database."
   import: "<gold>/zh admin import<gray>: <yellow>Importeer externe gegevens in je huidige database."
+
+Friend command descriptions:
+  add: "<gold>/zh friend add<gray>: <yellow>Add a player to your friends list."
+  list: "<gold>/zh friend list<gray>: <yellow>Display your friends list."
+  remove: "<gold>/zh friend remove<gray>: <yellow>Remove a player from your friends list."
   
 Settings command descriptions:
   favorite: "<gold>/zh settings favorite<gray>: <yellow>Bepaal je favoriete paard."
@@ -186,6 +192,11 @@ Command usages:
 Admin command usages:
   clear: "<gold>/zh admin clear<yellow> (-t) spelerNaam (-i horseID)"
   import: "<gold>/zh admin import<yellow> database"
+
+Friend command usages:
+  add: "<gold>/zh friend add<yellow> (-t) playerName"
+  list: "<gold>/zh friend add<yellow>"
+  remove: "<gold>/zh friend remove<yellow> (-t) playerName"
 
 Settings command usages:
   favorite: "<gold>/zh settings favorite<yellow> (-i) horseID"

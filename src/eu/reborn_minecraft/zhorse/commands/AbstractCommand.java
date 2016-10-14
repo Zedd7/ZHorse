@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.CommandAdminEnum;
 import eu.reborn_minecraft.zhorse.enums.CommandEnum;
+import eu.reborn_minecraft.zhorse.enums.CommandFriendEnum;
 import eu.reborn_minecraft.zhorse.enums.CommandSettingsEnum;
 import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
@@ -578,8 +579,18 @@ public abstract class AbstractCommand {
 	
 	protected void sendCommandDescription(String command, String permission, boolean subCommand) {
 		if (hasPermission(targetUUID, permission, true, true)) {
-			LocaleEnum commandDescription = LocaleEnum.valueOf(command + KeyWordEnum.description.getValue());
-			command = subCommand ? this.command : command;
+			LocaleEnum commandDescription;
+			if (!subCommand) {
+				commandDescription = LocaleEnum.valueOf(command + KeyWordEnum.description.getValue());
+			}
+			else {
+				String commandLocaleIndex = this.command
+						+ command.substring(0, 1).toUpperCase()
+						+ command.substring(1)
+						+ KeyWordEnum.description.getValue();
+				commandDescription = LocaleEnum.valueOf(commandLocaleIndex);
+				command = this.command;
+			}
 			if (zh.getEM().isCommandFree(targetUUID, command)) {
 				zh.getMM().sendMessageSpacer(s, commandDescription, 1, true);
 			}
@@ -610,6 +621,18 @@ public abstract class AbstractCommand {
 			for (CommandAdminEnum command : CommandAdminEnum.values()) {
 				String commandName = command.getName();
 				String permission = this.command + KeyWordEnum.dot.getValue() + command.getName();				
+				sendCommandDescription(commandName, permission, true);
+			}
+		}
+	}
+	
+	protected void sendCommandFriendDescriptionList() {
+		if (displayConsole) {
+			String header = zh.getMM().getMessage(s, LocaleEnum.friendCommandListHeader, true);
+			zh.getMM().sendMessageValue(s, LocaleEnum.headerFormat, header, true);
+			for (CommandFriendEnum command : CommandFriendEnum.values()) {
+				String commandName = command.getName();
+				String permission = this.command + KeyWordEnum.dot.getValue() + command.getName();
 				sendCommandDescription(commandName, permission, true);
 			}
 		}

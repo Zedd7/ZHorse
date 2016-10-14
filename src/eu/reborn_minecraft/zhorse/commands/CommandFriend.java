@@ -22,11 +22,11 @@ public class CommandFriend extends AbstractCommand {
 	
 	private void execute() {
 		if (zh.getEM().canAffordCommand(p, command)) {
-			if (argument.isEmpty()) {
+			if (!argument.isEmpty()) {
 				
 			}
 			else {
-				
+				sendCommandFriendDescriptionList();
 			}
 		}
 	}

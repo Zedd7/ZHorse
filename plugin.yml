@@ -29,7 +29,7 @@
             zh.claim: true
             zh.give: true
             zh.free: true
-            zh.friend: true
+            zh.friend.*: true
             zh.heal: true
             zh.info: true
             zh.kill: true
@@ -49,6 +49,14 @@
             zh.admin: true
             zh.admin.clear: true
             zh.admin.import: true
+
+    zh.friend.* :
+        description: Grants access to all friend subcommands
+        children:
+            zh.friend: true
+            zh.friend.add: true
+            zh.friend.list: true
+            zh.friend.remove: true
             
     zh.settings.* :
         description: Grants access to all settings subcommands

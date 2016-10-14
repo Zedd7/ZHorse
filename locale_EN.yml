@@ -6,11 +6,12 @@ Version: 1.6.1
 # Example: "<player> just gave you <horse>" or "<horse> has been given to you by <player>".
 
 Headers:
-  adminCommandListHeader: "<gold>ZHorse's admin commands"
+  adminCommandListHeader: "<gold>/zh admin sub-commands"
   availableOptionFormat: "<gold><value><yellow>"
   commandListHeader: "<gold>ZHorse's commands"
   commandUsageFormat: "<green>Usage : <value>"
   commandUsageHeader: "<green>Legend : <gold>/command <yellow>mandatoryParams (optionalParams)"
+  friendCommandListHeader: "<gold>/zh friend sub-commands"
   headerFormat: "<green>-+- <value>  <green>-+-"
   horseInfoHeader: "<gold>Horse data"
   horseListFormat: "<yellow><id><green> - <yellow><horse><value>"
@@ -21,7 +22,7 @@ Headers:
   pluginHeader: "<gold><value> <yellow>(by <gold><player><yellow>)"
   pluginPrefix: "<green>[ZHorse]"
   remainingClaimsFormat: "<yellow>(<gold><amount><yellow>/<gold><max><yellow>)"
-  settingsCommandListHeader: "<gold>ZHorse's settings commands"
+  settingsCommandListHeader: "<gold>/zh settings sub-commands"
 
 Messages:
   claimsLimitReached: "<yellow>Your claims limit has been reached."
@@ -78,7 +79,7 @@ Messages:
   listHorseColor: "<yellow>Color: <value><yellow>"
   listHorseStyle: "<yellow>Style: <value><yellow>"
   listHorseVariant: "<yellow>Variant: <value><yellow>"
-  missingArguments: "<yellow>Incorrect number of arguments. Do as follows :"
+  missingArguments: "<yellow>Incorrect number or type of arguments. Do as follows :"
   missingDatabase: "<yellow>You must provide a database. Please use one of the followings : <value><yellow>."
   missingHorseId: "<yellow>You must provide a horse ID, please type <gold>/zh list<yellow> and choose an ID."
   missingLanguage: "<yellow>You must provide a language. Please use one the followings : <value><yellow>."
@@ -130,34 +131,39 @@ Horse informations:
   status: "<yellow>Status : <gold><value>"
 
 Command descriptions:
-  admin: "<gold>/zh admin<gray>: <yellow>Manages ZHorse files."
-  claim: "<gold>/zh claim<gray>: <yellow>Claims the horse."
-  free: "<gold>/zh free<gray>: <yellow>Releases the horse."
-  friend: "<gold>/zh friend<gray>: <yellow>Manages friends."
-  give: "<gold>/zh give<gray>: <yellow>Gives the horse to another player."
-  heal: "<gold>/zh heal<gray>: <yellow>Heals the horse."
-  help: "<gold>/zh help<gray>: <yellow>Displays the available commands."
-  here: "<gold>/zh here<gray>: <yellow>Teleports the horse to you."
-  info: "<gold>/zh info<gray>: <yellow>Displays informations about the horse."
-  kill: "<gold>/zh kill<gray>: <yellow>Kills the horse."
-  list: "<gold>/zh list<gray>: <yellow>Displays the list of claimed horses."
-  lock: "<gold>/zh lock<gray>: <yellow>Protects the horse against theft."
-  protect: "<gold>/zh protect<gray>: <yellow>Prevents the horse from being hurt."
-  reload: "<gold>/zh reload<gray>: <yellow>Reloads all ZHorse's files."
-  rename: "<gold>/zh rename<gray>: <yellow>Renames the horse."
-  settings: "<gold>/zh settings<gray>: <yellow>Adjusts personal settings."
-  share: "<gold>/zh share<gray>: <yellow>Shares the horse with other players."
+  admin: "<gold>/zh admin<gray>: <yellow>Manage ZHorse files."
+  claim: "<gold>/zh claim<gray>: <yellow>Claim the horse."
+  free: "<gold>/zh free<gray>: <yellow>Release the horse."
+  friend: "<gold>/zh friend<gray>: <yellow>Manage friends."
+  give: "<gold>/zh give<gray>: <yellow>Give the horse to another player."
+  heal: "<gold>/zh heal<gray>: <yellow>Heal the horse."
+  help: "<gold>/zh help<gray>: <yellow>Display the available commands."
+  here: "<gold>/zh here<gray>: <yellow>Teleport the horse to you."
+  info: "<gold>/zh info<gray>: <yellow>Display informations about the horse."
+  kill: "<gold>/zh kill<gray>: <yellow>Kill the horse."
+  list: "<gold>/zh list<gray>: <yellow>Display the list of claimed horses."
+  lock: "<gold>/zh lock<gray>: <yellow>Protect the horse against theft."
+  protect: "<gold>/zh protect<gray>: <yellow>Prevent the horse from being hurt."
+  reload: "<gold>/zh reload<gray>: <yellow>Reload all ZHorse's files."
+  rename: "<gold>/zh rename<gray>: <yellow>Rename the horse."
+  settings: "<gold>/zh settings<gray>: <yellow>Adjust personal settings."
+  share: "<gold>/zh share<gray>: <yellow>Share the horse with other players."
   spawn: "<gold>/zh spawn<gray>: <yellow>Spawn a custom horse at your location."
-  tame: "<gold>/zh tame<gray>: <yellow>Tames the horse."
-  tp: "<gold>/zh tp<gray>: <yellow>Teleports you to the horse."
+  tame: "<gold>/zh tame<gray>: <yellow>Tame the horse."
+  tp: "<gold>/zh tp<gray>: <yellow>Teleport you to the horse."
 
 Admin command descriptions:
   clear: "<gold>/zh admin clear<gray>: <yellow>Clear a horse from database."
   import: "<gold>/zh admin import<gray>: <yellow>Import external data in your current database."
 
+Friend command descriptions:
+  add: "<gold>/zh friend add<gray>: <yellow>Add a player to your friends list."
+  list: "<gold>/zh friend list<gray>: <yellow>Display your friends list."
+  remove: "<gold>/zh friend remove<gray>: <yellow>Remove a player from your friends list."
+
 Settings command descriptions:
-  favorite: "<gold>/zh settings favorite<gray>: <yellow>Defines your favorite horse."
-  language: "<gold>/zh settings language<gray>: <yellow>Sets ZHorse's language."
+  favorite: "<gold>/zh settings favorite<gray>: <yellow>Define your favorite horse."
+  language: "<gold>/zh settings language<gray>: <yellow>Set ZHorse's language."
 
 Command usages:
   admin: "<gold>/zh admin<yellow> option value1 (value2)"
@@ -184,6 +190,11 @@ Command usages:
 Admin command usages:
   clear: "<gold>/zh admin clear<yellow> (-t) playerName (-i horseID)"
   import: "<gold>/zh admin import<yellow> database"
+
+Friend command usages:
+  add: "<gold>/zh friend add<yellow> (-t) playerName"
+  list: "<gold>/zh friend add<yellow>"
+  remove: "<gold>/zh friend remove<yellow> (-t) playerName"
 
 Settings command usages:
   favorite: "<gold>/zh settings favorite<yellow> (-i) horseID"
