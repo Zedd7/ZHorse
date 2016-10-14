@@ -1,16 +1,14 @@
 package eu.reborn_minecraft.zhorse.commands;
 
-import java.util.UUID;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Horse;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
-public class ZFree extends Command {
+public class CommandProtect extends AbstractCommand {
 
-	public ZFree(ZHorse zh, CommandSender s, String[] a) {
+	public CommandProtect(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
 		playerOnly = true;
 		needTarget = false;
@@ -32,16 +30,6 @@ public class ZFree extends Command {
 							if (isHorseLoaded(true)) {
 								execute();
 							}
-							else {
-								zh.getDM().removeHorse(horse.getUniqueId(), targetUUID, Integer.parseInt(horseID));
-								if (samePlayer) {
-									zh.getMM().sendMessageHorse(s, LocaleEnum.horseCleared, horseName);
-								}
-								else {
-									zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.horseClearedOther, horseName, targetName);
-								}
-								zh.getEM().payCommand(p, command);
-							}
 						}
 					}
 				}
@@ -55,17 +43,6 @@ public class ZFree extends Command {
 					if (isHorseLoaded(true)) {
 						execute();
 					}
-					else {
-						UUID horseUUID = zh.getDM().getHorseUUID(targetUUID, Integer.parseInt(horseID));
-						zh.getDM().removeHorse(horseUUID, targetUUID, Integer.parseInt(horseID));
-						if (samePlayer) {
-							zh.getMM().sendMessageHorse(s, LocaleEnum.horseCleared, horseName);
-						}
-						else {
-							zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.horseClearedOther, horseName, targetName);
-						}
-						zh.getEM().payCommand(p, command);
-					}
 				}
 			}
 		}
@@ -73,15 +50,20 @@ public class ZFree extends Command {
 
 	private void execute() {
 		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
-			if (zh.getDM().removeHorse(horse.getUniqueId(), targetUUID, Integer.parseInt(horseID))) {
-				horse.setCustomName(null);
-				horse.setCustomNameVisible(false);
+			if (!zh.getDM().isHorseProtected(horse.getUniqueId())) {
+				zh.getDM().updateHorseProtected(horse.getUniqueId(), true);
 				if (displayConsole) {
-					zh.getMM().sendMessageHorse(s, LocaleEnum.horseFreed, horseName);
+					zh.getMM().sendMessageHorse(s, LocaleEnum.horseProtected, horseName);
 				}
-				zh.getEM().payCommand(p, command);
 			}
-		}	
+			else {
+				zh.getDM().updateHorseProtected(horse.getUniqueId(), false);
+				if (displayConsole) {
+					zh.getMM().sendMessageHorse(s, LocaleEnum.horseUnProtected, horseName);
+				}
+			}
+			zh.getEM().payCommand(p, command);
+		}
 	}
 
 }

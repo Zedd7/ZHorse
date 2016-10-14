@@ -4,25 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum CommandEnum {
-	ADMIN("admin", "eu.reborn_minecraft.zhorse.commands.ZAdmin"),
-	CLAIM("claim", "eu.reborn_minecraft.zhorse.commands.ZClaim"),
-	FREE("free", "eu.reborn_minecraft.zhorse.commands.ZFree"),
-	GIVE("give", "eu.reborn_minecraft.zhorse.commands.ZGive"),
-	HEAL("heal", "eu.reborn_minecraft.zhorse.commands.ZHeal"),
-	HELP("help", "eu.reborn_minecraft.zhorse.commands.ZHelp"),
-	HERE("here", "eu.reborn_minecraft.zhorse.commands.ZHere"),
-	INFO("info", "eu.reborn_minecraft.zhorse.commands.ZInfo"),
-	KILL("kill", "eu.reborn_minecraft.zhorse.commands.ZKill"),
-	LIST("list", "eu.reborn_minecraft.zhorse.commands.ZList"),
-	LOCK("lock", "eu.reborn_minecraft.zhorse.commands.ZLock"),
-	PROTECT("protect", "eu.reborn_minecraft.zhorse.commands.ZProtect"),
-	RENAME("rename", "eu.reborn_minecraft.zhorse.commands.ZRename"),
-	RELOAD("reload", "eu.reborn_minecraft.zhorse.commands.ZReload"),
-	SETTINGS("settings", "eu.reborn_minecraft.zhorse.commands.ZSettings"),
-	SHARE("share", "eu.reborn_minecraft.zhorse.commands.ZShare"),
-	SPAWN("spawn", "eu.reborn_minecraft.zhorse.commands.ZSpawn"),
-	TAME("tame", "eu.reborn_minecraft.zhorse.commands.ZTame"),
-	TP("tp", "eu.reborn_minecraft.zhorse.commands.ZTp");
+	ADMIN("admin", "eu.reborn_minecraft.zhorse.commands.CommandAdmin"),
+	CLAIM("claim", "eu.reborn_minecraft.zhorse.commands.CommandClaim"),
+	FREE("free", "eu.reborn_minecraft.zhorse.commands.CommandFree"),
+	FRIEND("friend", "eu.reborn_minecraft.zhorse.commands.CommandFriend"),
+	GIVE("give", "eu.reborn_minecraft.zhorse.commands.CommandGive"),
+	HEAL("heal", "eu.reborn_minecraft.zhorse.commands.CommandHeal"),
+	HELP("help", "eu.reborn_minecraft.zhorse.commands.CommandHelp"),
+	HERE("here", "eu.reborn_minecraft.zhorse.commands.CommandHere"),
+	INFO("info", "eu.reborn_minecraft.zhorse.commands.CommandInfo"),
+	KILL("kill", "eu.reborn_minecraft.zhorse.commands.CommandKill"),
+	LIST("list", "eu.reborn_minecraft.zhorse.commands.CommandList"),
+	LOCK("lock", "eu.reborn_minecraft.zhorse.commands.CommandLock"),
+	PROTECT("protect", "eu.reborn_minecraft.zhorse.commands.CommandProtect"),
+	RENAME("rename", "eu.reborn_minecraft.zhorse.commands.CommandRename"),
+	RELOAD("reload", "eu.reborn_minecraft.zhorse.commands.CommandReload"),
+	SETTINGS("settings", "eu.reborn_minecraft.zhorse.commands.CommandSettings"),
+	SHARE("share", "eu.reborn_minecraft.zhorse.commands.CommandShare"),
+	SPAWN("spawn", "eu.reborn_minecraft.zhorse.commands.CommandSpawn"),
+	TAME("tame", "eu.reborn_minecraft.zhorse.commands.CommandTame"),
+	TP("tp", "eu.reborn_minecraft.zhorse.commands.CommandTp");
 	
 	private final String name;
 	private final String classPath;

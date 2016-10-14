@@ -5,9 +5,9 @@ import org.bukkit.command.CommandSender;
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
-public class ZReload extends Command {
+public class CommandReload extends AbstractCommand {
 
-	public ZReload(ZHorse zh, CommandSender s, String[] a) {
+	public CommandReload(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
 		playerOnly = false;
 		needTarget = false;

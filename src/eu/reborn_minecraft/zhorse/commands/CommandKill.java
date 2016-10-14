@@ -7,9 +7,9 @@ import org.bukkit.entity.Horse;
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
-public class ZHeal extends Command {
+public class CommandKill extends AbstractCommand {
 
-	public ZHeal(ZHorse zh, CommandSender s, String[] a) {
+	public CommandKill(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
 		playerOnly = true;
 		needTarget = false;
@@ -52,9 +52,9 @@ public class ZHeal extends Command {
 	private void execute() {
 		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
 			Damageable dm = horse;
-			dm.setHealth(dm.getMaxHealth());
-			if (displayConsole) {
-				zh.getMM().sendMessageHorse(s, LocaleEnum.horseHealed, horseName);
+			dm.damage(dm.getHealth());
+			if (displayConsole && !samePlayer) {
+				zh.getMM().sendMessageHorse(s, LocaleEnum.horseDied, horseName);
 			}
 			zh.getEM().payCommand(p, command);
 		}

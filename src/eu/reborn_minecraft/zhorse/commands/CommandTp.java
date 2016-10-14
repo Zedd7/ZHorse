@@ -5,9 +5,9 @@ import org.bukkit.command.CommandSender;
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
-public class ZTp extends Command {
+public class CommandTp extends AbstractCommand {
 
-	public ZTp(ZHorse zh, CommandSender s, String[] a) {
+	public CommandTp(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
 		playerOnly = true;
 		needTarget = false;

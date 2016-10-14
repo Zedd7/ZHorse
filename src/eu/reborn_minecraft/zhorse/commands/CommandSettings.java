@@ -12,11 +12,11 @@ import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 import net.md_5.bungee.api.ChatColor;
 
-public class ZSettings extends Command {
+public class CommandSettings extends AbstractCommand {
 	String fullCommand;
 	String subCommand;
 
-	public ZSettings(ZHorse zh, CommandSender s, String[] a) {
+	public CommandSettings(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
 		playerOnly = true;
 		needTarget = false;
@@ -41,7 +41,7 @@ public class ZSettings extends Command {
 	private void execute() {
 		if (zh.getEM().canAffordCommand(p, command)) {
 			if (!argument.isEmpty()) {
-				subCommand = argument.toLowerCase();;
+				subCommand = argument.toLowerCase();
 				if (argument.contains(" ")) {
 					subCommand = argument.substring(0, argument.indexOf(" "));
 				}

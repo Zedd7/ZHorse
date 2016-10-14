@@ -1,20 +1,18 @@
 package eu.reborn_minecraft.zhorse.commands;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Horse;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
-public class ZKill extends Command {
+public class CommandRename extends AbstractCommand {
 
-	public ZKill(ZHorse zh, CommandSender s, String[] a) {
+	public CommandRename(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
 		playerOnly = true;
 		needTarget = false;
 		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {
-			applyArgument(true);
 			if (!idMode) {
 				if (!targetMode) {
 					boolean ownsHorse = ownsHorse(targetUUID, true);
@@ -48,16 +46,16 @@ public class ZKill extends Command {
 			}
 		}
 	}
-
+	
 	private void execute() {
-		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
-			Damageable dm = horse;
-			dm.damage(dm.getHealth());
-			if (displayConsole && !samePlayer) {
-				zh.getMM().sendMessageHorse(s, LocaleEnum.horseDied, horseName);
+		if (isOwner() && craftHorseName(false) && zh.getEM().canAffordCommand(p, command)) {
+			applyHorseName();
+			horse.setCustomNameVisible(true);
+			zh.getDM().updateHorseName(horse.getUniqueId(), horseName);
+			if (displayConsole) {
+				zh.getMM().sendMessageHorse(s, LocaleEnum.horseRenamed, horseName);
 			}
 			zh.getEM().payCommand(p, command);
 		}
 	}
-
 }

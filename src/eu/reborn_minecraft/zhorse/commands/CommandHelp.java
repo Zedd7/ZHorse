@@ -6,9 +6,9 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.CommandEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
-public class ZHelp extends Command {
+public class CommandHelp extends AbstractCommand {
 
-	public ZHelp(ZHorse zh, CommandSender s, String[] a) {
+	public CommandHelp(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
 		playerOnly = true;
 		needTarget = false;

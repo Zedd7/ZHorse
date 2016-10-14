@@ -22,7 +22,7 @@ import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 import eu.reborn_minecraft.zhorse.managers.MessageManager;
 import net.md_5.bungee.api.ChatColor;
 
-public class Command {
+public abstract class AbstractCommand {
 	protected ZHorse zh;
 	protected CommandSender s;
 	protected Player p;
@@ -43,7 +43,7 @@ public class Command {
 	protected boolean samePlayer;
 	protected boolean targetMode;
 	
-	public Command(ZHorse zh, CommandSender s, String[] a) {
+	public AbstractCommand(ZHorse zh, CommandSender s, String[] a) {
 		this.zh = zh;
 		this.a = a;
 		this.s = s;

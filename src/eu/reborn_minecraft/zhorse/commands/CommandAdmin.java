@@ -13,11 +13,11 @@ import eu.reborn_minecraft.zhorse.utils.SQLiteImporter;
 import eu.reborn_minecraft.zhorse.utils.YAMLImporter;
 import net.md_5.bungee.api.ChatColor;
 
-public class ZAdmin extends Command {
+public class CommandAdmin extends AbstractCommand {
 	String fullCommand;
 	String subCommand;
 
-	public ZAdmin(ZHorse zh, CommandSender s, String[] a) {
+	public CommandAdmin(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
 		playerOnly = true;
 		needTarget = false;

@@ -1,4 +1,4 @@
-Version: 1.6.0
+Version: 1.6.1
 
 # Translated by Sikatsu1997
 
@@ -105,7 +105,7 @@ Messages:
   unknownHorseIdOther: "<gold><player><yellow> heeft geen paard met <gold><id><yellow> als id."
   unknownHorseName: "<yellow>Je hebt geen paard met de naam <gold><horse><yellow>."
   unknownHorseNameOther: "<gold><player><yellow> heeft geen paard met de naam <gold><horse><yellow>."
-  unknownLanguage: "<yellow>Deze taal is niet ondersteund. Gebruik a.u.b. een van de volgende : <lang><yellow>."
+  unknownLanguage: "<yellow>De taal <lang> is niet ondersteund. Gebruik a.u.b. een van de volgende : <value><yellow>."
   unknownPlayer: "<gold><player><yellow> is niet geregistreerd."
   unknownSettingsCommand: "<yellow>Dit is geen ZHorse's instelling commando."
   unknownSpawnArgument: "<gold><value><yellow> is geen geldig argument voor /zh spawn."
@@ -135,6 +135,7 @@ Command descriptions:
   admin: "<gold>/zh admin<gray>: <yellow>Beheert ZHorse bestanden."
   claim: "<gold>/zh claim<gray>: <yellow>Claimt een paard."
   free: "<gold>/zh free<gray>: <yellow>Laat een paard vrij."
+  friend: "<gold>/zh friend<gray>: <yellow>Manages friends."
   give: "<gold>/zh give<gray>: <yellow>Geeft een paard aan een andere speler."
   heal: "<gold>/zh heal<gray>: <yellow>Geneest een paard."
   help: "<gold>/zh help<gray>: <yellow>Toont alle commando's die je kan gebruiken."
@@ -164,6 +165,7 @@ Command usages:
   admin: "<gold>/zh admin<yellow> option value1 (value2)"
   claim: "<gold>/zh claim<yellow> (paardNaam) (-i paardID) (-t spelerNaam) (-a)"
   free: "<gold>/zh free<yellow> (-i paardID) (-t spelerNaam) (-a)"
+  friend: "<gold>/zh friend<yellow> option (value) (-a)"
   give: "<gold>/zh give<yellow> (-i paardID) (-t) spelerNaam (-a)"
   heal: "<gold>/zh heal<yellow> (-i paardID) (-t spelerNaam) (-a)"
   help: "<gold>/zh help<yellow> (commandoNaam) (-t spelerNaam) (-a)"

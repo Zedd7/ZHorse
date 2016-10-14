@@ -1,14 +1,15 @@
 package eu.reborn_minecraft.zhorse.commands;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Horse;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
-public class ZShare extends Command {
+public class CommandHeal extends AbstractCommand {
 
-	public ZShare(ZHorse zh, CommandSender s, String[] a) {
+	public CommandHeal(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
 		playerOnly = true;
 		needTarget = false;
@@ -50,23 +51,10 @@ public class ZShare extends Command {
 
 	private void execute() {
 		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
-			if (!zh.getDM().isHorseShared(horse.getUniqueId())) {
-				if (zh.getDM().isHorseLocked(horse.getUniqueId())) {
-					zh.getDM().updateHorseLocked(horse.getUniqueId(), false);
-					if (displayConsole) {
-						zh.getMM().sendMessageHorse(s, LocaleEnum.horseUnLocked, horseName);
-					}
-				}
-				zh.getDM().updateHorseShared(horse.getUniqueId(), true);
-				if (displayConsole) {
-					zh.getMM().sendMessageHorse(s, LocaleEnum.horseShared, horseName);
-				}
-			}
-			else {
-				zh.getDM().updateHorseShared(horse.getUniqueId(), false);
-				if (displayConsole) {
-					zh.getMM().sendMessageHorse(s, LocaleEnum.horseUnShared, horseName);
-				}
+			Damageable dm = horse;
+			dm.setHealth(dm.getMaxHealth());
+			if (displayConsole) {
+				zh.getMM().sendMessageHorse(s, LocaleEnum.horseHealed, horseName);
 			}
 			zh.getEM().payCommand(p, command);
 		}

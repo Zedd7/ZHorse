@@ -40,7 +40,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
-import eu.reborn_minecraft.zhorse.commands.ZClaim;
+import eu.reborn_minecraft.zhorse.commands.CommandClaim;
 import eu.reborn_minecraft.zhorse.enums.CommandEnum;
 import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
@@ -151,7 +151,7 @@ public class EventManager implements Listener {
 			if (zh.getCM().shouldClaimOnTame()) {
 				((Horse) e.getEntity()).setTamed(true);
 				String[] a = {CommandEnum.CLAIM.getName()};
-				new ZClaim(zh, (CommandSender) e.getOwner(), a);
+				new CommandClaim(zh, (CommandSender) e.getOwner(), a);
 			}
 			else if (zh.getPM().has((Player) e.getOwner(), KeyWordEnum.zhPrefix.getValue() + CommandEnum.CLAIM.getName())) {
 				if (displayConsole) {

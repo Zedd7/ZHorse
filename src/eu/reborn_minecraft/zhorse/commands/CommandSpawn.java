@@ -17,7 +17,7 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 import eu.reborn_minecraft.zhorse.managers.HorseManager;
 
-public class ZSpawn extends Command {
+public class CommandSpawn extends AbstractCommand {
 	
 	private static final String BABY = "baby";
 	private static final String TAMED = "tamed";
@@ -36,7 +36,7 @@ public class ZSpawn extends Command {
 	private Variant variant = null;
 	private Style style = null;
 
-	public ZSpawn(ZHorse zh, CommandSender s, String[] a) {
+	public CommandSpawn(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
 		playerOnly = true;
 		needTarget = false;

@@ -2,8 +2,8 @@ package eu.reborn_minecraft.zhorse.enums;
 
 public enum CommandSettingsEnum {
 	
-	FAVORITE("favorite", "eu.reborn_minecraft.zhorse.commands.ZSettings"),
-	LANGUAGE("language", "eu.reborn_minecraft.zhorse.commands.ZSettings");
+	FAVORITE("favorite", "eu.reborn_minecraft.zhorse.commands.CommandSettings"),
+	LANGUAGE("language", "eu.reborn_minecraft.zhorse.commands.CommandSettings");
 	
 	private final String name;
 	private final String classPath;

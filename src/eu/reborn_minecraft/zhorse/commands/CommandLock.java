@@ -8,9 +8,9 @@ import org.bukkit.entity.Player;
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
-public class ZLock extends Command {
+public class CommandLock extends AbstractCommand {
 
-	public ZLock(ZHorse zh, CommandSender s, String[] a) {
+	public CommandLock(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
 		playerOnly = true;
 		needTarget = false;

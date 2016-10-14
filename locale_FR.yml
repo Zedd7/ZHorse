@@ -1,4 +1,4 @@
-Version: 1.6.0
+Version: 1.6.1
 
 # Vous pouvez employer n'importe lequel de ces formats pour les balises de couleur : "&4", <4>, <dark_red>, <DARKRED>.
 # Vous pouvez modifier n'importe quelle ligne dans ce fichier, mais n'ajoutez/retirez AUCUNE balise qui ne soit pas une balise de couleur !
@@ -133,6 +133,7 @@ Command descriptions:
   admin: "<gold>/zh admin<gray>: <yellow>Gère les fichiers de ZHorse."
   claim: "<gold>/zh claim<gray>: <yellow>Revendique le cheval."
   free: "<gold>/zh free<gray>: <yellow>Relâche le cheval."
+  friend: "<gold>/zh friend<gray>: <yellow>Gère les amis."
   give: "<gold>/zh give<gray>: <yellow>Donne le cheval à un autre joueur."
   heal: "<gold>/zh heal<gray>: <yellow>Soigne le cheval."
   help: "<gold>/zh help<gray>: <yellow>Affiche les commandes disponibles."
@@ -162,6 +163,7 @@ Command usages:
   admin: "<gold>/zh admin<yellow> option valeur1 (valeur2)"
   claim: "<gold>/zh claim<yellow> (nomCheval) (-i chevalID) (-t nomJoueur) (-a)"
   free: "<gold>/zh free<yellow> (-i chevalID) (-t nomJoueur) (-a)"
+  friend: "<gold>/zh friend<yellow> option (valeur) (-a)"
   give: "<gold>/zh give<yellow> (-i chevalID) (-t) nomJoueur (-a)"
   heal: "<gold>/zh heal<yellow> (-i chevalID) (-t nomJoueur) (-a)"
   help: "<gold>/zh help<yellow> (nomCommande) (-t nomJoueur) (-a)"

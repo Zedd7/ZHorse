@@ -12,9 +12,9 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 import eu.reborn_minecraft.zhorse.managers.HorseManager;
 
-public class ZInfo extends Command {
+public class CommandInfo extends AbstractCommand {
 
-	public ZInfo(ZHorse zh, CommandSender s, String[] a) {
+	public CommandInfo(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
 		playerOnly = true;
 		needTarget = false;

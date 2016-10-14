@@ -6,9 +6,9 @@ import org.bukkit.entity.Horse;
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
-public class ZProtect extends Command {
+public class CommandTame extends AbstractCommand {
 
-	public ZProtect(ZHorse zh, CommandSender s, String[] a) {
+	public CommandTame(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
 		playerOnly = true;
 		needTarget = false;
@@ -19,7 +19,7 @@ public class ZProtect extends Command {
 					boolean ownsHorse = ownsHorse(targetUUID, true);
 					if (isOnHorse(ownsHorse)) {
 						horse = (Horse) p.getVehicle();
-						if (isRegistered(horse)) {
+						if (adminMode || isRegistered(horse)) {
 							execute();
 						}
 					}
@@ -50,20 +50,22 @@ public class ZProtect extends Command {
 
 	private void execute() {
 		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
-			if (!zh.getDM().isHorseProtected(horse.getUniqueId())) {
-				zh.getDM().updateHorseProtected(horse.getUniqueId(), true);
+			boolean tamed = horse.isTamed();
+			if (!tamed) {
+				horse.setTamed(true);
 				if (displayConsole) {
-					zh.getMM().sendMessageHorse(s, LocaleEnum.horseProtected, horseName);
+					zh.getMM().sendMessage(s, LocaleEnum.horseTamed);
 				}
 			}
 			else {
-				zh.getDM().updateHorseProtected(horse.getUniqueId(), false);
+				horse.setTamed(false);
 				if (displayConsole) {
-					zh.getMM().sendMessageHorse(s, LocaleEnum.horseUnProtected, horseName);
+					zh.getMM().sendMessage(s, LocaleEnum.horseUnTamed);
 				}
 			}
 			zh.getEM().payCommand(p, command);
 		}
 	}
+		
 
 }

@@ -8,9 +8,9 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 import net.md_5.bungee.api.ChatColor;
 
-public class ZHere extends Command {
+public class CommandHere extends AbstractCommand {
 
-	public ZHere(ZHorse zh, CommandSender s, String[] a) {
+	public CommandHere(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
 		playerOnly = true;
 		needTarget = false;

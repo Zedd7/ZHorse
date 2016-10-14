@@ -6,9 +6,9 @@ import org.bukkit.entity.Horse;
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
-public class ZGive extends Command {
+public class CommandGive extends AbstractCommand {
 
-	public ZGive(ZHorse zh, CommandSender s, String[] a) {
+	public CommandGive(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
 		playerOnly = true;
 		needTarget = true;

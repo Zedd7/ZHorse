@@ -2,8 +2,8 @@ package eu.reborn_minecraft.zhorse.enums;
 
 public enum CommandAdminEnum {
 	
-	CLEAR("clear", "eu.reborn_minecraft.zhorse.commands.ZAdmin"),
-	IMPORT("import", "eu.reborn_minecraft.zhorse.commands.ZAdmin");
+	CLEAR("clear", "eu.reborn_minecraft.zhorse.commands.CommandAdmin"),
+	IMPORT("import", "eu.reborn_minecraft.zhorse.commands.CommandAdmin");
 	
 	private final String name;
 	private final String classPath;

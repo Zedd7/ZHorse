@@ -6,13 +6,14 @@ import org.bukkit.entity.Horse;
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
-public class ZRename extends Command {
+public class CommandShare extends AbstractCommand {
 
-	public ZRename(ZHorse zh, CommandSender s, String[] a) {
+	public CommandShare(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
 		playerOnly = true;
 		needTarget = false;
 		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {
+			applyArgument(true);
 			if (!idMode) {
 				if (!targetMode) {
 					boolean ownsHorse = ownsHorse(targetUUID, true);
@@ -46,16 +47,29 @@ public class ZRename extends Command {
 			}
 		}
 	}
-	
+
 	private void execute() {
-		if (isOwner() && craftHorseName(false) && zh.getEM().canAffordCommand(p, command)) {
-			applyHorseName();
-			horse.setCustomNameVisible(true);
-			zh.getDM().updateHorseName(horse.getUniqueId(), horseName);
-			if (displayConsole) {
-				zh.getMM().sendMessageHorse(s, LocaleEnum.horseRenamed, horseName);
+		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
+			if (!zh.getDM().isHorseShared(horse.getUniqueId())) {
+				if (zh.getDM().isHorseLocked(horse.getUniqueId())) {
+					zh.getDM().updateHorseLocked(horse.getUniqueId(), false);
+					if (displayConsole) {
+						zh.getMM().sendMessageHorse(s, LocaleEnum.horseUnLocked, horseName);
+					}
+				}
+				zh.getDM().updateHorseShared(horse.getUniqueId(), true);
+				if (displayConsole) {
+					zh.getMM().sendMessageHorse(s, LocaleEnum.horseShared, horseName);
+				}
+			}
+			else {
+				zh.getDM().updateHorseShared(horse.getUniqueId(), false);
+				if (displayConsole) {
+					zh.getMM().sendMessageHorse(s, LocaleEnum.horseUnShared, horseName);
+				}
 			}
 			zh.getEM().payCommand(p, command);
 		}
 	}
+
 }

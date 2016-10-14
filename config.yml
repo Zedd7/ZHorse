@@ -1,4 +1,4 @@
-Version: 1.6.0
+Version: 1.6.1
 
 Commands:
 
@@ -13,6 +13,9 @@ Commands:
     auto-admin: false
     cost: 0
   free:
+    auto-admin: false
+    cost: 0
+  friend:
     auto-admin: false
     cost: 0
   give:

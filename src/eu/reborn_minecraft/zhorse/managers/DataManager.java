@@ -16,7 +16,7 @@ import eu.reborn_minecraft.zhorse.utils.SQLiteConnector;
 public class DataManager {
 	
 	private static final String TABLE_SCRIPTS_PATH = "res\\sql\\%s-table.sql";
-	private static final String[] TABLE_ARRAY = {"player", "horse"};
+	private static final String[] TABLE_ARRAY = {"player", "horse", "friend"};
 	
 	private ZHorse zh;
 	private SQLDatabaseConnector db;
@@ -66,6 +66,11 @@ public class DataManager {
 	
 	public Integer getDefaultFavoriteHorseID() {
 		return 1;
+	}
+	
+	public List<String> getFriendList(UUID playerUUID) {
+		String query = String.format("SELECT name FROM player WHERE uuid IN (SELECT recipient FROM friend WHERE requester = \"%s\") ORDER BY name ASC", playerUUID);
+		return db.getStringResultList(query);
 	}
 	
 	public Integer getHorseCount(UUID ownerUUID) {
@@ -199,6 +204,11 @@ public class DataManager {
 	public boolean isHorseShared(UUID horseUUID) {
 		String query = String.format("SELECT shared FROM horse WHERE uuid = \"%s\"", horseUUID);
 		return db.getBooleanResult(query);
+	}
+	
+	public boolean isPlayerFriendOf(UUID playerUUID, UUID targetUUID) {
+		String query = String.format("SELECT 1 FROM friend WHERE requester = \"%s\" AND recipient = \"%s\"", targetUUID, playerUUID);
+		return db.hasResult(query);
 	}
 	
 	public boolean isPlayerRegistered(String playerName) {

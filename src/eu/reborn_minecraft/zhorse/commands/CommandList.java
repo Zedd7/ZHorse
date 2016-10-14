@@ -8,9 +8,9 @@ import org.bukkit.command.CommandSender;
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
-public class ZList extends Command {
+public class CommandList extends AbstractCommand {
 
-	public ZList(ZHorse zh, CommandSender s, String[] a) {
+	public CommandList(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
 		playerOnly = true;
 		needTarget = false;

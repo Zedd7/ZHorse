@@ -1,4 +1,4 @@
-Version: 1.6.0
+Version: 1.6.1
 
 # You can use any of the following color flag formats : "&4", <4>, <dark_red>, <DARKRED>.
 # You can rework any message in this file but DO NOT add/remove flags that are not color flags !
@@ -133,6 +133,7 @@ Command descriptions:
   admin: "<gold>/zh admin<gray>: <yellow>Manages ZHorse files."
   claim: "<gold>/zh claim<gray>: <yellow>Claims the horse."
   free: "<gold>/zh free<gray>: <yellow>Releases the horse."
+  friend: "<gold>/zh friend<gray>: <yellow>Manages friends."
   give: "<gold>/zh give<gray>: <yellow>Gives the horse to another player."
   heal: "<gold>/zh heal<gray>: <yellow>Heals the horse."
   help: "<gold>/zh help<gray>: <yellow>Displays the available commands."
@@ -162,6 +163,7 @@ Command usages:
   admin: "<gold>/zh admin<yellow> option value1 (value2)"
   claim: "<gold>/zh claim<yellow> (horseName) (-i horseID) (-t playerName) (-a)"
   free: "<gold>/zh free<yellow> (-i horseID) (-t playerName) (-a)"
+  friend: "<gold>/zh friend<yellow> option (value) (-a)"
   give: "<gold>/zh give<yellow> (-i horseID) (-t) playerName (-a)"
   heal: "<gold>/zh heal<yellow> (-i horseID) (-t playerName) (-a)"
   help: "<gold>/zh help<yellow> (commandName) (-t playerName) (-a)"
