@@ -68,7 +68,7 @@ public class DataManager {
 		return 1;
 	}
 	
-	public List<String> getFriendList(UUID playerUUID) {
+	public List<String> getFriendNameList(UUID playerUUID) {
 		String query = String.format("SELECT name FROM player WHERE uuid IN (SELECT recipient FROM friend WHERE requester = \"%s\") ORDER BY name ASC", playerUUID);
 		return db.getStringResultList(query);
 	}
@@ -176,6 +176,11 @@ public class DataManager {
 				|| oldLocation.getBlockZ() != newLocation.getBlockZ();
 	}
 	
+	public boolean isFriend(UUID playerUUID, UUID targetUUID) {
+		String query = String.format("SELECT 1 FROM friend WHERE requester = \"%s\" AND recipient = \"%s\"", playerUUID, targetUUID);
+		return db.hasResult(query);
+	}
+	
 	public boolean isHorseLocked(UUID horseUUID) {
 		String query = String.format("SELECT locked FROM horse WHERE uuid = \"%s\"", horseUUID);
 		return db.getBooleanResult(query);
@@ -206,11 +211,6 @@ public class DataManager {
 		return db.getBooleanResult(query);
 	}
 	
-	public boolean isPlayerFriendOf(UUID playerUUID, UUID targetUUID) {
-		String query = String.format("SELECT 1 FROM friend WHERE requester = \"%s\" AND recipient = \"%s\"", targetUUID, playerUUID);
-		return db.hasResult(query);
-	}
-	
 	public boolean isPlayerRegistered(String playerName) {
 		String query = String.format("SELECT 1 FROM player WHERE name = \"%s\"", playerName);
 		return db.hasResult(query);
@@ -219,6 +219,11 @@ public class DataManager {
 	public boolean isPlayerRegistered(UUID playerUUID) {
 		String query = String.format("SELECT 1 FROM player WHERE uuid = \"%s\"", playerUUID);
 		return db.hasResult(query);
+	}
+	
+	public boolean registerFriend(UUID requesterUUID, UUID recipientUUID) {
+		String update = String.format("INSERT INTO friend VALUES (\"%s\", \"%s\")", requesterUUID, recipientUUID);
+		return db.executeUpdate(update);
 	}
 	
 	public boolean registerHorse(UUID horseUUID, UUID ownerUUID, String horseName, boolean modeLocked, boolean modeProtected, boolean modeShared, Location location) {
@@ -248,6 +253,11 @@ public class DataManager {
 		return db.executeUpdate(update);
 	}
 	
+	public boolean removeFriend(UUID requesterUUID, UUID recipientUUID) {
+		String update = String.format("DELETE FROM friend WHERE requester = \"%s\" AND recipient = \"%s\"", requesterUUID, recipientUUID);
+		return db.executeUpdate(update);
+	}
+	
 	public boolean removeHorse(UUID horseUUID) {
 		UUID ownerUUID = getOwnerUUID(horseUUID);
 		int horseID = getHorseID(horseUUID);
@@ -268,8 +278,8 @@ public class DataManager {
 		else if (horseID < favorite) {
 			updatePlayerFavorite(ownerUUID, favorite - 1);
 		}
-		String deleteUpdate = String.format("DELETE FROM horse WHERE uuid = \"%s\";", horseUUID);
-		String idUpdate = String.format("UPDATE horse SET id = id - 1 WHERE owner = \"%s\" AND id > %d;", ownerUUID, horseID);
+		String deleteUpdate = String.format("DELETE FROM horse WHERE uuid = \"%s\"", horseUUID);
+		String idUpdate = String.format("UPDATE horse SET id = id - 1 WHERE owner = \"%s\" AND id > %d", ownerUUID, horseID);
 		return db.executeUpdate(deleteUpdate) && db.executeUpdate(idUpdate);
 	}
 	

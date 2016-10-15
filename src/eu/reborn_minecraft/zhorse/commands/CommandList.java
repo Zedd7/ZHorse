@@ -32,7 +32,7 @@ public class CommandList extends AbstractCommand {
 			List<String> horseNameList = zh.getDM().getHorseNameList(targetUUID);
 			String remainingClaimsMessage = getRemainingClaimsMessage(targetUUID);
 			if (displayConsole) {
-				if (ownsHorse(targetUUID, true)) {
+				if (horseNameList.size() > 0) {
 					String favorite = zh.getDM().getPlayerFavoriteHorseID(targetUUID).toString();
 					String horseListHeader;
 					if (samePlayer) {

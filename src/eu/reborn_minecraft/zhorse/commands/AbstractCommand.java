@@ -651,17 +651,29 @@ public abstract class AbstractCommand {
 	}
 	
 	protected void sendCommandUsage() {
-		sendCommandUsage(command, false);
+		sendCommandUsage(command, false, false);
 	}
 	
-	protected void sendCommandUsage(String command, boolean hideError) {
+	protected void sendCommandUsage(String command, boolean subCommand, boolean hideError) {
 		if (displayConsole) {
 			if (!hideError) {
 				zh.getMM().sendMessage(s, LocaleEnum.missingArguments);
 			}
+			
+			LocaleEnum commandUsage;
+			if (!subCommand) {
+				commandUsage = LocaleEnum.valueOf(command + KeyWordEnum.usage.getValue());
+			}
+			else {
+				String commandUsageIndex = this.command
+						+ command.substring(0, 1).toUpperCase()
+						+ command.substring(1)
+						+ KeyWordEnum.usage.getValue();
+				commandUsage = LocaleEnum.valueOf(commandUsageIndex);
+			}			
 			zh.getMM().sendMessageSpacer(s, LocaleEnum.commandUsageHeader, 1, true);
-			String commandUsage = zh.getMM().getMessage(s, LocaleEnum.valueOf(command + KeyWordEnum.usage.getValue()), true);
-			zh.getMM().sendMessageSpacerValue(s, LocaleEnum.commandUsageFormat, 1, commandUsage, true);
+			String commandUsageMessage = zh.getMM().getMessage(s, commandUsage, true);
+			zh.getMM().sendMessageSpacerValue(s, LocaleEnum.commandUsageFormat, 1, commandUsageMessage, true);
 		}
 	}
 	

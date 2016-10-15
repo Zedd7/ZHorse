@@ -14,8 +14,9 @@ import eu.reborn_minecraft.zhorse.utils.YAMLImporter;
 import net.md_5.bungee.api.ChatColor;
 
 public class CommandAdmin extends AbstractCommand {
-	String fullCommand;
-	String subCommand;
+	
+	private String fullCommand;
+	private String subCommand;
 
 	public CommandAdmin(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
@@ -66,7 +67,7 @@ public class CommandAdmin extends AbstractCommand {
 	}
 
 	private void clear() {
-		fullCommand = command + KeyWordEnum.dot.getValue() + CommandAdminEnum.CLEAR.getName().toLowerCase();
+		fullCommand = command + KeyWordEnum.dot.getValue() + CommandAdminEnum.CLEAR.getName();
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (argument.split(" ").length >= 2) {
 				targetMode = true;
@@ -126,7 +127,7 @@ public class CommandAdmin extends AbstractCommand {
 			}
 			else if (displayConsole) {
 				zh.getMM().sendMessage(s, LocaleEnum.missingTarget);
-				sendCommandUsage(subCommand, true);
+				sendCommandUsage(subCommand, true, true);
 			}
 		}
 	}
@@ -163,7 +164,7 @@ public class CommandAdmin extends AbstractCommand {
 			}
 			else if (displayConsole) {
 				displayAvailableDatabases(LocaleEnum.missingDatabase);
-				sendCommandUsage(subCommand, true);
+				sendCommandUsage(subCommand, true, true);
 			}
 		}
 	}

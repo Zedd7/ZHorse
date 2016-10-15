@@ -13,8 +13,9 @@ import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 import net.md_5.bungee.api.ChatColor;
 
 public class CommandSettings extends AbstractCommand {
-	String fullCommand;
-	String subCommand;
+	
+	private String fullCommand;
+	private String subCommand;
 
 	public CommandSettings(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
@@ -99,13 +100,13 @@ public class CommandSettings extends AbstractCommand {
 			}
 			else if (displayConsole) {
 				zh.getMM().sendMessage(s, LocaleEnum.missingHorseId);
-				sendCommandUsage(subCommand, true);
+				sendCommandUsage(subCommand, true, true);
 			}
 		}
 	}
 
 	private void setLanguage() {
-		fullCommand = command + KeyWordEnum.dot.getValue() + CommandSettingsEnum.LANGUAGE.getName().toLowerCase();
+		fullCommand = command + KeyWordEnum.dot.getValue() + CommandSettingsEnum.LANGUAGE.getName();
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (argument.split(" ").length >= 2) {
 				String language = argument.substring(argument.indexOf(" ")+1).toUpperCase();
@@ -139,7 +140,7 @@ public class CommandSettings extends AbstractCommand {
 			}
 			else if (displayConsole) {
 				displayAvailableLanguages(LocaleEnum.missingLanguage);
-				sendCommandUsage(subCommand, true);
+				sendCommandUsage(subCommand, true, true);
 			}
 		}
 	}
