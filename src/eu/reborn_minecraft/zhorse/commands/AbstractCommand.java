@@ -120,34 +120,46 @@ public abstract class AbstractCommand {
 		return true;
 	}
 	
-	protected void applyArgument(boolean horseIDFirst) {
+	protected boolean applyArgument(boolean horseIDFirst) {
 		if (horseIDFirst) {
 			if (!idMode) {
-				applyArgumentToHorseID();
+				return applyArgumentToHorseID();
 			}
 			else if (!targetMode) {
-				applyArgumentToTarget();
+				return applyArgumentToTarget();
 			}
 		}
 		else {
 			if (!targetMode) {
-				applyArgumentToTarget();
+				return applyArgumentToTarget();
 			}
 			else if (!idMode) {
-				applyArgumentToHorseID();
+				return applyArgumentToHorseID();
 			}
 		}
+		return true;
 	}
 	
 	protected boolean applyArgumentToHorseID() {
-		if (idMode) {
+		if (idMode || argument.isEmpty()) {
 			return true;
 		}
-		idMode = !argument.isEmpty();
-		horseName = argument;
+		idMode = true;
+		horseName = zh.getDM().getHorseName(targetUUID, argument); // fix potential case errors
 		Integer horseIDInt = zh.getDM().getHorseID(targetUUID, horseName);
-		horseID = horseIDInt != null ? horseIDInt.toString() : null;
-		return true; // ? return horseID != null
+		if (horseIDInt == null) {
+			if (displayConsole) {
+				if (samePlayer) {
+					zh.getMM().sendMessageHorse(s, LocaleEnum.unknownHorseName, horseName);
+				}
+				else {
+					zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.unknownHorseName, horseName, targetName);
+				}
+			}
+			return false;
+		}
+		horseID = horseIDInt.toString();
+		return true;
 	}
 	
 	protected boolean applyArgumentToTarget() {

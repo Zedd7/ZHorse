@@ -14,8 +14,7 @@ public class CommandHere extends AbstractCommand {
 		super(zh, s, a);
 		playerOnly = true;
 		needTarget = false;
-		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {
-			applyArgument(true);
+		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled() && applyArgument(true)) {
 			if (!idMode) {
 				if (!targetMode) {
 					horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId()).toString();

@@ -108,6 +108,17 @@ public class DataManager {
 		return db.getStringResult(query);
 	}
 	
+	public String getHorseName(UUID ownerUUID, String wrongCaseHorseName) {
+		String query = String.format("SELECT name FROM horse WHERE owner = \"%s\"", ownerUUID);
+		List<String> horseNameList = db.getStringResultList(query);
+		for (String horseName : horseNameList) {
+			if (wrongCaseHorseName.equalsIgnoreCase(horseName)) {
+				return horseName;
+			}
+		}
+		return wrongCaseHorseName;
+	}
+	
 	public List<String> getHorseNameList(UUID ownerUUID) {
 		String query = String.format("SELECT name FROM horse WHERE owner = \"%s\" ORDER BY id ASC", ownerUUID);
 		return db.getStringResultList(query);
@@ -127,11 +138,6 @@ public class DataManager {
 		return horseID + 1;
 	}
 	
-	public Integer getPlayerFavoriteHorseID(UUID ownerUUID) {
-		String query = String.format("SELECT favorite FROM player WHERE uuid = \"%s\"", ownerUUID);
-		return db.getIntegerResult(query);
-	}
-	
 	public String getOwnerName(UUID horseUUID) {
 		String query = String.format("SELECT p.name FROM player p WHERE p.uuid = (SELECT h.owner FROM horse h WHERE h.uuid = \"%s\")", horseUUID);
 		return db.getStringResult(query);
@@ -142,20 +148,25 @@ public class DataManager {
 		return UUID.fromString(db.getStringResult(query));
 	}
 	
+	public Integer getPlayerFavoriteHorseID(UUID ownerUUID) {
+		String query = String.format("SELECT favorite FROM player WHERE uuid = \"%s\"", ownerUUID);
+		return db.getIntegerResult(query);
+	}
+	
 	public String getPlayerLanguage(UUID playerUUID) {
 		String query = String.format("SELECT language FROM player WHERE uuid = \"%s\"", playerUUID);
 		return db.getStringResult(query);
 	}
 	
-	public String getPlayerName(String approximatePlayerName) {
+	public String getPlayerName(String wrongCasePlayerName) {
 		String query = "SELECT name FROM player";
 		List<String> playerNameList = db.getStringResultList(query);
 		for (String playerName : playerNameList) {
-			if (approximatePlayerName.equalsIgnoreCase(playerName)) {
+			if (wrongCasePlayerName.equalsIgnoreCase(playerName)) {
 				return playerName;
 			}
 		}
-		return null;
+		return wrongCasePlayerName;
 	}
 	
 	public String getPlayerName(UUID playerUUID) {

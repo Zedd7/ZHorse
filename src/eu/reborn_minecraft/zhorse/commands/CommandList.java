@@ -14,8 +14,7 @@ public class CommandList extends AbstractCommand {
 		super(zh, s, a);
 		playerOnly = true;
 		needTarget = false;
-		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {
-			applyArgument(false);
+		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled() && applyArgument(false)) {
 			if (!idMode) {
 				if (!targetMode || isRegistered(targetUUID)) {
 					execute();

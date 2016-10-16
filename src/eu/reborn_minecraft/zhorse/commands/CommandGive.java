@@ -12,8 +12,7 @@ public class CommandGive extends AbstractCommand {
 		super(zh, s, a);
 		playerOnly = true;
 		needTarget = true;
-		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {
-			applyArgument(false);
+		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled() && applyArgument(false)) {
 			if (!targetMode) {
 				sendCommandUsage();
 			}
