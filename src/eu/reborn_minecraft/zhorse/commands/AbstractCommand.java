@@ -145,15 +145,16 @@ public abstract class AbstractCommand {
 			return true;
 		}
 		idMode = true;
-		horseName = zh.getDM().getHorseName(targetUUID, argument); // fix potential case errors
-		Integer horseIDInt = zh.getDM().getHorseID(targetUUID, horseName);
+		UUID ownerUUID = needTarget ? p.getUniqueId() : targetUUID;
+		horseName = zh.getDM().getHorseName(ownerUUID, argument); // fix potential case errors
+		Integer horseIDInt = zh.getDM().getHorseID(ownerUUID, horseName);
 		if (horseIDInt == null) {
 			if (displayConsole) {
-				if (samePlayer) {
+				if (samePlayer || needTarget) {
 					zh.getMM().sendMessageHorse(s, LocaleEnum.unknownHorseName, horseName);
 				}
 				else {
-					zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.unknownHorseName, horseName, targetName);
+					zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.unknownHorseNameOther, horseName, targetName);
 				}
 			}
 			return false;
