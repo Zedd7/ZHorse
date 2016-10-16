@@ -176,9 +176,14 @@ public class DataManager {
 				|| oldLocation.getBlockZ() != newLocation.getBlockZ();
 	}
 	
-	public boolean isFriend(UUID playerUUID, UUID targetUUID) {
-		String query = String.format("SELECT 1 FROM friend WHERE requester = \"%s\" AND recipient = \"%s\"", playerUUID, targetUUID);
+	public boolean isFriendOf(UUID requesterUUID, UUID recipientUUID) {
+		String query = String.format("SELECT 1 FROM friend WHERE requester = \"%s\" AND recipient = \"%s\"", requesterUUID, recipientUUID);
 		return db.hasResult(query);
+	}
+	
+	public boolean isFriendOfOwner(UUID playerUUID, UUID horseUUID) {
+		UUID ownerUUID = getOwnerUUID(horseUUID);
+		return isFriendOf(ownerUUID, playerUUID);
 	}
 	
 	public boolean isHorseLocked(UUID horseUUID) {

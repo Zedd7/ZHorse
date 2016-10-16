@@ -30,8 +30,6 @@ import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerUnleashEntityEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
@@ -259,6 +257,7 @@ public class EventManager implements Listener {
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(PlayerJoinEvent e) {
+		ejectPlayer(e.getPlayer());
 		new DelayedPlayerJoin(zh, e);
 	}
 	
@@ -274,16 +273,6 @@ public class EventManager implements Listener {
 				updateInventory(p);
 			}
 		}
-	}
-
-	@EventHandler
-	public void onPlayerQuit(PlayerQuitEvent e) {
-		ejectPlayer(e.getPlayer());
-	}
-
-	@EventHandler
-	public void onPlayerKick(PlayerKickEvent e) {
-		ejectPlayer(e.getPlayer());
 	}
 	
 	@EventHandler
@@ -361,27 +350,28 @@ public class EventManager implements Listener {
 	}
 	
 	private boolean isPlayerAllowedToAttack(Player p, Horse horse) {
-		boolean allowed = true;
 		if (zh.getCM().isProtectionEnabled(PLAYER_ATTACK)) {
 			boolean isOwner = zh.getDM().isHorseOwnedBy(p.getUniqueId(), horse.getUniqueId());
 			boolean isOwnerAttackBlocked = zh.getCM().isProtectionEnabled(OWNER_ATTACK);
+			boolean isFriend = zh.getDM().isFriendOfOwner(p.getUniqueId(), horse.getUniqueId());
 			boolean hasAdminPerm = zh.getPM().has(p, KeyWordEnum.zhPrefix.getValue() + CommandEnum.PROTECT.getName() + KeyWordEnum.adminSuffix.getValue());
-			if ((!isOwner || isOwnerAttackBlocked) && !hasAdminPerm) {
+			if ((!(isOwner || isFriend) || isOwnerAttackBlocked) && !hasAdminPerm) {
 				if (displayConsole) {
 					String horseName = zh.getDM().getHorseName(horse.getUniqueId());
 					zh.getMM().sendMessageHorse((CommandSender) p, LocaleEnum.horseIsProtected, horseName);
 				}
-				allowed = false;
+				return false;
 			}
 		}
-		return allowed;
+		return true;
 	}
 	
 	private boolean isPlayerAllowedToInteract(Player p, Horse horse, boolean mustBeShared) {
 		if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
 			boolean isOwner = zh.getDM().isHorseOwnedBy(p.getUniqueId(), horse.getUniqueId());
+			boolean isFriend = zh.getDM().isFriendOfOwner(p.getUniqueId(), horse.getUniqueId());
 			boolean hasAdminPerm = zh.getPM().has(p, KeyWordEnum.zhPrefix.getValue() + CommandEnum.LOCK.getName() + KeyWordEnum.adminSuffix.getValue());
-			if (!isOwner && !hasAdminPerm) {
+			if (!(isOwner || isFriend) && !hasAdminPerm) {
 				if (zh.getDM().isHorseLocked(horse.getUniqueId()) || (!zh.getDM().isHorseShared(horse.getUniqueId()) && (!horse.isEmpty() || mustBeShared))) {
 					if (displayConsole) {
 						String ownerName = zh.getDM().getOwnerName(horse.getUniqueId());

@@ -121,42 +121,48 @@ public abstract class AbstractCommand {
 	}
 	
 	protected void applyArgument(boolean horseIDFirst) {
-		if (!argument.isEmpty()) {
-			if (horseIDFirst) {
-				if (!idMode) {
-					applyArgumentToHorseID();
-				}
-				else if (!targetMode) {
-					applyArgumentToTarget();
-				}
+		if (horseIDFirst) {
+			if (!idMode) {
+				applyArgumentToHorseID();
 			}
-			else {
-				if (!targetMode) {
-					applyArgumentToTarget();
-				}
-				else if (!idMode) {
-					applyArgumentToHorseID();
-				}
+			else if (!targetMode) {
+				applyArgumentToTarget();
+			}
+		}
+		else {
+			if (!targetMode) {
+				applyArgumentToTarget();
+			}
+			else if (!idMode) {
+				applyArgumentToHorseID();
 			}
 		}
 	}
 	
-	protected void applyArgumentToHorseID() {
-		idMode = true;
+	protected boolean applyArgumentToHorseID() {
+		if (idMode) {
+			return true;
+		}
+		idMode = !argument.isEmpty();
 		horseName = argument;
 		Integer horseIDInt = zh.getDM().getHorseID(targetUUID, horseName);
 		horseID = horseIDInt != null ? horseIDInt.toString() : null;
+		return true; // ? return horseID != null
 	}
 	
-	protected void applyArgumentToTarget() {
-		targetMode = true;
+	protected boolean applyArgumentToTarget() {
+		if (targetMode) {
+			return true;
+		}
+		targetMode = !argument.isEmpty();
 		targetName = argument;
-		analyseModes();
+		targetUUID = null;
+		return analyseModes();
 	}
 	
 	protected void applyHorseName() {
 		String customHorseName;
-		if (MessageManager.isColorized(argument) && zh.getCM().isColorBypassEnabled(p.getUniqueId())) {
+		if (MessageManager.isColorized(argument) && (zh.getCM().isColorBypassEnabled(p.getUniqueId()) || adminMode)) {
 			customHorseName = MessageManager.applyColors(argument);
 		}
 		else {

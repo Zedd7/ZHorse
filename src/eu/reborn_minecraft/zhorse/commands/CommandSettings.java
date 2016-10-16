@@ -42,14 +42,13 @@ public class CommandSettings extends AbstractCommand {
 	private void execute() {
 		if (zh.getEM().canAffordCommand(p, command)) {
 			if (!argument.isEmpty()) {
-				subCommand = argument.toLowerCase();
 				if (argument.contains(" ")) {
 					subCommand = argument.substring(0, argument.indexOf(" "));
 				}
-				if (subCommand.equals(CommandSettingsEnum.LANGUAGE.getName())) {
+				if (subCommand.equalsIgnoreCase(CommandSettingsEnum.LANGUAGE.getName())) {
 					setLanguage();
 				}
-				else if (subCommand.equals((CommandSettingsEnum.FAVORITE.getName()))) {
+				else if (subCommand.equalsIgnoreCase((CommandSettingsEnum.FAVORITE.getName()))) {
 					setFavorite();
 				}
 				else {
