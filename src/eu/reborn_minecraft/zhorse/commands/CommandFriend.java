@@ -8,6 +8,7 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.CommandFriendEnum;
 import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
+import net.md_5.bungee.api.ChatColor;
 
 public class CommandFriend extends AbstractCommand {
 	
@@ -111,32 +112,57 @@ public class CommandFriend extends AbstractCommand {
 		if (hasPermission(s, fullCommand , true, false)) {
 			argument = argument.split(" ").length >= 2 ? argument.substring(argument.indexOf(" ") + 1) : "";
 			if (applyArgumentToTarget()) {
-				List<String> friendNameList = zh.getDM().getFriendNameList(targetUUID);
 				if (displayConsole) {
-					if (friendNameList.size() > 0) {
-						String friendListHeader;
-						if (samePlayer) {
-							friendListHeader = zh.getMM().getMessage(s, LocaleEnum.friendListHeader, true);
+					List<String> friendNameList = zh.getDM().getFriendNameList(targetUUID);
+					List<String> friendNameReverseList = zh.getDM().getFriendNameReverseList(targetUUID);
+					if (samePlayer) {
+						if (friendNameList.size() > 0) {
+							displayFriendNames(LocaleEnum.friendList, friendNameList);
 						}
 						else {
-							friendListHeader = zh.getMM().getMessagePlayer(s, LocaleEnum.friendListOtherHeader, targetName, true);
+							zh.getMM().sendMessage(s, LocaleEnum.noFriend);
 						}
-						zh.getMM().sendMessageValue(s, LocaleEnum.headerFormat, friendListHeader, true);
-						for (String friendName : friendNameList) {	
-							zh.getMM().sendMessagePlayerSpacer(s, LocaleEnum.friendListFormat, friendName, 1, true);
+						if (friendNameReverseList.size() > 0) {
+							displayFriendNames(LocaleEnum.friendListReverse, friendNameReverseList);
+						}
+						else {
+							zh.getMM().sendMessage(s, LocaleEnum.noFriendReverse);
 						}
 					}
 					else {
-						if (samePlayer) {
-							zh.getMM().sendMessage(s, LocaleEnum.noFriend);
+						if (friendNameList.size() > 0) {
+							displayFriendNames(LocaleEnum.friendListOther, friendNameList);
 						}
 						else {
 							zh.getMM().sendMessagePlayer(s, LocaleEnum.noFriendOther, targetName);
+						}
+						if (friendNameReverseList.size() > 0) {
+							displayFriendNames(LocaleEnum.friendListReverseOther, friendNameReverseList);
+						}
+						else {
+							zh.getMM().sendMessagePlayer(s, LocaleEnum.noFriendReverseOther, targetName);
 						}
 					}
 				}
 				zh.getEM().payCommand(p, command);
 			}
+		}
+	}
+	
+	private void displayFriendNames(LocaleEnum index, List<String> friendNameList) {
+		String friendNameListMessage = "";
+		for (int i = 0; i < friendNameList.size(); ++i) {
+			friendNameListMessage += zh.getMM().getMessagePlayer(s, LocaleEnum.friendListFormat, friendNameList.get(i), true);
+			if (i < friendNameList.size() - 1) {
+				friendNameListMessage += ", ";
+			}
+		}
+		friendNameListMessage += ChatColor.RESET;
+		if (samePlayer) {
+			zh.getMM().sendMessageValue(s, index, friendNameListMessage);
+		}
+		else {
+			zh.getMM().sendMessagePlayerValue(s, index, targetName, friendNameListMessage);
 		}
 	}
 	

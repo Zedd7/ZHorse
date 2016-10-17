@@ -73,6 +73,11 @@ public class DataManager {
 		return db.getStringResultList(query);
 	}
 	
+	public List<String> getFriendNameReverseList(UUID playerUUID) {
+		String query = String.format("SELECT name FROM player WHERE uuid IN (SELECT requester FROM friend WHERE recipient = \"%s\") ORDER BY name ASC", playerUUID);
+		return db.getStringResultList(query);
+	}
+	
 	public Integer getHorseCount(UUID ownerUUID) {
 		String query = String.format("SELECT COUNT(1) FROM horse WHERE owner = \"%s\"", ownerUUID);
 		return db.getIntegerResult(query);

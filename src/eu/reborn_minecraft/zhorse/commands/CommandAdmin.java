@@ -43,9 +43,7 @@ public class CommandAdmin extends AbstractCommand {
 	private void execute() {
 		if (zh.getEM().canAffordCommand(p, command)) {
 			if (!argument.isEmpty()) {
-				if (argument.contains(" ")) {
-					subCommand = argument.substring(0, argument.indexOf(" "));
-				}
+				subCommand = argument.contains(" ") ? argument.substring(0, argument.indexOf(" ")) : argument;
 				if (subCommand.equalsIgnoreCase((CommandAdminEnum.CLEAR.getName()))) {
 					clear();
 				}
