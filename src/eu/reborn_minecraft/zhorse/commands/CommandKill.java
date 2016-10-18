@@ -1,7 +1,6 @@
 package eu.reborn_minecraft.zhorse.commands;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Horse;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
@@ -50,8 +49,7 @@ public class CommandKill extends AbstractCommand {
 
 	private void execute() {
 		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
-			Damageable dm = horse;
-			dm.damage(dm.getHealth());
+			horse.setHealth(0);;
 			if (displayConsole && !samePlayer) {
 				zh.getMM().sendMessageHorse(s, LocaleEnum.horseDied, horseName);
 			}
