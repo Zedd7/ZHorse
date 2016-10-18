@@ -97,7 +97,7 @@ Messages:
   noFriend: "<yellow>You don't have any friend."
   noFriendOther: "<gold><player><yellow> doesn't have any friend."
   noFriendReverse: "<yellow>Nobody has added you as a friend."
-  noFriendReverseOther: "<yellow>Nobody has added <gold><player><yellow> has a friend."
+  noFriendReverseOther: "<yellow>Nobody has added <gold><player><yellow> as a friend."
   noHorseOwned: "<yellow>You don't own any horse. <value>"
   noHorseOwnedOther: "<gold><player><yellow> doesn't own any horse. <value>"
   notOnHorse: "<yellow>You must be on a horse to perform this command."
