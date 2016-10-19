@@ -30,6 +30,7 @@ import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.player.PlayerUnleashEntityEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
@@ -288,6 +289,17 @@ public class EventManager implements Listener {
 			Player p = (Player) e.getEntered();
 			boolean cancel = !isPlayerAllowedToInteract(p, (Horse) e.getVehicle(), false);
 			cancelEvent(e, p, cancel, true);
+		}
+	}
+
+	@EventHandler
+	public void onToggleSneakEnter(PlayerToggleSneakEvent e) {
+		if (e.getPlayer().getPassenger() != null && e.getPlayer().getPassenger() instanceof Horse) {
+			Horse horse = (Horse) e.getPlayer().getPassenger();
+			if(zh.getDM().isHorseRegistered(horse.getUniqueId())) {
+				e.getPlayer().eject();
+				zh.getHM().playOutMountPacket(e.getPlayer());
+			}
 		}
 	}
 	

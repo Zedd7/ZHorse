@@ -146,6 +146,7 @@ Horse informations:
 
 Command descriptions:
   admin: "<gold>/zh admin<gray>: <yellow>Manage ZHorse files."
+  carry: "<gold>/zh carry<gray>: <yellow>Carry the horse."
   claim: "<gold>/zh claim<gray>: <yellow>Claim the horse."
   free: "<gold>/zh free<gray>: <yellow>Release the horse."
   friend: "<gold>/zh friend<gray>: <yellow>Manage friends."
