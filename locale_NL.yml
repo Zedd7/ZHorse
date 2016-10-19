@@ -148,6 +148,7 @@ Horse informations:
 
 Command descriptions:
   admin: "<gold>/zh admin<gray>: <yellow>Beheert ZHorse bestanden."
+  carry: "<gold>/zh carry<gray>: <yellow>Missing description."
   claim: "<gold>/zh claim<gray>: <yellow>Claimt een paard."
   free: "<gold>/zh free<gray>: <yellow>Laat een paard vrij."
   friend: "<gold>/zh friend<gray>: <yellow>Vrienden beheren."

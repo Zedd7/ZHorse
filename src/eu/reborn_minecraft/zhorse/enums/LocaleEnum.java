@@ -142,6 +142,7 @@ public enum LocaleEnum {
 	
 	/* command descriptions */
 	adminDescription("Command descriptions.admin"),
+	carryDescription("Command descriptions.carry"),
 	claimDescription("Command descriptions.claim"),
 	freeDescription("Command descriptions.free"),
 	friendDescription("Command descriptions.friend"),

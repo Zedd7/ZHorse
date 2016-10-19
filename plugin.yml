@@ -26,6 +26,7 @@
     zh.use:
         description: Grants access to all player commands
         children:
+            zh.carry: true
             zh.claim: true
             zh.give: true
             zh.free: true
@@ -69,6 +70,7 @@
         description: Grants admin access to all commands
         children:
             zh.admin.admin: true
+            zh.carry.admin: true
             zh.claim.admin: true
             zh.free.admin: true
             zh.friend.admin: true
@@ -92,6 +94,7 @@
     zh.*.free :
         description: Grants free access to all commands
         children:
+            zh.admin.free: true
             zh.admin.free: true
             zh.claim.free: true
             zh.free.free: true

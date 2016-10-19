@@ -1,5 +1,7 @@
 package eu.reborn_minecraft.zhorse.managers;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -8,15 +10,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Horse;
-import org.bukkit.entity.LeashHitch;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -148,6 +144,33 @@ public class HorseManager {
 			removeHorse(sourceHorse);
 		}
 		return copyHorse;
+	}
+
+	public void playOutMountPacket(Player player) {
+		try {
+			Class<?> craftPlayerClass = getCustomClass("org.bukkit.craftbukkit.VERSION.entity.CraftPlayer");
+			Object nmsPlayer = craftPlayerClass.getDeclaredMethod("getHandle").invoke(craftPlayerClass.cast(player));
+			Object packet =  getCustomClass("net.minecraft.server.VERSION.PacketPlayOutMount").getDeclaredConstructor(nmsPlayer.getClass().getSuperclass().getSuperclass().getSuperclass()).newInstance(nmsPlayer);
+			Field field = nmsPlayer.getClass().getDeclaredField("playerConnection");
+			field.setAccessible(true);
+			Object fieldInstance = field.get(nmsPlayer);
+			fieldInstance.getClass().getDeclaredMethod("sendPacket", packet.getClass().getInterfaces()[0]).invoke(fieldInstance, packet);
+		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException | NoSuchFieldException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private Class<?> getCustomClass(String classPath) {
+		try {
+			return Class.forName(classPath.replace("VERSION", getServerVersion()));
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Invalid server.");
+		}
+	}
+
+	private String getServerVersion() {
+		return Bukkit.getServer().getClass().getPackage().getName().replace(".",  ",").split(",")[3];
 	}
 
 	private void removeLeash(Horse horse) {

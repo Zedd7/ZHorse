@@ -9,6 +9,9 @@ Commands:
   admin:
     auto-admin: true
     cost: 0
+  carry:
+    auto-admin: false
+    cost: 0
   claim:
     auto-admin: false
     cost: 0

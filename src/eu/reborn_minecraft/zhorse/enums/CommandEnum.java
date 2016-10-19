@@ -5,6 +5,7 @@ import java.util.List;
 
 public enum CommandEnum {
 	ADMIN("admin", "eu.reborn_minecraft.zhorse.commands.CommandAdmin"),
+	CARRY("carry", "eu.reborn_minecraft.zhorse.commands.CommandCarry"),
 	CLAIM("claim", "eu.reborn_minecraft.zhorse.commands.CommandClaim"),
 	FREE("free", "eu.reborn_minecraft.zhorse.commands.CommandFree"),
 	FRIEND("friend", "eu.reborn_minecraft.zhorse.commands.CommandFriend"),
