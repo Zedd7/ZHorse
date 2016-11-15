@@ -279,6 +279,7 @@ Worlds:
 
   # The list of worlds that ZHorse can interact with.
   # Set enabled to false to disable ZHorse in a world.
+  # Any world not listed here will be disabled.
   # Set crossable to false to disable /zh tp and /zh here in a world.
 
   world:
