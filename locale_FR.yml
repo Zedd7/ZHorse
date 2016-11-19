@@ -1,4 +1,4 @@
-Version: 1.6.1
+Version: 1.6.2
 
 # Vous pouvez employer n'importe lequel de ces formats pour les balises de couleur : "&4", <4>, <dark_red>, <DARKRED>.
 # Vous pouvez modifier n'importe quelle ligne dans ce fichier, mais n'ajoutez/retirez AUCUNE balise qui ne soit pas une balise de couleur !
@@ -84,9 +84,10 @@ Messages:
   languageAlreadyUsedOther: "<gold><player><yellow> utilise déjà la langue <gold><lang><yellow>."
   languageEdited: "<yellow>Vous utilisez maintenant la langue <gold><lang><yellow>."
   languageEditedOther: "<gold><player><yellow> utilise maintenant la langue <gold><lang><yellow>."
-  listHorseColor: "<yellow>Couleur: <value>"
-  listHorseStyle: "<yellow>Style: <value>"
+  listHorseColor: "<yellow>Couleur des chevaux: <value>"
+  listHorseStyle: "<yellow>Style des chevaux: <value>"
   listHorseVariant: "<yellow>Variante: <value>"
+  listLlamaColor: "<yellow>Couleur des lamas: <value>"
   missingArguments: "<yellow>Nombre d'arguments incorrect. Faites comme suit :"
   missingDatabase: "<yellow>Vous devez fournir une base de données. Veuillez utiliser l'une des suivantes : <value>"
   missingHorseId: "<yellow>Vous devez fournir un ID, veuillez taper /zh list et choisissez un ID."

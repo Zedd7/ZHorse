@@ -1,16 +1,13 @@
 package eu.reborn_minecraft.zhorse.commands;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Horse;
-import org.bukkit.entity.Horse.Color;
-import org.bukkit.entity.Horse.Style;
-import org.bukkit.entity.Horse.Variant;
+import org.bukkit.entity.Llama;
 import org.bukkit.entity.Player;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
@@ -18,16 +15,18 @@ import eu.reborn_minecraft.zhorse.enums.CommandAdminEnum;
 import eu.reborn_minecraft.zhorse.enums.CommandEnum;
 import eu.reborn_minecraft.zhorse.enums.CommandFriendEnum;
 import eu.reborn_minecraft.zhorse.enums.CommandSettingsEnum;
+import eu.reborn_minecraft.zhorse.enums.HorseVariantEnum;
 import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 import eu.reborn_minecraft.zhorse.managers.MessageManager;
 import net.md_5.bungee.api.ChatColor;
 
 public abstract class AbstractCommand {
+	
 	protected ZHorse zh;
 	protected CommandSender s;
 	protected Player p;
-	protected Horse horse;
+	protected AbstractHorse horse;
 	protected UUID targetUUID;
 	protected String[] a;
 	protected String argument;
@@ -245,7 +244,7 @@ public abstract class AbstractCommand {
 		return false;
 	}
 	
-	@SuppressWarnings("deprecation")	
+	@SuppressWarnings("deprecation") // TODO use DataManager's methods instead
 	protected UUID getPlayerUUID(String playerName) {
 		if (zh.getDM().isPlayerRegistered(playerName)) {
 			return zh.getDM().getPlayerUUID(playerName);
@@ -433,7 +432,7 @@ public abstract class AbstractCommand {
 	}
 	
 	protected boolean isOnHorse(boolean hideConsole) {
-		if (p.isInsideVehicle() && p.getVehicle() instanceof Horse) {
+		if (p.isInsideVehicle() && p.getVehicle() instanceof AbstractHorse) {
 			return true;
 		}
 		else if (displayConsole && !hideConsole) {
@@ -505,7 +504,7 @@ public abstract class AbstractCommand {
 		return false;
 	}
 	
-	protected boolean isRegistered(Horse horse) {
+	protected boolean isRegistered(AbstractHorse horse) {
 		if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
 			horseName = zh.getDM().getHorseName(horse.getUniqueId());
 			return true;
@@ -698,47 +697,38 @@ public abstract class AbstractCommand {
 	
 	protected void sendHorseColorList() {
 		if (displayConsole) {
-			Color[] horseColorArray = Horse.Color.values();
-			List<String> horseColorList = new ArrayList<String>();
-			for (int i = 0; i < horseColorArray.length; ++i) {
-				horseColorList.add(horseColorArray[i].name().toLowerCase());
-			}
-			sendHorseOptionList(horseColorList, LocaleEnum.listHorseColor);
+			sendHorseOptionList(Horse.Color.values(), LocaleEnum.listHorseColor);
+		}
+	}
+	
+	protected void sendLlamaColorList() {
+		if (displayConsole) {
+			sendHorseOptionList(Llama.Color.values(), LocaleEnum.listLlamaColor);
 		}
 	}
 
 	protected void sendHorseStyleList() {
 		if (displayConsole) {
-			Style[] horseStyleArray = Horse.Style.values();
-			List<String> horseStyleList = new ArrayList<String>();
-			for (int i = 0; i < horseStyleArray.length; ++i) {
-				horseStyleList.add(horseStyleArray[i].name().toLowerCase());
-			}
-			sendHorseOptionList(horseStyleList, LocaleEnum.listHorseStyle);
+			sendHorseOptionList(Horse.Style.values(), LocaleEnum.listHorseStyle);
 		}
 	}
 
-	protected void sendHorseVariantList() {
+	protected void sendAbstractHorseVariantList() {
 		if (displayConsole) {
-			Variant[] horseVariantArray = Horse.Variant.values();
-			List<String> horseVariantList = new ArrayList<String>();
-			for (int i = 0; i < horseVariantArray.length; ++i) {
-				horseVariantList.add(horseVariantArray[i].name().toLowerCase());
-			}
-			sendHorseOptionList(horseVariantList, LocaleEnum.listHorseVariant);
+			sendHorseOptionList(HorseVariantEnum.getCodeArray(), LocaleEnum.listHorseVariant);
 		}
 	}
 	
-	protected void sendHorseOptionList(List<String> horseOptionList, LocaleEnum index) {
-		String horseOptionListMessage = "";
-		for (int i = 0; i < horseOptionList.size(); ++i) {
-			horseOptionListMessage += zh.getMM().getMessageValue(s, LocaleEnum.horseOptionFormat, horseOptionList.get(i), true);
-			if (i < horseOptionList.size() - 1) {
-				horseOptionListMessage += ", ";
+	protected <T> void sendHorseOptionList (T[] horseOptionArray, LocaleEnum index) {
+		String horseOptionArrayMessage = "";
+		for (int i = 0; i < horseOptionArray.length; i++) {
+			horseOptionArrayMessage += zh.getMM().getMessageValue(s, LocaleEnum.horseOptionFormat, horseOptionArray[i].toString().toLowerCase(), true);
+			if (i < horseOptionArray.length - 1) {
+				horseOptionArrayMessage += ", ";
 			}
 		}
-		horseOptionListMessage += ChatColor.RESET;
-		zh.getMM().sendMessageSpacerValue(s, index, 1, horseOptionListMessage, true);
+		horseOptionArrayMessage += ChatColor.RESET;
+		zh.getMM().sendMessageSpacerValue(s, index, 1, horseOptionArrayMessage, true);
 	}
 
 }

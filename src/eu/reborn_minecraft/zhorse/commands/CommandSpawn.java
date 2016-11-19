@@ -1,40 +1,40 @@
 package eu.reborn_minecraft.zhorse.commands;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Random;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.EntityType;
+import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Horse;
-import org.bukkit.entity.Horse.Color;
-import org.bukkit.entity.Horse.Style;
-import org.bukkit.entity.Horse.Variant;
+import org.bukkit.entity.Llama;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.enums.HorseVariantEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 import eu.reborn_minecraft.zhorse.managers.HorseManager;
 
 public class CommandSpawn extends AbstractCommand {
 	
-	private static final String BABY = "baby";
-	private static final String TAMED = "tamed";
 	private static final String DOUBLE_SEPARATOR = ":";
-	private static final String[] SKELETON_ALIASES = {"skeleton", "skel"};
-	private static final String[] UNDEAD_ALIASES = {"undead", "zombie", "zomb"};
 	
 	private boolean valid = true;
 	
+	/* AbstractHorse attributes */
 	private boolean baby = false;
 	private boolean tamed = false;
 	private double health = -1;
 	private double jumpStrength = -1;
 	private double speed = -1;
-	private Color color = null;
-	private Variant variant = null;
-	private Style style = null;
+	private HorseVariantEnum variant = null;
+	
+	/* Horse attributes */
+	private Horse.Color horseColor = null;
+	private Horse.Style horseStyle = null;
+	
+	/* Llama attributes */
+	private Llama.Color llamaColor = null;
 
 	public CommandSpawn(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
@@ -52,11 +52,9 @@ public class CommandSpawn extends AbstractCommand {
 
 	private void execute() {
 		if (zh.getEM().canAffordCommand(p, command)) {
-			Location location = p.getLocation();
 			parseArguments();
 			if (valid) {
-				Horse horse = (Horse) location.getWorld().spawnEntity(location, EntityType.HORSE);
-				customize(horse);
+				craftHorse();
 				if (displayConsole) {
 					zh.getMM().sendMessage(s, LocaleEnum.horseSpawned);
 				}
@@ -71,8 +69,7 @@ public class CommandSpawn extends AbstractCommand {
 	private void parseArguments() {
 		if (!argument.isEmpty()) {
 			String[] argumentArray = argument.split(" "); // not using super.a to skip flags
-			for (int i = 0; i < argumentArray.length; ++i) {
-				String argument = argumentArray[i];
+			for (String argument : argumentArray) { // check for each token if it is some type of attribute
 				boolean parsed = false;
 				if (!parsed) {
 					parsed = parseBaby(argument);
@@ -87,10 +84,11 @@ public class CommandSpawn extends AbstractCommand {
 					parsed = parseVariant(argument);
 				}
 				if (!parsed) {
-					parsed = parseStyle(argument);
+					parsed = parseHorseStyle(argument);
 				}
 				if (!parsed) {
-					parsed = parseColor(argument);
+					parsed = parseHorseColor(argument);
+					parsed = parseLlamaColor(argument);
 				}
 				if (!parsed) {
 					valid = false;
@@ -101,7 +99,7 @@ public class CommandSpawn extends AbstractCommand {
 	}
 	
 	private boolean parseBaby(String argument) {
-		if (argument.equalsIgnoreCase(BABY)) {
+		if (argument.equalsIgnoreCase(HorseAttributeEnum.BABY.getCode())) {
 			if (!baby) {
 				baby = true;
 				return true;
@@ -114,7 +112,7 @@ public class CommandSpawn extends AbstractCommand {
 	}
 
 	private boolean parseTamed(String argument) {
-		if (argument.equalsIgnoreCase(TAMED)) {
+		if (argument.equalsIgnoreCase(HorseAttributeEnum.TAMED.getCode())) {
 			if (!tamed) {
 				tamed = true;
 				return true;
@@ -178,14 +176,12 @@ public class CommandSpawn extends AbstractCommand {
 	}
 	
 	private Double[] buildDoubles(String argument) {
+		argument.replaceAll("%", "");
 		int firstSeparatorIndex = argument.indexOf(DOUBLE_SEPARATOR);
 		int secondSeparatorIndex = argument.indexOf(DOUBLE_SEPARATOR, firstSeparatorIndex + 1);
 		String healthArg = argument.substring(0, firstSeparatorIndex);
 		String speedArg = argument.substring(firstSeparatorIndex + 1, secondSeparatorIndex);
-		String jumpArg = argument.substring(secondSeparatorIndex + 1);		
-		healthArg.replace("%", "");
-		speedArg.replace("%", "");
-		jumpArg.replace("%", "");
+		String jumpArg = argument.substring(secondSeparatorIndex + 1);
 		Double healthDouble = null;
 		Double speedDouble = null;
 		Double jumpDouble = null;
@@ -206,45 +202,32 @@ public class CommandSpawn extends AbstractCommand {
 	}
 
 	private boolean parseVariant(String argument) {
-		Map<String, Variant> variantMap = buildVariant();
-		for (String existingVariant : variantMap.keySet()) {
-			if (argument.equalsIgnoreCase(existingVariant)) {
-				if (variant == null) {
-					variant = variantMap.get(existingVariant);
-					return true;
-				}
-				else {
-					valid = false;
+		for (HorseVariantEnum horseVariant : HorseVariantEnum.values()) {
+			for (String horseVariantCode : horseVariant.getCodeList()) {
+				if (argument.equalsIgnoreCase(horseVariantCode)) {
+					if (variant == null) {
+						variant = horseVariant;
+						return true;
+					}
+					else {
+						valid = false;
+					}
 				}
 			}
 		}
 		return false;
 	}
 	
-	private Map<String, Variant> buildVariant() {
-		Map<String, Variant> variantMap = new HashMap<String, Variant>();
-		for (Variant variant : Variant.values()) {
-			variantMap.put(variant.name(), variant);
-		}
-		for (String skeletonAliase : SKELETON_ALIASES) {
-			variantMap.put(skeletonAliase, Variant.SKELETON_HORSE);
-		}
-		for (String undeadAliase : UNDEAD_ALIASES) {
-			variantMap.put(undeadAliase, Variant.UNDEAD_HORSE);
-		}
-		return variantMap;
-	}
-	
-	private boolean parseStyle(String argument) {
-		for (Style existingStyle : Style.values()) {
+	private boolean parseHorseStyle(String argument) { // TODO merge with parseHorseColor
+		for (Horse.Style existingStyle : Horse.Style.values()) {
 			if (argument.equalsIgnoreCase(existingStyle.name())) {
-				if (style == null) {
-					style = existingStyle;
+				if (horseStyle == null) {
+					horseStyle = existingStyle;
 					return true;
 				}
 				else {
 					boolean matchColor = false;
-					for (Color existingColor : Color.values()) {
+					for (Horse.Color existingColor : Horse.Color.values()) {
 						if (argument.equalsIgnoreCase(existingColor.name())) {
 							matchColor = true;
 							break;
@@ -259,16 +242,16 @@ public class CommandSpawn extends AbstractCommand {
 		return false;
 	}
 	
-	private boolean parseColor(String argument) {
-		for (Color existingColor : Color.values()) {
+	private boolean parseHorseColor(String argument) { // TODO merge with parseHorseStyle
+		for (Horse.Color existingColor : Horse.Color.values()) {
 			if (argument.equalsIgnoreCase(existingColor.name())) {
-				if (color == null) {
-					color = existingColor;
+				if (horseColor == null) {
+					horseColor = existingColor;
 					return true;
 				}
 				else {
 					boolean matchStyle = false;
-					for (Style existingStyle : Style.values()) {
+					for (Horse.Style existingStyle : Horse.Style.values()) {
 						if (argument.equalsIgnoreCase(existingStyle.name())) {
 							matchStyle = true;
 							break;
@@ -282,26 +265,32 @@ public class CommandSpawn extends AbstractCommand {
 		}
 		return false;
 	}
+	
+	private boolean parseLlamaColor(String argument) {
+		for (Llama.Color existingColor : Llama.Color.values()) {
+			if (argument.equalsIgnoreCase(existingColor.name())) {
+				if (llamaColor == null) {
+					llamaColor = existingColor;
+					return true;
+				}
+				else {
+					valid = false;
+				}
+			}
+		}
+		return false;
+	}
 
-	private void customize(Horse horse) {
-		if (health == -1) {
-			health = horse.getHealth();
-		}
-		if (jumpStrength == -1) {
-			jumpStrength = horse.getJumpStrength();
-		}
-		if (speed == -1) {
-			speed = horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
-		}
+	private void craftHorse() {
 		if (variant == null) {
-			variant = (style == null && color == null) ? horse.getVariant() : Variant.HORSE;
+			HorseVariantEnum[] variantArray = HorseVariantEnum.values();
+			variant = variantArray[new Random().nextInt(variantArray.length)];
 		}
-		if (style == null) {
-			style = horse.getStyle();
-		}
-		if (color == null) {
-			color = horse.getColor();
-		}				
+		Location location = p.getLocation();
+		AbstractHorse horse = (AbstractHorse) location.getWorld().spawnEntity(location, variant.getEntityType());
+		
+		checkAttributes(horse);
+		
 		horse.setOwner(p);
 		horse.setRemoveWhenFarAway(false);
 		horse.setMaxHealth(health);
@@ -314,10 +303,64 @@ public class CommandSpawn extends AbstractCommand {
 		}
 		horse.setTamed(tamed);
 		horse.setJumpStrength(jumpStrength);
-		horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(speed);		
-		horse.setVariant(variant);
-		horse.setStyle(style);
-		horse.setColor(color);
+		horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(speed);
+		switch (variant) {
+		case HORSE:
+			((Horse) horse).setStyle(horseStyle);
+			((Horse) horse).setColor(horseColor);
+			break;
+		case LLAMA:
+			((Llama) horse).setColor(llamaColor);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	private void checkAttributes(AbstractHorse horse) {
+		if (health == -1) {
+			health = horse.getHealth();
+		}
+		if (jumpStrength == -1) {
+			jumpStrength = horse.getJumpStrength();
+		}
+		if (speed == -1) {
+			speed = horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
+		}
+		switch (variant) {
+		case HORSE:
+			if (horseStyle == null) {
+				horseStyle = ((Horse) horse).getStyle();
+			}
+			if (horseColor == null) {
+				horseColor = ((Horse) horse).getColor();
+			}
+			break;
+		case LLAMA:
+			if (llamaColor == null) {
+				llamaColor = ((Llama) horse).getColor();
+			}
+			break;
+		default:
+			break;
+		}
+	}
+	
+	private enum HorseAttributeEnum {
+		
+		BABY("baby"),
+		TAMED("tamed");
+		
+		private String code;
+		
+		private HorseAttributeEnum(String code) {
+			this.code = code;
+		}
+		
+		public String getCode() {
+			return code;
+		}
+		
 	}
 
 }

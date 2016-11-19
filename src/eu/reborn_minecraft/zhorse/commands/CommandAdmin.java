@@ -1,7 +1,7 @@
 package eu.reborn_minecraft.zhorse.commands;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Horse;
+import org.bukkit.entity.AbstractHorse;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.CommandAdminEnum;
@@ -25,7 +25,7 @@ public class CommandAdmin extends AbstractCommand {
 		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {			
 			if (!idMode) {
 				if (isOnHorse(true)) { // select horse w/ or w/o target
-					horse = (Horse) p.getVehicle();
+					horse = (AbstractHorse) p.getVehicle();
 					if (isOwner(targetUUID, true, true)) {
 						idMode = true;
 						Integer horseIDInt = zh.getDM().getHorseID(horse.getUniqueId());
@@ -85,7 +85,7 @@ public class CommandAdmin extends AbstractCommand {
 					if (isRegistered(targetUUID)) {
 						boolean success = true;
 						for (int horseID = 1; horseID <= zh.getDM().getHorseCount(targetUUID); ++horseID) {
-							Horse horse = zh.getHM().getHorse(targetUUID, horseID);
+							AbstractHorse horse = zh.getHM().getHorse(targetUUID, horseID);
 							if (horse != null) {
 								horse.setCustomName(null);
 								horse.setCustomNameVisible(false);
@@ -106,7 +106,7 @@ public class CommandAdmin extends AbstractCommand {
 					}
 				}
 				else if (isRegistered(targetUUID, horseID)) {
-					Horse horse = zh.getHM().getHorse(targetUUID, Integer.parseInt(horseID));
+					AbstractHorse horse = zh.getHM().getHorse(targetUUID, Integer.parseInt(horseID));
 					if (horse != null) {
 						horse.setCustomName(null);
 						horse.setCustomNameVisible(false);

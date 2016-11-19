@@ -3,7 +3,7 @@ package eu.reborn_minecraft.zhorse.commands;
 import java.util.List;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Horse;
+import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Player;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
@@ -24,7 +24,7 @@ public class CommandSettings extends AbstractCommand {
 		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {			
 			if (!idMode) {
 				if (isOnHorse(true)) { // select the horse w/ or w/o target
-					horse = (Horse) p.getVehicle();
+					horse = (AbstractHorse) p.getVehicle();
 					if (isOwner(targetUUID, true, true)) {
 						idMode = true;
 						Integer horseIDInt = zh.getDM().getHorseID(horse.getUniqueId());

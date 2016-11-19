@@ -6,12 +6,13 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Horse;
-import org.bukkit.entity.Horse.Variant;
 import org.bukkit.entity.LeashHitch;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.SkeletonHorse;
+import org.bukkit.entity.ZombieHorse;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -48,9 +49,9 @@ import eu.reborn_minecraft.zhorse.utils.DelayedPlayerJoin;
 
 public class EventManager implements Listener {
 	
-	private static final int NONE = -1;
+	/*private static final int NONE = -1;
 	private static final int MAIN_HAND = 0;
-	private static final int OFF_HAND = 1;
+	private static final int OFF_HAND = 1;*/
 	private static final String OWNER_ATTACK = "OWNER_ATTACK";
 	private static final String PLAYER_ATTACK = "PLAYER_ATTACK";
 	
@@ -61,13 +62,6 @@ public class EventManager implements Listener {
 		this.zh = zh;
 		this.displayConsole = !(zh.getCM().isConsoleMuted());
 		zh.getServer().getPluginManager().registerEvents(this, zh);
-	}
-	
-	/* Allows to cancel onPlayerLeashEntityEvent */
-	private class PlayerLeashDeadEntityEvent extends PlayerLeashEntityEvent {
-		public PlayerLeashDeadEntityEvent(Entity leashedEntity, Entity leashHolder, Player p) {
-			super(leashedEntity, leashHolder, p);
-		}
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -82,8 +76,8 @@ public class EventManager implements Listener {
 	
 	@EventHandler
 	public void onEntityDamage(EntityDamageEvent e) {
-		if (e.getEntity() instanceof Horse) {
-			Horse horse = (Horse) e.getEntity();
+		if (e.getEntity() instanceof AbstractHorse) {
+			AbstractHorse horse = (AbstractHorse) e.getEntity();
 			if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
 				if (zh.getDM().isHorseProtected(horse.getUniqueId())) {
 					DamageCause damageCause = e.getCause();
@@ -104,8 +98,8 @@ public class EventManager implements Listener {
 	
 	@EventHandler
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
-		if (e.getEntity() instanceof Horse) {
-			Horse horse = (Horse) e.getEntity();
+		if (e.getEntity() instanceof AbstractHorse) {
+			AbstractHorse horse = (AbstractHorse) e.getEntity();
 			if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
 				if (zh.getDM().isHorseProtected(horse.getUniqueId())) {
 					if (e.getDamager() instanceof Player) {
@@ -126,8 +120,8 @@ public class EventManager implements Listener {
 	
 	@EventHandler
 	public void onEntityDeath(EntityDeathEvent e) {
-		if (e.getEntity() instanceof Horse) {
-			Horse horse = (Horse) e.getEntity();
+		if (e.getEntity() instanceof AbstractHorse) {
+			AbstractHorse horse = (AbstractHorse) e.getEntity();
 			if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
 				UUID ownerUUID = zh.getDM().getOwnerUUID(horse.getUniqueId());
 				for (Player p : zh.getServer().getOnlinePlayers()) {
@@ -145,9 +139,9 @@ public class EventManager implements Listener {
 	
 	@EventHandler
 	public void onEntityTame(EntityTameEvent e) {
-		if (e.getOwner() instanceof Player && e.getEntity() instanceof Horse) {
+		if (e.getOwner() instanceof Player && e.getEntity() instanceof AbstractHorse) {
 			if (zh.getCM().shouldClaimOnTame()) {
-				((Horse) e.getEntity()).setTamed(true);
+				((AbstractHorse) e.getEntity()).setTamed(true);
 				String[] a = {CommandEnum.CLAIM.getName()};
 				new CommandClaim(zh, (CommandSender) e.getOwner(), a);
 			}
@@ -161,8 +155,8 @@ public class EventManager implements Listener {
 	
 	@EventHandler
 	public void onEntityPortal(EntityPortalEvent e) {
-		if (e.getEntity() instanceof Horse) {
-			Horse horse = (Horse) e.getEntity();
+		if (e.getEntity() instanceof AbstractHorse) {
+			AbstractHorse horse = (AbstractHorse) e.getEntity();
 			if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
 				e.setCancelled(true);
 				if (zh.getCM().isWorldEnabled(e.getTo().getWorld())) {
@@ -174,8 +168,8 @@ public class EventManager implements Listener {
 	
 	@EventHandler
 	public void onEntityTeleport(EntityTeleportEvent e) {
-		if (e.getEntity() instanceof Horse) {
-			Horse horse = (Horse) e.getEntity();
+		if (e.getEntity() instanceof AbstractHorse) {
+			AbstractHorse horse = (AbstractHorse) e.getEntity();
 			if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
 				e.setCancelled(true);
 				if (zh.getCM().isWorldEnabled(e.getTo().getWorld())) {
@@ -192,7 +186,7 @@ public class EventManager implements Listener {
 		if (!removeCause.equals(RemoveCause.ENTITY)) {
 			if (e.getEntity() instanceof LeashHitch) {
 				LeashHitch leashHitch = (LeashHitch) e.getEntity();
-				for (Horse horse : zh.getHM().getLoadedHorses().values()) {
+				for (AbstractHorse horse : zh.getHM().getLoadedHorses().values()) {
 					if (horse.isLeashed()) {
 						Entity leashHolder = horse.getLeashHolder();
 						if (leashHitch.equals(leashHolder)) {
@@ -209,7 +203,7 @@ public class EventManager implements Listener {
 	public void onHangingBreakByEntity(HangingBreakByEntityEvent e) {
 		if (e.getEntity() instanceof LeashHitch) {
 			LeashHitch leashHitch = (LeashHitch) e.getEntity();
-			for (Horse horse : zh.getHM().getLoadedHorses().values()) {
+			for (AbstractHorse horse : zh.getHM().getLoadedHorses().values()) {
 				if (horse.isLeashed()) {
 					Entity leashHolder = horse.getLeashHolder();
 					if (leashHitch.equals(leashHolder)) {
@@ -228,20 +222,20 @@ public class EventManager implements Listener {
 	
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent e) {
-		if (e.getWhoClicked() instanceof Player && e.getInventory().getHolder() instanceof Horse) {
-			e.setCancelled(!isPlayerAllowedToInteract((Player) e.getWhoClicked(), (Horse) e.getInventory().getHolder(), true));
+		if (e.getWhoClicked() instanceof Player && e.getInventory().getHolder() instanceof AbstractHorse) {
+			e.setCancelled(!isPlayerAllowedToInteract((Player) e.getWhoClicked(), (AbstractHorse) e.getInventory().getHolder(), true));
 		}
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent e) {
-		if (e.getRightClicked() instanceof Horse) {
-			Horse horse = (Horse) e.getRightClicked();
-			if (horse.getVariant() == Variant.SKELETON_HORSE || horse.getVariant() == Variant.UNDEAD_HORSE) {
+		if (e.getRightClicked() instanceof AbstractHorse) {
+			AbstractHorse horse = (AbstractHorse) e.getRightClicked();
+			if (horse instanceof SkeletonHorse || horse instanceof ZombieHorse) {
 				Player p = e.getPlayer();
 				if (!horse.isLeashed() && zh.getCM().isLeashOnDeadHorseAllowed()) {
-					int holdingHand = getHoldingHand(p, new ItemStack(Material.LEASH));
-					if (holdingHand == MAIN_HAND || holdingHand == OFF_HAND) { // if player is holding leash
+					HandEnum holdingHand = getHoldingHand(p, new ItemStack(Material.LEASH));
+					if (holdingHand.equals(HandEnum.MAIN) || holdingHand.equals(HandEnum.OFF)) { // if player is holding leash
 						cancelEvent(e, p, true, true);
 						PlayerLeashDeadEntityEvent ev = new PlayerLeashDeadEntityEvent(horse, p, p);
 						zh.getServer().getPluginManager().callEvent(ev);
@@ -263,11 +257,11 @@ public class EventManager implements Listener {
 	
 	@EventHandler
 	public void onPlayerLeashEntity(PlayerLeashEntityEvent e) {
-		if (e.getLeashHolder() instanceof Player && e.getEntity() instanceof Horse) {
+		if (e.getLeashHolder() instanceof Player && e.getEntity() instanceof AbstractHorse) {
 			Player p = (Player) e.getPlayer();
 			ItemStack item = getItem(p, getHoldingHand(p, new ItemStack(Material.LEASH)));
 			int savedAmount = item.getAmount();
-			e.setCancelled(!isPlayerAllowedToInteract(p, (Horse) e.getEntity(), false));
+			e.setCancelled(!isPlayerAllowedToInteract(p, (AbstractHorse) e.getEntity(), false));
 			if (e.isCancelled()) {
 				item.setAmount(savedAmount);
 				updateInventory(p);
@@ -277,16 +271,16 @@ public class EventManager implements Listener {
 	
 	@EventHandler
 	public void onPlayerUnleashEntity(PlayerUnleashEntityEvent e) {
-		if (e.getEntity() instanceof Horse) {
-			e.setCancelled(!isPlayerAllowedToInteract(e.getPlayer(), (Horse) e.getEntity(), false));
+		if (e.getEntity() instanceof AbstractHorse) {
+			e.setCancelled(!isPlayerAllowedToInteract(e.getPlayer(), (AbstractHorse) e.getEntity(), false));
 		}
 	}
 	
 	@EventHandler
 	public void onVehicleEnter(VehicleEnterEvent e) {
-		if (e.getEntered() instanceof Player && e.getVehicle() instanceof Horse) {
+		if (e.getEntered() instanceof Player && e.getVehicle() instanceof AbstractHorse) {
 			Player p = (Player) e.getEntered();
-			boolean cancel = !isPlayerAllowedToInteract(p, (Horse) e.getVehicle(), false);
+			boolean cancel = !isPlayerAllowedToInteract(p, (AbstractHorse) e.getVehicle(), false);
 			cancelEvent(e, p, cancel, true);
 		}
 	}
@@ -299,7 +293,7 @@ public class EventManager implements Listener {
 		}
 	}
 	
-	private void consumeItem(Player p, int holdingHand) {
+	private void consumeItem(Player p, HandEnum holdingHand) {
 		if (p.getGameMode() != GameMode.CREATIVE) {
 			ItemStack item = getItem(p, holdingHand);
 			if (item != null) {
@@ -316,40 +310,42 @@ public class EventManager implements Listener {
 	}
 	
 	private void ejectPlayer(Player p) {
-		if (p.getVehicle() instanceof Horse) {
-			Horse horse = (Horse) p.getVehicle();
+		if (p.getVehicle() instanceof AbstractHorse) {
+			AbstractHorse horse = (AbstractHorse) p.getVehicle();
 			if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
 				horse.eject();
 			}
 		}
 	}
 	
-	private int getHoldingHand(Player p, ItemStack item) {
+	private HandEnum getHoldingHand(Player p, ItemStack item) {
 		ItemStack mainHandItem = p.getInventory().getItemInMainHand();
 		ItemStack offHandItem = p.getInventory().getItemInOffHand();
 		if (mainHandItem != null && mainHandItem.isSimilar(item)) {
-			return MAIN_HAND;
+			return HandEnum.MAIN;
 		}
 		else if (offHandItem != null && offHandItem.isSimilar(item)) {
-			return OFF_HAND;
+			return HandEnum.OFF;
 		}
-		return NONE;
+		return HandEnum.NONE;
 	}
 	
-	private ItemStack getItem(Player p, int holdingHand) {
+	private ItemStack getItem(Player p, HandEnum holdingHand) {
 		ItemStack item = null;
 		switch (holdingHand) {
-		case MAIN_HAND:
+		case MAIN:
 			item = p.getInventory().getItemInMainHand();
 			break;
-		case OFF_HAND:
+		case OFF:
 			item = p.getInventory().getItemInOffHand();
+			break;
+		default:
 			break;
 		}
 		return item;
 	}
 	
-	private boolean isPlayerAllowedToAttack(Player p, Horse horse) {
+	private boolean isPlayerAllowedToAttack(Player p, AbstractHorse horse) {
 		if (zh.getCM().isProtectionEnabled(PLAYER_ATTACK)) {
 			boolean isOwner = zh.getDM().isHorseOwnedBy(p.getUniqueId(), horse.getUniqueId());
 			boolean isOwnerAttackBlocked = zh.getCM().isProtectionEnabled(OWNER_ATTACK);
@@ -366,7 +362,7 @@ public class EventManager implements Listener {
 		return true;
 	}
 	
-	private boolean isPlayerAllowedToInteract(Player p, Horse horse, boolean mustBeShared) {
+	private boolean isPlayerAllowedToInteract(Player p, AbstractHorse horse, boolean mustBeShared) {
 		if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
 			boolean isOwner = zh.getDM().isHorseOwnedBy(p.getUniqueId(), horse.getUniqueId());
 			boolean isFriend = zh.getDM().isFriendOfOwner(p.getUniqueId(), horse.getUniqueId());
@@ -391,5 +387,22 @@ public class EventManager implements Listener {
 				p.updateInventory();
 			}
 		}.runTaskLater(zh, 0);
+	}
+	
+	/* Allows to cancel onPlayerLeashEntityEvent */
+	private class PlayerLeashDeadEntityEvent extends PlayerLeashEntityEvent {
+		
+		public PlayerLeashDeadEntityEvent(Entity leashedEntity, Entity leashHolder, Player p) {
+			super(leashedEntity, leashHolder, p);
+		}
+		
+	}
+	
+	private enum HandEnum {
+		
+		MAIN,
+		OFF,
+		NONE;
+		
 	}
 }

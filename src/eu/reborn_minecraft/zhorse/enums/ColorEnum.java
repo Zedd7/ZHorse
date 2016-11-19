@@ -5,7 +5,8 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 
-public enum ColorEnum {
+public enum ColorEnum { // TODO rework with String... args
+	
 	aqua(ChatColor.AQUA, "&b", "<b>", "<aqua>"),
 	black(ChatColor.BLACK, "&0", "<0>", "<black>"),
 	blue(ChatColor.BLUE, "&9", "<9>", "<blue>"),

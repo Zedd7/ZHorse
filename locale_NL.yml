@@ -1,4 +1,4 @@
-Version: 1.6.1
+Version: 1.6.2
 
 # Translated by Sikatsu1997
 
@@ -86,9 +86,10 @@ Messages:
   languageAlreadyUsedOther: "<gold><player><yellow> gebruikt de <gold><lang><yellow>taal al."
   languageEdited: "<yellow>Je gebruikt nu <gold><lang><yellow> als taal."
   languageEditedOther: "<gold><player><yellow> gebruikt nu <gold><lang><yellow> als taal."
-  listHorseColor: "<yellow>Kleur: <value>"
-  listHorseStyle: "<yellow>Stijl: <value>"
-  listHorseVariant: "<yellow>Variant: <value>"
+  listHorseColor: "<yellow>Paard kleur: <value>"
+  listHorseStyle: "<yellow>Paard stijl: <value>"
+  listHorseVariant: "<yellow>Variant: <value><yellow>"
+  listLlamaColor: "<yellow>Lama kleur: <value>"
   missingArguments: "<yellow>Ongeldig aantal argumenten. Doe als volgt:"
   missingDatabase: "<yellow>Je moet een database opgeven. Gebruik één van de volgende : <value>"
   missingHorseId: "<yellow>Je moet een paard ID opgeven, typ <gold>/zh list<yellow> en kies een ID."

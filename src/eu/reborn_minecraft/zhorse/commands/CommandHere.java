@@ -1,12 +1,13 @@
 package eu.reborn_minecraft.zhorse.commands;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.ChestedHorse;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
-import net.md_5.bungee.api.ChatColor;
 
 public class CommandHere extends AbstractCommand {
 
@@ -51,8 +52,14 @@ public class CommandHere extends AbstractCommand {
 				horse.teleport(destination);
 				zh.getDM().updateHorseLocation(horse.getUniqueId(), horse.getLocation(), false);
 			}
-			else {
-				horse = zh.getHM().teleport(horse, destination);
+			else {				
+				if (horse instanceof ChestedHorse && ((ChestedHorse) horse).isCarryingChest()) {
+					s.sendMessage(ChatColor.RED + "The new teleportation method is currently disabled for chested horses.");
+					return;
+				}
+				else {
+					horse = zh.getHM().teleport(horse, destination);
+				}
 			}
 			if (horse != null) {
 				if (displayConsole) {

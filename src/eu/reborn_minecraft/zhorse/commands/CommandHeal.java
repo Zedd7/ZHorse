@@ -1,8 +1,8 @@
 package eu.reborn_minecraft.zhorse.commands;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Damageable;
-import org.bukkit.entity.Horse;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
@@ -18,7 +18,7 @@ public class CommandHeal extends AbstractCommand {
 				if (!targetMode) {
 					boolean ownsHorse = ownsHorse(targetUUID, true);
 					if (isOnHorse(ownsHorse)) {
-						horse = (Horse) p.getVehicle();
+						horse = (AbstractHorse) p.getVehicle();
 						if (isRegistered(horse)) {
 							execute();
 						}

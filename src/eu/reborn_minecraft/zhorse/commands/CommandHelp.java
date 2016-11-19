@@ -35,9 +35,10 @@ public class CommandHelp extends AbstractCommand {
 				if (CommandEnum.getCommandNameList().contains(command)) {
 					sendCommandUsage(command, false, true);
 					if (command.equals(CommandEnum.SPAWN.getName())) {
-						sendHorseVariantList();
+						sendAbstractHorseVariantList();
 						sendHorseStyleList();
 						sendHorseColorList();
+						sendLlamaColorList();
 					}
 					zh.getEM().payCommand(p, command);
 				}

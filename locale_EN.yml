@@ -1,4 +1,4 @@
-Version: 1.6.1
+Version: 1.6.2
 
 # You can use any of the following color flag formats : "&4", <4>, <dark_red>, <DARKRED>.
 # You can rework any message in this file but DO NOT add/remove flags that are not color flags !
@@ -84,9 +84,10 @@ Messages:
   languageAlreadyUsedOther: "<gold><player><yellow> is already using the language <gold><lang><yellow>."
   languageEdited: "<yellow>You are now using the language <gold><lang><yellow>."
   languageEditedOther: "<gold><player><yellow> is now using the language <gold><lang><yellow>."
-  listHorseColor: "<yellow>Color: <value>"
-  listHorseStyle: "<yellow>Style: <value>"
+  listHorseColor: "<yellow>Horse color: <value>"
+  listHorseStyle: "<yellow>Horse style: <value>"
   listHorseVariant: "<yellow>Variant: <value><yellow>"
+  listLlamaColor: "<yellow>Llama color: <value>"
   missingArguments: "<yellow>Incorrect number or type of arguments. Do as follows :"
   missingDatabase: "<yellow>You must provide a database. Please use one of the followings : <value><yellow>."
   missingHorseId: "<yellow>You must provide a horse ID, please type <gold>/zh list<yellow> and choose an ID."

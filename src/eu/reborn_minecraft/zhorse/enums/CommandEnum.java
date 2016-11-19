@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum CommandEnum {
+	
 	ADMIN("admin", "eu.reborn_minecraft.zhorse.commands.CommandAdmin"),
 	CLAIM("claim", "eu.reborn_minecraft.zhorse.commands.CommandClaim"),
 	FREE("free", "eu.reborn_minecraft.zhorse.commands.CommandFree"),

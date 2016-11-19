@@ -1,6 +1,7 @@
 package eu.reborn_minecraft.zhorse.enums;
 
 public enum KeyWordEnum {
+	
 	/* general keywords */
 	adminSuffix(".admin"),
 	dot("."),

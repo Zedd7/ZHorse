@@ -1,7 +1,7 @@
 package eu.reborn_minecraft.zhorse.commands;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Horse;
+import org.bukkit.entity.AbstractHorse;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
@@ -16,7 +16,7 @@ public class CommandClaim extends AbstractCommand {
 			if (!idMode) {
 				if (!targetMode) {
 					if (isOnHorse(false)) {
-						horse = (Horse) p.getVehicle();
+						horse = (AbstractHorse) p.getVehicle();
 						execute();
 					}
 				}

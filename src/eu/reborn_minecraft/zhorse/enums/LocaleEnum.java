@@ -1,6 +1,7 @@
 package eu.reborn_minecraft.zhorse.enums;
 
 public enum LocaleEnum {
+	
 	/* headers */
 	adminCommandListHeader("Headers.adminCommandListHeader"),
 	availableOptionFormat("Headers.availableOptionFormat"),
@@ -83,6 +84,7 @@ public enum LocaleEnum {
 	listHorseColor("Messages.listHorseColor"),
 	listHorseStyle("Messages.listHorseStyle"),
 	listHorseVariant("Messages.listHorseVariant"),
+	listLlamaColor("Messages.listLlamaColor"),
 	missingArguments("Messages.missingArguments"),
 	missingDatabase("Messages.missingDatabase"),
 	missingHorseId("Messages.missingHorseId"),
