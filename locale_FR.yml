@@ -66,6 +66,7 @@ Messages:
   horseNotClaimed: "<yellow>Vous devez d'abord revendiquer ce cheval."
   horseNotFound: "<gold><horse><yellow> n'a pas pu être trouvé sur ce serveur."
   horseNotTamed: "<yellow>Vous devez d'abord dompter ce cheval."
+  horseOutOfRange: "<gold><horse><yellow> est hors de la portée maximum de <gold><max><yellow> blocs."
   horseProtected: "<gold><horse><yellow> est à présent protégé contre certains types de dégâts."
   horseReceived: "<gold><player><yellow> vous a offert <gold><horse><yellow> !"
   horseRenamed: "<yellow>Ce cheval s'appelle à présent <gold><horse><yellow>."

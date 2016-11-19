@@ -66,6 +66,7 @@ Messages:
   horseNotClaimed: "<yellow>You must claim this horse first."
   horseNotFound: "<gold><horse><yellow> could not be found in this server."
   horseNotTamed: "<yellow>You must tame this horse first."
+  horseOutOfRange: "<gold><horse><yellow> is beyond the <gold><max><yellow> blocks maximum range."
   horseProtected: "<gold><horse><yellow> is now protected against some types of damage."
   horseReceived: "<gold><player><yellow> gave you <gold><horse><yellow> !"
   horseRenamed: "<yellow>This horse is now known as <gold><horse><yellow>."

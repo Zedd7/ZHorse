@@ -2,6 +2,7 @@ package eu.reborn_minecraft.zhorse.commands;
 
 import java.util.UUID;
 
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AbstractHorse;
@@ -364,6 +365,34 @@ public abstract class AbstractCommand {
 			else if (idMode && targetMode) {
 				zh.getMM().sendMessageHorseIDPlayer(s, LocaleEnum.unknownHorseIdOther, horseID, targetName);
 			}
+		}
+		return false;
+	}
+	
+	protected boolean isHorseInRangeHere() {
+		int maxRadius = zh.getCM().getMaximumRangeHere();
+		return isHorseInRange(maxRadius);
+	}
+	
+	protected boolean isHorseInRangeTp() {
+		int maxRadius = zh.getCM().getMaximumRangeTp();
+		return isHorseInRange(maxRadius);
+	}
+	
+	protected boolean isHorseInRange(int maxRadius) {
+		if (adminMode) {
+			return true;
+		}
+		Location playerLocation = p.getLocation();
+		Location horseLocation = horse.getLocation();
+		int xDistance = Math.abs(Math.abs(playerLocation.getBlockX()) - Math.abs(horseLocation.getBlockX()));
+		int zDistance = Math.abs(Math.abs(playerLocation.getBlockZ()) - Math.abs(horseLocation.getBlockZ()));
+		double distance = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(zDistance, 2));
+		if (distance <= maxRadius || maxRadius == -1 || !playerLocation.getWorld().equals(horseLocation.getWorld())) {
+			return true;
+		}
+		else if (displayConsole) {
+			zh.getMM().sendMessageHorseMax(s, LocaleEnum.horseOutOfRange, horseName, maxRadius);
 		}
 		return false;
 	}

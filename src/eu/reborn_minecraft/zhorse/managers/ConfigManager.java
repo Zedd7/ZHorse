@@ -52,12 +52,9 @@ public class ConfigManager {
 		if (playerUUID != null) {
 			String groupName = getGroupName(playerUUID);
 			if (groupName != null) {
-				String claimsLimit = config.getString(KeyWordEnum.groupsPrefix.getValue() + groupName + KeyWordEnum.claimsLimitSuffix.getValue());
-				if (claimsLimit != null) {
-					value = Integer.parseInt(claimsLimit);
-					if (value < 0 && value != -1) {
-						value = 0;
-					}
+				int claimsLimit = config.getInt(KeyWordEnum.groupsPrefix.getValue() + groupName + KeyWordEnum.claimsLimitSuffix.getValue(), 0);
+				if (claimsLimit < 0 && claimsLimit != -1) {
+					claimsLimit = 0;
 				}
 			}
 		}
@@ -65,17 +62,11 @@ public class ConfigManager {
 	}
 	
 	public int getCommandCost(String command) {
-		int value = 0;
+		int commandCost = 0;
 		if (command != null) {
-			String commandCost = config.getString(KeyWordEnum.commandsPrefix.getValue() + command + KeyWordEnum.costSuffix.getValue());
-			if (commandCost != null) {
-				value = Integer.parseInt(commandCost);
-				if (value < 0) {
-					value = 0;
-				}
-			}
+			commandCost = config.getInt(KeyWordEnum.commandsPrefix.getValue() + command + KeyWordEnum.costSuffix.getValue(), 0);
 		}
-		return value;
+		return Math.max(commandCost, 0);
 	}
 	
 	public String getDatabaseFileName() {
@@ -172,24 +163,19 @@ public class ConfigManager {
 	}
 	
 	public int getMaximumHorseNameLength() {
-		int value = 0;
-		String maximumHorseNameLength = config.getString(KeyWordEnum.horsenamesPrefix.getValue() + KeyWordEnum.maximumLength.getValue());
-		if (maximumHorseNameLength != null) {
-			value = Integer.parseInt(maximumHorseNameLength);
-		}
-		return value;
+		return config.getInt(KeyWordEnum.horsenamesPrefix.getValue() + KeyWordEnum.maximumLength.getValue(), 0);
 	}
 	
 	public int getMinimumHorseNameLength() {
-		int value = 0;
-		String minimumHorseNameLength = config.getString(KeyWordEnum.horsenamesPrefix.getValue() + KeyWordEnum.minimumLength.getValue());
-		if (minimumHorseNameLength != null) {
-			value = Integer.parseInt(minimumHorseNameLength);
-			if (value < 0) {
-				value = 0;
-			}
-		}
-		return value;
+		return Math.max(config.getInt(KeyWordEnum.horsenamesPrefix.getValue() + KeyWordEnum.minimumLength.getValue(), 0), 0);
+	}
+	
+	public int getMaximumRangeHere() {
+		return config.getInt(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.hereMaxRange.getValue(), -1);
+	}
+	
+	public int getMaximumRangeTp() {
+		return config.getInt(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.tpMaxRange.getValue(), -1);
 	}
 	
 	public String getRandomHorseName() {
@@ -333,17 +319,16 @@ public class ConfigManager {
 						zh.getLogger().severe("The \"Commands." + command + ".auto-admin\" option is missing from the config !");
 			        	conform = false;
 			        }
-					String commandCost = config.getString("Commands." + command + ".cost");
-					if (commandCost != null) {
-						int value = Integer.parseInt(commandCost);
-						if (value < 0) {
+					if (!config.isSet("Commands." + command + ".cost")) {
+						zh.getLogger().severe("The \"Commands." + command + ".cost\" option is missing from the config !");
+						conform = false;
+					}
+					else {
+						int commandCost = config.getInt("Commands." + command + ".cost", 0);
+						if (commandCost < 0) {
 							zh.getLogger().severe("The cost of the command \"" + command + "\" must be positive !");
 							conform = false;
 						}
-					}
-					else {
-						zh.getLogger().severe("The \"Commands." + command + ".cost\" option is missing from the config !");
-						conform = false;
 					}
 				}
 				else {
@@ -419,13 +404,10 @@ public class ConfigManager {
 		        		conform = false;
 		        	}
 		        }
-		        String claimsLimit = config.getString("Groups." + group + ".claims-limit");
-		        if (claimsLimit != null) {
-		        	int value = Integer.parseInt(claimsLimit);
-		        	if (value < 0 && value != -1) {
-						zh.getLogger().severe("The claims-limit of the group \"" + group + "\" must be positive or -1 !");
-						conform = false;
-					}
+		        int claimsLimit = config.getInt("Groups." + group + ".claims-limit", 0);
+		        if (claimsLimit < 0 && claimsLimit != -1) {
+					zh.getLogger().severe("The claims-limit of the group \"" + group + "\" must be positive or -1 !");
+					conform = false;
 		        }
 			}
 		}
@@ -446,35 +428,35 @@ public class ConfigManager {
 			zh.getLogger().severe("The \"HorseNames.give-random-names\" option is missing from the config !");
 			conform = false;
 		}
-		String maximumHorseNameLength = config.getString("HorseNames.maximum-length");
-		if (maximumHorseNameLength != null) {
-			int value = Integer.parseInt(maximumHorseNameLength);
-			if (value < 0) {
+		int maximumHorseNameLength = 0;
+		if (!config.isSet("HorseNames.maximum-length")) {
+			zh.getLogger().severe("The \"HorseNames.maximum-length\" option is missing from the config !");
+			conform = false;
+		}
+		else {
+			maximumHorseNameLength = config.getInt("HorseNames.maximum-length");
+			if (maximumHorseNameLength < 0) {
 				zh.getLogger().severe("The \"HorseNames.maximum-length\" value must be positive !");
 				conform = false;
 			}
-			else if (value > HORSE_NAME_LENGTH_LIMIT) {
+			else if (maximumHorseNameLength > HORSE_NAME_LENGTH_LIMIT) {
 				zh.getLogger().severe(String.format("The \"HorseNames.maximum-length\" value must be less than %d !", HORSE_NAME_LENGTH_LIMIT));
 				conform = false;
 			}
 		}
-		else {
-			zh.getLogger().severe("The \"HorseNames.maximum-length\" option is missing from the config !");
+		int minimumHorseNameLength = 0;
+		if (!config.isSet("HorseNames.minimum-length")) {
+			zh.getLogger().severe("The \"HorseNames.minimum-length\" option is missing from the config !");
 			conform = false;
 		}
-		String minimumHorseNameLength = config.getString("HorseNames.minimum-length");
-		if (minimumHorseNameLength != null) {
-			int value = Integer.parseInt(minimumHorseNameLength);
-			if (value < 0) {
+		else {
+			minimumHorseNameLength = config.getInt("HorseNames.minimum-length");
+			if (minimumHorseNameLength < 0) {
 				zh.getLogger().severe("The \"minimum-horseName-length\" value must be positive !");
 				conform = false;
 			}
 		}
-		else {
-			zh.getLogger().severe("The \"HorseNames.minimum-length\" option is missing from the config !");
-			conform = false;
-		}
-		if (conform && Integer.parseInt(maximumHorseNameLength) < Integer.parseInt(minimumHorseNameLength)) {
+		if (conform && maximumHorseNameLength < minimumHorseNameLength) {
 			zh.getLogger().severe("The \"HorseNames.maximum-length\" must be greater than the \"HorseNames.minimum-length\" !");
 			conform = false;
 		}

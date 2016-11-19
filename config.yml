@@ -267,6 +267,14 @@ Settings:
   # Set to true to make player execute /zh share on horse claim.
   share-on-claim: false
 
+  # Prevent /zh here if horse is outside the maximum radius (in blocks).
+  # Set to -1 for infinite range.
+  here-max-range: -1
+
+  # Prevent /zh tp if horse is outside the maximum radius (in blocks).
+  # Set to -1 for infinite range.
+  tp-max-range: -1
+
   # Set to true to hide all ZHorse messages in chat.
   mute-console: false
 

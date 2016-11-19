@@ -42,7 +42,7 @@ public class CommandHere extends AbstractCommand {
 	}
 	
 	private void execute() {
-		if (isOwner() && isWorldCrossable(p.getWorld()) && isNotOnHorse() && !isHorseMounted() && !isHorseLeashed() && zh.getEM().canAffordCommand(p, command)) {
+		if (isOwner() && isWorldCrossable(p.getWorld()) && isNotOnHorse() && !isHorseMounted() && !isHorseLeashed() && isHorseInRangeHere() && zh.getEM().canAffordCommand(p, command)) {
 			Location destination = p.getLocation();
 			if (p.isFlying()) {
 				Block block = destination.getWorld().getHighestBlockAt(destination);

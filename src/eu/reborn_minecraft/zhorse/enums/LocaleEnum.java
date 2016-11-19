@@ -63,6 +63,7 @@ public enum LocaleEnum {
 	horseNotClaimed("Messages.horseNotClaimed"),
 	horseNotFound("Messages.horseNotFound"),
 	horseNotTamed("Messages.horseNotTamed"),
+	horseOutOfRange("Messages.horseOutOfRange"),
 	horseProtected("Messages.horseProtected"),
 	horseReceived("Messages.horseReceived"),
 	horseRenamed("Messages.horseRenamed"),

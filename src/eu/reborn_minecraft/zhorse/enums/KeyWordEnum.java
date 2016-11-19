@@ -9,6 +9,7 @@ public enum KeyWordEnum {
 	zhPrefix("zh."),
 	
 	/* config.yml keywords */
+	// TODO drop pre/suffix and include full path in value
 	allowLeashOnDeadHorse("allow-leash-on-dead-horse"),
 	availableSuffix(".available"),
 	autoAdminSuffix(".auto-admin"),
@@ -33,6 +34,7 @@ public enum KeyWordEnum {
 	giveRandomNames("give-random-names"),
 	groups("Groups"),
 	groupsPrefix("Groups."),
+	hereMaxRange("here-max-range"),
 	horsenames("HorseNames"),
 	horsenamesPrefix("HorseNames."),
 	hostSuffix(".host"),
@@ -52,6 +54,7 @@ public enum KeyWordEnum {
 	settingsPrefix("Settings."),
 	shareOnClaim("share-on-claim"),
 	sqliteConfig("sqlite-config"),
+	tpMaxRange("tp-max-range"),
 	typeSuffix(".type"),
 	useOldTeleportMethod("use-old-teleport-method"),
 	userSuffix(".user"),
