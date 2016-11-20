@@ -176,7 +176,6 @@ public class CommandSpawn extends AbstractCommand {
 	}
 	
 	private Double[] buildDoubles(String argument) {
-		argument.replaceAll("%", "");
 		int firstSeparatorIndex = argument.indexOf(DOUBLE_SEPARATOR);
 		int secondSeparatorIndex = argument.indexOf(DOUBLE_SEPARATOR, firstSeparatorIndex + 1);
 		String healthArg = argument.substring(0, firstSeparatorIndex);
@@ -187,13 +186,13 @@ public class CommandSpawn extends AbstractCommand {
 		Double jumpDouble = null;
 		try {
 			if (!healthArg.isEmpty()) {
-				healthDouble = Double.parseDouble(healthArg);
+				healthDouble = Double.parseDouble(healthArg.replaceAll("%", ""));
 			}
 			if (!speedArg.isEmpty()) {
-				speedDouble = Double.parseDouble(speedArg);
+				speedDouble = Double.parseDouble(speedArg.replaceAll("%", ""));
 			}
 			if (!jumpArg.isEmpty()) {
-				jumpDouble = Double.parseDouble(jumpArg);
+				jumpDouble = Double.parseDouble(jumpArg.replaceAll("%", ""));
 			}
 		} catch (NumberFormatException e) {
 			return null;

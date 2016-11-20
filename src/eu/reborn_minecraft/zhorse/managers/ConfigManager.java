@@ -48,17 +48,17 @@ public class ConfigManager {
 	}
 	
 	public int getClaimsLimit(UUID playerUUID) {
-		int value = 0;
+		int claimsLimit = 0;
 		if (playerUUID != null) {
 			String groupName = getGroupName(playerUUID);
 			if (groupName != null) {
-				int claimsLimit = config.getInt(KeyWordEnum.groupsPrefix.getValue() + groupName + KeyWordEnum.claimsLimitSuffix.getValue(), 0);
+				claimsLimit = config.getInt(KeyWordEnum.groupsPrefix.getValue() + groupName + KeyWordEnum.claimsLimitSuffix.getValue(), 0);
 				if (claimsLimit < 0 && claimsLimit != -1) {
 					claimsLimit = 0;
 				}
 			}
 		}
-		return value;
+		return claimsLimit;
 	}
 	
 	public int getCommandCost(String command) {

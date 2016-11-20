@@ -68,7 +68,7 @@ Messages:
   horseNotClaimed: "<yellow>Je moet dit paard eerst claimen."
   horseNotFound: "<gold><horse><yellow> is niet gevonden op deze server."
   horseNotTamed: "<yellow>Je moet dit paard eerst temmen."
-  horseOutOfRange: "<gold><horse><yellow> is beyond the <gold><max><yellow> blocks maximum range."
+  horseOutOfRange: "<gold><horse><yellow> is buiten de maximale <gold><max><yellow>-blokken afstand."
   horseProtected: "<gold><horse><yellow> is nu berschermd tegen sommige soorten schade."
   horseReceived: "<gold><player><yellow> heeft je <gold><horse><yellow> gegeven!"
   horseRenamed: "<yellow>Dit paard heeft de naam <gold><horse><yellow> gekregen."
