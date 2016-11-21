@@ -149,6 +149,7 @@ public class HorseManager {
 	}
 	
 	public AbstractHorse teleport(AbstractHorse sourceHorse, Location destination) {
+		System.out.println(1);
 		AbstractHorse copyHorse = (AbstractHorse) destination.getWorld().spawnEntity(destination, sourceHorse.getType());
 		if (copyHorse != null) {
 			zh.getDM().updateHorseUUID(sourceHorse.getUniqueId(), copyHorse.getUniqueId());
@@ -160,6 +161,7 @@ public class HorseManager {
 			loadHorse(copyHorse);
 			removeHorse(sourceHorse);
 		}
+		System.out.println(2);
 		return copyHorse;
 	}
 
@@ -208,10 +210,10 @@ public class HorseManager {
 	}
 	
 	private void copyInventory(AbstractHorse sourceHorse, AbstractHorse copyHorse) {
-		if (sourceHorse instanceof ChestedHorse) { // TODO fix : crashes client when putting item in new chest
+		if (sourceHorse instanceof ChestedHorse) {
 			((ChestedHorse) copyHorse).setCarryingChest(((ChestedHorse) sourceHorse).isCarryingChest());
 		}
-		copyHorse.getInventory().setContents(sourceHorse.getInventory().getContents()); // TODO fix : IllegalArgumentException if ChestHorse
+		copyHorse.getInventory().setContents(sourceHorse.getInventory().getContents());
 	}
 	
 	private void removeLeash(AbstractHorse horse) {
