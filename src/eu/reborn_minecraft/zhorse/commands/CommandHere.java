@@ -4,7 +4,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Llama;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
@@ -53,12 +52,7 @@ public class CommandHere extends AbstractCommand {
 				zh.getDM().updateHorseLocation(horse.getUniqueId(), horse.getLocation(), false);
 			}
 			else {
-				if (horse instanceof Llama && ((Llama) horse).isCarryingChest()) {
-					s.sendMessage(ChatColor.RED + "/zh here is currently disabled for Llamas carrying a chest.");
-				}
-				else {
-					horse = zh.getHM().teleport(horse, destination);
-				}
+				horse = zh.getHM().teleport(horse, destination);
 			}
 			if (horse != null) {
 				if (displayConsole) {

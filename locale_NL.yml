@@ -83,6 +83,7 @@ Messages:
   invalidHealthArgument: "<yellow>Het aantal levens moet tussen <gold><amount><yellow> en <gold><max><yellow>."
   invalidJumpArgument: "<yellow>De spring kracht moet tussen <gold><amount>%<yellow> en <gold><max>%<yellow>."
   invalidSpeedArgument: "<yellow>De snelheid moet tussen <gold><amount>%<yellow> en <gold><max>%<yellow>."
+  invalidStrengthArgument: "<yellow>De lama kracht moet tussen <gold><amount><yellow> en <gold><max><yellow>."
   languageAlreadyUsed: "<yellow>Je gebruikt de <gold><lang><yellow>taal al."
   languageAlreadyUsedOther: "<gold><player><yellow> gebruikt de <gold><lang><yellow>taal al."
   languageEdited: "<yellow>Je gebruikt nu <gold><lang><yellow> als taal."
@@ -147,6 +148,7 @@ Horse informations:
   owner: "<yellow>Eigenaar : <gold><player>"
   speed: "<yellow>Snelheid : <gold><amount>%"
   status: "<yellow>Status : <gold><value>"
+  strength: "<yellow>Opslag ruimte : <gold><amount>"
 
 Command descriptions:
   admin: "<gold>/zh admin<gray>: <yellow>Beheert ZHorse bestanden."
@@ -201,7 +203,7 @@ Command usages:
   reload: "<gold>/zh reload<yellow> (-a)"
   settings: "<gold>/zh settings<yellow> option value (-t spelerNaam) (-a)"
   share: "<gold>/zh share<yellow> (-i paardID) (-t spelerNaam) (-a)"
-  spawn: "<gold>/zh spawn<yellow> (variant) (stijl) (kleur) ('tamed') ('baby') (levens):(snelheid%):(springkracht%)"
+  spawn: "<gold>/zh spawn<yellow> (variant) (stijl) (kleur) ('tamed') ('baby') (levens):(snelheid%):(springkracht%) (kracht)"
   tame: "<gold>/zh tame<yellow> (-i paardID) (-t spelerNaam) (-a)"
   tp: "<gold>/zh tp<yellow> (-i paardID) (-t spelerNaam) (-a)"
   

@@ -35,6 +35,7 @@ public class CommandSpawn extends AbstractCommand {
 	
 	/* Llama attributes */
 	private Llama.Color llamaColor = null;
+	private int llamaStrength = -1;
 
 	public CommandSpawn(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
@@ -72,15 +73,6 @@ public class CommandSpawn extends AbstractCommand {
 			for (String argument : argumentArray) { // check for each token if it is some type of attribute
 				boolean parsed = false;
 				if (!parsed) {
-					parsed = parseBaby(argument);
-				}
-				if (!parsed) {
-					parsed = parseTamed(argument);
-				}
-				if (!parsed) {
-					parsed = parseDoubles(argument);
-				}
-				if (!parsed) {
 					parsed = parseVariant(argument);
 				}
 				if (!parsed) {
@@ -91,113 +83,23 @@ public class CommandSpawn extends AbstractCommand {
 					parsed = parseLlamaColor(argument);
 				}
 				if (!parsed) {
+					parsed = parseTamed(argument);
+				}
+				if (!parsed) {
+					parsed = parseBaby(argument);
+				}
+				if (!parsed) {
+					parsed = parseDoubles(argument);
+				}
+				if (!parsed) {
+					parsed = parseLlamaStrength(argument);
+				}
+				if (!parsed) {
 					valid = false;
 					zh.getMM().sendMessageValue(s, LocaleEnum.unknownSpawnArgument, argument);
 				}
 			}
 		}
-	}
-	
-	private boolean parseBaby(String argument) {
-		if (argument.equalsIgnoreCase(HorseAttributeEnum.BABY.getCode())) {
-			if (!baby) {
-				baby = true;
-				return true;
-			}
-			else {
-				valid = false;
-			}
-		}
-		return false;
-	}
-
-	private boolean parseTamed(String argument) {
-		if (argument.equalsIgnoreCase(HorseAttributeEnum.TAMED.getCode())) {
-			if (!tamed) {
-				tamed = true;
-				return true;
-			}
-			else {
-				valid = false;
-			}
-		}
-		return false;
-	}
-	
-	private boolean parseDoubles(String argument) {
-		if (StringUtils.countMatches(argument, DOUBLE_SEPARATOR) == 2) {
-			if (health == -1 && jumpStrength == -1 && speed == -1) {
-				Double[] doubles = buildDoubles(argument);
-				if (doubles != null) {
-					Double healthDouble = doubles[0];
-					Double speedDouble = doubles[1];
-					Double jumpDouble = doubles[2];
-					System.out.println(healthDouble + " " + speedDouble + " " + jumpDouble);
-					if (healthDouble != null) {
-						if (healthDouble >= HorseManager.MIN_HEALTH && healthDouble <= HorseManager.MAX_HEALTH) {
-							health = healthDouble;
-						}
-						else if (displayConsole) {
-							valid = false;
-							zh.getMM().sendMessageAmountMax(s, LocaleEnum.invalidHealthArgument, (int) HorseManager.MIN_HEALTH, (int) HorseManager.MAX_HEALTH);
-						}
-					}
-					if (speedDouble != null) {
-						speedDouble *= HorseManager.MAX_SPEED / 100;
-						if (speedDouble >= HorseManager.MIN_SPEED && speedDouble <= HorseManager.MAX_SPEED) {
-							speed = speedDouble;
-						}
-						else if (displayConsole) {
-							valid = false;
-							zh.getMM().sendMessageAmountMax(s, LocaleEnum.invalidSpeedArgument, (int) HorseManager.MIN_SPEED * 100, (int) HorseManager.MAX_SPEED * 100);
-						}
-					}
-					if (jumpDouble != null) {
-						jumpDouble *= HorseManager.MAX_JUMP_STRENGTH / 100;
-						if (jumpDouble >= HorseManager.MIN_JUMP_STRENGTH && jumpDouble <= HorseManager.MAX_JUMP_STRENGTH) {
-							jumpStrength = jumpDouble;
-						}
-						else if (displayConsole) {
-							valid = false;
-							zh.getMM().sendMessageAmountMax(s, LocaleEnum.invalidJumpArgument, (int) HorseManager.MIN_JUMP_STRENGTH * 100, (int) HorseManager.MAX_JUMP_STRENGTH * 100);
-						}
-					}
-					return true;
-				}
-				else {
-					valid = false;
-				}
-			}
-			else {
-				valid = false;
-			}
-		}
-		return false;
-	}
-	
-	private Double[] buildDoubles(String argument) {
-		int firstSeparatorIndex = argument.indexOf(DOUBLE_SEPARATOR);
-		int secondSeparatorIndex = argument.indexOf(DOUBLE_SEPARATOR, firstSeparatorIndex + 1);
-		String healthArg = argument.substring(0, firstSeparatorIndex);
-		String speedArg = argument.substring(firstSeparatorIndex + 1, secondSeparatorIndex);
-		String jumpArg = argument.substring(secondSeparatorIndex + 1);
-		Double healthDouble = null;
-		Double speedDouble = null;
-		Double jumpDouble = null;
-		try {
-			if (!healthArg.isEmpty()) {
-				healthDouble = Double.parseDouble(healthArg.replaceAll("%", ""));
-			}
-			if (!speedArg.isEmpty()) {
-				speedDouble = Double.parseDouble(speedArg.replaceAll("%", ""));
-			}
-			if (!jumpArg.isEmpty()) {
-				jumpDouble = Double.parseDouble(jumpArg.replaceAll("%", ""));
-			}
-		} catch (NumberFormatException e) {
-			return null;
-		}
-		return new Double[] {healthDouble, speedDouble, jumpDouble};
 	}
 
 	private boolean parseVariant(String argument) {
@@ -279,6 +181,126 @@ public class CommandSpawn extends AbstractCommand {
 		}
 		return false;
 	}
+	
+	private boolean parseBaby(String argument) {
+		if (argument.equalsIgnoreCase(HorseAttributeEnum.BABY.toString())) {
+			if (!baby) {
+				baby = true;
+				return true;
+			}
+			else {
+				valid = false;
+			}
+		}
+		return false;
+	}
+
+	private boolean parseTamed(String argument) {
+		if (argument.equalsIgnoreCase(HorseAttributeEnum.TAMED.toString())) {
+			if (!tamed) {
+				tamed = true;
+				return true;
+			}
+			else {
+				valid = false;
+			}
+		}
+		return false;
+	}
+	
+	private boolean parseDoubles(String argument) {
+		if (StringUtils.countMatches(argument, DOUBLE_SEPARATOR) == 2) {
+			if (health == -1 && jumpStrength == -1 && speed == -1) {
+				Double[] doubles = buildDoubles(argument);
+				if (doubles != null) {
+					Double healthDouble = doubles[0];
+					Double speedDouble = doubles[1];
+					Double jumpDouble = doubles[2];
+					if (healthDouble != null) {
+						if (healthDouble >= HorseManager.MIN_HEALTH && healthDouble <= HorseManager.MAX_HEALTH) {
+							health = healthDouble;
+						}
+						else if (displayConsole) {
+							valid = false;
+							zh.getMM().sendMessageAmountMax(s, LocaleEnum.invalidHealthArgument, (int) HorseManager.MIN_HEALTH, (int) HorseManager.MAX_HEALTH);
+						}
+					}
+					if (speedDouble != null) {
+						speedDouble *= HorseManager.MAX_SPEED / 100;
+						if (speedDouble >= HorseManager.MIN_SPEED && speedDouble <= HorseManager.MAX_SPEED) {
+							speed = speedDouble;
+						}
+						else if (displayConsole) {
+							valid = false;
+							zh.getMM().sendMessageAmountMax(s, LocaleEnum.invalidSpeedArgument, (int) HorseManager.MIN_SPEED * 100, (int) HorseManager.MAX_SPEED * 100);
+						}
+					}
+					if (jumpDouble != null) {
+						jumpDouble *= HorseManager.MAX_JUMP_STRENGTH / 100;
+						if (jumpDouble >= HorseManager.MIN_JUMP_STRENGTH && jumpDouble <= HorseManager.MAX_JUMP_STRENGTH) {
+							jumpStrength = jumpDouble;
+						}
+						else if (displayConsole) {
+							valid = false;
+							zh.getMM().sendMessageAmountMax(s, LocaleEnum.invalidJumpArgument, (int) HorseManager.MIN_JUMP_STRENGTH * 100, (int) HorseManager.MAX_JUMP_STRENGTH * 100);
+						}
+					}
+					return true;
+				}
+				else {
+					valid = false;
+				}
+			}
+			else {
+				valid = false;
+			}
+		}
+		return false;
+	}
+	
+	private Double[] buildDoubles(String argument) {
+		int firstSeparatorIndex = argument.indexOf(DOUBLE_SEPARATOR);
+		int secondSeparatorIndex = argument.indexOf(DOUBLE_SEPARATOR, firstSeparatorIndex + 1);
+		String healthArg = argument.substring(0, firstSeparatorIndex);
+		String speedArg = argument.substring(firstSeparatorIndex + 1, secondSeparatorIndex);
+		String jumpArg = argument.substring(secondSeparatorIndex + 1);
+		Double healthDouble = null;
+		Double speedDouble = null;
+		Double jumpDouble = null;
+		try {
+			if (!healthArg.isEmpty()) {
+				healthDouble = Double.parseDouble(healthArg.replaceAll("%", ""));
+			}
+			if (!speedArg.isEmpty()) {
+				speedDouble = Double.parseDouble(speedArg.replaceAll("%", ""));
+			}
+			if (!jumpArg.isEmpty()) {
+				jumpDouble = Double.parseDouble(jumpArg.replaceAll("%", ""));
+			}
+		} catch (NumberFormatException e) {
+			return null;
+		}
+		return new Double[] {healthDouble, speedDouble, jumpDouble};
+	}
+	
+	private boolean parseLlamaStrength(String argument) {
+		if (llamaStrength == -1) {
+			int llamaStrengthInt;
+			try {
+				llamaStrengthInt = Integer.parseInt(argument);
+			} catch (NumberFormatException e) {
+				return false;
+			}
+			if (llamaStrengthInt >= HorseManager.MIN_LLAMA_STRENGTH && llamaStrengthInt <= HorseManager.MAX_LLAMA_STRENGTH) {
+				llamaStrength = llamaStrengthInt;
+			}
+			else if (displayConsole) {
+				valid = false;
+				zh.getMM().sendMessageAmountMax(s, LocaleEnum.invalidStrengthArgument, HorseManager.MIN_LLAMA_STRENGTH, HorseManager.MAX_LLAMA_STRENGTH);
+			}
+		}
+		return true;
+	}
 
 	private void craftHorse() {
 		if (variant == null) {
@@ -310,6 +332,7 @@ public class CommandSpawn extends AbstractCommand {
 			break;
 		case LLAMA:
 			((Llama) horse).setColor(llamaColor);
+			((Llama) horse).setStrength(llamaStrength);
 			break;
 		default:
 			break;
@@ -339,6 +362,9 @@ public class CommandSpawn extends AbstractCommand {
 			if (llamaColor == null) {
 				llamaColor = ((Llama) horse).getColor();
 			}
+			if (llamaStrength == -1) {
+				llamaStrength = ((Llama) horse).getStrength();
+			}
 			break;
 		default:
 			break;
@@ -347,19 +373,8 @@ public class CommandSpawn extends AbstractCommand {
 	
 	private enum HorseAttributeEnum {
 		
-		BABY("baby"),
-		TAMED("tamed");
-		
-		private String code;
-		
-		private HorseAttributeEnum(String code) {
-			this.code = code;
-		}
-		
-		public String getCode() {
-			return code;
-		}
-		
+		BABY, TAMED	
+	
 	}
 
 }

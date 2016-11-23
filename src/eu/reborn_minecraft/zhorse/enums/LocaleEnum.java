@@ -78,6 +78,7 @@ public enum LocaleEnum {
 	invalidHealthArgument("Messages.invalidHealthArgument"),
 	invalidJumpArgument("Messages.invalidJumpArgument"),
 	invalidSpeedArgument("Messages.invalidSpeedArgument"),
+	invalidStrengthArgument("Messages.invalidStrengthArgument"),
 	languageAlreadyUsed("Messages.languageAlreadyUsed"),
 	languageAlreadyUsedOther("Messages.languageAlreadyUsedOther"),
 	languageEdited("Messages.languageEdited"),
@@ -142,6 +143,7 @@ public enum LocaleEnum {
 	owner("Horse informations.owner"),
 	speed("Horse informations.speed"),
 	status("Horse informations.status"),
+	strength("Horse informations.strength"),
 	
 	/* command descriptions */
 	adminDescription("Command descriptions.admin"),

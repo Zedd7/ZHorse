@@ -81,6 +81,7 @@ Messages:
   invalidHealthArgument: "<yellow>La vie doit être comprise entre <gold><amount><yellow> et <gold><max><yellow>."
   invalidJumpArgument: "<yellow>La force de saut doit être comprise entre <gold><amount>%<yellow> et <gold><max>%<yellow>."
   invalidSpeedArgument: "<yellow>La vitesse doit être comprise entre <gold><amount>%<yellow> et <gold><max>%<yellow>."
+  invalidStrengthArgument: "<yellow>La force du lama doit être comprise entre <gold><amount><yellow> et <gold><max><yellow>."
   languageAlreadyUsed: "<yellow>Vous utilisez déjà la langue <gold><lang><yellow>."
   languageAlreadyUsedOther: "<gold><player><yellow> utilise déjà la langue <gold><lang><yellow>."
   languageEdited: "<yellow>Vous utilisez maintenant la langue <gold><lang><yellow>."
@@ -145,6 +146,7 @@ Horse informations:
   owner: "<yellow>Maître : <gold><player>"
   speed: "<yellow>Vitesse : <gold><amount>%"
   status: "<yellow>Statut : <gold><value>"
+  strength: "<yellow>Taille du coffre : <gold><amount>"
 
 Command descriptions:
   admin: "<gold>/zh admin<gray>: <yellow>Gère les fichiers de ZHorse."
@@ -199,7 +201,7 @@ Command usages:
   reload: "<gold>/zh reload<yellow> (-a)"
   settings: "<gold>/zh settings<yellow> option valeur (-t nomJoueur) (-a)"
   share: "<gold>/zh share<yellow> (-i chevalID) (-t nomJoueur) (-a)"
-  spawn: "<gold>/zh spawn<yellow> (variante) (style) (couleur) ('tamed') ('baby') (vie):(vitesse%):(saut%)"
+  spawn: "<gold>/zh spawn<yellow> (variante) (style) (couleur) ('tamed') ('baby') (vie):(vitesse%):(saut%) (force)"
   tame: "<gold>/zh tame<yellow> (-i chevalID) (-t nomJoueur) (-a)"
   tp: "<gold>/zh tp<yellow> (-i chevalID) (-t nomJoueur) (-a)"
 

@@ -29,10 +29,12 @@ public class HorseManager {
 	public static final double MIN_HEALTH = 1.0;
 	public static final double MIN_JUMP_STRENGTH = 0.0;
 	public static final double MIN_SPEED = 0.0;
+	public static final int MIN_LLAMA_STRENGTH = 1;
 	
 	public static final double MAX_HEALTH = 30.0;
 	public static final double MAX_JUMP_STRENGTH = 1.2;
 	public static final double MAX_SPEED = 1.0;
+	public static final int MAX_LLAMA_STRENGTH = 5;
 	
 	//private static final int TICKS_PER_SECOND = 20;
 	
@@ -202,6 +204,7 @@ public class HorseManager {
 			break;
 		case LLAMA:
 			((Llama) copyHorse).setColor(((Llama) sourceHorse).getColor());
+			((Llama) copyHorse).setStrength(((Llama) sourceHorse).getStrength());
 		default:
 			break;
 		}

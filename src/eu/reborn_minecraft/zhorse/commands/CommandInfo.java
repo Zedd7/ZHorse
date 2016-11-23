@@ -6,13 +6,17 @@ import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AbstractHorse;
+import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.Damageable;
+import org.bukkit.entity.Llama;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 import eu.reborn_minecraft.zhorse.managers.HorseManager;
 
 public class CommandInfo extends AbstractCommand {
+	
+	private static final int CHEST_SIZE_MULTIPLICATOR = 3;
 
 	public CommandInfo(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
@@ -61,6 +65,7 @@ public class CommandInfo extends AbstractCommand {
 			displayHealth();
 			displayJumpStrength();
 			displaySpeed();
+			displayChestSize();
 			displayLocation();
 			displayStatus();
 			zh.getEM().payCommand(p, command);
@@ -104,6 +109,14 @@ public class CommandInfo extends AbstractCommand {
 		double speed = horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
 		int speedRatio = (int) ((speed / HorseManager.MAX_SPEED) * 100);
 		zh.getMM().sendMessageAmountSpacer(s, LocaleEnum.speed, speedRatio, 1, true);
+	}
+	
+	private void displayChestSize() {
+		if (horse instanceof ChestedHorse && ((ChestedHorse) horse).isCarryingChest()) {
+			int strength = horse instanceof Llama ? ((Llama) horse).getStrength() : HorseManager.MAX_LLAMA_STRENGTH;
+			int chestSize = strength * CHEST_SIZE_MULTIPLICATOR;
+			zh.getMM().sendMessageAmountSpacer(s, LocaleEnum.strength, chestSize, 1, true);
+		}
 	}
 	
 	private void displayLocation() {
