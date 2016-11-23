@@ -80,10 +80,10 @@ Messages:
   horseUnProtected: "<gold><horse><yellow> is niet langer beveiligd tegen schade."
   horseUnShared: "<gold><horse><yellow> is niet langer gedeeld met andere mensen."
   horseUnTamed: "<yellow>Het paard is succesvol verwilderd."
-  invalidHealthArgument: "<yellow>Het aantal levens moet tussen <gold><amount><yellow> en <gold><max><yellow>."
-  invalidJumpArgument: "<yellow>De spring kracht moet tussen <gold><amount>%<yellow> en <gold><max>%<yellow>."
-  invalidSpeedArgument: "<yellow>De snelheid moet tussen <gold><amount>%<yellow> en <gold><max>%<yellow>."
-  invalidStrengthArgument: "<yellow>De lama kracht moet tussen <gold><amount><yellow> en <gold><max><yellow>."
+  invalidHealthArgument: "<yellow>Het aantal levens moet tussen <gold><amount><yellow> en <gold><max><yellow> zijn."
+  invalidJumpArgument: "<yellow>De spring kracht moet tussen <gold><amount>%<yellow> en <gold><max>%<yellow> zijn."
+  invalidSpeedArgument: "<yellow>De snelheid moet tussen <gold><amount>%<yellow> en <gold><max>%<yellow> zijn."
+  invalidStrengthArgument: "<yellow>De lama kracht moet tussen <gold><amount><yellow> en <gold><max><yellow> zijn."
   languageAlreadyUsed: "<yellow>Je gebruikt de <gold><lang><yellow>taal al."
   languageAlreadyUsedOther: "<gold><player><yellow> gebruikt de <gold><lang><yellow>taal al."
   languageEdited: "<yellow>Je gebruikt nu <gold><lang><yellow> als taal."
@@ -148,7 +148,7 @@ Horse informations:
   owner: "<yellow>Eigenaar : <gold><player>"
   speed: "<yellow>Snelheid : <gold><amount>%"
   status: "<yellow>Status : <gold><value>"
-  strength: "<yellow>Opslag ruimte : <gold><amount>"
+  strength: "<yellow>Opslagruimte : <gold><amount>"
 
 Command descriptions:
   admin: "<gold>/zh admin<gray>: <yellow>Beheert ZHorse bestanden."
