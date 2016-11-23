@@ -72,7 +72,7 @@ public class CommandFree extends AbstractCommand {
 
 	private void execute() {
 		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
-			if (zh.getDM().removeHorse(horse.getUniqueId(), targetUUID, Integer.parseInt(horseID))) {
+			if (zh.getDM().removeHorse(horse.getUniqueId(), targetUUID)) { // horseID null if called from horse back
 				horse.setCustomName(null);
 				horse.setCustomNameVisible(false);
 				if (displayConsole) {

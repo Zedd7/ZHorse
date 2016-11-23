@@ -285,6 +285,11 @@ public class DataManager {
 		return removeHorse(horseUUID, ownerUUID, horseID);
 	}
 	
+	public boolean removeHorse(UUID horseUUID, UUID ownerUUID) {
+		int horseID = getHorseID(horseUUID);
+		return removeHorse(horseUUID, ownerUUID, horseID);
+	}
+	
 	public boolean removeHorse(UUID ownerUUID, int horseID) {
 		UUID horseUUID = getHorseUUID(ownerUUID, horseID);
 		return removeHorse(horseUUID, ownerUUID, horseID);

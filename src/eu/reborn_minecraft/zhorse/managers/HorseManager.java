@@ -149,7 +149,6 @@ public class HorseManager {
 	}
 	
 	public AbstractHorse teleport(AbstractHorse sourceHorse, Location destination) {
-		System.out.println(1);
 		AbstractHorse copyHorse = (AbstractHorse) destination.getWorld().spawnEntity(destination, sourceHorse.getType());
 		if (copyHorse != null) {
 			zh.getDM().updateHorseUUID(sourceHorse.getUniqueId(), copyHorse.getUniqueId());
@@ -161,7 +160,6 @@ public class HorseManager {
 			loadHorse(copyHorse);
 			removeHorse(sourceHorse);
 		}
-		System.out.println(2);
 		return copyHorse;
 	}
 
