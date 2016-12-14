@@ -14,8 +14,7 @@ public class DelayedChunckLoad {
 			
 			@Override
 			public void run() {
-				final Entity[] entityArray = chunk.getEntities();
-				for (Entity entity : entityArray) {
+				for (Entity entity : chunk.getEntities()) {
 					if (entity instanceof AbstractHorse) {
 						AbstractHorse horse = (AbstractHorse) entity;
 						if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {

@@ -16,6 +16,7 @@ import eu.reborn_minecraft.zhorse.enums.CommandAdminEnum;
 import eu.reborn_minecraft.zhorse.enums.CommandEnum;
 import eu.reborn_minecraft.zhorse.enums.CommandFriendEnum;
 import eu.reborn_minecraft.zhorse.enums.CommandSettingsEnum;
+import eu.reborn_minecraft.zhorse.enums.HorseStatisticEnum;
 import eu.reborn_minecraft.zhorse.enums.HorseVariantEnum;
 import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
@@ -36,6 +37,7 @@ public abstract class AbstractCommand {
 	protected String horseName;
 	protected String targetName;
 	protected boolean displayConsole;
+	protected boolean useVanillaStats;
 	protected boolean adminMode;
 	protected boolean idMode;
 	protected boolean needTarget;
@@ -50,6 +52,7 @@ public abstract class AbstractCommand {
 		this.s = s;
 		this.command = a[0].toLowerCase();
 		this.displayConsole = !(zh.getCM().isConsoleMuted());
+		this.useVanillaStats = zh.getCM().shouldUseVanillaStats();
 	}
 	
 	protected boolean analyseArguments() {
@@ -585,6 +588,54 @@ public abstract class AbstractCommand {
 					}
 				}
 			}
+		}
+		return false;
+	}
+	
+	protected boolean isStatHealthValid(double health) {
+		double minHealth = HorseStatisticEnum.MIN_HEALTH.getValue(useVanillaStats);
+		double maxHealth = HorseStatisticEnum.MAX_HEALTH.getValue(useVanillaStats);
+		if ((health >= minHealth && health <= maxHealth) || adminMode) {
+			return true;
+		}
+		else if (displayConsole) {
+			zh.getMM().sendMessageAmountMax(s, LocaleEnum.invalidHealthArgument, (int) minHealth, (int) maxHealth);
+		}
+		return false;
+	}
+	
+	protected boolean isStatSpeedValid(double speed) {
+		double minSpeed = HorseStatisticEnum.MIN_SPEED.getValue(useVanillaStats);
+		double maxSpeed = HorseStatisticEnum.MAX_SPEED.getValue(useVanillaStats);
+		if ((speed >= (minSpeed / maxSpeed) * 100 && speed <= 100) || adminMode) {
+			return true;
+		}
+		else if (displayConsole) {
+			zh.getMM().sendMessageAmountMax(s, LocaleEnum.invalidSpeedArgument, (int) Math.ceil((minSpeed / maxSpeed) * 100), 100);
+		}
+		return false;
+	}
+	
+	protected boolean isStatJumpStrengthValid(double jumpStrength) {
+		double minJumpStrength = HorseStatisticEnum.MIN_JUMP_STRENGTH.getValue(useVanillaStats);
+		double maxJumpStrength = HorseStatisticEnum.MAX_JUMP_STRENGTH.getValue(useVanillaStats);
+		if ((jumpStrength >= (minJumpStrength / maxJumpStrength) * 100 && jumpStrength <= 100) || adminMode) {
+			return true;
+		}
+		else if (displayConsole) {
+			zh.getMM().sendMessageAmountMax(s, LocaleEnum.invalidJumpArgument, (int) Math.ceil((minJumpStrength / maxJumpStrength) * 100), 100);
+		}
+		return false;
+	}
+	
+	protected boolean isStatLlamaStrengthValid(int llamaStrenth) {
+		int minLlamaStrength = (int) HorseStatisticEnum.MIN_LLAMA_STRENGTH.getValue(useVanillaStats);
+		int maxLlamaStrength = (int) HorseStatisticEnum.MAX_LLAMA_STRENGTH.getValue(useVanillaStats);
+		if ((llamaStrenth >= minLlamaStrength && llamaStrenth <= maxLlamaStrength) || adminMode) {
+			return true;
+		}
+		else if (displayConsole) {
+			zh.getMM().sendMessageAmountMax(s, LocaleEnum.invalidStrengthArgument, minLlamaStrength, maxLlamaStrength);
 		}
 		return false;
 	}

@@ -7,12 +7,11 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.ChestedHorse;
-import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Llama;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.enums.HorseStatisticEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
-import eu.reborn_minecraft.zhorse.managers.HorseManager;
 
 public class CommandInfo extends AbstractCommand {
 	
@@ -63,8 +62,8 @@ public class CommandInfo extends AbstractCommand {
 			displayHorseID();
 			displayNames();
 			displayHealth();
-			displayJumpStrength();
 			displaySpeed();
+			displayJumpStrength();
 			displayChestSize();
 			displayLocation();
 			displayStatus();
@@ -93,27 +92,28 @@ public class CommandInfo extends AbstractCommand {
 	}
 	
 	private void displayHealth() {
-		Damageable d = horse;
-		int health = (int) d.getHealth();
-		int maxHealth = (int) d.getMaxHealth();
+		int health = (int) horse.getHealth();
+		int maxHealth = (int) horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
 		zh.getMM().sendMessageAmountMaxSpacer(s, LocaleEnum.health, health, maxHealth, 1, true);
-	}
-	
-	private void displayJumpStrength() {
-		double jumpStrength = horse.getJumpStrength();
-		int jumpRatio = (int) ((jumpStrength / HorseManager.MAX_JUMP_STRENGTH) * 100);
-		zh.getMM().sendMessageAmountSpacer(s, LocaleEnum.jump, jumpRatio, 1, true);
 	}
 	
 	private void displaySpeed() {
 		double speed = horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
-		int speedRatio = (int) ((speed / HorseManager.MAX_SPEED) * 100);
+		double maxSpeed = HorseStatisticEnum.MAX_SPEED.getValue(useVanillaStats);
+		int speedRatio = (int) ((speed / maxSpeed) * 100);
 		zh.getMM().sendMessageAmountSpacer(s, LocaleEnum.speed, speedRatio, 1, true);
+	}
+	
+	private void displayJumpStrength() {
+		double jumpStrength = horse.getJumpStrength();
+		double maxJumpStrength = HorseStatisticEnum.MAX_JUMP_STRENGTH.getValue(useVanillaStats);
+		int jumpRatio = (int) ((jumpStrength / maxJumpStrength) * 100);
+		zh.getMM().sendMessageAmountSpacer(s, LocaleEnum.jump, jumpRatio, 1, true);
 	}
 	
 	private void displayChestSize() {
 		if (horse instanceof ChestedHorse && ((ChestedHorse) horse).isCarryingChest()) {
-			int strength = horse instanceof Llama ? ((Llama) horse).getStrength() : HorseManager.MAX_LLAMA_STRENGTH;
+			int strength = horse instanceof Llama ? ((Llama) horse).getStrength() : (int) HorseStatisticEnum.MAX_LLAMA_STRENGTH.getValue(useVanillaStats);
 			int chestSize = strength * CHEST_SIZE_MULTIPLICATOR;
 			zh.getMM().sendMessageAmountSpacer(s, LocaleEnum.strength, chestSize, 1, true);
 		}

@@ -58,6 +58,7 @@ public enum KeyWordEnum {
 	typeSuffix(".type"),
 	useOldTeleportMethod("use-old-teleport-method"),
 	userSuffix(".user"),
+	useVanillaStats("use-vanilla-stats"),
 	worldsPrefix("Worlds."),
 	
 	/* locale.yml keywords */

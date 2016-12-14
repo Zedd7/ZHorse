@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -20,24 +22,14 @@ import org.bukkit.entity.Horse;
 import org.bukkit.entity.LeashHitch;
 import org.bukkit.entity.Llama;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.utils.DelayedChunckLoad;
 
 public class HorseManager {
-	
-	public static final double MIN_HEALTH = 1.0;
-	public static final double MIN_JUMP_STRENGTH = 0.0;
-	public static final double MIN_SPEED = 0.0;
-	public static final int MIN_LLAMA_STRENGTH = 1;
-	
-	public static final double MAX_HEALTH = 30.0;
-	public static final double MAX_JUMP_STRENGTH = 1.2;
-	public static final double MAX_SPEED = 1.0;
-	public static final int MAX_LLAMA_STRENGTH = 5;
-	
-	//private static final int TICKS_PER_SECOND = 20;
-	
+		
 	private ZHorse zh;
 	private Map<UUID, AbstractHorse> loadedHorses = new HashMap<>();
 	
@@ -81,7 +73,7 @@ public class HorseManager {
 		List<Chunk> chunkList = new ArrayList<Chunk>();
 		for (int x = NWCorner.getBlockX(); x <= SECorner.getBlockX(); x += 16) {
 			for (int z = NWCorner.getBlockZ(); z <= SECorner.getBlockZ(); z += 16) {
-				// WARN : w.getChunkAt(x, z) uses chunk coordinates (loc % 16)
+				// w.getChunkAt(x, z) uses chunk coordinates (loc % 16)
 				chunkList.add(world.getChunkAt(new Location(world, x, 0, z)));
 			}
 		}
@@ -168,7 +160,8 @@ public class HorseManager {
 	private void copyAttributes(AbstractHorse sourceHorse, AbstractHorse copyHorse) {	
 		// Define maximum of value before actual value to keep it in valid range
 		copyHorse.setMaxDomestication(sourceHorse.getMaxDomestication());
-		copyHorse.setMaxHealth(sourceHorse.getMaxHealth());
+		double maxHealth = sourceHorse.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
+		copyHorse.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
 		copyHorse.setMaximumAir(sourceHorse.getMaximumAir());
 		copyHorse.setMaximumNoDamageTicks(sourceHorse.getMaximumNoDamageTicks());
 		
@@ -193,7 +186,6 @@ public class HorseManager {
 		copyHorse.setRemoveWhenFarAway(sourceHorse.getRemoveWhenFarAway());
 		copyHorse.setTamed(sourceHorse.isTamed());
 		copyHorse.setTicksLived(sourceHorse.getTicksLived());
-		
 		double speed = sourceHorse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
 		copyHorse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(speed);
 		
@@ -229,38 +221,38 @@ public class HorseManager {
 		}
 	}
 	
-	private void removeHorse(AbstractHorse horse) {
-		//World world = horse.getWorld();
-		//int invisibilityDuration = 3;
-		//horse.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, invisibilityDuration * TICKS_PER_SECOND, 0));
-		//horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0);
-		horse.getInventory().clear(); // just in case duplicates are still a thing on some servers
-		//horse.setAI(false);
+	private void removeHorse(AbstractHorse horse) {		
+		Location horseLocation = horse.getLocation();
+		UUID horseUUID = horse.getUniqueId();
+		String horseName = zh.getDM().getHorseName(horseUUID);
+		String ownerName = zh.getDM().getOwnerName(horseUUID);
+		int waitTime = 60; // ticks
+		horse.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, waitTime, 0));
+		horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0);
+		horse.setAI(false);
 		
-		//UUID horseUUID = horse.getUniqueId();
-		//Location horseLocation = horse.getLocation();
 		horse.remove();
-		/*
-		new Thread() {
+		
+		Bukkit.getScheduler().scheduleSyncDelayedTask(zh, new Runnable() {
+			
+			@Override
 			public void run() {
-				try {
-					sleep(invisibilityDuration * 1000);
-					List<Chunk> neighboringChunks = getChunksInRegion(horseLocation, 1);
-					AbstractHorse duplicatedHorse = getHorseInRegion(horseUUID, neighboringChunks);
-					if (duplicatedHorse != null) {
-						Location location = duplicatedHorse.getLocation();
-						int x = location.getBlockX();
-						int y = location.getBlockY();
-						int z = location.getBlockZ();
-						String warning = String.format("A horse was duplicated at location %s:%s:%s in world %s, killing it.", x, y, z, world.getName());
-						zh.getServer().broadcast(ChatColor.RED + warning, "zh.admin");
-						zh.getLogger().severe(warning);
-						duplicatedHorse.setHealth(0);
-					}
-				} catch (Exception e) {}
+				List<Chunk> neighboringChunks = getChunksInRegion(horseLocation, 1);
+				AbstractHorse duplicatedHorse = getHorseInRegion(horseUUID, neighboringChunks);
+				if (duplicatedHorse != null) {
+					Location location = duplicatedHorse.getLocation();
+					int x = location.getBlockX();
+					int y = location.getBlockY();
+					int z = location.getBlockZ();
+					String warning = String.format("A horse named %s and owned by %s was duplicated at location %d:%d:%d in world %s, killing it.",
+						horseName, ownerName, x, y, z, horseLocation.getWorld().getName());
+					zh.getServer().broadcast(ChatColor.RED + warning, "zh.admin");
+					zh.getLogger().severe(warning);
+					duplicatedHorse.setHealth(0);
+				}
 			}
-		}.start();
-		*/
+			
+		}, waitTime);
 	}
 
 }

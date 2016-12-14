@@ -11,9 +11,9 @@ import org.bukkit.entity.Horse;
 import org.bukkit.entity.Llama;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.enums.HorseStatisticEnum;
 import eu.reborn_minecraft.zhorse.enums.HorseVariantEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
-import eu.reborn_minecraft.zhorse.managers.HorseManager;
 
 public class CommandSpawn extends AbstractCommand {
 	
@@ -214,35 +214,26 @@ public class CommandSpawn extends AbstractCommand {
 				Double[] doubles = buildDoubles(argument);
 				if (doubles != null) {
 					Double healthDouble = doubles[0];
-					Double speedDouble = doubles[1];
-					Double jumpDouble = doubles[2];
 					if (healthDouble != null) {
-						if (healthDouble >= HorseManager.MIN_HEALTH && healthDouble <= HorseManager.MAX_HEALTH) {
+						valid &= isStatHealthValid(healthDouble);
+						if (valid) {
 							health = healthDouble;
 						}
-						else if (displayConsole) {
-							valid = false;
-							zh.getMM().sendMessageAmountMax(s, LocaleEnum.invalidHealthArgument, (int) HorseManager.MIN_HEALTH, (int) HorseManager.MAX_HEALTH);
-						}
 					}
+					Double speedDouble = doubles[1];
 					if (speedDouble != null) {
-						speedDouble *= HorseManager.MAX_SPEED / 100;
-						if (speedDouble >= HorseManager.MIN_SPEED && speedDouble <= HorseManager.MAX_SPEED) {
-							speed = speedDouble;
-						}
-						else if (displayConsole) {
-							valid = false;
-							zh.getMM().sendMessageAmountMax(s, LocaleEnum.invalidSpeedArgument, (int) HorseManager.MIN_SPEED * 100, (int) HorseManager.MAX_SPEED * 100);
+						valid &= isStatSpeedValid(speedDouble);
+						if (valid) {
+							double maxSpeed = HorseStatisticEnum.MAX_SPEED.getValue(useVanillaStats);
+							speed = (speedDouble * maxSpeed) / 100;
 						}
 					}
+					Double jumpDouble = doubles[2];
 					if (jumpDouble != null) {
-						jumpDouble *= HorseManager.MAX_JUMP_STRENGTH / 100;
-						if (jumpDouble >= HorseManager.MIN_JUMP_STRENGTH && jumpDouble <= HorseManager.MAX_JUMP_STRENGTH) {
-							jumpStrength = jumpDouble;
-						}
-						else if (displayConsole) {
-							valid = false;
-							zh.getMM().sendMessageAmountMax(s, LocaleEnum.invalidJumpArgument, (int) HorseManager.MIN_JUMP_STRENGTH * 100, (int) HorseManager.MAX_JUMP_STRENGTH * 100);
+						valid &= isStatJumpStrengthValid(jumpDouble);
+						if (valid) {
+							double maxJumpStrength = HorseStatisticEnum.MAX_JUMP_STRENGTH.getValue(useVanillaStats);
+							jumpStrength = (jumpDouble * maxJumpStrength) / 100;
 						}
 					}
 					return true;
@@ -291,12 +282,11 @@ public class CommandSpawn extends AbstractCommand {
 			} catch (NumberFormatException e) {
 				return false;
 			}
-			if (llamaStrengthInt >= HorseManager.MIN_LLAMA_STRENGTH && llamaStrengthInt <= HorseManager.MAX_LLAMA_STRENGTH) {
+			if (isStatLlamaStrengthValid(llamaStrengthInt)) {
 				llamaStrength = llamaStrengthInt;
 			}
-			else if (displayConsole) {
+			else {
 				valid = false;
-				zh.getMM().sendMessageAmountMax(s, LocaleEnum.invalidStrengthArgument, HorseManager.MIN_LLAMA_STRENGTH, HorseManager.MAX_LLAMA_STRENGTH);
 			}
 		}
 		return true;
@@ -314,7 +304,7 @@ public class CommandSpawn extends AbstractCommand {
 		
 		horse.setOwner(p);
 		horse.setRemoveWhenFarAway(false);
-		horse.setMaxHealth(health);
+		horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(health);
 		horse.setHealth(health);
 		if (baby) {
 			horse.setBaby();

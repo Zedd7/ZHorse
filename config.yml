@@ -1,4 +1,4 @@
-Version: 1.6.2
+Version: 1.6.3
 
 Commands:
 
@@ -282,6 +282,10 @@ Settings:
   # This is only recommended for servers using plugins that are
   # incompatible with the new 1.5+ teleportation method.
   use-old-teleport-method: false
+  
+  # Set to false to use Bukkit thresholds for horse stats.
+  # Does not affect horse stats, only /zh spawn and /zh info.
+  use-vanilla-stats: true
 
 Worlds:
 

@@ -1,8 +1,8 @@
 package eu.reborn_minecraft.zhorse.commands;
 
+import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AbstractHorse;
-import org.bukkit.entity.Damageable;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
@@ -50,8 +50,7 @@ public class CommandHeal extends AbstractCommand {
 
 	private void execute() {
 		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
-			Damageable dm = horse;
-			dm.setHealth(dm.getMaxHealth());
+			horse.setHealth(horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
 			if (displayConsole) {
 				zh.getMM().sendMessageHorse(s, LocaleEnum.horseHealed, horseName);
 			}

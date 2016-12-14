@@ -48,13 +48,7 @@ import eu.reborn_minecraft.zhorse.utils.DelayedChunckUnload;
 import eu.reborn_minecraft.zhorse.utils.DelayedPlayerJoin;
 
 public class EventManager implements Listener {
-	
-	/*private static final int NONE = -1;
-	private static final int MAIN_HAND = 0;
-	private static final int OFF_HAND = 1;*/
-	private static final String OWNER_ATTACK = "OWNER_ATTACK";
-	private static final String PLAYER_ATTACK = "PLAYER_ATTACK";
-	
+		
 	private ZHorse zh;
 	private boolean displayConsole;
 
@@ -346,9 +340,9 @@ public class EventManager implements Listener {
 	}
 	
 	private boolean isPlayerAllowedToAttack(Player p, AbstractHorse horse) {
-		if (zh.getCM().isProtectionEnabled(PLAYER_ATTACK)) {
+		if (zh.getCM().isProtectionEnabled(CustomAttackType.PLAYER.getCode())) {
 			boolean isOwner = zh.getDM().isHorseOwnedBy(p.getUniqueId(), horse.getUniqueId());
-			boolean isOwnerAttackBlocked = zh.getCM().isProtectionEnabled(OWNER_ATTACK);
+			boolean isOwnerAttackBlocked = zh.getCM().isProtectionEnabled(CustomAttackType.OWNER.getCode());
 			boolean isFriend = zh.getDM().isFriendOfOwner(p.getUniqueId(), horse.getUniqueId());
 			boolean hasAdminPerm = zh.getPM().has(p, KeyWordEnum.zhPrefix.getValue() + CommandEnum.PROTECT.getName() + KeyWordEnum.adminSuffix.getValue());
 			if ((!(isOwner || isFriend) || isOwnerAttackBlocked) && !hasAdminPerm) {
@@ -403,6 +397,23 @@ public class EventManager implements Listener {
 		MAIN,
 		OFF,
 		NONE;
+		
+	}
+	
+	private enum CustomAttackType {
+		
+		OWNER("OWNER_ATTACK"),
+		PLAYER("PLAYER_ATTACK");
+	
+		String code;
+	
+		private CustomAttackType(String code) {
+			this.code = code;
+		}
+		
+		public String getCode() {
+			return code;
+		}
 		
 	}
 }

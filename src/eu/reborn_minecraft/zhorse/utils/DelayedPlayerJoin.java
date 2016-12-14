@@ -9,11 +9,11 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 public class DelayedPlayerJoin {
 	
 	public DelayedPlayerJoin(ZHorse zh, PlayerJoinEvent e) {
-		final Player p = e.getPlayer();
 		Bukkit.getScheduler().scheduleSyncDelayedTask(zh, new Runnable() {
 			
 			@Override
 			public void run() {
+				Player p = e.getPlayer();
 				if (!zh.getDM().isPlayerRegistered(p.getUniqueId())) {
 					zh.getDM().registerPlayer(p.getUniqueId(), p.getName(), zh.getCM().getDefaultLanguage(), zh.getDM().getDefaultFavoriteHorseID());
 				}
@@ -23,6 +23,7 @@ public class DelayedPlayerJoin {
 					}
 				}				
 			}
+			
 		});
 	}
 }

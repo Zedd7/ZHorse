@@ -23,7 +23,7 @@ import eu.reborn_minecraft.zhorse.utils.Utf8YamlConfiguration;
 public class ConfigManager {
 	
 	private static final String CONFIG_PATH = "config.yml";
-	private static final int HORSE_NAME_LENGTH_LIMIT = 36; // limited by db
+	private static final int HORSE_NAME_LENGTH_LIMIT = 36; // Limited by DB
 	
 	private ZHorse zh;
 	private FileConfiguration config;
@@ -291,6 +291,10 @@ public class ConfigManager {
 	
 	public boolean shouldUseOldTeleportMethod() {
 		return config.getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.useOldTeleportMethod.getValue(), false);
+	}
+	
+	public boolean shouldUseVanillaStats() {
+		return config.getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.useVanillaStats.getValue(), true);
 	}
 	
 	public boolean checkConformity() {
@@ -566,6 +570,10 @@ public class ConfigManager {
 		}
 		if (!config.isSet("Settings.use-old-teleport-method")) {
 			zh.getLogger().severe("The \"Settings.use-old-teleport-method\" option is missing from the config !");
+			conform = false;
+		}
+		if (!config.isSet("Settings.use-vanilla-stats")) {
+			zh.getLogger().severe("The \"Settings.use-vanilla-stats\" option is missing from the config !");
 			conform = false;
 		}
 		boolean lockOnClaim = config.getBoolean("Settings.lock-on-claim");

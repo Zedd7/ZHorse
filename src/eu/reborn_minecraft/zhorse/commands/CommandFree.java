@@ -32,7 +32,7 @@ public class CommandFree extends AbstractCommand {
 								execute();
 							}
 							else {
-								zh.getDM().removeHorse(horse.getUniqueId(), targetUUID, Integer.parseInt(horseID));
+								zh.getDM().removeHorse(targetUUID, Integer.parseInt(horseID));
 								if (samePlayer) {
 									zh.getMM().sendMessageHorse(s, LocaleEnum.horseCleared, horseName);
 								}
