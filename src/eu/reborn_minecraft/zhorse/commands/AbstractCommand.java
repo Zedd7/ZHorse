@@ -1,5 +1,6 @@
 package eu.reborn_minecraft.zhorse.commands;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Location;
@@ -434,8 +435,8 @@ public abstract class AbstractCommand {
 	
 	protected boolean isHorseMounted() {
 		boolean blockMountedTeleport = zh.getCM().shouldBlockMountedTeleport();
-		Entity passenger = horse.getPassenger();
-		if (passenger == null) {
+		List<Entity> passengerList = horse.getPassengers();
+		if (passengerList.isEmpty()) {
 			return false;
 		}
 		else if (!blockMountedTeleport || adminMode) {
@@ -443,7 +444,8 @@ public abstract class AbstractCommand {
 			return false;
 		}		
 		else if (displayConsole) {
-			String passengerName = ((Player) passenger).getName();
+			Entity mainPassenger = passengerList.get(0);
+			String passengerName = mainPassenger instanceof Player ? ((Player) mainPassenger).getName() : "creature";
 			zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.horseMountedBy, horseName, passengerName);
 		}
 		return true;

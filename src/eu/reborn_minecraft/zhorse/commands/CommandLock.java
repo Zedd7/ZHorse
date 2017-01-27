@@ -1,8 +1,8 @@
 package eu.reborn_minecraft.zhorse.commands;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.AbstractHorse;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
@@ -58,15 +58,16 @@ public class CommandLock extends AbstractCommand {
 						zh.getMM().sendMessageHorse(s, LocaleEnum.horseUnShared, horseName);
 					}
 				}
-				Entity passenger = horse.getPassenger();
-				if (passenger != null && passenger instanceof Player) {
-					adminMode = false;
-					boolean passengerIsOwner = isOwner(passenger.getUniqueId(), true);
-					boolean passengerHasPerm = hasPermissionAdmin(passenger.getUniqueId(), command, true);
-					if (!(passengerIsOwner || passengerHasPerm)) {
-						horse.eject();
-						String ownerName = zh.getDM().getOwnerName(horse.getUniqueId());
-						zh.getMM().sendMessagePlayer((CommandSender) passenger, LocaleEnum.horseBelongsTo, ownerName);
+				for (Entity passenger : horse.getPassengers()) {
+					if (passenger instanceof Player) {
+						adminMode = false;
+						boolean passengerIsOwner = isOwner(passenger.getUniqueId(), true);
+						boolean passengerHasPerm = hasPermissionAdmin(passenger.getUniqueId(), command, true);
+						if (!passengerIsOwner && !passengerHasPerm) {
+							horse.eject();
+							String ownerName = zh.getDM().getOwnerName(horse.getUniqueId());
+							zh.getMM().sendMessagePlayer((CommandSender) passenger, LocaleEnum.horseBelongsTo, ownerName);
+						}
 					}
 				}
 				zh.getDM().updateHorseLocked(horse.getUniqueId(), true);
