@@ -80,6 +80,7 @@ Databases:
     user: ZHorse
     password: ''
     database: zhorse
+    table-prefix: ''
 
   # Configuration section for SQLite. You can remove it if SQLite is disabled.
   sqlite-config:

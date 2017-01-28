@@ -41,6 +41,10 @@ public class ZHorse extends JavaPlugin {
 		dataManager.closeDatabase();
     }
 	
+	public void disable() {
+		getServer().getPluginManager().disablePlugin(this);
+	}
+	
 	private void initDependencies() {
 		Plugin vault = getServer().getPluginManager().getPlugin("Vault");
 		if (vault != null && !vault.isEnabled()) {
@@ -48,7 +52,7 @@ public class ZHorse extends JavaPlugin {
 		}
 		else if (vault == null) {
 			getLogger().severe(String.format("Vault is missing ! Disabling %s...", getDescription().getName()));
-			getServer().getPluginManager().disablePlugin(this);
+			disable();
 		}
 	}
     

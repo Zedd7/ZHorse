@@ -147,14 +147,20 @@ public class EventManager implements Listener {
 		}
 	}
 	
+	/* CHANGES :
+	 * - Fixed teleportation events (tp, portal) not using the old teleportation method if requested in config
+	 * - Changed portal event to use world crossability instead of enable in order to allow teleportation
+	 */
+	
 	@EventHandler
 	public void onEntityPortal(EntityPortalEvent e) {
 		if (e.getEntity() instanceof AbstractHorse) {
 			AbstractHorse horse = (AbstractHorse) e.getEntity();
 			if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
 				e.setCancelled(true);
-				if (zh.getCM().isWorldEnabled(e.getTo().getWorld())) {
-					zh.getHM().teleport(horse, e.getTo());
+				Location destination = e.getTo();
+				if (zh.getCM().isWorldCrossable(destination.getWorld())) {
+					zh.getHM().teleport(horse, destination);
 				}
 			}
 		}

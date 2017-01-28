@@ -17,6 +17,7 @@ public class DataManager {
 	
 	private static final String TABLE_SCRIPTS_PATH = "res\\sql\\%s-table.sql";
 	private static final String[] TABLE_ARRAY = {"player", "horse", "friend"};
+	private static final String PREFIX_CODE = "<prefix>";
 	
 	private ZHorse zh;
 	private SQLDatabaseConnector db;
@@ -39,7 +40,7 @@ public class DataManager {
 			String databaseType = database != null ? database.getName() : "Unknown database";
 			zh.getLogger().severe(String.format("The database %s is not supported !", databaseType));
 		}
-		connected = db != null && updateTables();
+		connected = db != null && db.isConnected() && updateTables();
 	}
 	
 	public void closeDatabase() {
@@ -52,10 +53,12 @@ public class DataManager {
 		boolean success = true;
 		String update = "";
 		String scriptsPath = TABLE_SCRIPTS_PATH.replace('\\', '/'); // Dark Magic Industries
+		String tablePrefix = db.getTablePrefix();
 		for (String table : TABLE_ARRAY) {
 			try {
 				String scriptPath = String.format(scriptsPath, table);
 				update = IOUtils.toString(zh.getResource(scriptPath), "utf-8");
+				update = update.replaceAll(PREFIX_CODE, tablePrefix);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

@@ -54,6 +54,7 @@ public enum KeyWordEnum {
 	settingsPrefix("Settings."),
 	shareOnClaim("share-on-claim"),
 	sqliteConfig("sqlite-config"),
+	tablePrefixSuffix(".table-prefix"),
 	tpMaxRange("tp-max-range"),
 	typeSuffix(".type"),
 	useOldTeleportMethod("use-old-teleport-method"),

@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS horse
+CREATE TABLE IF NOT EXISTS <prefix>horse
 (
 	uuid VARCHAR(36) NOT NULL,
 	owner VARCHAR(36) NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS horse
 	PRIMARY KEY (uuid),
 	CONSTRAINT fk_horse_player
 		FOREIGN KEY (owner)
-		REFERENCES player (uuid)
+		REFERENCES <prefix>player (uuid)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION
 );

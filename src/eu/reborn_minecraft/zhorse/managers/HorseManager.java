@@ -143,18 +143,25 @@ public class HorseManager {
 	}
 	
 	public AbstractHorse teleport(AbstractHorse sourceHorse, Location destination) {
-		AbstractHorse copyHorse = (AbstractHorse) destination.getWorld().spawnEntity(destination, sourceHorse.getType());
-		if (copyHorse != null) {
-			zh.getDM().updateHorseUUID(sourceHorse.getUniqueId(), copyHorse.getUniqueId());
-			zh.getDM().updateHorseLocation(copyHorse.getUniqueId(), copyHorse.getLocation(), true);
-			copyAttributes(sourceHorse, copyHorse);
-			copyInventory(sourceHorse, copyHorse);
-			removeLeash(sourceHorse);
-			unloadHorse(sourceHorse);
-			loadHorse(copyHorse);
-			removeHorse(sourceHorse);
+		if (zh.getCM().shouldUseOldTeleportMethod()) {
+			sourceHorse.teleport(destination);
+			zh.getDM().updateHorseLocation(sourceHorse.getUniqueId(), sourceHorse.getLocation(), false);
 		}
-		return copyHorse;
+		else {
+			AbstractHorse copyHorse = (AbstractHorse) destination.getWorld().spawnEntity(destination, sourceHorse.getType());
+			if (copyHorse != null) {
+				zh.getDM().updateHorseUUID(sourceHorse.getUniqueId(), copyHorse.getUniqueId());
+				zh.getDM().updateHorseLocation(copyHorse.getUniqueId(), copyHorse.getLocation(), true);
+				copyAttributes(sourceHorse, copyHorse);
+				copyInventory(sourceHorse, copyHorse);
+				removeLeash(sourceHorse);
+				unloadHorse(sourceHorse);
+				loadHorse(copyHorse);
+				removeHorse(sourceHorse);
+				return copyHorse;
+			}
+		}
+		return null;
 	}
 
 	private void copyAttributes(AbstractHorse sourceHorse, AbstractHorse copyHorse) {	

@@ -64,7 +64,7 @@ public class CommandLock extends AbstractCommand {
 						boolean passengerIsOwner = isOwner(passenger.getUniqueId(), true);
 						boolean passengerHasPerm = hasPermissionAdmin(passenger.getUniqueId(), command, true);
 						if (!passengerIsOwner && !passengerHasPerm) {
-							horse.eject();
+							horse.removePassenger(passenger);
 							String ownerName = zh.getDM().getOwnerName(horse.getUniqueId());
 							zh.getMM().sendMessagePlayer((CommandSender) passenger, LocaleEnum.horseBelongsTo, ownerName);
 						}

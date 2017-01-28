@@ -89,6 +89,10 @@ public class ConfigManager {
 		return config.getInt(KeyWordEnum.databasesPrefix.getValue() + KeyWordEnum.mysqlConfig.getValue() + KeyWordEnum.portSuffix.getValue());
 	}
 	
+	public String getDatabaseTablePrefix() {
+		return config.getString(KeyWordEnum.databasesPrefix.getValue() + KeyWordEnum.mysqlConfig.getValue() + KeyWordEnum.tablePrefixSuffix.getValue());
+	}
+	
 	public DatabaseEnum getDatabaseType() {
 		String databaseType = config.getString(KeyWordEnum.databasesPrefix.getValue() + KeyWordEnum.typeSuffix.getValue());
 		if (databaseType.equalsIgnoreCase(DatabaseEnum.MYSQL.getName())) {
@@ -375,6 +379,10 @@ public class ConfigManager {
 				}
 				if (!config.isSet("Databases.mysql-config.database")) {
 					zh.getLogger().severe("The \"Databases.mysql-config.database\" option is missing from the config !");
+					conform = false;
+				}
+				if (!config.isSet("Databases.mysql-config.table-prefix")) {
+					zh.getLogger().severe("The \"Databases.mysql-config.table-prefix\" option is missing from the config !");
 					conform = false;
 				}
 	        }

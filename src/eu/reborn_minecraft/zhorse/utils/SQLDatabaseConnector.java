@@ -15,9 +15,18 @@ public class SQLDatabaseConnector {
 	
 	protected ZHorse zh;
 	protected Connection connection;
+	protected boolean connected;
 	
 	public SQLDatabaseConnector(ZHorse zh) {
 		this.zh = zh;
+	}
+	
+	public boolean isConnected() {
+		return connected;
+	}
+	
+	public String getTablePrefix() {
+		return "";
 	}
 	
 	public void closeConnection() {									

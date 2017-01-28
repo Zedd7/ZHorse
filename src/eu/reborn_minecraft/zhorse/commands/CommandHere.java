@@ -47,13 +47,7 @@ public class CommandHere extends AbstractCommand {
 				Block block = destination.getWorld().getHighestBlockAt(destination);
 				destination = new Location(destination.getWorld(), block.getX(), block.getY(), block.getZ());
 			}
-			if (zh.getCM().shouldUseOldTeleportMethod()) {
-				horse.teleport(destination);
-				zh.getDM().updateHorseLocation(horse.getUniqueId(), horse.getLocation(), false);
-			}
-			else {
-				horse = zh.getHM().teleport(horse, destination);
-			}
+			horse = zh.getHM().teleport(horse, destination);
 			if (horse != null) {
 				if (displayConsole) {
 					zh.getMM().sendMessageHorse(s, LocaleEnum.horseTeleported, horseName);

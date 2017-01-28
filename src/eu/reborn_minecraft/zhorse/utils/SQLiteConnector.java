@@ -30,8 +30,10 @@ public class SQLiteConnector extends SQLDatabaseConnector {
 		try {
 			Class.forName(JDBC_DRIVER);
 			connection = DriverManager.getConnection(url);
+			connected = true;
 		} catch (Exception e) {
 			zh.getLogger().severe(String.format("Failed to open connection with %s !", url));
+			connected = false;
 		}
 	}
 	
