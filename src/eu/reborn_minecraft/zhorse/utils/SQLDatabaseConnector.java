@@ -13,9 +13,12 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 
 public class SQLDatabaseConnector {
 	
+	protected static final String PREFIX_CODE = "prefix_";
+	
 	protected ZHorse zh;
 	protected Connection connection;
 	protected boolean connected;
+	protected String tablePrefix = "";
 	
 	public SQLDatabaseConnector(ZHorse zh) {
 		this.zh = zh;
@@ -25,8 +28,13 @@ public class SQLDatabaseConnector {
 		return connected;
 	}
 	
-	public String getTablePrefix() {
-		return "";
+	public String applyTablePrefix(String str) {
+		if (!tablePrefix.isEmpty()) {
+			return str.replaceAll(PREFIX_CODE, tablePrefix + "_");
+		}
+		else {
+			return str.replaceAll(PREFIX_CODE, "");
+		}
 	}
 	
 	public void closeConnection() {									
@@ -41,6 +49,7 @@ public class SQLDatabaseConnector {
 	}
 	
 	public boolean executeUpdate(String update) {
+		update = applyTablePrefix(update);
 		boolean result = false;
 		try (Statement statement = connection.createStatement()) {
 			statement.executeUpdate(update);
@@ -52,6 +61,7 @@ public class SQLDatabaseConnector {
 	}
 	
 	public Boolean getBooleanResult(String query) {
+		query = applyTablePrefix(query);
 		try (Statement statement = connection.createStatement()) {
 			ResultSet resultSet = statement.executeQuery(query);
 			if (resultSet.next()) {
@@ -64,6 +74,7 @@ public class SQLDatabaseConnector {
 	}
 	
 	public Integer getIntegerResult(String query) {
+		query = applyTablePrefix(query);
 		try (Statement statement = connection.createStatement()) {
 			ResultSet resultSet = statement.executeQuery(query);
 			if (resultSet.next()) {
@@ -76,6 +87,7 @@ public class SQLDatabaseConnector {
 	}
 	
 	public Location getLocationResult(String query) {
+		query = applyTablePrefix(query);
 		try (Statement statement = connection.createStatement()) {
 			ResultSet resultSet = statement.executeQuery(query);
 			if (resultSet.next()) {
@@ -93,6 +105,7 @@ public class SQLDatabaseConnector {
 	}
 	
 	public String getStringResult(String query) {
+		query = applyTablePrefix(query);
 		try (Statement statement = connection.createStatement()) {
 			ResultSet resultSet = statement.executeQuery(query);
 			if (resultSet.next()) {
@@ -105,6 +118,7 @@ public class SQLDatabaseConnector {
 	}
 	
 	public List<String> getStringResultList(String query) {
+		query = applyTablePrefix(query);
 		List<String> resultList = new ArrayList<String>();
 		try (Statement statement = connection.createStatement()) {
 			ResultSet resultSet = statement.executeQuery(query);
@@ -118,6 +132,7 @@ public class SQLDatabaseConnector {
 	}
 	
 	public boolean hasResult(String query) {
+		query = applyTablePrefix(query);
 		try (Statement statement = connection.createStatement()) {
 			ResultSet resultSet = statement.executeQuery(query);
 			return resultSet.next();

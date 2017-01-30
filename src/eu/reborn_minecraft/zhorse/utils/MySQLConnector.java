@@ -8,8 +8,6 @@ public class MySQLConnector extends SQLDatabaseConnector {
 
 	private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 	private static final String JDBC_URL = "jdbc:mysql://%s:%d/%s?verifyServerCertificate=false&useSSL=true";
-	
-	private String tablePrefix;
 
 	public MySQLConnector(ZHorse zh) {
 		super(zh);
@@ -39,11 +37,6 @@ public class MySQLConnector extends SQLDatabaseConnector {
 			zh.getLogger().severe("Verify that the database is created and that the user has access with given password.");
 			connected = false;
 		}
-	}
-	
-	@Override
-	public String getTablePrefix() {
-		return tablePrefix.isEmpty() ? "" : tablePrefix + "_";
 	}
 	
 }

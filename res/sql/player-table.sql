@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS <prefix>player
+CREATE TABLE IF NOT EXISTS prefix_player
 (
 	uuid VARCHAR(36) NOT NULL,
 	name VARCHAR(16) NOT NULL,
