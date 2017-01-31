@@ -11,7 +11,9 @@ CREATE TABLE IF NOT EXISTS prefix_horse
 	locationX INT NOT NULL,
 	locationY INT NOT NULL,
 	locationZ INT NOT NULL,
+	
 	PRIMARY KEY (uuid),
+	
 	CONSTRAINT fk_horse_player
 		FOREIGN KEY (owner)
 		REFERENCES prefix_player (uuid)

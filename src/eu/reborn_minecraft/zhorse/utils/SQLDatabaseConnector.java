@@ -73,6 +73,41 @@ public class SQLDatabaseConnector {
 		return null;
 	}
 	
+	public HorseStats getHorseStats(String query) {
+		query = applyTablePrefix(query);
+		try (Statement statement = connection.createStatement()) {
+			ResultSet resultSet = statement.executeQuery(query);
+			if (resultSet.next()) {
+				HorseStats horseStats = new HorseStats(
+						resultSet.getString("uuid"),
+						resultSet.getInt("age"),
+						resultSet.getInt("canBreed") == 1,
+						resultSet.getInt("canPickupItems") == 1,
+						resultSet.getString("color"),
+						resultSet.getInt("domestication"),
+						resultSet.getInt("fireTicks"),
+						resultSet.getDouble("health"),
+						resultSet.getInt("isCustomNameVisible") == 1,
+						resultSet.getInt("isGlowing") == 1,
+						resultSet.getInt("isTamed") == 1,
+						resultSet.getDouble("jumpStrength"),
+						resultSet.getDouble("maxHealth"),
+						resultSet.getInt("noDamageTicks"),
+						resultSet.getInt("remainingAir"),
+						resultSet.getDouble("speed"),
+						resultSet.getInt("strength"),
+						resultSet.getString("style"),
+						resultSet.getInt("ticksLived"),
+						resultSet.getString("type")
+				);
+				return horseStats;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public Integer getIntegerResult(String query) {
 		query = applyTablePrefix(query);
 		try (Statement statement = connection.createStatement()) {
@@ -91,10 +126,10 @@ public class SQLDatabaseConnector {
 		try (Statement statement = connection.createStatement()) {
 			ResultSet resultSet = statement.executeQuery(query);
 			if (resultSet.next()) {
-				String worldName = resultSet.getString(1);
-				int x = resultSet.getInt(2);
-				int y = resultSet.getInt(3);
-				int z = resultSet.getInt(4);
+				int x = resultSet.getInt("locationX");
+				int y = resultSet.getInt("locationY");
+				int z = resultSet.getInt("locationZ");
+				String worldName = resultSet.getString("locationWorld");
 				World world = zh.getServer().getWorld(worldName);
 				return new Location(world, x, y, z);
 			}

@@ -5,6 +5,7 @@ import org.bukkit.entity.AbstractHorse;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
+import eu.reborn_minecraft.zhorse.utils.HorseStats;
 
 public class CommandGive extends AbstractCommand {
 
@@ -56,6 +57,7 @@ public class CommandGive extends AbstractCommand {
 			boolean protect = zh.getDM().isHorseProtected(horse.getUniqueId());
 			boolean shared = zh.getDM().isHorseShared(horse.getUniqueId());
 			if (zh.getDM().registerHorse(horse.getUniqueId(), targetUUID, horseName, locked, protect, shared, horse.getLocation())) {
+				zh.getDM().registerHorseStats(new HorseStats(horse));
 				applyHorseName();
 				zh.getEM().payCommand(p, command);
 				if (displayConsole) {

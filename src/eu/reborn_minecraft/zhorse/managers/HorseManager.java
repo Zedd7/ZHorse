@@ -171,32 +171,22 @@ public class HorseManager {
 	}
 
 	private void copyAttributes(AbstractHorse sourceHorse, AbstractHorse copyHorse) {	
-		// Define maximum of value before actual value to keep it in valid range
-		copyHorse.setMaxDomestication(sourceHorse.getMaxDomestication());
-		double maxHealth = sourceHorse.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
-		copyHorse.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
-		copyHorse.setMaximumAir(sourceHorse.getMaximumAir());
-		copyHorse.setMaximumNoDamageTicks(sourceHorse.getMaximumNoDamageTicks());
-		
 		copyHorse.addPotionEffects(sourceHorse.getActivePotionEffects());
 		copyHorse.setAge(sourceHorse.getAge());
-		copyHorse.setAgeLock(sourceHorse.getAgeLock());
 		copyHorse.setBreed(sourceHorse.canBreed());
 		copyHorse.setCanPickupItems(sourceHorse.getCanPickupItems());
 		copyHorse.setCustomName(sourceHorse.getCustomName());
 		copyHorse.setCustomNameVisible(sourceHorse.isCustomNameVisible());
 		copyHorse.setDomestication(sourceHorse.getDomestication());
-		copyHorse.setFallDistance(sourceHorse.getFallDistance());
 		copyHorse.setFireTicks(sourceHorse.getFireTicks());
 		copyHorse.setGlowing(sourceHorse.isGlowing());
-		copyHorse.setHealth(sourceHorse.getHealth());
+		double maxHealth = sourceHorse.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
+		copyHorse.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
+		copyHorse.setHealth(sourceHorse.getHealth()); // Define max health before current health
 		copyHorse.setJumpStrength(sourceHorse.getJumpStrength());
-		copyHorse.setLastDamage(sourceHorse.getLastDamage());
-		copyHorse.setLastDamageCause(sourceHorse.getLastDamageCause());
 		copyHorse.setNoDamageTicks(sourceHorse.getNoDamageTicks());
 		copyHorse.setOwner(sourceHorse.getOwner());
 		copyHorse.setRemainingAir(sourceHorse.getRemainingAir());
-		copyHorse.setRemoveWhenFarAway(sourceHorse.getRemoveWhenFarAway());
 		copyHorse.setTamed(sourceHorse.isTamed());
 		copyHorse.setTicksLived(sourceHorse.getTicksLived());
 		double speed = sourceHorse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();

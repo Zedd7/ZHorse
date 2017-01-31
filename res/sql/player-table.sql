@@ -4,5 +4,6 @@ CREATE TABLE IF NOT EXISTS prefix_player
 	name VARCHAR(16) NOT NULL,
 	language VARCHAR(16) NOT NULL,
 	favorite INT NOT NULL,
+	
 	PRIMARY KEY (uuid)
 );

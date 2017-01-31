@@ -1,5 +1,7 @@
 package eu.reborn_minecraft.zhorse.commands;
 
+import java.util.UUID;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AbstractHorse;
 
@@ -90,7 +92,8 @@ public class CommandAdmin extends AbstractCommand {
 								horse.setCustomName(null);
 								horse.setCustomNameVisible(false);
 							}
-							if (!zh.getDM().removeHorse(targetUUID, horseID)) {
+							UUID horseUUID = zh.getDM().getHorseUUID(targetUUID, horseID);
+							if (!zh.getDM().removeHorse(horseUUID, targetUUID, horseID) || !zh.getDM().removeHorseStats(horseUUID)) {
 								success = false;
 							}
 						}
@@ -111,7 +114,8 @@ public class CommandAdmin extends AbstractCommand {
 						horse.setCustomName(null);
 						horse.setCustomNameVisible(false);
 					}
-					if (zh.getDM().removeHorse(targetUUID, Integer.parseInt(horseID))) {
+					UUID horseUUID = zh.getDM().getHorseUUID(targetUUID, Integer.parseInt(horseID));
+					if (zh.getDM().removeHorse(horseUUID, targetUUID, Integer.parseInt(horseID)) && zh.getDM().removeHorseStats(horseUUID)) {
 						if (samePlayer) {
 							zh.getMM().sendMessageHorse(s, LocaleEnum.horseCleared, horseName);
 						}

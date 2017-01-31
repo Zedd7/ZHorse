@@ -9,6 +9,7 @@ import org.bukkit.Location;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.DatabaseEnum;
+import eu.reborn_minecraft.zhorse.utils.HorseStats;
 import eu.reborn_minecraft.zhorse.utils.MySQLConnector;
 import eu.reborn_minecraft.zhorse.utils.SQLDatabaseConnector;
 import eu.reborn_minecraft.zhorse.utils.SQLiteConnector;
@@ -16,7 +17,7 @@ import eu.reborn_minecraft.zhorse.utils.SQLiteConnector;
 public class DataManager {
 	
 	private static final String TABLE_SCRIPTS_PATH = "res\\sql\\%s-table.sql";
-	private static final String[] TABLE_ARRAY = {"player", "horse", "friend"};
+	private static final String[] TABLE_ARRAY = {"player", "horse", "friend", "horse_stats"};
 	
 	private ZHorse zh;
 	private SQLDatabaseConnector db;
@@ -128,6 +129,11 @@ public class DataManager {
 	public List<String> getHorseNameList(UUID ownerUUID) {
 		String query = String.format("SELECT name FROM prefix_horse WHERE owner = \"%s\" ORDER BY id ASC", ownerUUID);
 		return db.getStringResultList(query);
+	}
+	
+	public HorseStats getHorseStats(UUID horseUUID) {
+		String query = String.format("SELECT * FROM prefix_horse_horse WHERE uuid = \"%s\"", horseUUID);
+		return db.getHorseStats(query);
 	}
 	
 	public UUID getHorseUUID(UUID ownerUUID, int horseID) {
@@ -270,6 +276,32 @@ public class DataManager {
 		return db.executeUpdate(update);
 	}
 	
+	public boolean registerHorseStats(HorseStats horseStats) {
+		String update = String.format("INSERT INTO prefix_horse_stats VALUES (\"%s\", %d, %d, %d, \"%s\", %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, \"%s\", %d, \"%s\")",
+				horseStats.getUUID(),
+				horseStats.getAge(),
+				horseStats.canBreed() ? 1 : 0,
+				horseStats.canPickupItems() ? 1 : 0,
+				horseStats.getColor(),
+				horseStats.getDomestication(),
+				horseStats.getFireTicks(),
+				horseStats.getHealth(),
+				horseStats.isCustomNameVisible() ? 1 : 0,
+				horseStats.isGlowing() ? 1 : 0,
+				horseStats.isTamed() ? 1 : 0,
+				horseStats.getJumpStrength(),
+				horseStats.getMaxHealth(),
+				horseStats.getNoDamageTicks(),
+				horseStats.getRemainingAir(),
+				horseStats.getSpeed(),
+				horseStats.getStrength(),
+				horseStats.getStyle(),
+				horseStats.getTicksLived(),
+				horseStats.getType()
+		);
+		return db.executeUpdate(update);
+	}
+	
 	public boolean registerPlayer(UUID playerUUID, String playerName, String language, int favorite) {
 		String update = String.format("INSERT INTO prefix_player VALUES (\"%s\", \"%s\", \"%s\", %d)", playerUUID, playerName, language, favorite);
 		return db.executeUpdate(update);
@@ -291,11 +323,6 @@ public class DataManager {
 		return removeHorse(horseUUID, ownerUUID, horseID);
 	}
 	
-	public boolean removeHorse(UUID ownerUUID, int horseID) {
-		UUID horseUUID = getHorseUUID(ownerUUID, horseID);
-		return removeHorse(horseUUID, ownerUUID, horseID);
-	}
-	
 	public boolean removeHorse(UUID horseUUID, UUID ownerUUID, int horseID) {
 		zh.getHM().unloadHorse(horseUUID);
 		int favorite = getPlayerFavoriteHorseID(ownerUUID);
@@ -308,6 +335,11 @@ public class DataManager {
 		String deleteUpdate = String.format("DELETE FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
 		String idUpdate = String.format("UPDATE prefix_horse SET id = id - 1 WHERE owner = \"%s\" AND id > %d", ownerUUID, horseID);
 		return db.executeUpdate(deleteUpdate) && db.executeUpdate(idUpdate);
+	}
+	
+	public boolean removeHorseStats(UUID horseUUID) {
+		String update = String.format("DELETE FROM prefix_horse_stats WHERE uuid = \"%s\"", horseUUID);
+		return db.executeUpdate(update);
 	}
 	
 	public boolean updateHorseLocation(UUID horseUUID, Location location, boolean checkForChanges) {

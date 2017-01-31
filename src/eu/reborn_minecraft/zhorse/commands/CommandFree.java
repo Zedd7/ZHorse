@@ -32,7 +32,9 @@ public class CommandFree extends AbstractCommand {
 								execute();
 							}
 							else {
-								zh.getDM().removeHorse(targetUUID, Integer.parseInt(horseID));
+								UUID horseUUID = zh.getDM().getHorseUUID(targetUUID, Integer.parseInt(horseID));
+								zh.getDM().removeHorse(horseUUID, targetUUID, Integer.parseInt(horseID));
+								zh.getDM().removeHorseStats(horseUUID);
 								if (samePlayer) {
 									zh.getMM().sendMessageHorse(s, LocaleEnum.horseCleared, horseName);
 								}
@@ -57,6 +59,7 @@ public class CommandFree extends AbstractCommand {
 					else {
 						UUID horseUUID = zh.getDM().getHorseUUID(targetUUID, Integer.parseInt(horseID));
 						zh.getDM().removeHorse(horseUUID, targetUUID, Integer.parseInt(horseID));
+						zh.getDM().removeHorseStats(horseUUID);
 						if (samePlayer) {
 							zh.getMM().sendMessageHorse(s, LocaleEnum.horseCleared, horseName);
 						}
@@ -73,6 +76,7 @@ public class CommandFree extends AbstractCommand {
 	private void execute() {
 		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
 			if (zh.getDM().removeHorse(horse.getUniqueId(), targetUUID)) { // horseID null if called from horse back
+				zh.getDM().removeHorseStats(horse.getUniqueId());
 				horse.setCustomName(null);
 				horse.setCustomNameVisible(false);
 				if (displayConsole) {
