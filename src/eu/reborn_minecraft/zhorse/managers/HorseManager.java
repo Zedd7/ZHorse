@@ -49,6 +49,9 @@ public class HorseManager {
 			if (horse == null) {
 				Location location = zh.getDM().getHorseLocation(playerUUID, horseID);
 				horse = getHorseFromLocation(horseUUID, location);
+				if (horse != null && !horse.getLocation().equals(location)) {
+					zh.getDM().updateHorseLocation(horseUUID, horse.getLocation(), false);
+				}
 			}
 		}
 		return horse;
@@ -59,22 +62,25 @@ public class HorseManager {
 		if (location != null) {
 			horse = getHorseInChunk(horseUUID, location.getChunk());
 			if (horse == null) {
-				List<Chunk> neighboringChunks = getChunksInRegion(location, 2);
+				List<Chunk> neighboringChunks = getChunksInRegion(location, 2, false);
 				horse = getHorseInRegion(horseUUID, neighboringChunks);
 			}
 		}
 		return horse;
 	}
 	
-	private List<Chunk> getChunksInRegion(Location center, int chunkRange) {
+	private List<Chunk> getChunksInRegion(Location center, int chunkRange, boolean includeCentralChunk) {
 		World world = center.getWorld();
 		Location NWCorner = new Location(world, center.getX() - 16 * chunkRange, 0, center.getZ() - 16 * chunkRange);
 		Location SECorner = new Location(world, center.getX() + 16 * chunkRange, 0, center.getZ() + 16 * chunkRange);
 		List<Chunk> chunkList = new ArrayList<Chunk>();
 		for (int x = NWCorner.getBlockX(); x <= SECorner.getBlockX(); x += 16) {
 			for (int z = NWCorner.getBlockZ(); z <= SECorner.getBlockZ(); z += 16) {
-				// w.getChunkAt(x, z) uses chunk coordinates (loc % 16)
-				chunkList.add(world.getChunkAt(new Location(world, x, 0, z)));
+				if (center.getBlockX() != x || center.getBlockZ() != z || includeCentralChunk) {
+					Location chunkLocation = new Location(world, x, 0, z);
+					Chunk chunk = world.getChunkAt(chunkLocation); // w.getChunkAt(x, z) uses chunk coordinates (loc % 16)
+					chunkList.add(chunk);
+				}
 			}
 		}
 		return chunkList;
@@ -244,7 +250,7 @@ public class HorseManager {
 			
 			@Override
 			public void run() {
-				List<Chunk> neighboringChunks = getChunksInRegion(horseLocation, 1);
+				List<Chunk> neighboringChunks = getChunksInRegion(horseLocation, 1, true);
 				AbstractHorse duplicatedHorse = getHorseInRegion(horseUUID, neighboringChunks);
 				if (duplicatedHorse != null) {
 					Location location = duplicatedHorse.getLocation();
