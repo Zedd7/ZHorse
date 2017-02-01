@@ -79,26 +79,26 @@ public class SQLDatabaseConnector {
 			ResultSet resultSet = statement.executeQuery(query);
 			if (resultSet.next()) {
 				HorseStats horseStats = new HorseStats(
-						resultSet.getString("uuid"),
-						resultSet.getInt("age"),
-						resultSet.getInt("canBreed") == 1,
-						resultSet.getInt("canPickupItems") == 1,
-						resultSet.getString("color"),
-						resultSet.getInt("domestication"),
-						resultSet.getInt("fireTicks"),
-						resultSet.getDouble("health"),
-						resultSet.getInt("isCustomNameVisible") == 1,
-						resultSet.getInt("isGlowing") == 1,
-						resultSet.getInt("isTamed") == 1,
-						resultSet.getDouble("jumpStrength"),
-						resultSet.getDouble("maxHealth"),
-						resultSet.getInt("noDamageTicks"),
-						resultSet.getInt("remainingAir"),
-						resultSet.getDouble("speed"),
-						resultSet.getInt("strength"),
-						resultSet.getString("style"),
-						resultSet.getInt("ticksLived"),
-						resultSet.getString("type")
+					resultSet.getString("uuid"),
+					resultSet.getInt("age"),
+					resultSet.getInt("canBreed") == 1,
+					resultSet.getInt("canPickupItems") == 1,
+					resultSet.getString("color"),
+					resultSet.getInt("domestication"),
+					resultSet.getInt("fireTicks"),
+					resultSet.getDouble("health"),
+					resultSet.getInt("isCustomNameVisible") == 1,
+					resultSet.getInt("isGlowing") == 1,
+					resultSet.getInt("isTamed") == 1,
+					resultSet.getDouble("jumpStrength"),
+					resultSet.getDouble("maxHealth"),
+					resultSet.getInt("noDamageTicks"),
+					resultSet.getInt("remainingAir"),
+					resultSet.getDouble("speed"),
+					resultSet.getInt("strength"),
+					resultSet.getString("style"),
+					resultSet.getInt("ticksLived"),
+					resultSet.getString("type")
 				);
 				return horseStats;
 			}

@@ -8,47 +8,47 @@ import org.bukkit.entity.Llama;
 public class HorseStats {
 	
 	private String uuid;
-	private int age;
-	private boolean canBreed;
-	private boolean canPickupItems;
+	private Integer age;
+	private Boolean canBreed;
+	private Boolean canPickupItems;
 	private String color;
-	private int domestication;
-	private int fireTicks;
-	private double health;
-	private boolean isCustomNameVisible;
-	private boolean isGlowing;
-	private boolean isTamed;
-	private double jumpStrength;
-	private double maxHealth;
-	private int noDamageTicks;
-	private int remainingAir;
-	private double speed;
-	private int strength;
+	private Integer domestication;
+	private Integer fireTicks;
+	private Double health;
+	private Boolean isCustomNameVisible;
+	private Boolean isGlowing;
+	private Boolean isTamed;
+	private Double jumpStrength;
+	private Double maxHealth;
+	private Integer noDamageTicks;
+	private Integer remainingAir;
+	private Double speed;
+	private Integer strength;
 	private String style;
-	private int ticksLived;
+	private Integer ticksLived;
 	private String type;
 
 	public HorseStats(
-			String uuid,
-			int age,
-			boolean canBreed,
-			boolean canPickupItems,
-			String color,
-			int domestication,
-			int fireTicks,
-			double health,
-			boolean isCustomNameVisible,
-			boolean isGlowing,
-			boolean isTamed,
-			double jumpStrength,
-			double maxHealth,
-			int noDamageTicks,
-			int remainingAir,
-			double speed,
-			int strength,
-			String style,
-			int ticksLived,
-			String type)
+		String uuid,
+		Integer age,
+		Boolean canBreed,
+		Boolean canPickupItems,
+		String color,
+		Integer domestication,
+		Integer fireTicks,
+		Double health,
+		Boolean isCustomNameVisible,
+		Boolean isGlowing,
+		Boolean isTamed,
+		Double jumpStrength,
+		Double maxHealth,
+		Integer noDamageTicks,
+		Integer remainingAir,
+		Double speed,
+		Integer strength,
+		String style,
+		Integer ticksLived,
+		String type)
 	{
 		this.uuid = uuid;
 		this.age = age;
@@ -108,15 +108,15 @@ public class HorseStats {
 		return uuid;
 	}
 
-	public int getAge() {
+	public Integer getAge() {
 		return age;
 	}
 
-	public boolean canBreed() {
+	public Boolean canBreed() {
 		return canBreed;
 	}
 
-	public boolean canPickupItems() {
+	public Boolean canPickupItems() {
 		return canPickupItems;
 	}
 
@@ -124,51 +124,51 @@ public class HorseStats {
 		return color;
 	}
 
-	public int getDomestication() {
+	public Integer getDomestication() {
 		return domestication;
 	}
 
-	public int getFireTicks() {
+	public Integer getFireTicks() {
 		return fireTicks;
 	}
 
-	public double getHealth() {
+	public Double getHealth() {
 		return health;
 	}
 
-	public boolean isCustomNameVisible() {
+	public Boolean isCustomNameVisible() {
 		return isCustomNameVisible;
 	}
 
-	public boolean isGlowing() {
+	public Boolean isGlowing() {
 		return isGlowing;
 	}
 
-	public boolean isTamed() {
+	public Boolean isTamed() {
 		return isTamed;
 	}
 
-	public double getJumpStrength() {
+	public Double getJumpStrength() {
 		return jumpStrength;
 	}
 
-	public double getMaxHealth() {
+	public Double getMaxHealth() {
 		return maxHealth;
 	}
 
-	public int getNoDamageTicks() {
+	public Integer getNoDamageTicks() {
 		return noDamageTicks;
 	}
 
-	public int getRemainingAir() {
+	public Integer getRemainingAir() {
 		return remainingAir;
 	}
 
-	public double getSpeed() {
+	public Double getSpeed() {
 		return speed;
 	}
 
-	public int getStrength() {
+	public Integer getStrength() {
 		return strength;
 	}
 
@@ -176,7 +176,7 @@ public class HorseStats {
 		return style;
 	}
 
-	public int getTicksLived() {
+	public Integer getTicksLived() {
 		return ticksLived;
 	}
 

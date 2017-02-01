@@ -2,6 +2,7 @@ package eu.reborn_minecraft.zhorse.managers;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
@@ -277,28 +278,31 @@ public class DataManager {
 	}
 	
 	public boolean registerHorseStats(HorseStats horseStats) {
-		String update = String.format("INSERT INTO prefix_horse_stats VALUES (\"%s\", %d, %d, %d, \"%s\", %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, \"%s\", %d, \"%s\")",
-				horseStats.getUUID(),
-				horseStats.getAge(),
-				horseStats.canBreed() ? 1 : 0,
-				horseStats.canPickupItems() ? 1 : 0,
-				horseStats.getColor(),
-				horseStats.getDomestication(),
-				horseStats.getFireTicks(),
-				horseStats.getHealth(),
-				horseStats.isCustomNameVisible() ? 1 : 0,
-				horseStats.isGlowing() ? 1 : 0,
-				horseStats.isTamed() ? 1 : 0,
-				horseStats.getJumpStrength(),
-				horseStats.getMaxHealth(),
-				horseStats.getNoDamageTicks(),
-				horseStats.getRemainingAir(),
-				horseStats.getSpeed(),
-				horseStats.getStrength(),
-				horseStats.getStyle(),
-				horseStats.getTicksLived(),
-				horseStats.getType()
+		String color = horseStats.getColor();
+		String style = horseStats.getStyle();
+		String update = String.format(Locale.US, "INSERT INTO prefix_horse_stats VALUES (\"%s\", %d, %d, %d, %s, %d, %d, %f, %d, %d, %d, %f, %f, %d, %d, %f, %d, %s, %d, \"%s\")",
+			horseStats.getUUID(),
+			horseStats.getAge(),
+			horseStats.canBreed() ? 1 : 0,
+			horseStats.canPickupItems() ? 1 : 0,
+			color != null ? "\"" + color + "\"" : null,
+			horseStats.getDomestication(),
+			horseStats.getFireTicks(),
+			horseStats.getHealth(),
+			horseStats.isCustomNameVisible() ? 1 : 0,
+			horseStats.isGlowing() ? 1 : 0,
+			horseStats.isTamed() ? 1 : 0,
+			horseStats.getJumpStrength(),
+			horseStats.getMaxHealth(),
+			horseStats.getNoDamageTicks(),
+			horseStats.getRemainingAir(),
+			horseStats.getSpeed(),
+			horseStats.getStrength(),
+			style != null ? "\"" + style + "\"" : null,
+			horseStats.getTicksLived(),
+			horseStats.getType()
 		);
+		System.out.println(update);
 		return db.executeUpdate(update);
 	}
 	
@@ -376,6 +380,11 @@ public class DataManager {
 	
 	public boolean updateHorseUUID(UUID oldHorseUUID, UUID newHorseUUID) {
 		String update = String.format("UPDATE prefix_horse SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
+		return db.executeUpdate(update);
+	}
+	
+	public boolean updateHorseStatsUUID(UUID oldHorseUUID, UUID newHorseUUID) {
+		String update = String.format("UPDATE prefix_horse_stats SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
 		return db.executeUpdate(update);
 	}
 	
