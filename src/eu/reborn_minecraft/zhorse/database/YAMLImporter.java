@@ -35,8 +35,7 @@ public class YAMLImporter {
 		boolean success = true;
 		ConfigurationSection cs = db.getConfigurationSection(KeyWordEnum.players.getValue());
 		if (cs != null) {
-			for (String playerKey : cs.getKeys(false)) {
-				UUID playerUUID = UUID.fromString(playerKey);
+			for (String playerUUID : cs.getKeys(false)) {
 				success &= importPlayer(zh, db, playerUUID);
 				success &= importHorses(zh, db, playerUUID);
 			}
@@ -44,7 +43,7 @@ public class YAMLImporter {
 		return success;
 	}
 	
-	private static boolean importPlayer(ZHorse zh, FileConfiguration db, UUID playerUUID) {
+	private static boolean importPlayer(ZHorse zh, FileConfiguration db, String playerUUID) {
 		if (zh.getDM().isPlayerRegistered(playerUUID)) {
 			return true;
 		}
@@ -52,30 +51,31 @@ public class YAMLImporter {
 		String language = getPlayerData(db, playerUUID, KeyWordEnum.language.getValue(), zh.getCM().getDefaultLanguage());
 		String favoriteString = getPlayerData(db, playerUUID, KeyWordEnum.favorite.getValue(), null);
 		Integer favorite = favoriteString != null ? Integer.parseInt(favoriteString) : zh.getDM().getDefaultFavoriteHorseID();
-		return zh.getDM().registerPlayer(playerUUID, playerName, language, favorite);
+		PlayerRecord playerRecord = new PlayerRecord(playerUUID, playerName, language, favorite);
+		return zh.getDM().registerPlayer(playerRecord);
 	}
 
-	private static String getPlayerData(FileConfiguration db, UUID playerUUID, String valuePath, String defaultValue) {
+	private static String getPlayerData(FileConfiguration db, String playerUUID, String valuePath, String defaultValue) {
 		String dataPath = KeyWordEnum.players.getValue() + KeyWordEnum.dot.getValue() + playerUUID + KeyWordEnum.dot.getValue() + valuePath;
 		return db.getString(dataPath, defaultValue);
 	}
 	
-	private static boolean importHorses(ZHorse zh, FileConfiguration db, UUID playerUUID) {
+	private static boolean importHorses(ZHorse zh, FileConfiguration db, String ownerUUID) {
 		boolean success = true;
-		String horsesPath = KeyWordEnum.players.getValue() + KeyWordEnum.dot.getValue() + playerUUID + KeyWordEnum.dot.getValue() + KeyWordEnum.horses.getValue();
+		String horsesPath = KeyWordEnum.players.getValue() + KeyWordEnum.dot.getValue() + ownerUUID + KeyWordEnum.dot.getValue() + KeyWordEnum.horses.getValue();
 		ConfigurationSection cs = db.getConfigurationSection(horsesPath);
 		if (cs != null) {
 			for (String horseKey : cs.getKeys(false)) {
 				int horseID = Integer.parseInt(horseKey);
-				success &= importHorse(zh, db, playerUUID, horseID);
+				success &= importHorse(zh, db, ownerUUID, horseID);
 			}
 		}
 		return success;
 	}
 	
-	private static boolean importHorse(ZHorse zh, FileConfiguration db, UUID ownerUUID, int horseID) {
-		UUID horseUUID = UUID.fromString(getHorseStringData(db, ownerUUID, horseID, KeyWordEnum.uuid.getValue(), null));
-		if (zh.getDM().isHorseRegistered(horseUUID)) {
+	private static boolean importHorse(ZHorse zh, FileConfiguration db, String ownerUUID, int horseID) {
+		String horseUUID = getHorseStringData(db, ownerUUID, horseID, KeyWordEnum.uuid.getValue(), null);
+		if (zh.getDM().isHorseRegistered(UUID.fromString(horseUUID))) {
 			return true;
 		}
 		String horseName = getHorseStringData(db, ownerUUID, horseID, KeyWordEnum.name.getValue(), null);
@@ -86,16 +86,17 @@ public class YAMLImporter {
 		int locationX = Integer.parseInt(getHorseStringData(db, ownerUUID, horseID, KeyWordEnum.location.getValue() + KeyWordEnum.dot.getValue() + KeyWordEnum.x.getValue(), null));
 		int locationY = Integer.parseInt(getHorseStringData(db, ownerUUID, horseID, KeyWordEnum.location.getValue() + KeyWordEnum.dot.getValue() + KeyWordEnum.y.getValue(), null));
 		int locationZ = Integer.parseInt(getHorseStringData(db, ownerUUID, horseID, KeyWordEnum.location.getValue() + KeyWordEnum.dot.getValue() + KeyWordEnum.z.getValue(), null));
-		return zh.getDM().registerHorse(horseUUID, ownerUUID, horseID, horseName, modeLocked, modeProtected, modeShared, locationWorld, locationX, locationY, locationZ);
+		HorseRecord horseRecord = new HorseRecord(horseUUID, ownerUUID, horseID, horseName, modeLocked, modeProtected, modeShared, locationWorld, locationX, locationY, locationZ);
+		return zh.getDM().registerHorse(horseRecord);
 	}
 	
-	private static boolean getHorseBooleanData(FileConfiguration db, UUID playerUUID, int horseID, String valuePath, boolean defaultValue) {
+	private static boolean getHorseBooleanData(FileConfiguration db, String playerUUID, int horseID, String valuePath, boolean defaultValue) {
 		String horsesPath = KeyWordEnum.players.getValue() + KeyWordEnum.dot.getValue() + playerUUID + KeyWordEnum.dot.getValue() + KeyWordEnum.horses.getValue();
 		String dataPath = horsesPath + KeyWordEnum.dot.getValue() + horseID + KeyWordEnum.dot.getValue() + valuePath;
 		return db.getBoolean(dataPath, defaultValue);
 	}
 
-	private static String getHorseStringData(FileConfiguration db, UUID ownerUUID, int horseID, String valuePath, String defaultValue) {
+	private static String getHorseStringData(FileConfiguration db, String ownerUUID, int horseID, String valuePath, String defaultValue) {
 		String horsesPath = KeyWordEnum.players.getValue() + KeyWordEnum.dot.getValue() + ownerUUID + KeyWordEnum.dot.getValue() + KeyWordEnum.horses.getValue();
 		String dataPath = horsesPath + KeyWordEnum.dot.getValue() + horseID + KeyWordEnum.dot.getValue() + valuePath;
 		return db.getString(dataPath, defaultValue);

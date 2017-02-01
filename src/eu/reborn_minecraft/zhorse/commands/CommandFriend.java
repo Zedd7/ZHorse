@@ -5,6 +5,7 @@ import java.util.List;
 import org.bukkit.command.CommandSender;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.database.FriendRecord;
 import eu.reborn_minecraft.zhorse.enums.CommandFriendEnum;
 import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
@@ -64,7 +65,7 @@ public class CommandFriend extends AbstractCommand {
 					if (isRegistered(targetUUID)) {
 						if (isPlayerDifferent()) {
 							if (!zh.getDM().isFriendOf(p.getUniqueId(), targetUUID)) {
-								zh.getDM().registerFriend(p.getUniqueId(), targetUUID);
+								zh.getDM().registerFriend(new FriendRecord(p.getUniqueId().toString(), targetUUID.toString()));
 								zh.getMM().sendMessagePlayer(s, LocaleEnum.friendAdded, targetName);
 								zh.getEM().payCommand(p, command);
 							}

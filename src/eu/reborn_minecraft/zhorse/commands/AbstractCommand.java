@@ -13,6 +13,7 @@ import org.bukkit.entity.Llama;
 import org.bukkit.entity.Player;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.database.PlayerRecord;
 import eu.reborn_minecraft.zhorse.enums.CommandAdminEnum;
 import eu.reborn_minecraft.zhorse.enums.CommandEnum;
 import eu.reborn_minecraft.zhorse.enums.CommandFriendEnum;
@@ -507,7 +508,8 @@ public abstract class AbstractCommand {
 			p = (Player) s;
 			playerCommand = true;
 			if (!zh.getDM().isPlayerRegistered(p.getUniqueId())) {
-				zh.getDM().registerPlayer(p.getUniqueId(), p.getName(), zh.getCM().getDefaultLanguage(), zh.getDM().getDefaultFavoriteHorseID());
+				PlayerRecord playerRecord = new PlayerRecord(p.getUniqueId().toString(), p.getName(), zh.getCM().getDefaultLanguage(), zh.getDM().getDefaultFavoriteHorseID());
+				zh.getDM().registerPlayer(playerRecord);
 			}
 			return playerCommand;
 		}

@@ -5,7 +5,7 @@ import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Llama;
 
-public class HorseStats {
+public class HorseStatsRecord {
 	
 	private String uuid;
 	private Integer age;
@@ -28,7 +28,7 @@ public class HorseStats {
 	private Integer ticksLived;
 	private String type;
 
-	public HorseStats(
+	public HorseStatsRecord(
 		String uuid,
 		Integer age,
 		Boolean canBreed,
@@ -72,7 +72,7 @@ public class HorseStats {
 		this.type = type;
 	}
 	
-	public HorseStats(AbstractHorse horse) {
+	public HorseStatsRecord(AbstractHorse horse) {
 		this.uuid = horse.getUniqueId().toString();
 		this.age = horse.getAge();
 		this.canBreed = horse.canBreed();

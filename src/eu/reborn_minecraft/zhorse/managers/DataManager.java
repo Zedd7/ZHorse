@@ -9,8 +9,11 @@ import org.apache.commons.io.IOUtils;
 import org.bukkit.Location;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
-import eu.reborn_minecraft.zhorse.database.HorseStats;
+import eu.reborn_minecraft.zhorse.database.FriendRecord;
+import eu.reborn_minecraft.zhorse.database.HorseRecord;
+import eu.reborn_minecraft.zhorse.database.HorseStatsRecord;
 import eu.reborn_minecraft.zhorse.database.MySQLConnector;
+import eu.reborn_minecraft.zhorse.database.PlayerRecord;
 import eu.reborn_minecraft.zhorse.database.SQLDatabaseConnector;
 import eu.reborn_minecraft.zhorse.database.SQLiteConnector;
 import eu.reborn_minecraft.zhorse.enums.DatabaseEnum;
@@ -132,14 +135,14 @@ public class DataManager {
 		return db.getStringResultList(query);
 	}
 	
-	public HorseStats getHorseStats(UUID horseUUID) {
-		String query = String.format("SELECT * FROM prefix_horse_horse WHERE uuid = \"%s\"", horseUUID);
-		return db.getHorseStats(query);
-	}
-	
 	public UUID getHorseUUID(UUID ownerUUID, int horseID) {
 		String query = String.format("SELECT uuid FROM prefix_horse WHERE owner = \"%s\" AND id = %d", ownerUUID, horseID);
 		return UUID.fromString(db.getStringResult(query));
+	}
+	
+	public HorseStatsRecord getHorseStatsRecord(UUID horseUUID) {
+		String query = String.format("SELECT * FROM prefix_horse_stats WHERE uuid = \"%s\"", horseUUID);
+		return db.getHorseStatsRecord(query);
 	}
 	
 	public Integer getNextHorseID(UUID ownerUUID) {
@@ -250,64 +253,63 @@ public class DataManager {
 		return db.hasResult(query);
 	}
 	
-	public boolean registerFriend(UUID requesterUUID, UUID recipientUUID) {
-		String update = String.format("INSERT INTO prefix_friend VALUES (\"%s\", \"%s\")", requesterUUID, recipientUUID);
+	public boolean registerFriend(FriendRecord friendRecord) {
+		String update = String.format("INSERT INTO prefix_friend VALUES (\"%s\", \"%s\")", friendRecord.getRequester(), friendRecord.getRecipient());
 		return db.executeUpdate(update);
 	}
 	
-	public boolean registerHorse(UUID horseUUID, UUID ownerUUID, String horseName, boolean modeLocked, boolean modeProtected, boolean modeShared, Location location) {
-		int horseID = getNextHorseID(ownerUUID);
-		String locationWorld = location.getWorld().getName();
-		int locationX = location.getBlockX();
-		int locationY = location.getBlockY();
-		int locationZ = location.getBlockZ();
-		return registerHorse(horseUUID, ownerUUID, horseID, horseName, modeLocked, modeProtected, modeShared, locationWorld, locationX, locationY, locationZ);
-	}
-
-	public boolean registerHorse(UUID horseUUID, UUID ownerUUID, int horseID, String horseName,
-			boolean modeLocked, boolean modeProtected, boolean modeShared, String locationWorld, int locationX, int locationY, int locationZ) {
+	public boolean registerHorse(HorseRecord horseRecord) {
+		UUID horseUUID = UUID.fromString(horseRecord.getUUID());
 		if (isHorseRegistered(horseUUID)) { // if horse was given, unregister it from giver's list
 			removeHorse(horseUUID);
 		}
-		int lockedFlag = modeLocked ? 1 : 0;
-		int protectedFlag = modeProtected ? 1 : 0;
-		int sharedFlag = modeShared ? 1 : 0;
 		String update = String.format("INSERT INTO prefix_horse VALUES (\"%s\", \"%s\", %d, \"%s\", %d, %d, %d, \"%s\", %d, %d, %d)",
-				horseUUID, ownerUUID, horseID, horseName, lockedFlag, protectedFlag, sharedFlag, locationWorld, locationX, locationY, locationZ);
-		return db.executeUpdate(update);
-	}
-	
-	public boolean registerHorseStats(HorseStats horseStats) {
-		String color = horseStats.getColor();
-		String style = horseStats.getStyle();
-		String update = String.format(Locale.US, "INSERT INTO prefix_horse_stats VALUES (\"%s\", %d, %d, %d, %s, %d, %d, %f, %d, %d, %d, %f, %f, %d, %d, %f, %d, %s, %d, \"%s\")",
-			horseStats.getUUID(),
-			horseStats.getAge(),
-			horseStats.canBreed() ? 1 : 0,
-			horseStats.canPickupItems() ? 1 : 0,
-			color != null ? "\"" + color + "\"" : null,
-			horseStats.getDomestication(),
-			horseStats.getFireTicks(),
-			horseStats.getHealth(),
-			horseStats.isCustomNameVisible() ? 1 : 0,
-			horseStats.isGlowing() ? 1 : 0,
-			horseStats.isTamed() ? 1 : 0,
-			horseStats.getJumpStrength(),
-			horseStats.getMaxHealth(),
-			horseStats.getNoDamageTicks(),
-			horseStats.getRemainingAir(),
-			horseStats.getSpeed(),
-			horseStats.getStrength(),
-			style != null ? "\"" + style + "\"" : null,
-			horseStats.getTicksLived(),
-			horseStats.getType()
+			horseRecord.getUUID(),
+			horseRecord.getOwner(),
+			horseRecord.getId(),
+			horseRecord.getName(),
+			horseRecord.getModeLocked() ? 1 : 0,
+			horseRecord.getModeProtected() ? 1 : 0,
+			horseRecord.getModeShared() ? 1 : 0,
+			horseRecord.getLocationWorld(),
+			horseRecord.getLocationX(),
+			horseRecord.getLocationY(),
+			horseRecord.getLocationZ()
 		);
-		System.out.println(update);
 		return db.executeUpdate(update);
 	}
 	
-	public boolean registerPlayer(UUID playerUUID, String playerName, String language, int favorite) {
-		String update = String.format("INSERT INTO prefix_player VALUES (\"%s\", \"%s\", \"%s\", %d)", playerUUID, playerName, language, favorite);
+	public boolean registerHorseStats(HorseStatsRecord horseStatsRecord) {
+		String color = horseStatsRecord.getColor();
+		String style = horseStatsRecord.getStyle();
+		String update = String.format(Locale.US, "INSERT INTO prefix_horse_stats VALUES (\"%s\", %d, %d, %d, %s, %d, %d, %f, %d, %d, %d, %f, %f, %d, %d, %f, %d, %s, %d, \"%s\")",
+			horseStatsRecord.getUUID(),
+			horseStatsRecord.getAge(),
+			horseStatsRecord.canBreed() ? 1 : 0,
+			horseStatsRecord.canPickupItems() ? 1 : 0,
+			color != null ? "\"" + color + "\"" : null,
+			horseStatsRecord.getDomestication(),
+			horseStatsRecord.getFireTicks(),
+			horseStatsRecord.getHealth(),
+			horseStatsRecord.isCustomNameVisible() ? 1 : 0,
+			horseStatsRecord.isGlowing() ? 1 : 0,
+			horseStatsRecord.isTamed() ? 1 : 0,
+			horseStatsRecord.getJumpStrength(),
+			horseStatsRecord.getMaxHealth(),
+			horseStatsRecord.getNoDamageTicks(),
+			horseStatsRecord.getRemainingAir(),
+			horseStatsRecord.getSpeed(),
+			horseStatsRecord.getStrength(),
+			style != null ? "\"" + style + "\"" : null,
+			horseStatsRecord.getTicksLived(),
+			horseStatsRecord.getType()
+		);
+		return db.executeUpdate(update);
+	}
+	
+	public boolean registerPlayer(PlayerRecord playerRecord) {
+		String update = String.format("INSERT INTO prefix_player VALUES (\"%s\", \"%s\", \"%s\", %d)",
+			playerRecord.getUUID(), playerRecord.getName(), playerRecord.getLanguage(), playerRecord.getFavorite());
 		return db.executeUpdate(update);
 	}
 	

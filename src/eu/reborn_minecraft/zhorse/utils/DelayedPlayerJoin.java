@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.database.PlayerRecord;
 
 public class DelayedPlayerJoin {
 	
@@ -15,7 +16,8 @@ public class DelayedPlayerJoin {
 			public void run() {
 				Player p = e.getPlayer();
 				if (!zh.getDM().isPlayerRegistered(p.getUniqueId())) {
-					zh.getDM().registerPlayer(p.getUniqueId(), p.getName(), zh.getCM().getDefaultLanguage(), zh.getDM().getDefaultFavoriteHorseID());
+					PlayerRecord playerRecord = new PlayerRecord(p.getUniqueId().toString(), p.getName(), zh.getCM().getDefaultLanguage(), zh.getDM().getDefaultFavoriteHorseID());
+					zh.getDM().registerPlayer(playerRecord);
 				}
 				else {
 					if (!p.getName().equalsIgnoreCase(zh.getDM().getPlayerName(p.getUniqueId()))) {
