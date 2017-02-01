@@ -6,13 +6,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AbstractHorse;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.database.MySQLImporter;
+import eu.reborn_minecraft.zhorse.database.SQLiteImporter;
+import eu.reborn_minecraft.zhorse.database.YAMLImporter;
 import eu.reborn_minecraft.zhorse.enums.CommandAdminEnum;
 import eu.reborn_minecraft.zhorse.enums.DatabaseEnum;
 import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
-import eu.reborn_minecraft.zhorse.utils.MySQLImporter;
-import eu.reborn_minecraft.zhorse.utils.SQLiteImporter;
-import eu.reborn_minecraft.zhorse.utils.YAMLImporter;
 import net.md_5.bungee.api.ChatColor;
 
 public class CommandAdmin extends AbstractCommand {

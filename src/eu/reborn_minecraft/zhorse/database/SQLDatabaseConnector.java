@@ -1,4 +1,4 @@
-package eu.reborn_minecraft.zhorse.utils;
+package eu.reborn_minecraft.zhorse.database;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

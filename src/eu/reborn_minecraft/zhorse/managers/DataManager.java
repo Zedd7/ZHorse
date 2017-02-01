@@ -9,11 +9,11 @@ import org.apache.commons.io.IOUtils;
 import org.bukkit.Location;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.database.HorseStats;
+import eu.reborn_minecraft.zhorse.database.MySQLConnector;
+import eu.reborn_minecraft.zhorse.database.SQLDatabaseConnector;
+import eu.reborn_minecraft.zhorse.database.SQLiteConnector;
 import eu.reborn_minecraft.zhorse.enums.DatabaseEnum;
-import eu.reborn_minecraft.zhorse.utils.HorseStats;
-import eu.reborn_minecraft.zhorse.utils.MySQLConnector;
-import eu.reborn_minecraft.zhorse.utils.SQLDatabaseConnector;
-import eu.reborn_minecraft.zhorse.utils.SQLiteConnector;
 
 public class DataManager {
 	

@@ -1,4 +1,4 @@
-package eu.reborn_minecraft.zhorse.utils;
+package eu.reborn_minecraft.zhorse.database;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.DatabaseEnum;

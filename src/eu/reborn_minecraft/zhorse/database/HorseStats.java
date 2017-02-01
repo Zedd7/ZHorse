@@ -1,4 +1,4 @@
-package eu.reborn_minecraft.zhorse.utils;
+package eu.reborn_minecraft.zhorse.database;
 
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.AbstractHorse;

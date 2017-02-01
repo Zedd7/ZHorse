@@ -1,4 +1,4 @@
-package eu.reborn_minecraft.zhorse.utils;
+package eu.reborn_minecraft.zhorse.database;
 
 import java.io.File;
 import java.util.UUID;
@@ -8,6 +8,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
+import eu.reborn_minecraft.zhorse.utils.Utf8YamlConfiguration;
 
 public class YAMLImporter {
 	
