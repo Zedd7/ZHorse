@@ -119,7 +119,7 @@ public class SQLDatabaseConnector {
 	
 	public List<String> getStringResultList(String query) {
 		query = applyTablePrefix(query);
-		List<String> resultList = new ArrayList<String>();
+		List<String> resultList = new ArrayList<>();
 		try (Statement statement = connection.createStatement()) {
 			ResultSet resultSet = statement.executeQuery(query);
 			while (resultSet.next()) {
@@ -140,6 +140,23 @@ public class SQLDatabaseConnector {
 			e.printStackTrace();
 		}
 		return false;
+	}
+	
+	public List<FriendRecord> getFriendRecordList(String query) {
+		query = applyTablePrefix(query);
+		List<FriendRecord> friendRecordList = new ArrayList<>();
+		try (Statement statement = connection.createStatement()) {
+			ResultSet resultSet = statement.executeQuery(query);
+			while (resultSet.next()) {
+				friendRecordList.add(new FriendRecord(
+					resultSet.getString("requester"),
+					resultSet.getString("recipient")
+				));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return friendRecordList;
 	}
 	
 	public FriendRecord getFriendRecord(String query) {

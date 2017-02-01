@@ -243,6 +243,11 @@ public class DataManager {
 		return db.getBooleanResult(query);
 	}
 	
+	public boolean isHorseStatsRegistered(UUID horseUUID) {
+		String query = String.format("SELECT 1 FROM prefix_horse_stats WHERE uuid = \"%s\"", horseUUID);
+		return db.hasResult(query);
+	}
+	
 	public boolean isPlayerRegistered(String playerName) {
 		String query = String.format("SELECT 1 FROM prefix_player WHERE name = \"%s\"", playerName);
 		return db.hasResult(query);
