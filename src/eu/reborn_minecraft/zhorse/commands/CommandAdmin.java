@@ -86,16 +86,15 @@ public class CommandAdmin extends AbstractCommand {
 				if (!idMode) {
 					if (isRegistered(targetUUID)) {
 						boolean success = true;
-						for (int horseID = 1; horseID <= zh.getDM().getHorseCount(targetUUID); ++horseID) {
+						for (int horseID = 1; horseID <= zh.getDM().getHorseCount(targetUUID); horseID++) {
 							AbstractHorse horse = zh.getHM().getHorse(targetUUID, horseID);
 							if (horse != null) {
 								horse.setCustomName(null);
 								horse.setCustomNameVisible(false);
 							}
 							UUID horseUUID = zh.getDM().getHorseUUID(targetUUID, horseID);
-							if (!zh.getDM().removeHorse(horseUUID, targetUUID, horseID) || !zh.getDM().removeHorseStats(horseUUID)) {
-								success = false;
-							}
+							success = zh.getDM().removeHorseStats(horseUUID) && success; // = a && b instead of &= a to ensure a is executed
+							success = zh.getDM().removeHorse(horseUUID, targetUUID, horseID) && success; // remove horse after stats because of foreign key
 						}
 						if (success) {
 							if (samePlayer) {
@@ -115,7 +114,7 @@ public class CommandAdmin extends AbstractCommand {
 						horse.setCustomNameVisible(false);
 					}
 					UUID horseUUID = zh.getDM().getHorseUUID(targetUUID, Integer.parseInt(horseID));
-					if (zh.getDM().removeHorse(horseUUID, targetUUID, Integer.parseInt(horseID)) && zh.getDM().removeHorseStats(horseUUID)) {
+					if (zh.getDM().removeHorseStats(horseUUID) && zh.getDM().removeHorse(horseUUID, targetUUID, Integer.parseInt(horseID))) {
 						if (samePlayer) {
 							zh.getMM().sendMessageHorse(s, LocaleEnum.horseCleared, horseName);
 						}

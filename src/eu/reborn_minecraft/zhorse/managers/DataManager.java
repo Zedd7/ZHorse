@@ -264,10 +264,6 @@ public class DataManager {
 	}
 	
 	public boolean registerHorse(HorseRecord horseRecord) {
-		UUID horseUUID = UUID.fromString(horseRecord.getUUID());
-		if (isHorseRegistered(horseUUID)) { // if horse was given, unregister it from giver's list
-			removeHorse(horseUUID);
-		}
 		String update = String.format("INSERT INTO prefix_horse VALUES (\"%s\", \"%s\", %d, \"%s\", %d, %d, %d, \"%s\", %d, %d, %d)",
 			horseRecord.getUUID(),
 			horseRecord.getOwner(),

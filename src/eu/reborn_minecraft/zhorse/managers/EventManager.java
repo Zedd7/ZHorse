@@ -126,8 +126,8 @@ public class EventManager implements Listener {
 						}
 					}
 				}
+				zh.getDM().removeHorseStats(horse.getUniqueId()); // remove stats before horse because of foreign key
 				zh.getDM().removeHorse(horse.getUniqueId());
-				zh.getDM().removeHorseStats(horse.getUniqueId());
 			}
 		}
 	}

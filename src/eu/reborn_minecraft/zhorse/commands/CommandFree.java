@@ -32,16 +32,7 @@ public class CommandFree extends AbstractCommand {
 								execute();
 							}
 							else {
-								UUID horseUUID = zh.getDM().getHorseUUID(targetUUID, Integer.parseInt(horseID));
-								zh.getDM().removeHorse(horseUUID, targetUUID, Integer.parseInt(horseID));
-								zh.getDM().removeHorseStats(horseUUID);
-								if (samePlayer) {
-									zh.getMM().sendMessageHorse(s, LocaleEnum.horseCleared, horseName);
-								}
-								else {
-									zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.horseClearedOther, horseName, targetName);
-								}
-								zh.getEM().payCommand(p, command);
+								removeLostHorse();
 							}
 						}
 					}
@@ -57,16 +48,7 @@ public class CommandFree extends AbstractCommand {
 						execute();
 					}
 					else {
-						UUID horseUUID = zh.getDM().getHorseUUID(targetUUID, Integer.parseInt(horseID));
-						zh.getDM().removeHorse(horseUUID, targetUUID, Integer.parseInt(horseID));
-						zh.getDM().removeHorseStats(horseUUID);
-						if (samePlayer) {
-							zh.getMM().sendMessageHorse(s, LocaleEnum.horseCleared, horseName);
-						}
-						else {
-							zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.horseClearedOther, horseName, targetName);
-						}
-						zh.getEM().payCommand(p, command);
+						removeLostHorse();
 					}
 				}
 			}
@@ -75,8 +57,9 @@ public class CommandFree extends AbstractCommand {
 
 	private void execute() {
 		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
-			if (zh.getDM().removeHorse(horse.getUniqueId(), targetUUID)) { // horseID null if called from horse back
-				zh.getDM().removeHorseStats(horse.getUniqueId());
+			boolean success = zh.getDM().removeHorseStats(horse.getUniqueId()); // remove stats before horse because of foreign key
+			success &= zh.getDM().removeHorse(horse.getUniqueId(), targetUUID); // not using horseID because is null if called from horse back
+			if (success) {
 				horse.setCustomName(null);
 				horse.setCustomNameVisible(false);
 				if (displayConsole) {
@@ -85,6 +68,21 @@ public class CommandFree extends AbstractCommand {
 				zh.getEM().payCommand(p, command);
 			}
 		}	
+	}
+	
+	private void removeLostHorse() {
+		UUID horseUUID = zh.getDM().getHorseUUID(targetUUID, Integer.parseInt(horseID));
+		boolean success = zh.getDM().removeHorseStats(horseUUID); // remove stats before horse because of foreign key
+		success &= zh.getDM().removeHorse(horseUUID, targetUUID, Integer.parseInt(horseID));
+		if (success) {
+			if (samePlayer) {
+				zh.getMM().sendMessageHorse(s, LocaleEnum.horseCleared, horseName);
+			}
+			else {
+				zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.horseClearedOther, horseName, targetName);
+			}
+			zh.getEM().payCommand(p, command);
+		}
 	}
 
 }
