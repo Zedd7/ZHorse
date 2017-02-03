@@ -58,6 +58,7 @@ public enum KeyWordEnum {
 	tpMaxRange("tp-max-range"),
 	typeSuffix(".type"),
 	useOldTeleportMethod("use-old-teleport-method"),
+	useOldTrackingMethod("use-old-tracking-method"),
 	userSuffix(".user"),
 	useVanillaStats("use-vanilla-stats"),
 	worldsPrefix("Worlds."),

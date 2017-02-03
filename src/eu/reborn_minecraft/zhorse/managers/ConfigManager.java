@@ -297,6 +297,10 @@ public class ConfigManager {
 		return config.getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.useOldTeleportMethod.getValue(), false);
 	}
 	
+	public boolean shouldUseOldTrackingMethod() {
+		return config.getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.useOldTrackingMethod.getValue(), false);
+	}
+	
 	public boolean shouldUseVanillaStats() {
 		return config.getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.useVanillaStats.getValue(), true);
 	}
@@ -578,6 +582,10 @@ public class ConfigManager {
 		}
 		if (!config.isSet("Settings.use-old-teleport-method")) {
 			zh.getLogger().severe("The \"Settings.use-old-teleport-method\" option is missing from the config !");
+			conform = false;
+		}
+		if (!config.isSet("Settings.use-old-tracking-method")) {
+			zh.getLogger().severe("The \"Settings.use-old-tracking-method\" option is missing from the config !");
 			conform = false;
 		}
 		if (!config.isSet("Settings.use-vanilla-stats")) {
