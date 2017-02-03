@@ -162,6 +162,8 @@ public class HorseManager {
 		else {
 			AbstractHorse copyHorse = (AbstractHorse) destination.getWorld().spawnEntity(destination, sourceHorse.getType());
 			if (copyHorse != null) {
+				String horseName = zh.getDM().getHorseName(sourceHorse.getUniqueId()); // call before updating horse uuid
+				String ownerName = zh.getDM().getOwnerName(sourceHorse.getUniqueId());
 				zh.getDM().updateHorseUUID(sourceHorse.getUniqueId(), copyHorse.getUniqueId());
 				zh.getDM().updateHorseLocation(copyHorse.getUniqueId(), copyHorse.getLocation(), true);
 				copyAttributes(sourceHorse, copyHorse);
@@ -169,7 +171,7 @@ public class HorseManager {
 				removeLeash(sourceHorse);
 				untrackHorse(sourceHorse);
 				trackHorse(copyHorse);
-				removeHorse(sourceHorse);
+				removeHorse(sourceHorse, horseName, ownerName);
 				return copyHorse;
 			}
 		}
@@ -230,11 +232,9 @@ public class HorseManager {
 		}
 	}
 	
-	private void removeHorse(AbstractHorse horse) {		
+	private void removeHorse(AbstractHorse horse, String horseName, String ownerName) {		
 		Location horseLocation = horse.getLocation();
 		UUID horseUUID = horse.getUniqueId();
-		String horseName = zh.getDM().getHorseName(horseUUID);
-		String ownerName = zh.getDM().getOwnerName(horseUUID);
 		int waitTime = 60; // ticks
 		horse.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, waitTime, 0));
 		horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0);
