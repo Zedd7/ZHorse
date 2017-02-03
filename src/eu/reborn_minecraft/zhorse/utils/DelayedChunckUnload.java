@@ -18,8 +18,10 @@ public class DelayedChunckUnload {
 					if (entity instanceof AbstractHorse) {
 						AbstractHorse horse = (AbstractHorse) entity;
 						if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
-							zh.getHM().unloadHorse(horse);
+							
+							zh.getHM().untrackHorse(horse);
 							zh.getDM().updateHorseLocation(horse.getUniqueId(), horse.getLocation(), true);
+							
 						}
 					}
 				}

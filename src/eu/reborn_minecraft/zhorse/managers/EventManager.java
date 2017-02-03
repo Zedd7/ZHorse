@@ -182,7 +182,7 @@ public class EventManager implements Listener {
 		if (!removeCause.equals(RemoveCause.ENTITY)) {
 			if (e.getEntity() instanceof LeashHitch) {
 				LeashHitch leashHitch = (LeashHitch) e.getEntity();
-				for (AbstractHorse horse : zh.getHM().getLoadedHorses().values()) {
+				for (AbstractHorse horse : zh.getHM().getTrackedHorses().values()) {
 					if (horse.isLeashed()) {
 						Entity leashHolder = horse.getLeashHolder();
 						if (leashHitch.equals(leashHolder)) {
@@ -199,7 +199,7 @@ public class EventManager implements Listener {
 	public void onHangingBreakByEntity(HangingBreakByEntityEvent e) {
 		if (e.getEntity() instanceof LeashHitch) {
 			LeashHitch leashHitch = (LeashHitch) e.getEntity();
-			for (AbstractHorse horse : zh.getHM().getLoadedHorses().values()) {
+			for (AbstractHorse horse : zh.getHM().getTrackedHorses().values()) {
 				if (horse.isLeashed()) {
 					Entity leashHolder = horse.getLeashHolder();
 					if (leashHitch.equals(leashHolder)) {
@@ -247,7 +247,6 @@ public class EventManager implements Listener {
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(PlayerJoinEvent e) {
-		ejectPlayer(e.getPlayer());
 		new DelayedPlayerJoin(zh, e);
 	}
 	
@@ -301,15 +300,6 @@ public class EventManager implements Listener {
 					p.getInventory().remove(item);
 				}
 				updateInventory(p);
-			}
-		}
-	}
-	
-	private void ejectPlayer(Player p) {
-		if (p.getVehicle() instanceof AbstractHorse) {
-			AbstractHorse horse = (AbstractHorse) p.getVehicle();
-			if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
-				horse.eject();
 			}
 		}
 	}

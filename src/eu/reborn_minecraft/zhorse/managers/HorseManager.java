@@ -31,7 +31,7 @@ import eu.reborn_minecraft.zhorse.utils.DelayedChunckLoad;
 public class HorseManager {
 		
 	private ZHorse zh;
-	private Map<UUID, AbstractHorse> loadedHorses = new HashMap<>();
+	private Map<UUID, AbstractHorse> trackedHorses = new HashMap<>();
 	
 	public HorseManager(ZHorse zh) {
 		this.zh = zh;
@@ -45,8 +45,10 @@ public class HorseManager {
 		AbstractHorse horse = null;
 		if (playerUUID != null && horseID != null) {
 			UUID horseUUID = zh.getDM().getHorseUUID(playerUUID, horseID);
-			horse = getLoadedHorse(horseUUID);
-			if (horse == null) {
+			if (isHorseTracked(horseUUID)) {
+				horse = getTrackedHorse(horseUUID);
+			}
+			else {
 				Location location = zh.getDM().getHorseLocation(playerUUID, horseID);
 				horse = getHorseFromLocation(horseUUID, location);
 				if (horse != null && !horse.getLocation().equals(location)) {
@@ -106,22 +108,26 @@ public class HorseManager {
 		return horse;
 	}
 
-	public AbstractHorse getLoadedHorse(UUID horseUUID) {
-		return loadedHorses.get(horseUUID);
+	public AbstractHorse getTrackedHorse(UUID horseUUID) {
+		return trackedHorses.get(horseUUID);
 	}
 	
-	public Map<UUID, AbstractHorse> getLoadedHorses() {
-		return loadedHorses;
+	public Map<UUID, AbstractHorse> getTrackedHorses() {
+		return trackedHorses;
 	}
 	
-	public void loadHorse(AbstractHorse horse) {
+	public boolean isHorseTracked(UUID horseUUID) {
+		return trackedHorses.containsKey(horseUUID);
+	}
+	
+	public void trackHorse(AbstractHorse horse) {
 		UUID horseUUID = horse.getUniqueId();
-		if (!loadedHorses.containsKey(horseUUID)) {
-			loadedHorses.put(horseUUID, horse);
+		if (!isHorseTracked(horseUUID)) {
+			trackedHorses.put(horseUUID, horse);
 		}
 	}
 	
-	public void loadHorses() {
+	public void trackHorses() {
 		for (World world : zh.getServer().getWorlds()) {
 			for (Chunk chunk : world.getLoadedChunks()) {
 				new DelayedChunckLoad(zh, chunk);
@@ -129,22 +135,22 @@ public class HorseManager {
 		}
 	}
 	
-	public void unloadHorse(AbstractHorse horse) {
-		unloadHorse(horse.getUniqueId());
+	public void untrackHorse(AbstractHorse horse) {
+		untrackHorse(horse.getUniqueId());
 	}
 	
-	public void unloadHorse(UUID horseUUID) {
-		if (loadedHorses.containsKey(horseUUID)) {
-			loadedHorses.remove(horseUUID);
+	public void untrackHorse(UUID horseUUID) {
+		if (isHorseTracked(horseUUID)) {
+			trackedHorses.remove(horseUUID);
 		}
 	}
 	
-	public void unloadHorses() {
-		Iterator<Entry<UUID, AbstractHorse>> loadedHorsesItr = loadedHorses.entrySet().iterator();
-		while (loadedHorsesItr.hasNext()) {
-			AbstractHorse horse = loadedHorsesItr.next().getValue();
+	public void untrackHorses() {
+		Iterator<Entry<UUID, AbstractHorse>> trackedHorsesItr = trackedHorses.entrySet().iterator();
+		while (trackedHorsesItr.hasNext()) {
+			AbstractHorse horse = trackedHorsesItr.next().getValue();
 			zh.getDM().updateHorseLocation(horse.getUniqueId(), horse.getLocation(), true);
-			loadedHorsesItr.remove();
+			trackedHorsesItr.remove();
 		}
 	}
 	
@@ -161,8 +167,8 @@ public class HorseManager {
 				copyAttributes(sourceHorse, copyHorse);
 				copyInventory(sourceHorse, copyHorse);
 				removeLeash(sourceHorse);
-				unloadHorse(sourceHorse);
-				loadHorse(copyHorse);
+				untrackHorse(sourceHorse);
+				trackHorse(copyHorse);
 				removeHorse(sourceHorse);
 				return copyHorse;
 			}

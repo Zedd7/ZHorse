@@ -37,7 +37,7 @@ public class ZHorse extends JavaPlugin {
 	
 	@Override
     public void onDisable() {
-		horseManager.unloadHorses();
+		horseManager.untrackHorses();
 		dataManager.closeDatabase();
     }
 	
@@ -80,13 +80,13 @@ public class ZHorse extends JavaPlugin {
 		boolean conformLocale = localeManager.checkConformity();
 		
 		dataManager.openDatabase();
-		horseManager.loadHorses();
+		horseManager.trackHorses();
 		
 		return conformConfig && conformLocale;
 	}
     
 	public boolean reload() {
-		horseManager.unloadHorses();
+		horseManager.untrackHorses();
 		dataManager.closeDatabase();
 		return initManagers();
 	}

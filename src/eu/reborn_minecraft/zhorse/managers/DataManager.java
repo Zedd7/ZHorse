@@ -331,7 +331,7 @@ public class DataManager {
 	}
 	
 	public boolean removeHorse(UUID horseUUID, UUID ownerUUID, int horseID) {
-		zh.getHM().unloadHorse(horseUUID);
+		zh.getHM().untrackHorse(horseUUID);
 		int favorite = getPlayerFavoriteHorseID(ownerUUID);
 		if (horseID == favorite) {
 			updatePlayerFavorite(ownerUUID, getDefaultFavoriteHorseID());

@@ -18,8 +18,11 @@ public class DelayedChunckLoad {
 					if (entity instanceof AbstractHorse) {
 						AbstractHorse horse = (AbstractHorse) entity;
 						if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
-							zh.getHM().loadHorse(horse);
+							
+							
+							zh.getHM().trackHorse(horse);
 							zh.getDM().updateHorseLocation(horse.getUniqueId(), horse.getLocation(), true);
+							
 						}
 					}
 				}
