@@ -93,8 +93,8 @@ public class CommandAdmin extends AbstractCommand {
 								horse.setCustomNameVisible(false);
 							}
 							UUID horseUUID = zh.getDM().getHorseUUID(targetUUID, horseID);
-							success = zh.getDM().removeHorseStats(horseUUID) && success; // = a && b instead of &= a to ensure a is executed
-							success = zh.getDM().removeHorse(horseUUID, targetUUID, horseID) && success; // remove horse after stats because of foreign key
+							success = zh.getDM().removeHorse(horseUUID, targetUUID, horseID) && success; // = a && b instead of &= a to ensure a is executed
+							success = zh.getDM().removeHorseStats(horseUUID) && success;
 						}
 						if (success) {
 							if (samePlayer) {

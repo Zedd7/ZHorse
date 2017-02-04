@@ -166,6 +166,7 @@ public class HorseManager {
 				String ownerName = zh.getDM().getOwnerName(sourceHorse.getUniqueId());
 				zh.getDM().updateHorseUUID(sourceHorse.getUniqueId(), copyHorse.getUniqueId());
 				zh.getDM().updateHorseLocation(copyHorse.getUniqueId(), copyHorse.getLocation(), true);
+				zh.getDM().updateHorseStatsUUID(sourceHorse.getUniqueId(), copyHorse.getUniqueId());
 				copyAttributes(sourceHorse, copyHorse);
 				copyInventory(sourceHorse, copyHorse);
 				removeLeash(sourceHorse);

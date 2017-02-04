@@ -57,8 +57,8 @@ public class CommandFree extends AbstractCommand {
 
 	private void execute() {
 		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
-			boolean success = zh.getDM().removeHorseStats(horse.getUniqueId()); // remove stats before horse because of foreign key
-			success &= zh.getDM().removeHorse(horse.getUniqueId(), targetUUID); // not using horseID because is null if called from horse back
+			boolean success = zh.getDM().removeHorse(horse.getUniqueId(), targetUUID);
+			success &= zh.getDM().removeHorseStats(horse.getUniqueId());
 			if (success) {
 				horse.setCustomName(null);
 				horse.setCustomNameVisible(false);
@@ -72,8 +72,8 @@ public class CommandFree extends AbstractCommand {
 	
 	private void removeLostHorse() {
 		UUID horseUUID = zh.getDM().getHorseUUID(targetUUID, Integer.parseInt(horseID));
-		boolean success = zh.getDM().removeHorseStats(horseUUID); // remove stats before horse because of foreign key
-		success &= zh.getDM().removeHorse(horseUUID, targetUUID, Integer.parseInt(horseID));
+		boolean success = zh.getDM().removeHorse(horseUUID, targetUUID, Integer.parseInt(horseID));
+		success &= zh.getDM().removeHorseStats(horseUUID);
 		if (success) {
 			if (samePlayer) {
 				zh.getMM().sendMessageHorse(s, LocaleEnum.horseCleared, horseName);
