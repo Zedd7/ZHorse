@@ -76,6 +76,7 @@ public class CommandLock extends AbstractCommand {
 				}
 			}
 			else {
+				horse.getInventory().clear(); ///////
 				zh.getDM().updateHorseLocked(horse.getUniqueId(), false);
 				if (displayConsole) {
 					zh.getMM().sendMessageHorse(s, LocaleEnum.horseUnLocked, horseName);

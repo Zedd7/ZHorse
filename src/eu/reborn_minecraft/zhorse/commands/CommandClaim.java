@@ -4,6 +4,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AbstractHorse;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.database.HorseInventoryRecord;
 import eu.reborn_minecraft.zhorse.database.HorseRecord;
 import eu.reborn_minecraft.zhorse.database.HorseStatsRecord;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
@@ -45,7 +46,8 @@ public class CommandClaim extends AbstractCommand {
 			boolean share = zh.getCM().shouldShareOnClaim();
 			HorseRecord horseRecord = new HorseRecord(horse.getUniqueId().toString(), p.getUniqueId().toString(), horseID, horseName, lock, protect, share, horse.getLocation());
 			HorseStatsRecord horseStatsRecord = new HorseStatsRecord(horse);
-			if (zh.getDM().registerHorse(horseRecord) && zh.getDM().registerHorseStats(horseStatsRecord)) {
+			HorseInventoryRecord horseInventoryRecord = new HorseInventoryRecord(horse.getUniqueId(), horse.getInventory());
+			if (zh.getDM().registerHorse(horseRecord) && zh.getDM().registerHorseStats(horseStatsRecord) && zh.getDM().registerHorseInventory(horseInventoryRecord)) {
 				targetUUID = p.getUniqueId(); // uses the player group for the horse name color
 				applyHorseName();
 				horse.setCustomNameVisible(true);

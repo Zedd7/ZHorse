@@ -62,32 +62,35 @@ public class SQLDatabaseConnector {
 	
 	public Boolean getBooleanResult(String query) {
 		query = applyTablePrefix(query);
+		Boolean result = null;
 		try (Statement statement = connection.createStatement()) {
 			ResultSet resultSet = statement.executeQuery(query);
 			if (resultSet.next()) {
-				return resultSet.getInt(1) == 1;
+				result = resultSet.getInt(1) == 1;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return result;
 	}
 	
 	public Integer getIntegerResult(String query) {
 		query = applyTablePrefix(query);
+		Integer result = null;
 		try (Statement statement = connection.createStatement()) {
 			ResultSet resultSet = statement.executeQuery(query);
 			if (resultSet.next()) {
-				return resultSet.getInt(1);
+				result = resultSet.getInt(1);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return result;
 	}
 	
 	public Location getLocationResult(String query) {
 		query = applyTablePrefix(query);
+		Location location = null;
 		try (Statement statement = connection.createStatement()) {
 			ResultSet resultSet = statement.executeQuery(query);
 			if (resultSet.next()) {
@@ -96,25 +99,26 @@ public class SQLDatabaseConnector {
 				int z = resultSet.getInt("locationZ");
 				String worldName = resultSet.getString("locationWorld");
 				World world = zh.getServer().getWorld(worldName);
-				return new Location(world, x, y, z);
+				location = new Location(world, x, y, z);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return location;
 	}
 	
 	public String getStringResult(String query) {
 		query = applyTablePrefix(query);
+		String result = null;
 		try (Statement statement = connection.createStatement()) {
 			ResultSet resultSet = statement.executeQuery(query);
 			if (resultSet.next()) {
-				return resultSet.getString(1);
+				result = resultSet.getString(1);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return result;
 	}
 	
 	public List<String> getStringResultList(String query) {
@@ -133,13 +137,14 @@ public class SQLDatabaseConnector {
 	
 	public boolean hasResult(String query) {
 		query = applyTablePrefix(query);
+		boolean hasResult = false;
 		try (Statement statement = connection.createStatement()) {
 			ResultSet resultSet = statement.executeQuery(query);
-			return resultSet.next();
+			hasResult = resultSet.next();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return hasResult;
 	}
 	
 	public List<FriendRecord> getFriendRecordList(String query) {
@@ -161,27 +166,28 @@ public class SQLDatabaseConnector {
 	
 	public FriendRecord getFriendRecord(String query) {
 		query = applyTablePrefix(query);
+		FriendRecord friendRecord = null;
 		try (Statement statement = connection.createStatement()) {
 			ResultSet resultSet = statement.executeQuery(query);
 			if (resultSet.next()) {
-				FriendRecord friendRecord = new FriendRecord(
+				friendRecord = new FriendRecord(
 					resultSet.getString("requester"),
 					resultSet.getString("recipient")
 				);
-				return friendRecord;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return friendRecord;
 	}
 	
 	public HorseRecord getHorseRecord(String query) {
 		query = applyTablePrefix(query);
+		HorseRecord horseRecord = null;
 		try (Statement statement = connection.createStatement()) {
 			ResultSet resultSet = statement.executeQuery(query);
 			if (resultSet.next()) {
-				HorseRecord horseRecord = new HorseRecord(
+				horseRecord = new HorseRecord(
 					resultSet.getString("uuid"),
 					resultSet.getString("owner"),
 					resultSet.getInt("id"),
@@ -194,20 +200,20 @@ public class SQLDatabaseConnector {
 					resultSet.getInt("locationY"),
 					resultSet.getInt("locationZ")
 				);
-				return horseRecord;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return horseRecord;
 	}
 	
 	public HorseStatsRecord getHorseStatsRecord(String query) {
 		query = applyTablePrefix(query);
+		HorseStatsRecord horseStatsRecord = null;
 		try (Statement statement = connection.createStatement()) {
 			ResultSet resultSet = statement.executeQuery(query);
 			if (resultSet.next()) {
-				HorseStatsRecord horseStatsRecord = new HorseStatsRecord(
+				horseStatsRecord = new HorseStatsRecord(
 					resultSet.getString("uuid"),
 					resultSet.getInt("age"),
 					resultSet.getInt("canBreed") == 1,
@@ -229,31 +235,47 @@ public class SQLDatabaseConnector {
 					resultSet.getInt("ticksLived"),
 					resultSet.getString("type")
 				);
-				return horseStatsRecord;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return horseStatsRecord;
+	}
+	
+	public HorseInventoryRecord getHorseInventoryRecord(String query) {
+		query = applyTablePrefix(query);
+		HorseInventoryRecord horseInventoryRecord = null;
+		try (Statement statement = connection.createStatement()) {
+			ResultSet resultSet = statement.executeQuery(query);
+			if (resultSet.next()) {
+				horseInventoryRecord = new HorseInventoryRecord(
+					resultSet.getString("uuid"),
+					resultSet.getString("inventory")
+				);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return horseInventoryRecord;
 	}
 	
 	public PlayerRecord getPlayerRecord(String query) {
 		query = applyTablePrefix(query);
+		PlayerRecord playerRecord = null;
 		try (Statement statement = connection.createStatement()) {
 			ResultSet resultSet = statement.executeQuery(query);
 			if (resultSet.next()) {
-				PlayerRecord playerRecord = new PlayerRecord(
+				playerRecord = new PlayerRecord(
 					resultSet.getString("uuid"),
 					resultSet.getString("name"),
 					resultSet.getString("language"),
 					resultSet.getInt("favorite")
 				);
-				return playerRecord;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return playerRecord;
 	}
 	
 }

@@ -16,6 +16,7 @@ public class SQLDatabaseImporter {
 		success &= importFriends(zh, db);
 		success &= importHorses(zh, db, horseUUIDList);
 		success &= importHorsesStats(zh, db, horseUUIDList);
+		success &= importHorsesInventory(zh, db, horseUUIDList);
 		return success;
 	}
 	
@@ -82,6 +83,22 @@ public class SQLDatabaseImporter {
 		}
 		HorseStatsRecord horseStatsRecord = db.getHorseStatsRecord(String.format("SELECT * FROM prefix_horse_stats WHERE uuid = \"%s\"", horseUUID));
 		return zh.getDM().registerHorseStats(horseStatsRecord);
+	}
+	
+	private static boolean importHorsesInventory(ZHorse zh, SQLDatabaseConnector db, List<UUID> horseUUIDList) {
+		boolean success = true;
+		for (UUID horseUUID : horseUUIDList) {
+			success &= importHorseInventory(zh, db, horseUUID);
+		}
+		return success;
+	}
+	
+	private static boolean importHorseInventory(ZHorse zh, SQLDatabaseConnector db, UUID horseUUID) {
+		if (zh.getDM().isHorseInventoryRegistered(horseUUID)) { // Don't overwrite if already exists
+			return true;
+		}
+		HorseInventoryRecord horseInventoryRecord = db.getHorseInventoryRecord(String.format("SELECT * FROM prefix_horse_inventory WHERE uuid = \"%s\"", horseUUID));
+		return zh.getDM().registerHorseInventory(horseInventoryRecord);
 	}
 	
 	private static List<UUID> getPlayerUUIDList(SQLDatabaseConnector db) {

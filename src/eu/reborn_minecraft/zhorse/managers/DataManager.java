@@ -10,6 +10,7 @@ import org.bukkit.Location;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.database.FriendRecord;
+import eu.reborn_minecraft.zhorse.database.HorseInventoryRecord;
 import eu.reborn_minecraft.zhorse.database.HorseRecord;
 import eu.reborn_minecraft.zhorse.database.HorseStatsRecord;
 import eu.reborn_minecraft.zhorse.database.MySQLConnector;
@@ -21,7 +22,7 @@ import eu.reborn_minecraft.zhorse.enums.DatabaseEnum;
 public class DataManager {
 	
 	private static final String TABLE_SCRIPTS_PATH = "res\\sql\\%s-table.sql";
-	private static final String[] TABLE_ARRAY = {"player", "horse", "friend", "horse_stats"};
+	private static final String[] TABLE_ARRAY = {"player", "horse", "friend", "horse_stats", "horse_inventory"};
 	
 	private ZHorse zh;
 	private SQLDatabaseConnector db;
@@ -145,6 +146,11 @@ public class DataManager {
 		return db.getHorseStatsRecord(query);
 	}
 	
+	public HorseInventoryRecord getHorseInventoryRecord(UUID horseUUID) {
+		String query = String.format("SELECT * FROM prefix_horse_inventory WHERE uuid = \"%s\"", horseUUID);
+		return db.getHorseInventoryRecord(query);
+	}
+	
 	public Integer getNextHorseID(UUID ownerUUID) {
 		String query = String.format("SELECT MAX(id) FROM prefix_horse WHERE owner = \"%s\"", ownerUUID);
 		Integer horseID = db.getIntegerResult(query);
@@ -248,6 +254,11 @@ public class DataManager {
 		return db.hasResult(query);
 	}
 	
+	public boolean isHorseInventoryRegistered(UUID horseUUID) {
+		String query = String.format("SELECT 1 FROM prefix_horse_inventory WHERE uuid = \"%s\"", horseUUID);
+		return db.hasResult(query);
+	}
+	
 	public boolean isPlayerRegistered(String playerName) {
 		String query = String.format("SELECT 1 FROM prefix_player WHERE name = \"%s\"", playerName);
 		return db.hasResult(query);
@@ -308,6 +319,14 @@ public class DataManager {
 		return db.executeUpdate(update);
 	}
 	
+	public boolean registerHorseInventory(HorseInventoryRecord horseInventoryRecord) {
+		String update = String.format("INSERT INTO prefix_horse_inventory VALUES (\"%s\", \"%s\")",
+				horseInventoryRecord.getUUID(),
+				horseInventoryRecord.getInventoryData()
+			);
+			return db.executeUpdate(update);
+	}
+	
 	public boolean registerPlayer(PlayerRecord playerRecord) {
 		String update = String.format("INSERT INTO prefix_player VALUES (\"%s\", \"%s\", \"%s\", %d)",
 			playerRecord.getUUID(), playerRecord.getName(), playerRecord.getLanguage(), playerRecord.getFavorite());
@@ -346,6 +365,11 @@ public class DataManager {
 	
 	public boolean removeHorseStats(UUID horseUUID) {
 		String update = String.format("DELETE FROM prefix_horse_stats WHERE uuid = \"%s\"", horseUUID);
+		return db.executeUpdate(update);
+	}
+	
+	public boolean removeHorseInventory(UUID horseUUID) {
+		String update = String.format("DELETE FROM prefix_horse_inventory WHERE uuid = \"%s\"", horseUUID);
 		return db.executeUpdate(update);
 	}
 	
