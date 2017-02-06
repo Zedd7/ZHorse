@@ -18,13 +18,14 @@ public class DelayedChunckLoad {
 					if (entity instanceof AbstractHorse) {
 						AbstractHorse horse = (AbstractHorse) entity;
 						if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
-							
 							zh.getHM().trackHorse(horse);
 							zh.getDM().updateHorseLocation(horse.getUniqueId(), horse.getLocation(), true);
 							
 						}
 					}
 				}
+				// TODO if horse expected to be loaded but missing : spawn it
+				// TODO if horse spawned but in wrong location : remove it
 			}
 			
 		});

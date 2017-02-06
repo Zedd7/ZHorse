@@ -6,6 +6,8 @@ import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Entity;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.database.HorseInventoryRecord;
+import eu.reborn_minecraft.zhorse.database.HorseStatsRecord;
 
 public class DelayedChunckUnload {
 	
@@ -18,10 +20,11 @@ public class DelayedChunckUnload {
 					if (entity instanceof AbstractHorse) {
 						AbstractHorse horse = (AbstractHorse) entity;
 						if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
-							
 							zh.getHM().untrackHorse(horse);
 							zh.getDM().updateHorseLocation(horse.getUniqueId(), horse.getLocation(), true);
-							
+							zh.getDM().registerHorseStats(new HorseStatsRecord(horse));
+							zh.getDM().registerHorseInventory(new HorseInventoryRecord(horse.getUniqueId(), horse.getInventory()));
+							// TODO set horse to despawn at distance
 						}
 					}
 				}
