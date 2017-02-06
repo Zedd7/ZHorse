@@ -7,7 +7,8 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 public class MySQLConnector extends SQLDatabaseConnector {
 
 	private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-	private static final String JDBC_URL = "jdbc:mysql://%s:%d/%s?verifyServerCertificate=false&useSSL=true";
+	private static final String JDBC_OPTIONS = "?verifyServerCertificate=false&useSSL=true&autoReconnect=true&failOverReadOnly=false&maxReconnects=10";
+	private static final String JDBC_URL = "jdbc:mysql://%s:%d/%s" + JDBC_OPTIONS;
 
 	public MySQLConnector(ZHorse zh) {
 		super(zh);
@@ -24,7 +25,6 @@ public class MySQLConnector extends SQLDatabaseConnector {
 		else {
 			zh.getLogger().severe("Could not open database because your config is incomplete !");
 		}
-		
 	}
 	
 	public void openConnection(String url, String user, String password) {									
