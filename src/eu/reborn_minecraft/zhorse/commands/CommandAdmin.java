@@ -93,6 +93,7 @@ public class CommandAdmin extends AbstractCommand {
 								horse.setCustomNameVisible(false);
 							}
 							UUID horseUUID = zh.getDM().getHorseUUID(targetUUID, horseID);
+							zh.getHM().untrackHorse(horseUUID);
 							if (!zh.getDM().removeHorse(horseUUID, targetUUID, horseID)) success = false;
 							if (!zh.getDM().removeHorseStats(horseUUID)) success = false;
 							if (!zh.getDM().removeHorseInventory(horseUUID)) success = false;
@@ -115,7 +116,11 @@ public class CommandAdmin extends AbstractCommand {
 						horse.setCustomNameVisible(false);
 					}
 					UUID horseUUID = zh.getDM().getHorseUUID(targetUUID, Integer.parseInt(horseID));
-					if (zh.getDM().removeHorseStats(horseUUID) && zh.getDM().removeHorse(horseUUID, targetUUID, Integer.parseInt(horseID))) {
+					zh.getHM().untrackHorse(horseUUID);
+					boolean success = zh.getDM().removeHorse(horseUUID, targetUUID, Integer.parseInt(horseID));
+					success &= zh.getDM().removeHorseStats(horseUUID);
+					success &= zh.getDM().removeHorseInventory(horseUUID);
+					if (success) {
 						if (samePlayer) {
 							zh.getMM().sendMessageHorse(s, LocaleEnum.horseCleared, horseName);
 						}

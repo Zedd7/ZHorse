@@ -4,7 +4,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AbstractHorse;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.database.HorseInventoryRecord;
 import eu.reborn_minecraft.zhorse.database.HorseRecord;
+import eu.reborn_minecraft.zhorse.database.HorseStatsRecord;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
 public class CommandClaim extends AbstractCommand {
@@ -48,6 +50,10 @@ public class CommandClaim extends AbstractCommand {
 				applyHorseName();
 				horse.setCustomNameVisible(true);
 				horse.setTamed(true);
+				HorseInventoryRecord horseInventoryRecord = new HorseInventoryRecord(horse.getUniqueId(), horse.getInventory());
+				HorseStatsRecord horseStatsRecord = new HorseStatsRecord(horse);
+				zh.getDM().registerHorseInventory(horseInventoryRecord);
+				zh.getDM().registerHorseStats(horseStatsRecord);
 				if (displayConsole) {
 					zh.getMM().sendMessageHorse(s, LocaleEnum.horseClaimed, horseName);
 				}

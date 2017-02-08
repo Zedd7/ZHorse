@@ -26,6 +26,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.database.HorseInventoryRecord;
+import eu.reborn_minecraft.zhorse.database.HorseStatsRecord;
 import eu.reborn_minecraft.zhorse.utils.DelayedChunckLoad;
 
 public class HorseManager {
@@ -157,68 +159,69 @@ public class HorseManager {
 	public AbstractHorse teleport(AbstractHorse sourceHorse, Location destination) {
 		if (zh.getCM().shouldUseOldTeleportMethod()) {
 			sourceHorse.teleport(destination);
-			zh.getDM().updateHorseLocation(sourceHorse.getUniqueId(), sourceHorse.getLocation(), false);
+			zh.getDM().updateHorseLocation(sourceHorse.getUniqueId(), destination, false);
+			return sourceHorse;
 		}
 		else {
 			AbstractHorse copyHorse = (AbstractHorse) destination.getWorld().spawnEntity(destination, sourceHorse.getType());
 			if (copyHorse != null) {
-				String horseName = zh.getDM().getHorseName(sourceHorse.getUniqueId()); // call before updating horse uuid
-				String ownerName = zh.getDM().getOwnerName(sourceHorse.getUniqueId());
-				zh.getDM().updateHorseUUID(sourceHorse.getUniqueId(), copyHorse.getUniqueId());
-				zh.getDM().updateHorseLocation(copyHorse.getUniqueId(), copyHorse.getLocation(), true);
-				zh.getDM().updateHorseStatsUUID(sourceHorse.getUniqueId(), copyHorse.getUniqueId());
-				copyAttributes(sourceHorse, copyHorse);
-				copyInventory(sourceHorse, copyHorse);
+				UUID oldHorseUUID = sourceHorse.getUniqueId();
+				UUID newHorseUUID = copyHorse.getUniqueId();
+				String horseName = zh.getDM().getHorseName(oldHorseUUID); // call before updating horse uuid
+				String ownerName = zh.getDM().getOwnerName(oldHorseUUID);
+				zh.getDM().updateHorseUUID(oldHorseUUID, newHorseUUID);
+				zh.getDM().updateHorseLocation(newHorseUUID, destination, true);
+				zh.getDM().updateHorseStatsUUID(oldHorseUUID, newHorseUUID);
+				zh.getDM().updateHorseInventoryUUID(oldHorseUUID, newHorseUUID);
+				HorseStatsRecord horseStatsRecord = new HorseStatsRecord(sourceHorse);
+				HorseInventoryRecord horseInventoryRecord = new HorseInventoryRecord(sourceHorse);
+				assignStats(copyHorse, horseStatsRecord);
+				assignInventory(copyHorse, horseInventoryRecord, horseStatsRecord.isCarryingChest());
 				removeLeash(sourceHorse);
 				untrackHorse(sourceHorse);
 				trackHorse(copyHorse);
 				removeHorse(sourceHorse, horseName, ownerName);
-				return copyHorse;
 			}
+			return copyHorse;
 		}
-		return null;
 	}
 
-	private void copyAttributes(AbstractHorse sourceHorse, AbstractHorse copyHorse) {	
-		copyHorse.addPotionEffects(sourceHorse.getActivePotionEffects());
-		copyHorse.setAge(sourceHorse.getAge());
-		copyHorse.setBreed(sourceHorse.canBreed());
-		copyHorse.setCanPickupItems(sourceHorse.getCanPickupItems());
-		copyHorse.setCustomName(sourceHorse.getCustomName());
-		copyHorse.setCustomNameVisible(sourceHorse.isCustomNameVisible());
-		copyHorse.setDomestication(sourceHorse.getDomestication());
-		copyHorse.setFireTicks(sourceHorse.getFireTicks());
-		copyHorse.setGlowing(sourceHorse.isGlowing());
-		double maxHealth = sourceHorse.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
-		copyHorse.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxHealth);
-		copyHorse.setHealth(sourceHorse.getHealth()); // Define max health before current health
-		copyHorse.setJumpStrength(sourceHorse.getJumpStrength());
-		copyHorse.setNoDamageTicks(sourceHorse.getNoDamageTicks());
-		copyHorse.setOwner(sourceHorse.getOwner());
-		copyHorse.setRemainingAir(sourceHorse.getRemainingAir());
-		copyHorse.setTamed(sourceHorse.isTamed());
-		copyHorse.setTicksLived(sourceHorse.getTicksLived());
-		double speed = sourceHorse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
-		copyHorse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(speed);
+	private void assignStats(AbstractHorse horse, HorseStatsRecord horseStatsRecord) {
+		horse.setAge(horseStatsRecord.getAge());
+		horse.setBreed(horseStatsRecord.canBreed());
+		horse.setCanPickupItems(horseStatsRecord.canPickupItems());
+		horse.setCustomName(horseStatsRecord.getCustomName());
+		horse.setCustomNameVisible(horseStatsRecord.isCustomNameVisible());
+		horse.setDomestication(horseStatsRecord.getDomestication());
+		horse.setFireTicks(horseStatsRecord.getFireTicks());
+		horse.setGlowing(horseStatsRecord.isGlowing());
+		horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(horseStatsRecord.getMaxHealth());
+		horse.setHealth(horseStatsRecord.getHealth()); // Define max health before current health
+		horse.setJumpStrength(horseStatsRecord.getJumpStrength());
+		horse.setNoDamageTicks(horseStatsRecord.getNoDamageTicks());
+		horse.setRemainingAir(horseStatsRecord.getRemainingAir());
+		horse.setTamed(horseStatsRecord.isTamed());
+		horse.setTicksLived(horseStatsRecord.getTicksLived());
+		horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(horseStatsRecord.getSpeed());
 		
-		switch (sourceHorse.getType()) {
-		case HORSE:
-			((Horse) copyHorse).setColor(((Horse) sourceHorse).getColor());
-			((Horse) copyHorse).setStyle(((Horse) sourceHorse).getStyle());
+		switch (horseStatsRecord.getType()) {
+		case "HORSE":
+			((Horse) horse).setColor(Horse.Color.valueOf(horseStatsRecord.getColor()));
+			((Horse) horse).setStyle(Horse.Style.valueOf(horseStatsRecord.getStyle()));
 			break;
-		case LLAMA:
-			((Llama) copyHorse).setColor(((Llama) sourceHorse).getColor());
-			((Llama) copyHorse).setStrength(((Llama) sourceHorse).getStrength());
+		case "LLAMA":
+			((Llama) horse).setColor(Llama.Color.valueOf(horseStatsRecord.getColor()));
+			((Llama) horse).setStrength(horseStatsRecord.getStrength());
 		default:
 			break;
 		}
 	}
 	
-	private void copyInventory(AbstractHorse sourceHorse, AbstractHorse copyHorse) {
-		if (sourceHorse instanceof ChestedHorse) {
-			((ChestedHorse) copyHorse).setCarryingChest(((ChestedHorse) sourceHorse).isCarryingChest());
+	private void assignInventory(AbstractHorse horse, HorseInventoryRecord horseInventoryRecord, boolean isCarryingChest) {
+		if (horse instanceof ChestedHorse) {
+			((ChestedHorse) horse).setCarryingChest(isCarryingChest);
 		}
-		copyHorse.getInventory().setContents(sourceHorse.getInventory().getContents());
+		horse.getInventory().setContents(horseInventoryRecord.getInventory().getContents());
 	}
 	
 	private void removeLeash(AbstractHorse horse) {
@@ -241,6 +244,7 @@ public class HorseManager {
 		horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0);
 		horse.setAI(false);
 		
+		horse.setRemoveWhenFarAway(true);
 		horse.remove();
 		
 		Bukkit.getScheduler().scheduleSyncDelayedTask(zh, new Runnable() {
