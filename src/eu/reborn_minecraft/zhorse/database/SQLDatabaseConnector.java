@@ -209,19 +209,26 @@ public class SQLDatabaseConnector {
 	
 	public HorseInventoryRecord getHorseInventoryRecord(String query) {
 		query = applyTablePrefix(query);
-		HorseInventoryRecord horseInventoryRecord = null;
+		List<InventoryItemRecord> inventoryItemRecordList = new ArrayList<>();
 		try (Statement statement = connection.createStatement()) {
 			ResultSet resultSet = statement.executeQuery(query);
-			if (resultSet.next()) {
-				horseInventoryRecord = new HorseInventoryRecord(
+			while (resultSet.next()) {
+				inventoryItemRecordList.add(new InventoryItemRecord(
 					resultSet.getString("uuid"),
-					resultSet.getString("inventory")
-				);
+					resultSet.getInt("position"),
+					resultSet.getInt("amount"),
+					resultSet.getString("displayName"),
+					resultSet.getInt("durability"),
+					resultSet.getString("localizedName"),
+					resultSet.getString("loreFormatted"),
+					resultSet.getString("type"),
+					resultSet.getInt("unbreakable") == 1
+				));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return horseInventoryRecord;
+		return new HorseInventoryRecord(inventoryItemRecordList);
 	}
 	
 	public HorseStatsRecord getHorseStatsRecord(String query) {

@@ -23,8 +23,7 @@ public class DelayedChunckUnload {
 							zh.getHM().untrackHorse(horse);
 							zh.getDM().updateHorseLocation(horse.getUniqueId(), horse.getLocation(), true);
 							zh.getDM().registerHorseStats(new HorseStatsRecord(horse));
-							zh.getDM().registerHorseInventory(new HorseInventoryRecord(horse.getUniqueId(), horse.getInventory()));
-							// TODO kill horse
+							zh.getDM().registerHorseInventory(new HorseInventoryRecord(horse));
 						}
 					}
 				}

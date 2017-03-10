@@ -13,6 +13,7 @@ import eu.reborn_minecraft.zhorse.database.FriendRecord;
 import eu.reborn_minecraft.zhorse.database.HorseInventoryRecord;
 import eu.reborn_minecraft.zhorse.database.HorseRecord;
 import eu.reborn_minecraft.zhorse.database.HorseStatsRecord;
+import eu.reborn_minecraft.zhorse.database.InventoryItemRecord;
 import eu.reborn_minecraft.zhorse.database.MySQLConnector;
 import eu.reborn_minecraft.zhorse.database.PlayerRecord;
 import eu.reborn_minecraft.zhorse.database.SQLDatabaseConnector;
@@ -22,7 +23,7 @@ import eu.reborn_minecraft.zhorse.enums.DatabaseEnum;
 public class DataManager {
 	
 	private static final String TABLE_SCRIPTS_PATH = "res\\sql\\%s-table.sql";
-	private static final String[] TABLE_ARRAY = {"player", "horse", "friend", "horse_stats", "horse_inventory"};
+	private static final String[] TABLE_ARRAY = {"player", "horse", "friend", "horse_stats", "inventory_item"};
 	
 	private ZHorse zh;
 	private SQLDatabaseConnector db;
@@ -142,7 +143,7 @@ public class DataManager {
 	}
 	
 	public HorseInventoryRecord getHorseInventoryRecord(UUID horseUUID) {
-		String query = String.format("SELECT * FROM prefix_horse_inventory WHERE uuid = \"%s\"", horseUUID);
+		String query = String.format("SELECT * FROM prefix_inventory_item WHERE uuid = \"%s\"", horseUUID);
 		return db.getHorseInventoryRecord(query);
 	}
 	
@@ -250,7 +251,7 @@ public class DataManager {
 	}
 	
 	public boolean isHorseInventoryRegistered(UUID horseUUID) {
-		String query = String.format("SELECT 1 FROM prefix_horse_inventory WHERE uuid = \"%s\"", horseUUID);
+		String query = String.format("SELECT 1 FROM prefix_inventory_item WHERE uuid = \"%s\"", horseUUID);
 		return db.hasResult(query);
 	}
 	
@@ -295,11 +296,26 @@ public class DataManager {
 		if (isHorseInventoryRegistered(UUID.fromString(horseInventoryRecord.getUUID()))) {
 			removeHorseInventory(UUID.fromString(horseInventoryRecord.getUUID()));
 		}
-		String update = String.format("INSERT INTO prefix_horse_inventory VALUES (\"%s\", \"%s\")",
-				horseInventoryRecord.getUUID(),
-				horseInventoryRecord.getInventoryData()
+		boolean success = true;
+		for (InventoryItemRecord itemRecord : horseInventoryRecord.getItemRecordList()) {
+			String displayName = itemRecord.getDisplayName();
+			String localizedName = itemRecord.getLocalizedName();
+			String loreFormatted = itemRecord.getLoreFormatted();
+			Boolean unbreakable = itemRecord.isUnbreakable();
+			String update = String.format("INSERT INTO prefix_inventory_item VALUES (\"%s\", %d, %d, %s, %d, %s, %s, \"%s\", %d)",
+					itemRecord.getUUID(),
+					itemRecord.getPosition(),
+					itemRecord.getAmount(),
+					displayName != null ? "\"" + displayName + "\"" : null,
+					itemRecord.getDurability(),
+					localizedName != null ? "\"" + localizedName + "\"" : null,
+					loreFormatted != null ? "\"" + loreFormatted + "\"" : null,
+					itemRecord.getType(),
+					unbreakable != null && unbreakable ? 1 : 0
 			);
-			return db.executeUpdate(update);
+			success &= db.executeUpdate(update);
+		}
+		return success;
 	}
 	
 	public boolean registerHorseStats(HorseStatsRecord horseStatsRecord) {
@@ -371,7 +387,7 @@ public class DataManager {
 	}
 	
 	public boolean removeHorseInventory(UUID horseUUID) {
-		String update = String.format("DELETE FROM prefix_horse_inventory WHERE uuid = \"%s\"", horseUUID);
+		String update = String.format("DELETE FROM prefix_inventory_item WHERE uuid = \"%s\"", horseUUID);
 		return db.executeUpdate(update);
 	}
 	
@@ -418,7 +434,7 @@ public class DataManager {
 	}
 	
 	public boolean updateHorseInventoryUUID(UUID oldHorseUUID, UUID newHorseUUID) {
-		String update = String.format("UPDATE prefix_horse_inventory SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
+		String update = String.format("UPDATE prefix_inventory_item SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
 		return db.executeUpdate(update);
 	}
 	

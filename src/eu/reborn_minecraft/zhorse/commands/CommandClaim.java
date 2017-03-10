@@ -50,7 +50,7 @@ public class CommandClaim extends AbstractCommand {
 				applyHorseName();
 				horse.setCustomNameVisible(true);
 				horse.setTamed(true);
-				HorseInventoryRecord horseInventoryRecord = new HorseInventoryRecord(horse.getUniqueId(), horse.getInventory());
+				HorseInventoryRecord horseInventoryRecord = new HorseInventoryRecord(horse);
 				HorseStatsRecord horseStatsRecord = new HorseStatsRecord(horse);
 				zh.getDM().registerHorseInventory(horseInventoryRecord);
 				zh.getDM().registerHorseStats(horseStatsRecord);

@@ -1,49 +1,44 @@
 package eu.reborn_minecraft.zhorse.database;
 
-import java.io.IOException;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.inventory.Inventory;
-
-import eu.reborn_minecraft.zhorse.utils.InventorySerializer;
+import org.bukkit.inventory.ItemStack;
 
 public class HorseInventoryRecord {
 	
 	private String uuid;
-	private String inventoryData;
-
-	public HorseInventoryRecord(String uuid, String inventoryData) {
+	private List<InventoryItemRecord> itemRecordList;
+	
+	public HorseInventoryRecord(String uuid, List<InventoryItemRecord> itemRecordList) {
 		this.uuid = uuid;
-		this.inventoryData = inventoryData;
+		this.itemRecordList = itemRecordList;
 	}
 	
-	public HorseInventoryRecord(UUID horseUUID, Inventory inventory) {
-		uuid = horseUUID.toString();
-		inventoryData = InventorySerializer.toBase64(inventory);
+	public HorseInventoryRecord(List<InventoryItemRecord> itemRecordList) {
+		this(itemRecordList.get(0).getUUID(), itemRecordList);
 	}
 	
 	public HorseInventoryRecord(AbstractHorse horse) {
 		uuid = horse.getUniqueId().toString();
-		inventoryData = InventorySerializer.toBase64(horse.getInventory());
+		itemRecordList = new ArrayList<>();
+		Inventory horseInventory = horse.getInventory();
+		for (int position = 0; position < horseInventory.getSize(); position++) {
+			ItemStack item = horseInventory.getItem(position);
+			if (item != null) {
+				itemRecordList.add(new InventoryItemRecord(uuid, position, item));
+			}
+		}
 	}
 	
 	public String getUUID() {
 		return uuid;
 	}
-
-	public Inventory getInventory() {
-		Inventory inventory = null;
-		try {
-			inventory = InventorySerializer.fromBase64(inventoryData);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return inventory;
-	}
 	
-	public String getInventoryData() {
-		return inventoryData;
+	public List<InventoryItemRecord> getItemRecordList() {
+		return itemRecordList;
 	}
 
 }

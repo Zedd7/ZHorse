@@ -28,6 +28,7 @@ import org.bukkit.potion.PotionEffectType;
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.database.HorseInventoryRecord;
 import eu.reborn_minecraft.zhorse.database.HorseStatsRecord;
+import eu.reborn_minecraft.zhorse.database.InventoryItemRecord;
 import eu.reborn_minecraft.zhorse.utils.DelayedChunckLoad;
 
 public class HorseManager {
@@ -221,7 +222,9 @@ public class HorseManager {
 		if (horse instanceof ChestedHorse) {
 			((ChestedHorse) horse).setCarryingChest(isCarryingChest);
 		}
-		horse.getInventory().setContents(horseInventoryRecord.getInventory().getContents());
+		for (InventoryItemRecord itemRecord : horseInventoryRecord.getItemRecordList()) {
+			horse.getInventory().setItem(itemRecord.getPosition(), itemRecord.getItem());
+		}
 	}
 	
 	private void removeLeash(AbstractHorse horse) {
