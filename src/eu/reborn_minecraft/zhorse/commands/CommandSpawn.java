@@ -79,8 +79,8 @@ public class CommandSpawn extends AbstractCommand {
 					parsed = parseHorseStyle(argument);
 				}
 				if (!parsed) {
-					parsed = parseHorseColor(argument);
 					parsed = parseLlamaColor(argument);
+					parsed = parseHorseColor(argument);
 				}
 				if (!parsed) {
 					parsed = parseTamed(argument);
