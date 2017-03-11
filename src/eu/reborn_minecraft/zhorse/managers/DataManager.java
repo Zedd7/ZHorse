@@ -293,9 +293,6 @@ public class DataManager {
 	}
 	
 	public boolean registerHorseInventory(HorseInventoryRecord horseInventoryRecord) {
-		if (isHorseInventoryRegistered(UUID.fromString(horseInventoryRecord.getUUID()))) {
-			removeHorseInventory(UUID.fromString(horseInventoryRecord.getUUID()));
-		}
 		boolean success = true;
 		for (InventoryItemRecord itemRecord : horseInventoryRecord.getItemRecordList()) {
 			String displayName = itemRecord.getDisplayName();
@@ -321,9 +318,6 @@ public class DataManager {
 	}
 	
 	public boolean registerHorseStats(HorseStatsRecord horseStatsRecord) {
-		if (isHorseStatsRegistered(UUID.fromString(horseStatsRecord.getUUID()))) {
-			removeHorseStats(UUID.fromString(horseStatsRecord.getUUID()));
-		}
 		String color = horseStatsRecord.getColor();
 		String style = horseStatsRecord.getStyle();
 		String update = String.format(Locale.US, "INSERT INTO prefix_horse_stats VALUES (\"%s\", %d, %d, %d, %s, \"%s\", %d, %d, %f, %d, %d, %d, %d, %f, %f, %d, %d, %f, %d, %s, %d, \"%s\")",
@@ -435,9 +429,23 @@ public class DataManager {
 		return db.executeUpdate(update);
 	}
 	
+	public boolean updateHorseInventory(HorseInventoryRecord horseInventoryRecord) {
+		if (isHorseInventoryRegistered(UUID.fromString(horseInventoryRecord.getUUID()))) {
+			removeHorseInventory(UUID.fromString(horseInventoryRecord.getUUID()));
+		}
+		return registerHorseInventory(horseInventoryRecord);
+	}
+	
 	public boolean updateHorseInventoryUUID(UUID oldHorseUUID, UUID newHorseUUID) {
 		String update = String.format("UPDATE prefix_inventory_item SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
 		return db.executeUpdate(update);
+	}
+	
+	public boolean updateHorseStats(HorseStatsRecord horseStatsRecord) {
+		if (isHorseStatsRegistered(UUID.fromString(horseStatsRecord.getUUID()))) {
+			removeHorseStats(UUID.fromString(horseStatsRecord.getUUID()));
+		}
+		return registerHorseStats(horseStatsRecord);
 	}
 	
 	public boolean updateHorseStatsUUID(UUID oldHorseUUID, UUID newHorseUUID) {

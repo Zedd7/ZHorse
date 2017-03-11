@@ -97,7 +97,7 @@ public class SQLDatabaseImporter {
 		if (zh.getDM().isHorseInventoryRegistered(horseUUID)) { // Don't overwrite if already exists
 			return true;
 		}
-		HorseInventoryRecord horseInventoryRecord = db.getHorseInventoryRecord(String.format("SELECT * FROM prefix_horse_inventory WHERE uuid = \"%s\"", horseUUID));
+		HorseInventoryRecord horseInventoryRecord = db.getHorseInventoryRecord(String.format("SELECT * FROM prefix_inventory_item WHERE uuid = \"%s\"", horseUUID));
 		return zh.getDM().registerHorseInventory(horseInventoryRecord);
 	}
 	

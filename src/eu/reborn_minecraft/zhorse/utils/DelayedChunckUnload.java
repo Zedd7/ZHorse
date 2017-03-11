@@ -22,8 +22,8 @@ public class DelayedChunckUnload {
 						if (zh.getDM().isHorseRegistered(horse.getUniqueId())) { // TODO use isHorseTracked when new spawn method is used
 							zh.getHM().untrackHorse(horse);
 							zh.getDM().updateHorseLocation(horse.getUniqueId(), horse.getLocation(), true);
-							zh.getDM().registerHorseStats(new HorseStatsRecord(horse));
-							zh.getDM().registerHorseInventory(new HorseInventoryRecord(horse));
+							zh.getDM().updateHorseStats(new HorseStatsRecord(horse));
+							zh.getDM().updateHorseInventory(new HorseInventoryRecord(horse));
 						}
 					}
 				}
