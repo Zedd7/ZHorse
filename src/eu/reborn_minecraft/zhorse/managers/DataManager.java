@@ -299,15 +299,17 @@ public class DataManager {
 		boolean success = true;
 		for (InventoryItemRecord itemRecord : horseInventoryRecord.getItemRecordList()) {
 			String displayName = itemRecord.getDisplayName();
+			String enchantmentsFormatted = itemRecord.getEnchantmentsFormatted();
 			String localizedName = itemRecord.getLocalizedName();
 			String loreFormatted = itemRecord.getLoreFormatted();
 			Boolean unbreakable = itemRecord.isUnbreakable();
-			String update = String.format("INSERT INTO prefix_inventory_item VALUES (\"%s\", %d, %d, %s, %d, %s, %s, \"%s\", %d)",
+			String update = String.format("INSERT INTO prefix_inventory_item VALUES (\"%s\", %d, %d, %s, %d, %s, %s, %s, \"%s\", %d)",
 					itemRecord.getUUID(),
 					itemRecord.getPosition(),
 					itemRecord.getAmount(),
 					displayName != null ? "\"" + displayName + "\"" : null,
 					itemRecord.getDurability(),
+					enchantmentsFormatted != null ? "\"" + enchantmentsFormatted + "\"" : null,
 					localizedName != null ? "\"" + localizedName + "\"" : null,
 					loreFormatted != null ? "\"" + loreFormatted + "\"" : null,
 					itemRecord.getType(),

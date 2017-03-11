@@ -219,6 +219,7 @@ public class SQLDatabaseConnector {
 					resultSet.getInt("amount"),
 					resultSet.getString("displayName"),
 					resultSet.getInt("durability"),
+					resultSet.getString("enchantmentsFormatted"),
 					resultSet.getString("localizedName"),
 					resultSet.getString("loreFormatted"),
 					resultSet.getString("type"),
