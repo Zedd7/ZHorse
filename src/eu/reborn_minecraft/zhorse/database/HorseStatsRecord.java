@@ -2,6 +2,7 @@ package eu.reborn_minecraft.zhorse.database;
 
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.AbstractHorse;
+import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Llama;
 
@@ -12,9 +13,11 @@ public class HorseStatsRecord {
 	private Boolean canBreed;
 	private Boolean canPickupItems;
 	private String color;
+	private String customName;
 	private Integer domestication;
 	private Integer fireTicks;
 	private Double health;
+	private Boolean isCarryingChest;
 	private Boolean isCustomNameVisible;
 	private Boolean isGlowing;
 	private Boolean isTamed;
@@ -34,9 +37,11 @@ public class HorseStatsRecord {
 		Boolean canBreed,
 		Boolean canPickupItems,
 		String color,
+		String customName,
 		Integer domestication,
 		Integer fireTicks,
 		Double health,
+		Boolean isCarryingChest,
 		Boolean isCustomNameVisible,
 		Boolean isGlowing,
 		Boolean isTamed,
@@ -55,9 +60,11 @@ public class HorseStatsRecord {
 		this.canBreed = canBreed;
 		this.canPickupItems = canPickupItems;
 		this.color = color;
+		this.customName = customName;
 		this.domestication = domestication;
 		this.fireTicks = fireTicks;
 		this.health = health;
+		this.isCarryingChest = isCarryingChest;
 		this.isCustomNameVisible = isCustomNameVisible;
 		this.isGlowing = isGlowing;
 		this.isTamed = isTamed;
@@ -77,9 +84,11 @@ public class HorseStatsRecord {
 		this.age = horse.getAge();
 		this.canBreed = horse.canBreed();
 		this.canPickupItems = horse.getCanPickupItems();
+		this.customName = horse.getCustomName();
 		this.domestication = horse.getDomestication();
 		this.fireTicks = horse.getFireTicks();
 		this.health = horse.getHealth();
+		this.isCarryingChest = horse instanceof ChestedHorse ? ((ChestedHorse) horse).isCarryingChest() : false;
 		this.isCustomNameVisible = horse.isCustomNameVisible();
 		this.isGlowing = horse.isGlowing();
 		this.isTamed = horse.isTamed();
@@ -123,6 +132,10 @@ public class HorseStatsRecord {
 	public String getColor() {
 		return color;
 	}
+	
+	public String getCustomName() {
+		return customName;
+	}
 
 	public Integer getDomestication() {
 		return domestication;
@@ -134,6 +147,10 @@ public class HorseStatsRecord {
 
 	public Double getHealth() {
 		return health;
+	}
+	
+	public Boolean isCarryingChest() {
+		return isCarryingChest;
 	}
 
 	public Boolean isCustomNameVisible() {

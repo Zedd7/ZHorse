@@ -19,12 +19,11 @@ public class DelayedChunckUnload {
 				for (Entity entity : chunk.getEntities()) {
 					if (entity instanceof AbstractHorse) {
 						AbstractHorse horse = (AbstractHorse) entity;
-						if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
+						if (zh.getDM().isHorseRegistered(horse.getUniqueId())) { // TODO use isHorseTracked when new spawn method is used
 							zh.getHM().untrackHorse(horse);
 							zh.getDM().updateHorseLocation(horse.getUniqueId(), horse.getLocation(), true);
 							zh.getDM().registerHorseStats(new HorseStatsRecord(horse));
-							zh.getDM().registerHorseInventory(new HorseInventoryRecord(horse.getUniqueId(), horse.getInventory()));
-							// TODO set horse to despawn at distance
+							zh.getDM().registerHorseInventory(new HorseInventoryRecord(horse));
 						}
 					}
 				}

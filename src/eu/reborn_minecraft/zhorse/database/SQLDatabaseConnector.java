@@ -207,6 +207,31 @@ public class SQLDatabaseConnector {
 		return horseRecord;
 	}
 	
+	public HorseInventoryRecord getHorseInventoryRecord(String query) {
+		query = applyTablePrefix(query);
+		List<InventoryItemRecord> inventoryItemRecordList = new ArrayList<>();
+		try (Statement statement = connection.createStatement()) {
+			ResultSet resultSet = statement.executeQuery(query);
+			while (resultSet.next()) {
+				inventoryItemRecordList.add(new InventoryItemRecord(
+					resultSet.getString("uuid"),
+					resultSet.getInt("position"),
+					resultSet.getInt("amount"),
+					resultSet.getString("displayName"),
+					resultSet.getInt("durability"),
+					resultSet.getString("enchantmentsFormatted"),
+					resultSet.getString("localizedName"),
+					resultSet.getString("loreFormatted"),
+					resultSet.getString("type"),
+					resultSet.getInt("unbreakable") == 1
+				));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new HorseInventoryRecord(inventoryItemRecordList);
+	}
+	
 	public HorseStatsRecord getHorseStatsRecord(String query) {
 		query = applyTablePrefix(query);
 		HorseStatsRecord horseStatsRecord = null;
@@ -219,9 +244,11 @@ public class SQLDatabaseConnector {
 					resultSet.getInt("canBreed") == 1,
 					resultSet.getInt("canPickupItems") == 1,
 					resultSet.getString("color"),
+					resultSet.getString("customName"),
 					resultSet.getInt("domestication"),
 					resultSet.getInt("fireTicks"),
 					resultSet.getDouble("health"),
+					resultSet.getInt("isCarryingChest") == 1,
 					resultSet.getInt("isCustomNameVisible") == 1,
 					resultSet.getInt("isGlowing") == 1,
 					resultSet.getInt("isTamed") == 1,
@@ -240,23 +267,6 @@ public class SQLDatabaseConnector {
 			e.printStackTrace();
 		}
 		return horseStatsRecord;
-	}
-	
-	public HorseInventoryRecord getHorseInventoryRecord(String query) {
-		query = applyTablePrefix(query);
-		HorseInventoryRecord horseInventoryRecord = null;
-		try (Statement statement = connection.createStatement()) {
-			ResultSet resultSet = statement.executeQuery(query);
-			if (resultSet.next()) {
-				horseInventoryRecord = new HorseInventoryRecord(
-					resultSet.getString("uuid"),
-					resultSet.getString("inventory")
-				);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return horseInventoryRecord;
 	}
 	
 	public PlayerRecord getPlayerRecord(String query) {
