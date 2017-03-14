@@ -55,14 +55,19 @@ public class HorseManager {
 					boolean hasMoved = horse.getLocation().getBlockX() != location.getBlockX()
 							|| horse.getLocation().getBlockY() != location.getBlockY()
 							|| horse.getLocation().getBlockZ() != location.getBlockZ();
-					System.out.println(1);
 					if (hasMoved) {
-						System.out.println(2);
 						zh.getDM().updateHorseLocation(horseUUID, horse.getLocation(), false);
 					}
 				}
 				else {
-					
+					HorseInventoryRecord inventoryRecord = zh.getDM().getHorseInventoryRecord(horseUUID);
+					HorseStatsRecord statsRecord = zh.getDM().getHorseStatsRecord(horseUUID);
+					if (inventoryRecord != null && statsRecord != null) {
+						horse = spawnHorse(location, inventoryRecord, statsRecord);
+						zh.getDM().updateHorseUUID(horseUUID, horse.getUniqueId());
+						zh.getDM().updateHorseInventoryUUID(horseUUID, horse.getUniqueId());
+						zh.getDM().updateHorseStatsUUID(horseUUID, horse.getUniqueId());
+					}
 				}
 			}
 		}
@@ -177,10 +182,11 @@ public class HorseManager {
 				zh.getDM().updateHorseLocation(newHorseUUID, destination, true);
 				zh.getDM().updateHorseStatsUUID(oldHorseUUID, newHorseUUID);
 				zh.getDM().updateHorseInventoryUUID(oldHorseUUID, newHorseUUID);
-				HorseInventoryRecord inventoryRecord = new HorseInventoryRecord(sourceHorse);
+				//HorseInventoryRecord inventoryRecord = new HorseInventoryRecord(sourceHorse);
 				HorseStatsRecord statsRecord = new HorseStatsRecord(sourceHorse);
 				assignStats(copyHorse, statsRecord);
-				assignInventory(copyHorse, inventoryRecord, statsRecord.isCarryingChest());
+				//assignInventory(copyHorse, inventoryRecord, statsRecord.isCarryingChest());
+				copyInventory(sourceHorse, copyHorse, statsRecord.isCarryingChest()); // temp
 				removeLeash(sourceHorse);
 				untrackHorse(sourceHorse.getUniqueId());
 				trackHorse(copyHorse);
@@ -230,6 +236,13 @@ public class HorseManager {
 		}
 	}
 	
+	private void copyInventory(AbstractHorse sourceHorse, AbstractHorse copyHorse, boolean isCarryingChest) {
+		if (sourceHorse instanceof ChestedHorse) {
+			((ChestedHorse) copyHorse).setCarryingChest(isCarryingChest);
+		}
+		copyHorse.getInventory().setContents(sourceHorse.getInventory().getContents());
+	}
+	
 	private void removeLeash(AbstractHorse horse) {
 		if (horse.isLeashed()) {
 			Entity leashHolder = horse.getLeashHolder();
@@ -249,17 +262,10 @@ public class HorseManager {
 		horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0);
 		horse.setAI(false);*/
 		
-		boolean unloadChunk = false;
-		Location horseLocation = horse.getLocation();
-		int chunkXCoordinate = toChunkCoordinate(horseLocation.getBlockX());
-		int chunkZCoordinate = toChunkCoordinate(horseLocation.getBlockZ());
-		if (!horseLocation.getWorld().isChunkLoaded(chunkXCoordinate, chunkZCoordinate)) { // *.getChunk() loads the chunk
-			horseLocation.getWorld().loadChunk(chunkXCoordinate, chunkZCoordinate); // Entity::remove fails when the chunk is unloaded
-			unloadChunk = true;
-		}
-		horse.remove();
-		if (unloadChunk) {
-			horseLocation.getWorld().unloadChunk(chunkXCoordinate, chunkZCoordinate);
+		boolean chunkWasLoaded = loadChunk(horse.getLocation());
+		horse.remove(); // Entity::remove fails when the chunk is not loaded
+		if (!chunkWasLoaded) {
+			unloadChunk(horse.getLocation());
 		}
 		
 		/*Bukkit.getScheduler().scheduleSyncDelayedTask(zh, new Runnable() {
@@ -286,13 +292,36 @@ public class HorseManager {
 	
 	public AbstractHorse spawnHorse(Location location, HorseInventoryRecord inventoryRecord, HorseStatsRecord statsRecord) {
 		EntityType type = EntityType.valueOf(statsRecord.getType());
+		boolean chunkWasLoaded = loadChunk(location);
 		AbstractHorse horse = (AbstractHorse) location.getWorld().spawnEntity(location, type);
 		if (horse != null) {
 			assignStats(horse, statsRecord);
 			assignInventory(horse, inventoryRecord, statsRecord.isCarryingChest());
-			trackHorse(horse);
+			if (chunkWasLoaded) {
+				trackHorse(horse);
+			}
+			else {
+				unloadChunk(location);
+			}
 		}
 		return horse;
+	}
+	
+	private boolean loadChunk(Location location) {
+		boolean chunkWasLoaded = true;
+		int chunkXCoordinate = toChunkCoordinate(location.getBlockX());
+		int chunkZCoordinate = toChunkCoordinate(location.getBlockZ());
+		if (!location.getWorld().isChunkLoaded(chunkXCoordinate, chunkZCoordinate)) {
+			location.getWorld().loadChunk(chunkXCoordinate, chunkZCoordinate);
+			chunkWasLoaded = false;
+		}
+		return chunkWasLoaded;
+	}
+	
+	private void unloadChunk(Location location) {
+		int chunkXCoordinate = toChunkCoordinate(location.getBlockX());
+		int chunkZCoordinate = toChunkCoordinate(location.getBlockZ());
+		location.getWorld().unloadChunk(chunkXCoordinate, chunkZCoordinate);
 	}
 	
 	private int toChunkCoordinate(int coordinate) {
