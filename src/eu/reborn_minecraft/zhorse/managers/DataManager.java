@@ -1,11 +1,13 @@
 package eu.reborn_minecraft.zhorse.managers;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
@@ -140,6 +142,19 @@ public class DataManager {
 	public UUID getHorseUUID(UUID ownerUUID, int horseID) {
 		String query = String.format("SELECT uuid FROM prefix_horse WHERE owner = \"%s\" AND id = %d", ownerUUID, horseID);
 		return UUID.fromString(db.getStringResult(query));
+	}
+	
+	public List<UUID> getHorseUUIDList(Chunk chunk) {
+		Location NWCorner = chunk.getBlock(0, 0, 0).getLocation();
+		Location SECorner = chunk.getBlock(15, 0, 15).getLocation();
+		String query = String.format("SELECT uuid FROM prefix_horse WHERE locationX >= %d AND locationX <= %d AND locationZ >= %d AND locationZ <= %d",
+				NWCorner.getBlockX(), SECorner.getBlockX(), NWCorner.getBlockZ(), SECorner.getBlockZ());
+		List<String> stringUUIDList = db.getStringResultList(query);
+		List<UUID> horseUUIDList = new ArrayList<>();
+		for (String stringUUID : stringUUIDList) {
+			horseUUIDList.add(UUID.fromString(stringUUID));
+		}
+		return horseUUIDList;
 	}
 	
 	public HorseInventoryRecord getHorseInventoryRecord(UUID horseUUID) {

@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,12 +16,11 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.LeashHitch;
 import org.bukkit.entity.Llama;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.database.HorseInventoryRecord;
@@ -32,7 +29,7 @@ import eu.reborn_minecraft.zhorse.database.InventoryItemRecord;
 import eu.reborn_minecraft.zhorse.utils.DelayedChunckLoad;
 
 public class HorseManager {
-		
+	
 	private ZHorse zh;
 	private Map<UUID, AbstractHorse> trackedHorses = new HashMap<>();
 	
@@ -54,8 +51,18 @@ public class HorseManager {
 			else {
 				Location location = zh.getDM().getHorseLocation(playerUUID, horseID);
 				horse = getHorseFromLocation(horseUUID, location);
-				if (horse != null && !horse.getLocation().equals(location)) {
-					zh.getDM().updateHorseLocation(horseUUID, horse.getLocation(), false);
+				if (horse != null) {
+					boolean hasMoved = horse.getLocation().getBlockX() != location.getBlockX()
+							|| horse.getLocation().getBlockY() != location.getBlockY()
+							|| horse.getLocation().getBlockZ() != location.getBlockZ();
+					System.out.println(1);
+					if (hasMoved) {
+						System.out.println(2);
+						zh.getDM().updateHorseLocation(horseUUID, horse.getLocation(), false);
+					}
+				}
+				else {
+					
 				}
 			}
 		}
@@ -138,10 +145,6 @@ public class HorseManager {
 		}
 	}
 	
-	public void untrackHorse(AbstractHorse horse) {
-		untrackHorse(horse.getUniqueId());
-	}
-	
 	public void untrackHorse(UUID horseUUID) {
 		if (isHorseTracked(horseUUID)) {
 			trackedHorses.remove(horseUUID);
@@ -174,12 +177,12 @@ public class HorseManager {
 				zh.getDM().updateHorseLocation(newHorseUUID, destination, true);
 				zh.getDM().updateHorseStatsUUID(oldHorseUUID, newHorseUUID);
 				zh.getDM().updateHorseInventoryUUID(oldHorseUUID, newHorseUUID);
-				HorseStatsRecord horseStatsRecord = new HorseStatsRecord(sourceHorse);
-				HorseInventoryRecord horseInventoryRecord = new HorseInventoryRecord(sourceHorse);
-				assignStats(copyHorse, horseStatsRecord);
-				assignInventory(copyHorse, horseInventoryRecord, horseStatsRecord.isCarryingChest());
+				HorseInventoryRecord inventoryRecord = new HorseInventoryRecord(sourceHorse);
+				HorseStatsRecord statsRecord = new HorseStatsRecord(sourceHorse);
+				assignStats(copyHorse, statsRecord);
+				assignInventory(copyHorse, inventoryRecord, statsRecord.isCarryingChest());
 				removeLeash(sourceHorse);
-				untrackHorse(sourceHorse);
+				untrackHorse(sourceHorse.getUniqueId());
 				trackHorse(copyHorse);
 				removeHorse(sourceHorse, horseName, ownerName);
 			}
@@ -187,42 +190,42 @@ public class HorseManager {
 		}
 	}
 
-	private void assignStats(AbstractHorse horse, HorseStatsRecord horseStatsRecord) {
-		horse.setAge(horseStatsRecord.getAge());
-		horse.setBreed(horseStatsRecord.canBreed());
-		horse.setCanPickupItems(horseStatsRecord.canPickupItems());
-		horse.setCustomName(horseStatsRecord.getCustomName());
-		horse.setCustomNameVisible(horseStatsRecord.isCustomNameVisible());
-		horse.setDomestication(horseStatsRecord.getDomestication());
-		horse.setFireTicks(horseStatsRecord.getFireTicks());
-		horse.setGlowing(horseStatsRecord.isGlowing());
-		horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(horseStatsRecord.getMaxHealth());
-		horse.setHealth(horseStatsRecord.getHealth()); // Define max health before current health
-		horse.setJumpStrength(horseStatsRecord.getJumpStrength());
-		horse.setNoDamageTicks(horseStatsRecord.getNoDamageTicks());
-		horse.setRemainingAir(horseStatsRecord.getRemainingAir());
-		horse.setTamed(horseStatsRecord.isTamed());
-		horse.setTicksLived(horseStatsRecord.getTicksLived());
-		horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(horseStatsRecord.getSpeed());
+	private void assignStats(AbstractHorse horse, HorseStatsRecord statsRecord) {
+		horse.setAge(statsRecord.getAge());
+		horse.setBreed(statsRecord.canBreed());
+		horse.setCanPickupItems(statsRecord.canPickupItems());
+		horse.setCustomName(statsRecord.getCustomName());
+		horse.setCustomNameVisible(statsRecord.isCustomNameVisible());
+		horse.setDomestication(statsRecord.getDomestication());
+		horse.setFireTicks(statsRecord.getFireTicks());
+		horse.setGlowing(statsRecord.isGlowing());
+		horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(statsRecord.getMaxHealth());
+		horse.setHealth(statsRecord.getHealth()); // Define max health before current health
+		horse.setJumpStrength(statsRecord.getJumpStrength());
+		horse.setNoDamageTicks(statsRecord.getNoDamageTicks());
+		horse.setRemainingAir(statsRecord.getRemainingAir());
+		horse.setTamed(statsRecord.isTamed());
+		horse.setTicksLived(statsRecord.getTicksLived());
+		horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(statsRecord.getSpeed());
 		
-		switch (horseStatsRecord.getType()) {
+		switch (statsRecord.getType()) {
 		case "HORSE":
-			((Horse) horse).setColor(Horse.Color.valueOf(horseStatsRecord.getColor()));
-			((Horse) horse).setStyle(Horse.Style.valueOf(horseStatsRecord.getStyle()));
+			((Horse) horse).setColor(Horse.Color.valueOf(statsRecord.getColor()));
+			((Horse) horse).setStyle(Horse.Style.valueOf(statsRecord.getStyle()));
 			break;
 		case "LLAMA":
-			((Llama) horse).setColor(Llama.Color.valueOf(horseStatsRecord.getColor()));
-			((Llama) horse).setStrength(horseStatsRecord.getStrength());
+			((Llama) horse).setColor(Llama.Color.valueOf(statsRecord.getColor()));
+			((Llama) horse).setStrength(statsRecord.getStrength());
 		default:
 			break;
 		}
 	}
 	
-	private void assignInventory(AbstractHorse horse, HorseInventoryRecord horseInventoryRecord, boolean isCarryingChest) {
+	private void assignInventory(AbstractHorse horse, HorseInventoryRecord inventoryRecord, boolean isCarryingChest) {
 		if (horse instanceof ChestedHorse) {
 			((ChestedHorse) horse).setCarryingChest(isCarryingChest);
 		}
-		for (InventoryItemRecord itemRecord : horseInventoryRecord.getItemRecordList()) {
+		for (InventoryItemRecord itemRecord : inventoryRecord.getItemRecordList()) {
 			horse.getInventory().setItem(itemRecord.getPosition(), itemRecord.getItem());
 		}
 	}
@@ -239,18 +242,27 @@ public class HorseManager {
 		}
 	}
 	
-	private void removeHorse(AbstractHorse horse, String horseName, String ownerName) {		
-		Location horseLocation = horse.getLocation();
-		UUID horseUUID = horse.getUniqueId();
+	public void removeHorse(AbstractHorse horse, String horseName, String ownerName) {		
+		/*UUID horseUUID = horse.getUniqueId();
 		int waitTime = 60; // ticks
 		horse.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, waitTime, 0));
 		horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0);
-		horse.setAI(false);
+		horse.setAI(false);*/
 		
-		horse.setRemoveWhenFarAway(true);
+		boolean unloadChunk = false;
+		Location horseLocation = horse.getLocation();
+		int chunkXCoordinate = toChunkCoordinate(horseLocation.getBlockX());
+		int chunkZCoordinate = toChunkCoordinate(horseLocation.getBlockZ());
+		if (!horseLocation.getWorld().isChunkLoaded(chunkXCoordinate, chunkZCoordinate)) { // *.getChunk() loads the chunk
+			horseLocation.getWorld().loadChunk(chunkXCoordinate, chunkZCoordinate); // Entity::remove fails when the chunk is unloaded
+			unloadChunk = true;
+		}
 		horse.remove();
+		if (unloadChunk) {
+			horseLocation.getWorld().unloadChunk(chunkXCoordinate, chunkZCoordinate);
+		}
 		
-		Bukkit.getScheduler().scheduleSyncDelayedTask(zh, new Runnable() {
+		/*Bukkit.getScheduler().scheduleSyncDelayedTask(zh, new Runnable() {
 			
 			@Override
 			public void run() {
@@ -269,7 +281,27 @@ public class HorseManager {
 				}
 			}
 			
-		}, waitTime);
+		}, waitTime);*/
+	}
+	
+	public AbstractHorse spawnHorse(Location location, HorseInventoryRecord inventoryRecord, HorseStatsRecord statsRecord) {
+		EntityType type = EntityType.valueOf(statsRecord.getType());
+		AbstractHorse horse = (AbstractHorse) location.getWorld().spawnEntity(location, type);
+		if (horse != null) {
+			assignStats(horse, statsRecord);
+			assignInventory(horse, inventoryRecord, statsRecord.isCarryingChest());
+			trackHorse(horse);
+		}
+		return horse;
+	}
+	
+	private int toChunkCoordinate(int coordinate) {
+		if (coordinate >= 0) {
+			return coordinate / 16;
+		}
+		else {
+			return (coordinate / 16) - 1;
+		}
 	}
 
 }

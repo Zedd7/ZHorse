@@ -46,14 +46,16 @@ public class CommandClaim extends AbstractCommand {
 			boolean share = zh.getCM().shouldShareOnClaim();
 			HorseRecord horseRecord = new HorseRecord(horse.getUniqueId().toString(), p.getUniqueId().toString(), horseID, horseName, lock, protect, share, horse.getLocation());
 			if (zh.getDM().registerHorse(horseRecord)) {
-				targetUUID = p.getUniqueId(); // uses the player group for the horse name color
-				applyHorseName();
-				horse.setCustomNameVisible(true);
-				horse.setTamed(true);
 				HorseInventoryRecord horseInventoryRecord = new HorseInventoryRecord(horse);
 				HorseStatsRecord horseStatsRecord = new HorseStatsRecord(horse);
 				zh.getDM().registerHorseInventory(horseInventoryRecord);
 				zh.getDM().registerHorseStats(horseStatsRecord);
+				zh.getHM().trackHorse(horse);
+				
+				targetUUID = p.getUniqueId(); // Uses the player group for the horse name color
+				applyHorseName();
+				horse.setCustomNameVisible(true);
+				horse.setTamed(true);
 				if (displayConsole) {
 					zh.getMM().sendMessageHorse(s, LocaleEnum.horseClaimed, horseName);
 				}

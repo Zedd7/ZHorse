@@ -14,18 +14,16 @@ public class DelayedChunckLoad {
 			
 			@Override
 			public void run() {
+				
 				for (Entity entity : chunk.getEntities()) {
 					if (entity instanceof AbstractHorse) {
 						AbstractHorse horse = (AbstractHorse) entity;
-						if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
-							zh.getHM().trackHorse(horse);
-							zh.getDM().updateHorseLocation(horse.getUniqueId(), horse.getLocation(), true);
-							
+						 if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
+							 zh.getDM().updateHorseLocation(horse.getUniqueId(), horse.getLocation(), true);
+							 zh.getHM().trackHorse(horse);
 						}
 					}
 				}
-				// TODO if horse expected to be loaded but missing : spawn it
-				// TODO if horse spawned but in wrong location : remove it
 			}
 			
 		});

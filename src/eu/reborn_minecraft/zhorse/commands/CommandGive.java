@@ -58,9 +58,8 @@ public class CommandGive extends AbstractCommand {
 			boolean protect = zh.getDM().isHorseProtected(horse.getUniqueId());
 			boolean shared = zh.getDM().isHorseShared(horse.getUniqueId());
 			HorseRecord horseRecord = new HorseRecord(horse.getUniqueId().toString(), targetUUID.toString(), horseID, horseName, locked, protect, shared, horse.getLocation());
-			zh.getHM().untrackHorse(horse.getUniqueId());
 			boolean success = zh.getDM().removeHorse(horse.getUniqueId(), p.getUniqueId());
-			success &= zh.getDM().registerHorse(horseRecord);
+			success &= zh.getDM().registerHorse(horseRecord); // (Un)tracking not required
 			if (success) {
 				applyHorseName();
 				zh.getEM().payCommand(p, command);
