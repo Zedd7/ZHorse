@@ -279,18 +279,17 @@ Settings:
   # Set to true to hide all ZHorse messages in chat.
   mute-console: false
 
+  # Set to false to disable respawn of missing horses.
+  # If a horse happen to be missing (possible bug) and its
+  # stats and inventory are registered in the database (automatic),
+  # a perfect copy of it will be respawned at its last seen location.
+  respawn-missing-horse: true
+
   # Set to true to switch to the teleportation method used in 1.4-.
   # This is only recommended for servers using plugins that are
   # incompatible with the new 1.5+ teleportation method.
   # The new method remove horses and respawn them at destination.
   use-old-teleport-method: false
-
-  # Set to true to switch to the tracking method used in 1.6.3-.
-  # This is only recommended for servers using plugins that are
-  # incompatible with the new 1.6.4+ tracking method.
-  # The new method remove horses when chunk unloads and
-  # respawn them at the same place when chunk loads.
-  use-old-tracking-method: false
   
   # Set to false to use Bukkit thresholds for horse stats.
   # Does not affect horse stats, only /zh spawn and /zh info.

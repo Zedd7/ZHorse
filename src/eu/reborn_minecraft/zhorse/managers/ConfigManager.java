@@ -289,16 +289,16 @@ public class ConfigManager {
 		return config.getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.protectOnClaim.getValue(), false);
 	}
 	
+	public boolean shouldRespawnMissingHorse() {
+		return config.getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.respawnMissingHorse.getValue(), true);
+	}
+	
 	public boolean shouldShareOnClaim() {
 		return config.getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.shareOnClaim.getValue(), false);
 	}
 	
 	public boolean shouldUseOldTeleportMethod() {
 		return config.getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.useOldTeleportMethod.getValue(), false);
-	}
-	
-	public boolean shouldUseOldTrackingMethod() {
-		return config.getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.useOldTrackingMethod.getValue(), false);
 	}
 	
 	public boolean shouldUseVanillaStats() {
@@ -580,12 +580,12 @@ public class ConfigManager {
 			zh.getLogger().severe("The \"Settings.mute-console\" option is missing from the config !");
 			conform = false;
 		}
-		if (!config.isSet("Settings.use-old-teleport-method")) {
-			zh.getLogger().severe("The \"Settings.use-old-teleport-method\" option is missing from the config !");
+		if (!config.isSet("Settings.respawn-missing-horse")) {
+			zh.getLogger().severe("The \"Settings.respawn-missing-horse\" option is missing from the config !");
 			conform = false;
 		}
-		if (!config.isSet("Settings.use-old-tracking-method")) {
-			zh.getLogger().severe("The \"Settings.use-old-tracking-method\" option is missing from the config !");
+		if (!config.isSet("Settings.use-old-teleport-method")) {
+			zh.getLogger().severe("The \"Settings.use-old-teleport-method\" option is missing from the config !");
 			conform = false;
 		}
 		if (!config.isSet("Settings.use-vanilla-stats")) {

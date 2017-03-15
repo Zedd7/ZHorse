@@ -59,7 +59,7 @@ public class HorseManager {
 						zh.getDM().updateHorseLocation(horseUUID, horse.getLocation(), false);
 					}
 				}
-				else {
+				else if (zh.getCM().shouldRespawnMissingHorse()) {
 					HorseInventoryRecord inventoryRecord = zh.getDM().getHorseInventoryRecord(horseUUID);
 					HorseStatsRecord statsRecord = zh.getDM().getHorseStatsRecord(horseUUID);
 					if (inventoryRecord != null && statsRecord != null) {
