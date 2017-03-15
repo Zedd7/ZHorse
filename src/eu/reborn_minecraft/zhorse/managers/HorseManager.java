@@ -182,10 +182,9 @@ public class HorseManager {
 				zh.getDM().updateHorseLocation(newHorseUUID, destination, true);
 				zh.getDM().updateHorseStatsUUID(oldHorseUUID, newHorseUUID);
 				zh.getDM().updateHorseInventoryUUID(oldHorseUUID, newHorseUUID);
-				HorseInventoryRecord inventoryRecord = new HorseInventoryRecord(sourceHorse);
 				HorseStatsRecord statsRecord = new HorseStatsRecord(sourceHorse);
 				assignStats(copyHorse, statsRecord);
-				assignInventory(copyHorse, inventoryRecord, statsRecord.isCarryingChest());
+				copyInventory(sourceHorse, copyHorse, statsRecord.isCarryingChest());
 				removeLeash(sourceHorse);
 				untrackHorse(sourceHorse.getUniqueId());
 				trackHorse(copyHorse);
@@ -233,6 +232,13 @@ public class HorseManager {
 		for (InventoryItemRecord itemRecord : inventoryRecord.getItemRecordList()) {
 			horse.getInventory().setItem(itemRecord.getSlot(), itemRecord.getItem());
 		}
+	}
+	
+	private void copyInventory(AbstractHorse sourceHorse, AbstractHorse copyHorse, boolean isCarryingChest) {
+		if (copyHorse instanceof ChestedHorse) {
+			((ChestedHorse) copyHorse).setCarryingChest(isCarryingChest);
+		}
+		copyHorse.getInventory().setContents(sourceHorse.getInventory().getContents());
 	}
 	
 	private void removeLeash(AbstractHorse horse) {
