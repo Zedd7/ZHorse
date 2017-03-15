@@ -104,7 +104,7 @@ public class CommandSpawn extends AbstractCommand {
 
 	private boolean parseVariant(String argument) {
 		for (HorseVariantEnum horseVariant : HorseVariantEnum.values()) {
-			for (String horseVariantCode : horseVariant.getCodeList()) {
+			for (String horseVariantCode : horseVariant.getCodeArray()) {
 				if (argument.equalsIgnoreCase(horseVariantCode)) {
 					if (variant == null) {
 						variant = horseVariant;

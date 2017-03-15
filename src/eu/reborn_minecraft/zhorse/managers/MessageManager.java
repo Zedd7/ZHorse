@@ -381,7 +381,7 @@ public class MessageManager {
 	public static String applyColors(String rawMessage) {
 		String message = rawMessage;
 		for (ColorEnum color : ColorEnum.values()) {
-			for (String code : color.getCodes()) {
+			for (String code : color.getCodeArray()) {
 				message = message.replaceAll("(?i)" + code, color.getColor().toString()); // (?i) makes replaceAll case insensitive
 			}
 		}
@@ -395,7 +395,7 @@ public class MessageManager {
 	public String removeColors(String rawMessage) {
 		String message = rawMessage;
 		for (ColorEnum color : ColorEnum.values()) {
-			for (String code : color.getCodes()) {
+			for (String code : color.getCodeArray()) {
 				message = message.replaceAll("(?i)" + code, ""); // (?i) makes replaceAll case insensitive
 			}
 		}

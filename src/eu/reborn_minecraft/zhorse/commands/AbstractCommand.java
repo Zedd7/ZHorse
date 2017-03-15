@@ -799,7 +799,7 @@ public abstract class AbstractCommand {
 
 	protected void sendAbstractHorseVariantList() {
 		if (displayConsole) {
-			sendHorseOptionList(HorseVariantEnum.getCodeArray(), LocaleEnum.listHorseVariant);
+			sendHorseOptionList(HorseVariantEnum.getAllCodeArray(), LocaleEnum.listHorseVariant);
 		}
 	}
 	

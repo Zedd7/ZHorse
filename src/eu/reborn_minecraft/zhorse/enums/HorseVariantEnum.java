@@ -1,8 +1,5 @@
 package eu.reborn_minecraft.zhorse.enums;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.entity.EntityType;
 
 public enum HorseVariantEnum {
@@ -15,38 +12,36 @@ public enum HorseVariantEnum {
 	ZOMBIE(EntityType.ZOMBIE_HORSE, "zombie", "zomb", "undead");
 	
 	private EntityType entityType;
-	private List<String> codeList = new ArrayList<>();
+	private String[] codeArray;
 	
 	HorseVariantEnum(final EntityType entityType, final String... codeArray) {
 		this.entityType = entityType;
-		for (String code : codeArray) {
-			codeList.add(code);
-		}
+		this.codeArray = codeArray;
 	}
 	
 	public EntityType getEntityType() {
 		return entityType;
 	}
 	
-	public List<String> getCodeList() {
-		return codeList;
+	public String[] getCodeArray() {
+		return codeArray;
 	}
 	
-	public static String[] getCodeArray() {		
+	public static String[] getAllCodeArray() {		
 		int arrayLength = 0;
 		for (HorseVariantEnum variant : values()) {
-			arrayLength += variant.getCodeList().size();
+			arrayLength += variant.getCodeArray().length;
 		}
 				
-		String[] codeArray = new String[arrayLength];
+		String[] allCodeArray = new String[arrayLength];
 		int index = 0;
 		for (HorseVariantEnum variant : values()) {
-			for (String code : variant.getCodeList()) {
-				codeArray[index] = code;
+			for (String code : variant.getCodeArray()) {
+				allCodeArray[index] = code;
 				index++;
 			}
 		}
-		return codeArray;
+		return allCodeArray;
 	}
 
 }

@@ -1,11 +1,8 @@
 package eu.reborn_minecraft.zhorse.enums;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.ChatColor;
 
-public enum ColorEnum { // TODO rework with String... args
+public enum ColorEnum {
 	
 	aqua(ChatColor.AQUA, "&b", "<b>", "<aqua>"),
 	black(ChatColor.BLACK, "&0", "<0>", "<black>"),
@@ -30,36 +27,19 @@ public enum ColorEnum { // TODO rework with String... args
 	white(ChatColor.WHITE, "&f", "<f>", "<white>"),
 	yellow(ChatColor.YELLOW, "&e", "<e>", "<yellow>");
 	
-	private final ChatColor color;
-	private final String code1;
-	private final String code2;
-	private final String code3;
-	private final String code4;
-
-	ColorEnum(ChatColor color, String code1, String code2, String code3) {
-		this(color, code1, code2, code3, null);
-	}
+	private ChatColor color;
+	private String[] codeArray;
 	
-	ColorEnum(ChatColor color, String code1, String code2, String code3, String code4) {
+	ColorEnum(ChatColor color, String... codeArray) {
 		this.color = color;
-		this.code1 = code1;
-		this.code2 = code2;
-		this.code3 = code3;
-		this.code4 = code4;
-	}
-	
-	public List<String> getCodes() {
-		List<String> codes = new ArrayList<String>();
-		codes.add(code1);
-		codes.add(code2);
-		codes.add(code3);
-		if (code4 != null) {
-			codes.add(code4);
-		}
-		return codes;
+		this.codeArray = codeArray;
 	}
 	
 	public ChatColor getColor() {
 		return color;
+	}
+	
+	public String[] getCodeArray() {
+		return codeArray;
 	}
 }

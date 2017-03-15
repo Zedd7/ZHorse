@@ -39,7 +39,7 @@ public class ConfigManager {
 	}
 
 	public List<String> getAvailableLanguages() {
-		List<String> availableLanguages = config.getStringList(KeyWordEnum.languagesPrefix.getValue() + KeyWordEnum.availableSuffix.getValue());
+		List<String> availableLanguages = config.getStringList(KeyWordEnum.availableLanguages.getValue());
 		if (availableLanguages == null || availableLanguages.isEmpty()) {
 			availableLanguages = new ArrayList<String>();
 			availableLanguages.add(getDefaultLanguage());
@@ -70,31 +70,31 @@ public class ConfigManager {
 	}
 	
 	public String getDatabaseFileName() {
-		return config.getString(KeyWordEnum.databasesPrefix.getValue() + KeyWordEnum.sqliteConfig.getValue() + KeyWordEnum.filenameSuffix.getValue());
+		return config.getString(KeyWordEnum.filename.getValue());
 	}
 	
 	public String getDatabaseHost() {
-		return config.getString(KeyWordEnum.databasesPrefix.getValue() + KeyWordEnum.mysqlConfig.getValue() + KeyWordEnum.hostSuffix.getValue());
+		return config.getString(KeyWordEnum.host.getValue());
 	}
 	
 	public String getDatabaseName() {
-		return config.getString(KeyWordEnum.databasesPrefix.getValue() + KeyWordEnum.mysqlConfig.getValue() + KeyWordEnum.databaseSuffix.getValue());
+		return config.getString(KeyWordEnum.database.getValue());
 	}
 	
 	public String getDatabasePassword() {
-		return config.getString(KeyWordEnum.databasesPrefix.getValue() + KeyWordEnum.mysqlConfig.getValue() + KeyWordEnum.passwordSuffix.getValue());
+		return config.getString(KeyWordEnum.password.getValue());
 	}
 	
 	public int getDatabasePort() {
-		return config.getInt(KeyWordEnum.databasesPrefix.getValue() + KeyWordEnum.mysqlConfig.getValue() + KeyWordEnum.portSuffix.getValue());
+		return config.getInt(KeyWordEnum.port.getValue());
 	}
 	
 	public String getDatabaseTablePrefix() {
-		return config.getString(KeyWordEnum.databasesPrefix.getValue() + KeyWordEnum.mysqlConfig.getValue() + KeyWordEnum.tablePrefixSuffix.getValue());
+		return config.getString(KeyWordEnum.tablePrefix.getValue());
 	}
 	
 	public DatabaseEnum getDatabaseType() {
-		String databaseType = config.getString(KeyWordEnum.databasesPrefix.getValue() + KeyWordEnum.typeSuffix.getValue());
+		String databaseType = config.getString(KeyWordEnum.type.getValue());
 		if (databaseType.equalsIgnoreCase(DatabaseEnum.MYSQL.getName())) {
 			return DatabaseEnum.MYSQL;
 		}
@@ -108,15 +108,15 @@ public class ConfigManager {
 	}
 	
 	public String getDatabaseUser() {
-		return config.getString(KeyWordEnum.databasesPrefix.getValue() + KeyWordEnum.mysqlConfig.getValue() + KeyWordEnum.userSuffix.getValue());
+		return config.getString(KeyWordEnum.user.getValue());
 	}
 	
 	public String getDefaultHorseName() {
-		return config.getString(KeyWordEnum.horsenames.getValue() + KeyWordEnum.defaultNameSuffix.getValue(), "NotSet");
+		return config.getString(KeyWordEnum.defaultName.getValue(), "NotSet");
 	}
 	
 	public String getDefaultLanguage() {
-		return config.getString(KeyWordEnum.languages.getValue() + KeyWordEnum.defaultSuffix.getValue(), null);
+		return config.getString(KeyWordEnum.defaultLanguage.getValue(), null);
 	}
 	
 	private String getExactGroupName(String groupName) {
@@ -167,25 +167,25 @@ public class ConfigManager {
 	}
 	
 	public int getMaximumHorseNameLength() {
-		return config.getInt(KeyWordEnum.horsenamesPrefix.getValue() + KeyWordEnum.maximumLength.getValue(), 0);
+		return config.getInt(KeyWordEnum.maximumLength.getValue(), 0);
 	}
 	
 	public int getMinimumHorseNameLength() {
-		return Math.max(config.getInt(KeyWordEnum.horsenamesPrefix.getValue() + KeyWordEnum.minimumLength.getValue(), 0), 0);
+		return Math.max(config.getInt(KeyWordEnum.minimumLength.getValue(), 0), 0);
 	}
 	
 	public int getMaximumRangeHere() {
-		return config.getInt(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.hereMaxRange.getValue(), -1);
+		return config.getInt(KeyWordEnum.hereMaxRange.getValue(), -1);
 	}
 	
 	public int getMaximumRangeTp() {
-		return config.getInt(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.tpMaxRange.getValue(), -1);
+		return config.getInt(KeyWordEnum.tpMaxRange.getValue(), -1);
 	}
 	
 	public String getRandomHorseName() {
 		String randomHorseName = null;
 		Random random = new Random();
-		List<String> randomHorseNameList = config.getStringList(KeyWordEnum.horsenamesPrefix.getValue() + KeyWordEnum.randomNames.getValue());
+		List<String> randomHorseNameList = config.getStringList(KeyWordEnum.randomNames.getValue());
 		if (!(randomHorseNameList == null || randomHorseNameList.size() == 0)) {
 			randomHorseName = randomHorseNameList.get(random.nextInt(randomHorseNameList.size()));
 		}
@@ -222,7 +222,7 @@ public class ConfigManager {
 	}
 	
 	public boolean isConsoleMuted() {
-		return config.getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.muteConsole.getValue(), false);
+		return config.getBoolean(KeyWordEnum.muteConsole.getValue(), false);
 	}
 	
 	public boolean isHorseNameAllowed() {
@@ -231,7 +231,7 @@ public class ConfigManager {
 	
 	public boolean isHorseNameBanned(String horseName) {
 		if (horseName != null) {
-			List<String> bannedNameList = config.getStringList(KeyWordEnum.horsenamesPrefix + KeyWordEnum.bannedNames.getValue());
+			List<String> bannedNameList = config.getStringList(KeyWordEnum.bannedNames.getValue());
 			for (String bannedName : bannedNameList) {
 				if (horseName.toLowerCase().contains(bannedName.toLowerCase())) {
 					return true;
@@ -250,7 +250,7 @@ public class ConfigManager {
 	}
 	
 	public boolean isLeashOnDeadHorseAllowed() {
-		return config.getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.allowLeashOnDeadHorse.getValue(), true);
+		return config.getBoolean(KeyWordEnum.allowLeashOnDeadHorse.getValue(), true);
 	}
 	
 	public boolean isProtectionEnabled(String protection) {
@@ -258,7 +258,7 @@ public class ConfigManager {
 	}
 	
 	public boolean isRandomHorseNameEnabled() {
-		return config.getBoolean(KeyWordEnum.horsenamesPrefix.getValue() + KeyWordEnum.giveRandomNames.getValue(), false);
+		return config.getBoolean(KeyWordEnum.giveRandomNames.getValue(), false);
 	}
 	
 	public boolean isWorldCrossable(World world) {
@@ -270,39 +270,39 @@ public class ConfigManager {
 	}
 	
 	public boolean shouldBlockLeashedTeleport() {
-		return config.getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.blockLeashedTeleport.getValue(), false);
+		return config.getBoolean(KeyWordEnum.blockLeashedTeleport.getValue(), false);
 	}
 	
 	public boolean shouldBlockMountedTeleport() {
-		return config.getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.blockMountedTeleport.getValue(), false);
+		return config.getBoolean(KeyWordEnum.blockMountedTeleport.getValue(), false);
 	}
 	
 	public boolean shouldClaimOnTame() {
-		return config.getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.claimOnTame.getValue(), false);
+		return config.getBoolean(KeyWordEnum.claimOnTame.getValue(), false);
 	}
 	
 	public boolean shouldLockOnClaim() {
-		return config.getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.lockOnClaim.getValue(), false);
+		return config.getBoolean(KeyWordEnum.lockOnClaim.getValue(), false);
 	}
 	
 	public boolean shouldProtectOnClaim() {
-		return config.getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.protectOnClaim.getValue(), false);
+		return config.getBoolean(KeyWordEnum.protectOnClaim.getValue(), false);
 	}
 	
 	public boolean shouldRespawnMissingHorse() {
-		return config.getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.respawnMissingHorse.getValue(), true);
+		return config.getBoolean(KeyWordEnum.respawnMissingHorse.getValue(), true);
 	}
 	
 	public boolean shouldShareOnClaim() {
-		return config.getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.shareOnClaim.getValue(), false);
+		return config.getBoolean(KeyWordEnum.shareOnClaim.getValue(), false);
 	}
 	
 	public boolean shouldUseOldTeleportMethod() {
-		return config.getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.useOldTeleportMethod.getValue(), false);
+		return config.getBoolean(KeyWordEnum.useOldTeleportMethod.getValue(), false);
 	}
 	
 	public boolean shouldUseVanillaStats() {
-		return config.getBoolean(KeyWordEnum.settingsPrefix.getValue() + KeyWordEnum.useVanillaStats.getValue(), true);
+		return config.getBoolean(KeyWordEnum.useVanillaStats.getValue(), true);
 	}
 	
 	public boolean checkConformity() {

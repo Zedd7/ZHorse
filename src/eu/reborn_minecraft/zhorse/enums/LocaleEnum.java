@@ -221,10 +221,6 @@ public enum LocaleEnum {
 		this.index = index;
 	}
 	
-	public String getName() {
-		return index.substring(index.indexOf(".")+1);
-	}
-	
 	public String getIndex() {
 		return index;
 	}

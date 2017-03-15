@@ -136,10 +136,6 @@ HorseNames:
   # If set to 0, horse naming is unrestricted.
   minimum-length: 0
 
-  # The list of words that can't be contained in horse's names.
-  banned-names:
-  - ExampleName
-
   # The names that are given randomly if random naming is enabled.
   random-names:
   - Arod
@@ -168,6 +164,10 @@ HorseNames:
   - White-socks
   - Windfola
   - Wise-nose
+
+  # The list of words which cannot be contained in horse's names.
+  banned-names:
+  - ExampleName
 
 Languages:
 
