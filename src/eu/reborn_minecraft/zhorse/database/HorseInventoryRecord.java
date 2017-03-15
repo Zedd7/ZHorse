@@ -25,10 +25,10 @@ public class HorseInventoryRecord {
 		uuid = horse.getUniqueId().toString();
 		itemRecordList = new ArrayList<>();
 		Inventory horseInventory = horse.getInventory();
-		for (int position = 0; position < horseInventory.getSize(); position++) {
-			ItemStack item = horseInventory.getItem(position);
+		for (int slot = 0; slot < horseInventory.getSize(); slot++) {
+			ItemStack item = horseInventory.getItem(slot);
 			if (item != null) {
-				itemRecordList.add(new InventoryItemRecord(uuid, position, item));
+				itemRecordList.add(new InventoryItemRecord(uuid, slot, item));
 			}
 		}
 	}

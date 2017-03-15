@@ -215,15 +215,8 @@ public class SQLDatabaseConnector {
 			while (resultSet.next()) {
 				inventoryItemRecordList.add(new InventoryItemRecord(
 					resultSet.getString("uuid"),
-					resultSet.getInt("position"),
-					resultSet.getInt("amount"),
-					resultSet.getString("displayName"),
-					resultSet.getInt("durability"),
-					resultSet.getString("enchantmentsFormatted"),
-					resultSet.getString("localizedName"),
-					resultSet.getString("loreFormatted"),
-					resultSet.getString("type"),
-					resultSet.getInt("unbreakable") == 1
+					resultSet.getInt("slot"),
+					resultSet.getString("data")
 				));
 			}
 		} catch (Exception e) {

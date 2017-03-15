@@ -182,11 +182,10 @@ public class HorseManager {
 				zh.getDM().updateHorseLocation(newHorseUUID, destination, true);
 				zh.getDM().updateHorseStatsUUID(oldHorseUUID, newHorseUUID);
 				zh.getDM().updateHorseInventoryUUID(oldHorseUUID, newHorseUUID);
-				//HorseInventoryRecord inventoryRecord = new HorseInventoryRecord(sourceHorse);
+				HorseInventoryRecord inventoryRecord = new HorseInventoryRecord(sourceHorse);
 				HorseStatsRecord statsRecord = new HorseStatsRecord(sourceHorse);
 				assignStats(copyHorse, statsRecord);
-				//assignInventory(copyHorse, inventoryRecord, statsRecord.isCarryingChest());
-				copyInventory(sourceHorse, copyHorse, statsRecord.isCarryingChest()); // temp
+				assignInventory(copyHorse, inventoryRecord, statsRecord.isCarryingChest());
 				removeLeash(sourceHorse);
 				untrackHorse(sourceHorse.getUniqueId());
 				trackHorse(copyHorse);
@@ -232,15 +231,8 @@ public class HorseManager {
 			((ChestedHorse) horse).setCarryingChest(isCarryingChest);
 		}
 		for (InventoryItemRecord itemRecord : inventoryRecord.getItemRecordList()) {
-			horse.getInventory().setItem(itemRecord.getPosition(), itemRecord.getItem());
+			horse.getInventory().setItem(itemRecord.getSlot(), itemRecord.getItem());
 		}
-	}
-	
-	private void copyInventory(AbstractHorse sourceHorse, AbstractHorse copyHorse, boolean isCarryingChest) {
-		if (sourceHorse instanceof ChestedHorse) {
-			((ChestedHorse) copyHorse).setCarryingChest(isCarryingChest);
-		}
-		copyHorse.getInventory().setContents(sourceHorse.getInventory().getContents());
 	}
 	
 	private void removeLeash(AbstractHorse horse) {
@@ -256,38 +248,11 @@ public class HorseManager {
 	}
 	
 	public void removeHorse(AbstractHorse horse, String horseName, String ownerName) {		
-		/*UUID horseUUID = horse.getUniqueId();
-		int waitTime = 60; // ticks
-		horse.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, waitTime, 0));
-		horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0);
-		horse.setAI(false);*/
-		
 		boolean chunkWasLoaded = loadChunk(horse.getLocation());
 		horse.remove(); // Entity::remove fails when the chunk is not loaded
 		if (!chunkWasLoaded) {
 			unloadChunk(horse.getLocation());
 		}
-		
-		/*Bukkit.getScheduler().scheduleSyncDelayedTask(zh, new Runnable() {
-			
-			@Override
-			public void run() {
-				List<Chunk> neighboringChunks = getChunksInRegion(horseLocation, 1, true);
-				AbstractHorse duplicatedHorse = getHorseInRegion(horseUUID, neighboringChunks);
-				if (duplicatedHorse != null) {
-					Location location = duplicatedHorse.getLocation();
-					int x = location.getBlockX();
-					int y = location.getBlockY();
-					int z = location.getBlockZ();
-					String warning = String.format("A horse named %s and owned by %s was duplicated at location %d:%d:%d in world %s, killing it.",
-						horseName, ownerName, x, y, z, horseLocation.getWorld().getName());
-					zh.getServer().broadcast(ChatColor.RED + warning, "zh.admin");
-					zh.getLogger().severe(warning);
-					duplicatedHorse.setHealth(0);
-				}
-			}
-			
-		}, waitTime);*/
 	}
 	
 	public AbstractHorse spawnHorse(Location location, HorseInventoryRecord inventoryRecord, HorseStatsRecord statsRecord) {
