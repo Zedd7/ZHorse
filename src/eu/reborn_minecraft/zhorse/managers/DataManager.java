@@ -139,6 +139,11 @@ public class DataManager {
 		return db.getStringResultList(query);
 	}
 	
+	public HorseRecord getHorseRecord(UUID horseUUID) {
+		String query = String.format("SELECT * FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
+		return db.getHorseRecord(query);
+	}
+	
 	public UUID getHorseUUID(UUID ownerUUID, int horseID) {
 		String query = String.format("SELECT uuid FROM prefix_horse WHERE owner = \"%s\" AND id = %d", ownerUUID, horseID);
 		return UUID.fromString(db.getStringResult(query));
@@ -210,6 +215,11 @@ public class DataManager {
 	public String getPlayerName(UUID playerUUID) {
 		String query = String.format("SELECT name FROM prefix_player WHERE uuid = \"%s\"", playerUUID);
 		return db.getStringResult(query);
+	}
+	
+	public PlayerRecord getPlayerRecord(UUID playerUUID) {
+		String query = String.format("SELECT * FROM prefix_player WHERE uuid = \"%s\"", playerUUID);
+		return db.getPlayerRecord(query);
 	}
 	
 	public UUID getPlayerUUID(String playerName) {

@@ -2,20 +2,25 @@ package eu.reborn_minecraft.zhorse.commands;
 
 import java.util.UUID;
 
-import org.bukkit.Location;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.Llama;
 
 import eu.reborn_minecraft.zhorse.ZHorse;
+import eu.reborn_minecraft.zhorse.database.HorseRecord;
+import eu.reborn_minecraft.zhorse.database.HorseStatsRecord;
+import eu.reborn_minecraft.zhorse.database.PlayerRecord;
 import eu.reborn_minecraft.zhorse.enums.HorseStatisticEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 
 public class CommandInfo extends AbstractCommand {
 	
 	private static final int CHEST_SIZE_MULTIPLICATOR = 3;
+	
+	private HorseRecord horseRecord;
+	private HorseStatsRecord statsRecord;
+	private PlayerRecord ownerRecord;
 
 	public CommandInfo(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
@@ -58,6 +63,10 @@ public class CommandInfo extends AbstractCommand {
 
 	private void execute() {
 		if (zh.getEM().canAffordCommand(p, command)) {
+			horseRecord = zh.getDM().getHorseRecord(horse.getUniqueId());
+			statsRecord = new HorseStatsRecord(horse);
+			ownerRecord = zh.getDM().getPlayerRecord(UUID.fromString(horseRecord.getOwner()));
+			
 			displayHeader();
 			displayHorseID();
 			displayNames();
@@ -67,6 +76,7 @@ public class CommandInfo extends AbstractCommand {
 			displayChestSize();
 			displayLocation();
 			displayStatus();
+			
 			zh.getEM().payCommand(p, command);
 		}
 	}
@@ -77,43 +87,41 @@ public class CommandInfo extends AbstractCommand {
 	
 	private void displayHorseID() {
 		if (isOwner(false, true)) {
-			Integer horseIDInt = zh.getDM().getHorseID(horse.getUniqueId());
-			String horseID = horseIDInt != null ? horseIDInt.toString() : null;
+			String horseID = horseRecord.getId().toString();
 			zh.getMM().sendMessageHorseIDSpacer(s, LocaleEnum.id, horseID, 1, true);
 		}
 	}
 	
 	private void displayNames() {
-		UUID ownerUUID = zh.getDM().getOwnerUUID(horse.getUniqueId());
-		String ownerName = zh.getDM().getPlayerName(ownerUUID);
-		String horseName = zh.getDM().getHorseName(horse.getUniqueId());
+		String ownerName = ownerRecord.getName();
+		String horseName = horseRecord.getName();
 		zh.getMM().sendMessagePlayerSpacer(s, LocaleEnum.owner, ownerName, 1, true);
 		zh.getMM().sendMessageHorseSpacer(s, LocaleEnum.name, horseName, 1, true);
 	}
 	
 	private void displayHealth() {
-		int health = (int) horse.getHealth();
-		int maxHealth = (int) horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
+		int health = statsRecord.getHealth().intValue();
+		int maxHealth = statsRecord.getMaxHealth().intValue();
 		zh.getMM().sendMessageAmountMaxSpacer(s, LocaleEnum.health, health, maxHealth, 1, true);
 	}
 	
 	private void displaySpeed() {
-		double speed = horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
+		double speed = statsRecord.getSpeed();
 		double maxSpeed = HorseStatisticEnum.MAX_SPEED.getValue(useVanillaStats);
 		int speedRatio = (int) ((speed / maxSpeed) * 100);
 		zh.getMM().sendMessageAmountSpacer(s, LocaleEnum.speed, speedRatio, 1, true);
 	}
 	
 	private void displayJumpStrength() {
-		double jumpStrength = horse.getJumpStrength();
+		double jumpStrength = statsRecord.getJumpStrength();
 		double maxJumpStrength = HorseStatisticEnum.MAX_JUMP_STRENGTH.getValue(useVanillaStats);
 		int jumpRatio = (int) ((jumpStrength / maxJumpStrength) * 100);
 		zh.getMM().sendMessageAmountSpacer(s, LocaleEnum.jump, jumpRatio, 1, true);
 	}
 	
 	private void displayChestSize() {
-		if (horse instanceof ChestedHorse && ((ChestedHorse) horse).isCarryingChest()) {
-			int strength = horse instanceof Llama ? ((Llama) horse).getStrength() : (int) HorseStatisticEnum.MAX_LLAMA_STRENGTH.getValue(useVanillaStats);
+		if (horse instanceof ChestedHorse && statsRecord.isCarryingChest()) {
+			int strength = horse instanceof Llama ? statsRecord.getStrength() : (int) HorseStatisticEnum.MAX_LLAMA_STRENGTH.getValue(useVanillaStats);
 			int chestSize = strength * CHEST_SIZE_MULTIPLICATOR;
 			zh.getMM().sendMessageAmountSpacer(s, LocaleEnum.strength, chestSize, 1, true);
 		}
@@ -121,11 +129,10 @@ public class CommandInfo extends AbstractCommand {
 	
 	private void displayLocation() {
 		if (isNotOnHorse(true)) {
-			Location loc = horse.getLocation();
-			int x = (int) Math.round(loc.getX());
-			int y = (int) Math.round(loc.getY());
-			int z = (int) Math.round(loc.getZ());
-			String world = loc.getWorld().getName();
+			int x = (int) Math.floor(horseRecord.getLocationX());
+			int y = (int) Math.floor(horseRecord.getLocationY());
+			int z = (int) Math.floor(horseRecord.getLocationZ());
+			String world = horseRecord.getLocationWorld();
 			String location = String.format("%d/%d/%d : %s", x, y, z, world);
 			zh.getMM().sendMessageSpacerValue(s, LocaleEnum.location, 1, location, true);
 		}
@@ -133,14 +140,14 @@ public class CommandInfo extends AbstractCommand {
 	
 	private void displayStatus() {
 		String status = "";
-		if (zh.getDM().isHorseProtected(horse.getUniqueId())) {
+		if (horseRecord.getModeProtected()) {
 			status += zh.getMM().getMessageSpacer(s, LocaleEnum.modeProtected, 0, true);
 		}
 		int spacer = status.isEmpty() ? 0 : 1;
-		if (zh.getDM().isHorseLocked(horse.getUniqueId())) {
+		if (horseRecord.getModeLocked()) {
 			status += zh.getMM().getMessageSpacer(s, LocaleEnum.modeLocked, spacer, true);
 		}
-		else if (zh.getDM().isHorseShared(horse.getUniqueId())) {
+		else if (horseRecord.getModeShared()) {
 			status += zh.getMM().getMessageSpacer(s, LocaleEnum.modeShared, spacer, true);
 		}
 		if (!status.isEmpty()) {

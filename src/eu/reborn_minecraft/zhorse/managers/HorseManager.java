@@ -95,7 +95,7 @@ public class HorseManager {
 			for (int z = NWCorner.getBlockZ(); z <= SECorner.getBlockZ(); z += 16) {
 				if (center.getBlockX() != x || center.getBlockZ() != z || includeCentralChunk) {
 					Location chunkLocation = new Location(world, x, 0, z);
-					Chunk chunk = world.getChunkAt(chunkLocation); // w.getChunkAt(x, z) uses chunk coordinates (loc % 16)
+					Chunk chunk = world.getChunkAt(chunkLocation); // w.getChunkAt(x, z) uses chunk coordinates (loc / 16)
 					chunkList.add(chunk);
 				}
 			}
