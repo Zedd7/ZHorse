@@ -229,10 +229,13 @@ public class DataManager {
 	
 	private boolean hasLocationChanged(UUID horseUUID, Location newLocation) {
 		Location oldLocation = getHorseLocation(horseUUID);
-		return oldLocation.getWorld().getName() != newLocation.getWorld().getName()
-				|| oldLocation.getBlockX() != newLocation.getBlockX()
-				|| oldLocation.getBlockY() != newLocation.getBlockY()
-				|| oldLocation.getBlockZ() != newLocation.getBlockZ();
+		if (oldLocation != null) {
+			return oldLocation.getWorld().getName() != newLocation.getWorld().getName()
+					|| oldLocation.getBlockX() != newLocation.getBlockX()
+					|| oldLocation.getBlockY() != newLocation.getBlockY()
+					|| oldLocation.getBlockZ() != newLocation.getBlockZ();
+		}
+		return true;
 	}
 	
 	public boolean isFriendOf(UUID requesterUUID, UUID recipientUUID) {

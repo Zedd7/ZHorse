@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -26,7 +27,7 @@ import eu.reborn_minecraft.zhorse.ZHorse;
 import eu.reborn_minecraft.zhorse.database.HorseInventoryRecord;
 import eu.reborn_minecraft.zhorse.database.HorseStatsRecord;
 import eu.reborn_minecraft.zhorse.database.InventoryItemRecord;
-import eu.reborn_minecraft.zhorse.utils.DelayedChunckLoad;
+import eu.reborn_minecraft.zhorse.utils.ChunkLoad;
 
 public class HorseManager {
 	
@@ -135,7 +136,7 @@ public class HorseManager {
 		return trackedHorses.containsKey(horseUUID);
 	}
 	
-	public void trackHorse(AbstractHorse horse) {
+	public synchronized void trackHorse(AbstractHorse horse) {
 		UUID horseUUID = horse.getUniqueId();
 		if (!isHorseTracked(horseUUID)) {
 			trackedHorses.put(horseUUID, horse);
@@ -145,24 +146,40 @@ public class HorseManager {
 	public void trackHorses() {
 		for (World world : zh.getServer().getWorlds()) {
 			for (Chunk chunk : world.getLoadedChunks()) {
-				new DelayedChunckLoad(zh, chunk);
+				new ChunkLoad(zh, chunk);
 			}
 		}
 	}
 	
-	public void untrackHorse(UUID horseUUID) {
-		if (isHorseTracked(horseUUID)) {
-			trackedHorses.remove(horseUUID);
+	public synchronized void untrackHorse(UUID horseUUID) {
+		trackedHorses.remove(horseUUID);
+	}
+	
+	public synchronized void untrackHorses() {
+		Iterator<Entry<UUID, AbstractHorse>> itr = trackedHorses.entrySet().iterator();
+		while (itr.hasNext()) {
+			AbstractHorse horse = itr.next().getValue();
+			zh.getDM().updateHorseLocation(horse.getUniqueId(), horse.getLocation(), true);
+			updateHorse(horse);
+			itr.remove();
 		}
 	}
 	
-	public void untrackHorses() {
-		Iterator<Entry<UUID, AbstractHorse>> trackedHorsesItr = trackedHorses.entrySet().iterator();
-		while (trackedHorsesItr.hasNext()) {
-			AbstractHorse horse = trackedHorsesItr.next().getValue();
-			zh.getDM().updateHorseLocation(horse.getUniqueId(), horse.getLocation(), true);
-			trackedHorsesItr.remove();
-		}
+	public void updateHorse(AbstractHorse horse) {
+		UUID horseUUID = horse.getUniqueId();
+		Location horseLocation = horse.getLocation();
+		HorseInventoryRecord inventoryRecord = new HorseInventoryRecord(horse);
+		HorseStatsRecord statsRecord = new HorseStatsRecord(horse);
+		Bukkit.getScheduler().runTaskAsynchronously(zh, new Runnable() {
+
+			@Override
+			public void run() {
+				zh.getDM().updateHorseLocation(horseUUID, horseLocation, true);
+				zh.getDM().updateHorseInventory(inventoryRecord);
+				zh.getDM().updateHorseStats(statsRecord);
+			}
+			
+		});
 	}
 	
 	public AbstractHorse teleport(AbstractHorse sourceHorse, Location destination) {

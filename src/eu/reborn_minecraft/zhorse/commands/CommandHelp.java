@@ -13,7 +13,7 @@ public class CommandHelp extends AbstractCommand {
 		playerOnly = true;
 		needTarget = false;
 		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {
-			if (!idMode) { // on 2 lines to avoid calling sendCommandUsage if horse is lost
+			if (!idMode) { // On 2 lines to avoid calling sendCommandUsage if horse is lost
 				if (!targetMode || (isRegistered(targetUUID) && isPlayerOnline(targetUUID, false))) {
 					execute();
 				}

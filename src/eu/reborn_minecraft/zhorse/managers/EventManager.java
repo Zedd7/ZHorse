@@ -43,8 +43,8 @@ import eu.reborn_minecraft.zhorse.commands.CommandClaim;
 import eu.reborn_minecraft.zhorse.enums.CommandEnum;
 import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
-import eu.reborn_minecraft.zhorse.utils.DelayedChunckLoad;
-import eu.reborn_minecraft.zhorse.utils.DelayedChunckUnload;
+import eu.reborn_minecraft.zhorse.utils.ChunkLoad;
+import eu.reborn_minecraft.zhorse.utils.ChunkUnload;
 import eu.reborn_minecraft.zhorse.utils.DelayedPlayerJoin;
 
 public class EventManager implements Listener {
@@ -60,12 +60,12 @@ public class EventManager implements Listener {
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onChunkLoad(ChunkLoadEvent e) {
-		new DelayedChunckLoad(zh, e.getChunk());
+		new ChunkLoad(zh, e.getChunk());
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onChunkUnload(ChunkUnloadEvent e) {
-		new DelayedChunckUnload(zh, e.getChunk());
+		new ChunkUnload(zh, e.getChunk());
 	}
 	
 	@EventHandler

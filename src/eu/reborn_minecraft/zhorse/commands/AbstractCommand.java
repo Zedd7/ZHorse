@@ -250,13 +250,9 @@ public abstract class AbstractCommand {
 		return false;
 	}
 	
-	@SuppressWarnings("deprecation") // TODO use DataManager's methods instead
 	protected UUID getPlayerUUID(String playerName) {
 		if (zh.getDM().isPlayerRegistered(playerName)) {
 			return zh.getDM().getPlayerUUID(playerName);
-		}
-		else if (zh.getServer().getOfflinePlayer(playerName).hasPlayedBefore()) {
-			return zh.getServer().getOfflinePlayer(playerName).getUniqueId();
 		}
 		return null;
 	}
@@ -552,7 +548,7 @@ public abstract class AbstractCommand {
 	}
 	
 	protected boolean isRegistered(UUID targetUUID) {
-		if (zh.getDM().isPlayerRegistered(targetUUID)) {
+		if (targetUUID != null && zh.getDM().isPlayerRegistered(targetUUID)) {
 			return true;
 		}
 		else if (displayConsole) {
