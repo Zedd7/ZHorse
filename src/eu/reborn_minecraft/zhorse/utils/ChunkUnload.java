@@ -14,7 +14,7 @@ public class ChunkUnload {
 				AbstractHorse horse = (AbstractHorse) entity;
 				if (zh.getHM().isHorseTracked(horse.getUniqueId())) {
 					zh.getHM().untrackHorse(horse.getUniqueId());
-					zh.getHM().updateHorse(horse);
+					zh.getHM().updateHorse(horse, false);
 				}
 			}
 		}

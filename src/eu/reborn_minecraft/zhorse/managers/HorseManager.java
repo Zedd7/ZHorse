@@ -160,17 +160,17 @@ public class HorseManager {
 		while (itr.hasNext()) {
 			AbstractHorse horse = itr.next().getValue();
 			zh.getDM().updateHorseLocation(horse.getUniqueId(), horse.getLocation(), true);
-			updateHorse(horse);
+			updateHorse(horse, true);
 			itr.remove();
 		}
 	}
 	
-	public void updateHorse(AbstractHorse horse) {
+	public void updateHorse(AbstractHorse horse, boolean sync) {
 		UUID horseUUID = horse.getUniqueId();
 		Location horseLocation = horse.getLocation();
 		HorseInventoryRecord inventoryRecord = new HorseInventoryRecord(horse);
-		HorseStatsRecord statsRecord = new HorseStatsRecord(horse);
-		Bukkit.getScheduler().runTaskAsynchronously(zh, new Runnable() {
+		HorseStatsRecord statsRecord = new HorseStatsRecord(horse);		
+		Runnable updateTask = new Runnable() {
 
 			@Override
 			public void run() {
@@ -179,7 +179,13 @@ public class HorseManager {
 				zh.getDM().updateHorseStats(statsRecord);
 			}
 			
-		});
+		};
+		if (sync) {
+			updateTask.run();
+		}
+		else {
+			Bukkit.getScheduler().runTaskAsynchronously(zh, updateTask);
+		}
 	}
 	
 	public AbstractHorse teleport(AbstractHorse sourceHorse, Location destination) {
