@@ -45,7 +45,7 @@ import eu.reborn_minecraft.zhorse.enums.KeyWordEnum;
 import eu.reborn_minecraft.zhorse.enums.LocaleEnum;
 import eu.reborn_minecraft.zhorse.utils.ChunkLoad;
 import eu.reborn_minecraft.zhorse.utils.ChunkUnload;
-import eu.reborn_minecraft.zhorse.utils.DelayedPlayerJoin;
+import eu.reborn_minecraft.zhorse.utils.PlayerJoin;
 
 public class EventManager implements Listener {
 		
@@ -249,7 +249,7 @@ public class EventManager implements Listener {
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(PlayerJoinEvent e) {
-		new DelayedPlayerJoin(zh, e);
+		new PlayerJoin(zh, e.getPlayer());
 	}
 	
 	@EventHandler

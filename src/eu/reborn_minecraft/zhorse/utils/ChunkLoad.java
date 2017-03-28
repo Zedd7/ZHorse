@@ -1,6 +1,10 @@
 package eu.reborn_minecraft.zhorse.utils;
 
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Entity;
 
@@ -13,8 +17,17 @@ public class ChunkLoad {
 			if (entity instanceof AbstractHorse) {
 				AbstractHorse horse = (AbstractHorse) entity;
 				if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
-					 zh.getDM().updateHorseLocation(horse.getUniqueId(), horse.getLocation(), true);
-					 zh.getHM().trackHorse(horse);
+					 zh.getHM().trackHorse(horse);					 
+					 UUID horseUUID = horse.getUniqueId();
+					 Location horseLocation = horse.getLocation();
+					 Bukkit.getScheduler().runTaskAsynchronously(zh, new Runnable() {
+
+						@Override
+						public void run() {
+							zh.getDM().updateHorseLocation(horseUUID, horseLocation, true);
+						}
+						 
+					 });
 				}
 			}
 		}
