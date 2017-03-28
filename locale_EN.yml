@@ -118,7 +118,7 @@ Messages:
   unknownFriend: "<gold><player><yellow> is not in your friends list."
   unknownFriendCommand: "<gold><value><yellow> is not a /zh friend sub-command."
   unknownHorseId: "<yellow>You don't own any horse with ID <gold><id><yellow>."
-  unknownHorseIdOther: "<gold><player><yellow> don't own any horse with ID <gold><id><yellow>."
+  unknownHorseIdOther: "<gold><player><yellow> doesn't own any horse with ID <gold><id><yellow>."
   unknownHorseName: "<yellow>You don't own any horse named <gold><horse><yellow>."
   unknownHorseNameOther: "<gold><player><yellow> don't own any horse named <gold><horse><yellow>."
   unknownLanguage: "<gold><lang><yellow> is not a supported language. Please use one the followings : <value>"
