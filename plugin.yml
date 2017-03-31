@@ -1,6 +1,6 @@
  main: com.gmail.xibalbazedd.zhorse.ZHorse
  name: ZHorse
- version: 1.6.4
+ version: 1.6.5 snapshot 1
  depend: [Vault]
  description: This plugin provides an enhanced management of horses
  author: Z3dd7

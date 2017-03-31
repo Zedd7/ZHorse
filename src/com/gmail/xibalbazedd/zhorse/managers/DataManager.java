@@ -20,12 +20,13 @@ import com.gmail.xibalbazedd.zhorse.database.MySQLConnector;
 import com.gmail.xibalbazedd.zhorse.database.PlayerRecord;
 import com.gmail.xibalbazedd.zhorse.database.SQLDatabaseConnector;
 import com.gmail.xibalbazedd.zhorse.database.SQLiteConnector;
+import com.gmail.xibalbazedd.zhorse.database.SaleRecord;
 import com.gmail.xibalbazedd.zhorse.enums.DatabaseEnum;
 
 public class DataManager {
 	
 	private static final String TABLE_SCRIPTS_PATH = "res\\sql\\%s-table.sql";
-	private static final String[] TABLE_ARRAY = {"player", "horse", "friend", "horse_stats", "inventory_item"};
+	private static final String[] TABLE_ARRAY = {"player", "friend", "horse", "horse_stats", "inventory_item", "sale"};
 	
 	private ZHorse zh;
 	private SQLDatabaseConnector db;
@@ -227,6 +228,11 @@ public class DataManager {
 		return UUID.fromString(db.getStringResult(query));
 	}
 	
+	public SaleRecord getSaleRecord(UUID horseUUID) {
+		String query = String.format("SELECT * FROM prefix_sale WHERE uuid = \"%s\"", horseUUID);
+		return db.getSaleRecord(query);
+	}
+	
 	private boolean hasLocationChanged(UUID horseUUID, Location newLocation) {
 		Location oldLocation = getHorseLocation(horseUUID);
 		if (oldLocation != null) {
@@ -295,6 +301,11 @@ public class DataManager {
 	
 	public boolean isPlayerRegistered(UUID playerUUID) {
 		String query = String.format("SELECT 1 FROM prefix_player WHERE uuid = \"%s\"", playerUUID);
+		return db.hasResult(query);
+	}
+	
+	public boolean isSaleRegistered(UUID horseUUID) {
+		String query = String.format("SELECT 1 FROM prefix_sale WHERE uuid = \"%s\"", horseUUID);
 		return db.hasResult(query);
 	}
 	
@@ -369,6 +380,11 @@ public class DataManager {
 		return db.executeUpdate(update);
 	}
 	
+	public boolean registerSale(SaleRecord saleRecord) {
+		String update = String.format("INSERT INTO prefix_sale VALUES (\"%s\", %d)", saleRecord.getUUID(), saleRecord.getPrice());
+		return db.executeUpdate(update);
+	}
+	
 	public boolean removeFriend(UUID requesterUUID, UUID recipientUUID) {
 		String update = String.format("DELETE FROM prefix_friend WHERE requester = \"%s\" AND recipient = \"%s\"", requesterUUID, recipientUUID);
 		return db.executeUpdate(update);
@@ -393,9 +409,10 @@ public class DataManager {
 		else if (horseID < favorite) {
 			updatePlayerFavorite(ownerUUID, favorite - 1);
 		}
-		String deleteUpdate = String.format("DELETE FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
+		String saleUpdate = String.format("DELETE FROM prefix_sale WHERE uuid = \"%s\"", horseUUID);
+		String horseUpdate = String.format("DELETE FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
 		String idUpdate = String.format("UPDATE prefix_horse SET id = id - 1 WHERE owner = \"%s\" AND id > %d", ownerUUID, horseID);
-		return db.executeUpdate(deleteUpdate) && db.executeUpdate(idUpdate);
+		return db.executeUpdate(saleUpdate) && db.executeUpdate(horseUpdate) && db.executeUpdate(idUpdate);
 	}
 	
 	public boolean removeHorseInventory(UUID horseUUID) {
@@ -405,6 +422,11 @@ public class DataManager {
 	
 	public boolean removeHorseStats(UUID horseUUID) {
 		String update = String.format("DELETE FROM prefix_horse_stats WHERE uuid = \"%s\"", horseUUID);
+		return db.executeUpdate(update);
+	}
+	
+	public boolean removeSale(UUID horseUUID) {
+		String update = String.format("DELETE FROM prefix_sale WHERE uuid = \"%s\"", horseUUID);
 		return db.executeUpdate(update);
 	}
 	
