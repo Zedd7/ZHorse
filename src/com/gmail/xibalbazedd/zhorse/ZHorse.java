@@ -86,6 +86,7 @@ public class ZHorse extends JavaPlugin {
 	}
     
 	public boolean reload() {
+		eventManager.unregisterEvents();
 		horseManager.untrackHorses();
 		dataManager.closeDatabase();
 		return initManagers();

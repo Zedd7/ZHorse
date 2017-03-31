@@ -16,6 +16,7 @@ import org.bukkit.entity.ZombieHorse;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -56,6 +57,10 @@ public class EventManager implements Listener {
 		this.zh = zh;
 		this.displayConsole = !(zh.getCM().isConsoleMuted());
 		zh.getServer().getPluginManager().registerEvents(this, zh);
+	}
+	
+	public void unregisterEvents() {
+		HandlerList.unregisterAll(this);
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
