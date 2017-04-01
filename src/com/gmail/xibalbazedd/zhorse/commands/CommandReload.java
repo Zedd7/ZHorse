@@ -37,11 +37,11 @@ public class CommandReload extends AbstractCommand {
 		if (!playerCommand || (playerCommand && zh.getEM().canAffordCommand(p, command))) {
 			if (zh.reload()) {
 				if (displayConsole) {
-					zh.getMM().sendMessageValue(s, LocaleEnum.pluginReloaded, zh.getDescription().getFullName());
+					zh.getMM().sendMessageValue(s, LocaleEnum.PLUGIN_RELOADED, zh.getDescription().getFullName());
 				}
 			}
 			else if (displayConsole) {
-				zh.getMM().sendMessageValue(s, LocaleEnum.pluginReloadedWithErrors, zh.getDescription().getFullName());
+				zh.getMM().sendMessageValue(s, LocaleEnum.PLUGIN_RELOADED_WITH_ERRORS, zh.getDescription().getFullName());
 			}
 			if (playerCommand) {
 				zh.getEM().payCommand(p, command);

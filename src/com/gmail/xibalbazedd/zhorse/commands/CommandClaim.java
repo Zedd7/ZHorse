@@ -52,12 +52,12 @@ public class CommandClaim extends AbstractCommand {
 				zh.getDM().registerHorseStats(horseStatsRecord);
 				zh.getHM().trackHorse(horse);
 				
-				targetUUID = p.getUniqueId(); // Uses the player group for the horse name color
+				targetUUID = p.getUniqueId(); // Uses the player group for the horse NAME color
 				applyHorseName();
 				horse.setCustomNameVisible(true);
 				horse.setTamed(true);
 				if (displayConsole) {
-					zh.getMM().sendMessageHorse(s, LocaleEnum.horseClaimed, horseName);
+					zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_CLAIMED, horseName);
 				}
 				zh.getEM().payCommand(p, command);
 			}

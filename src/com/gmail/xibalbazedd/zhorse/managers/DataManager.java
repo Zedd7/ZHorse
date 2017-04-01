@@ -80,27 +80,27 @@ public class DataManager {
 	}
 	
 	public List<String> getFriendNameList(UUID playerUUID) {
-		String query = String.format("SELECT name FROM prefix_player WHERE uuid IN (SELECT recipient FROM prefix_friend WHERE requester = \"%s\") ORDER BY name ASC", playerUUID);
+		String query = String.format("SELECT NAME FROM prefix_player WHERE uuid IN (SELECT recipient FROM prefix_friend WHERE requester = \"%s\") ORDER BY NAME ASC", playerUUID);
 		return db.getStringResultList(query);
 	}
 	
 	public List<String> getFriendNameReverseList(UUID playerUUID) {
-		String query = String.format("SELECT name FROM prefix_player WHERE uuid IN (SELECT requester FROM prefix_friend WHERE recipient = \"%s\") ORDER BY name ASC", playerUUID);
+		String query = String.format("SELECT NAME FROM prefix_player WHERE uuid IN (SELECT requester FROM prefix_friend WHERE recipient = \"%s\") ORDER BY NAME ASC", playerUUID);
 		return db.getStringResultList(query);
 	}
 	
 	public Integer getHorseCount(UUID ownerUUID) {
-		String query = String.format("SELECT COUNT(1) FROM prefix_horse WHERE owner = \"%s\"", ownerUUID);
+		String query = String.format("SELECT COUNT(1) FROM prefix_horse WHERE OWNER = \"%s\"", ownerUUID);
 		return db.getIntegerResult(query);
 	}
 	
 	public Integer getHorseID(UUID horseUUID) {
-		String query = String.format("SELECT id FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
+		String query = String.format("SELECT ID FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
 		return db.getIntegerResult(query);
 	}
 	
 	public Integer getHorseID(UUID ownerUUID, String horseName) {
-		String query = String.format("SELECT id FROM prefix_horse WHERE owner = \"%s\" AND name = \"%s\"", ownerUUID, horseName);
+		String query = String.format("SELECT ID FROM prefix_horse WHERE OWNER = \"%s\" AND NAME = \"%s\"", ownerUUID, horseName);
 		return db.getIntegerResult(query);
 	}
 	
@@ -115,17 +115,17 @@ public class DataManager {
 	}
 	
 	public String getHorseName(UUID horseUUID) {
-		String query = String.format("SELECT name FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
+		String query = String.format("SELECT NAME FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
 		return db.getStringResult(query);
 	}
 	
 	public String getHorseName(UUID ownerUUID, int horseID) {
-		String query = String.format("SELECT name FROM prefix_horse WHERE owner = \"%s\" AND id = %d", ownerUUID, horseID);
+		String query = String.format("SELECT NAME FROM prefix_horse WHERE OWNER = \"%s\" AND ID = %d", ownerUUID, horseID);
 		return db.getStringResult(query);
 	}
 	
 	public String getHorseName(UUID ownerUUID, String wrongCaseHorseName) {
-		String query = String.format("SELECT name FROM prefix_horse WHERE owner = \"%s\"", ownerUUID);
+		String query = String.format("SELECT NAME FROM prefix_horse WHERE OWNER = \"%s\"", ownerUUID);
 		List<String> horseNameList = db.getStringResultList(query);
 		for (String horseName : horseNameList) {
 			if (wrongCaseHorseName.equalsIgnoreCase(horseName)) {
@@ -136,7 +136,7 @@ public class DataManager {
 	}
 	
 	public List<String> getHorseNameList(UUID ownerUUID) {
-		String query = String.format("SELECT name FROM prefix_horse WHERE owner = \"%s\" ORDER BY id ASC", ownerUUID);
+		String query = String.format("SELECT NAME FROM prefix_horse WHERE OWNER = \"%s\" ORDER BY ID ASC", ownerUUID);
 		return db.getStringResultList(query);
 	}
 	
@@ -146,7 +146,7 @@ public class DataManager {
 	}
 	
 	public UUID getHorseUUID(UUID ownerUUID, int horseID) {
-		String query = String.format("SELECT uuid FROM prefix_horse WHERE owner = \"%s\" AND id = %d", ownerUUID, horseID);
+		String query = String.format("SELECT uuid FROM prefix_horse WHERE OWNER = \"%s\" AND ID = %d", ownerUUID, horseID);
 		return UUID.fromString(db.getStringResult(query));
 	}
 	
@@ -174,7 +174,7 @@ public class DataManager {
 	}
 	
 	public Integer getNextHorseID(UUID ownerUUID) {
-		String query = String.format("SELECT MAX(id) FROM prefix_horse WHERE owner = \"%s\"", ownerUUID);
+		String query = String.format("SELECT MAX(ID) FROM prefix_horse WHERE OWNER = \"%s\"", ownerUUID);
 		Integer horseID = db.getIntegerResult(query);
 		if (horseID == null) {
 			horseID = 0;
@@ -188,7 +188,7 @@ public class DataManager {
 	}
 	
 	public UUID getOwnerUUID(UUID horseUUID) {
-		String query = String.format("SELECT owner FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
+		String query = String.format("SELECT OWNER FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
 		return UUID.fromString(db.getStringResult(query));
 	}
 	
@@ -203,7 +203,7 @@ public class DataManager {
 	}
 	
 	public String getPlayerName(String wrongCasePlayerName) {
-		String query = "SELECT name FROM prefix_player";
+		String query = "SELECT NAME FROM prefix_player";
 		List<String> playerNameList = db.getStringResultList(query);
 		for (String playerName : playerNameList) {
 			if (wrongCasePlayerName.equalsIgnoreCase(playerName)) {
@@ -214,7 +214,7 @@ public class DataManager {
 	}
 	
 	public String getPlayerName(UUID playerUUID) {
-		String query = String.format("SELECT name FROM prefix_player WHERE uuid = \"%s\"", playerUUID);
+		String query = String.format("SELECT NAME FROM prefix_player WHERE uuid = \"%s\"", playerUUID);
 		return db.getStringResult(query);
 	}
 	
@@ -224,7 +224,7 @@ public class DataManager {
 	}
 	
 	public UUID getPlayerUUID(String playerName) {
-		String query = String.format("SELECT uuid FROM prefix_player WHERE name = \"%s\"", playerName);
+		String query = String.format("SELECT uuid FROM prefix_player WHERE NAME = \"%s\"", playerName);
 		return UUID.fromString(db.getStringResult(query));
 	}
 	
@@ -260,7 +260,7 @@ public class DataManager {
 	}
 	
 	public boolean isHorseOwnedBy(UUID ownerUUID, UUID horseUUID) {
-		String query = String.format("SELECT 1 FROM prefix_horse WHERE uuid = \"%s\" AND owner = \"%s\"", horseUUID, ownerUUID);
+		String query = String.format("SELECT 1 FROM prefix_horse WHERE uuid = \"%s\" AND OWNER = \"%s\"", horseUUID, ownerUUID);
 		return db.hasResult(query);
 	}
 	
@@ -275,7 +275,7 @@ public class DataManager {
 	}
 	
 	public boolean isHorseRegistered(UUID ownerUUID, int horseID) {
-		String query = String.format("SELECT 1 FROM prefix_horse WHERE owner = \"%s\" AND id = %d", ownerUUID, horseID);
+		String query = String.format("SELECT 1 FROM prefix_horse WHERE OWNER = \"%s\" AND ID = %d", ownerUUID, horseID);
 		return db.hasResult(query);
 	}
 	
@@ -295,7 +295,7 @@ public class DataManager {
 	}
 	
 	public boolean isPlayerRegistered(String playerName) {
-		String query = String.format("SELECT 1 FROM prefix_player WHERE name = \"%s\"", playerName);
+		String query = String.format("SELECT 1 FROM prefix_player WHERE NAME = \"%s\"", playerName);
 		return db.hasResult(query);
 	}
 	
@@ -320,9 +320,9 @@ public class DataManager {
 			horseRecord.getOwner(),
 			horseRecord.getId(),
 			horseRecord.getName(),
-			horseRecord.getModeLocked() ? 1 : 0,
-			horseRecord.getModeProtected() ? 1 : 0,
-			horseRecord.getModeShared() ? 1 : 0,
+			horseRecord.isLocked() ? 1 : 0,
+			horseRecord.isProtected() ? 1 : 0,
+			horseRecord.isShared() ? 1 : 0,
 			horseRecord.getLocationWorld(),
 			horseRecord.getLocationX(),
 			horseRecord.getLocationY(),
@@ -411,7 +411,7 @@ public class DataManager {
 		}
 		String saleUpdate = String.format("DELETE FROM prefix_sale WHERE uuid = \"%s\"", horseUUID);
 		String horseUpdate = String.format("DELETE FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
-		String idUpdate = String.format("UPDATE prefix_horse SET id = id - 1 WHERE owner = \"%s\" AND id > %d", ownerUUID, horseID);
+		String idUpdate = String.format("UPDATE prefix_horse SET ID = ID - 1 WHERE OWNER = \"%s\" AND ID > %d", ownerUUID, horseID);
 		return db.executeUpdate(saleUpdate) && db.executeUpdate(horseUpdate) && db.executeUpdate(idUpdate);
 	}
 	
@@ -446,7 +446,7 @@ public class DataManager {
 	}
 	
 	public boolean updateHorseName(UUID horseUUID, String name) {
-		String update = String.format("UPDATE prefix_horse SET name = \"%s\" WHERE uuid = \"%s\"", name, horseUUID);
+		String update = String.format("UPDATE prefix_horse SET NAME = \"%s\" WHERE uuid = \"%s\"", name, horseUUID);
 		return db.executeUpdate(update);
 	}
 	
@@ -502,7 +502,7 @@ public class DataManager {
 	}
 	
 	public boolean updatePlayerName(UUID playerUUID, String name) {
-		String update = String.format("UPDATE prefix_player SET name = \"%s\" WHERE uuid = \"%s\"", name, playerUUID);
+		String update = String.format("UPDATE prefix_player SET NAME = \"%s\" WHERE uuid = \"%s\"", name, playerUUID);
 		return db.executeUpdate(update);
 	}
 

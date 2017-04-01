@@ -65,7 +65,7 @@ public class CommandFree extends AbstractCommand {
 				horse.setCustomName(null);
 				horse.setCustomNameVisible(false);
 				if (displayConsole) {
-					zh.getMM().sendMessageHorse(s, LocaleEnum.horseFreed, horseName);
+					zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_FREED, horseName);
 				}
 				zh.getEM().payCommand(p, command);
 			}
@@ -80,10 +80,10 @@ public class CommandFree extends AbstractCommand {
 		success &= zh.getDM().removeHorseStats(horseUUID);
 		if (success) {
 			if (samePlayer) {
-				zh.getMM().sendMessageHorse(s, LocaleEnum.horseCleared, horseName);
+				zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_CLEARED, horseName);
 			}
 			else {
-				zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.horseClearedOther, horseName, targetName);
+				zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.HORSE_CLEARED_OTHER, horseName, targetName);
 			}
 			zh.getEM().payCommand(p, command);
 		}

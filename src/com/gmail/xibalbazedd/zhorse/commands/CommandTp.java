@@ -41,7 +41,7 @@ public class CommandTp extends AbstractCommand {
 		if (isOwner() && isWorldCrossable(p.getWorld()) && isWorldCrossable(horse.getWorld()) && isNotOnHorse() && isHorseInRangeTp() && zh.getEM().canAffordCommand(p, command)) {
 			p.teleport(horse);
 			if (displayConsole) {
-				zh.getMM().sendMessageHorse(s, LocaleEnum.teleportedToHorse, horseName);
+				zh.getMM().sendMessageHorse(s, LocaleEnum.TELEPORTED_TO_HORSE, horseName);
 			}
 			zh.getEM().payCommand(p, command);
 		}

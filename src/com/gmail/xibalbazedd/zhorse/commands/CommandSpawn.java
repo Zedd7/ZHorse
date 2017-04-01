@@ -57,7 +57,7 @@ public class CommandSpawn extends AbstractCommand {
 			if (valid) {
 				craftHorse();
 				if (displayConsole) {
-					zh.getMM().sendMessage(s, LocaleEnum.horseSpawned);
+					zh.getMM().sendMessage(s, LocaleEnum.HORSE_SPAWNED);
 				}
 				zh.getEM().payCommand(p, command);
 			}
@@ -96,7 +96,7 @@ public class CommandSpawn extends AbstractCommand {
 				}
 				if (!parsed) {
 					valid = false;
-					zh.getMM().sendMessageValue(s, LocaleEnum.unknownSpawnArgument, argument);
+					zh.getMM().sendMessageValue(s, LocaleEnum.UNKNOWN_SPAWN_ARGUMENT, argument);
 				}
 			}
 		}

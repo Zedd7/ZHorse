@@ -64,9 +64,9 @@ public class CommandGive extends AbstractCommand {
 				applyHorseName();
 				zh.getEM().payCommand(p, command);
 				if (displayConsole) {
-					zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.horseGiven, horseName, targetName);
+					zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.HORSE_GIVEN, horseName, targetName);
 					if (isPlayerOnline(targetUUID, true)) {
-						zh.getMM().sendMessageHorsePlayer(((CommandSender) zh.getServer().getPlayer(targetUUID)), LocaleEnum.horseReceived, horseName, p.getName());
+						zh.getMM().sendMessageHorsePlayer(((CommandSender) zh.getServer().getPlayer(targetUUID)), LocaleEnum.HORSE_RECEIVED, horseName, p.getName());
 					}
 				}
 			}

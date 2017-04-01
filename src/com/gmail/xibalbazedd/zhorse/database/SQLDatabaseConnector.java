@@ -336,9 +336,9 @@ public abstract class SQLDatabaseConnector {
 	private HorseRecord getHorseRecord(ResultSet resultSet) throws SQLException {
 		return new HorseRecord(
 			resultSet.getString("uuid"),
-			resultSet.getString("owner"),
-			resultSet.getInt("id"),
-			resultSet.getString("name"),
+			resultSet.getString("OWNER"),
+			resultSet.getInt("ID"),
+			resultSet.getString("NAME"),
 			resultSet.getInt("locked") == 1,
 			resultSet.getInt("protected") == 1,
 			resultSet.getInt("shared") == 1,
@@ -367,7 +367,7 @@ public abstract class SQLDatabaseConnector {
 			resultSet.getString("customName"),
 			resultSet.getInt("domestication"),
 			resultSet.getInt("fireTicks"),
-			resultSet.getDouble("health"),
+			resultSet.getDouble("HEALTH"),
 			resultSet.getInt("isCarryingChest") == 1,
 			resultSet.getInt("isCustomNameVisible") == 1,
 			resultSet.getInt("isGlowing") == 1,
@@ -376,8 +376,8 @@ public abstract class SQLDatabaseConnector {
 			resultSet.getDouble("maxHealth"),
 			resultSet.getInt("noDamageTicks"),
 			resultSet.getInt("remainingAir"),
-			resultSet.getDouble("speed"),
-			resultSet.getInt("strength"),
+			resultSet.getDouble("SPEED"),
+			resultSet.getInt("STRENGTH"),
 			resultSet.getString("style"),
 			resultSet.getInt("ticksLived"),
 			resultSet.getString("type")
@@ -387,7 +387,7 @@ public abstract class SQLDatabaseConnector {
 	private PlayerRecord getPlayerRecord(ResultSet resultSet) throws SQLException {
 		return new PlayerRecord(
 			resultSet.getString("uuid"),
-			resultSet.getString("name"),
+			resultSet.getString("NAME"),
 			resultSet.getString("language"),
 			resultSet.getInt("favorite")
 		);

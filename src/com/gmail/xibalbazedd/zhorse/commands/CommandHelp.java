@@ -43,7 +43,7 @@ public class CommandHelp extends AbstractCommand {
 					zh.getEM().payCommand(p, command);
 				}
 				else if (displayConsole) {
-					zh.getMM().sendMessageValue(s, LocaleEnum.unknownCommand, command);
+					zh.getMM().sendMessageValue(s, LocaleEnum.UNKNOWN_COMMAND, command);
 				}
 			}
 		}

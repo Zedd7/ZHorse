@@ -53,13 +53,13 @@ public class CommandTame extends AbstractCommand {
 			if (!tamed) {
 				horse.setTamed(true);
 				if (displayConsole) {
-					zh.getMM().sendMessage(s, LocaleEnum.horseTamed);
+					zh.getMM().sendMessage(s, LocaleEnum.HORSE_TAMED);
 				}
 			}
 			else {
 				horse.setTamed(false);
 				if (displayConsole) {
-					zh.getMM().sendMessage(s, LocaleEnum.horseUnTamed);
+					zh.getMM().sendMessage(s, LocaleEnum.HORSE_UNTAMED);
 				}
 			}
 			zh.getEM().payCommand(p, command);

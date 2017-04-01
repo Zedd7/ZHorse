@@ -55,7 +55,7 @@ public class CommandAdmin extends AbstractCommand {
 				}
 				else {
 					if (displayConsole) {
-						zh.getMM().sendMessageValue(s, LocaleEnum.unknownAdminCommand, subCommand);
+						zh.getMM().sendMessageValue(s, LocaleEnum.UNKNOWN_ADMIN_COMMAND, subCommand);
 					}
 					sendCommandAdminDescriptionList();
 				}
@@ -67,7 +67,7 @@ public class CommandAdmin extends AbstractCommand {
 	}
 
 	private void clear() {
-		fullCommand = command + KeyWordEnum.dot.getValue() + CommandAdminEnum.CLEAR.getName();
+		fullCommand = command + KeyWordEnum.DOT.getValue() + CommandAdminEnum.CLEAR.getName();
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (argument.split(" ").length >= 2) {
 				targetMode = true;
@@ -101,10 +101,10 @@ public class CommandAdmin extends AbstractCommand {
 						}
 						if (success) {
 							if (samePlayer) {
-								zh.getMM().sendMessage(s, LocaleEnum.playerCleared);
+								zh.getMM().sendMessage(s, LocaleEnum.PLAYED_CLEARED);
 							}
 							else {
-								zh.getMM().sendMessagePlayer(s, LocaleEnum.playerClearedOther, targetName);
+								zh.getMM().sendMessagePlayer(s, LocaleEnum.PLAYER_CLEARED_OTHER, targetName);
 							}
 							zh.getEM().payCommand(p, command);
 						}
@@ -123,54 +123,54 @@ public class CommandAdmin extends AbstractCommand {
 					success &= zh.getDM().removeHorseStats(horseUUID);
 					if (success) {
 						if (samePlayer) {
-							zh.getMM().sendMessageHorse(s, LocaleEnum.horseCleared, horseName);
+							zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_CLEARED, horseName);
 						}
 						else {
-							zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.horseClearedOther, horseName, targetName);
+							zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.HORSE_CLEARED_OTHER, horseName, targetName);
 						}
 						zh.getEM().payCommand(p, command);
 					}
 				}
 			}
 			else if (displayConsole) {
-				zh.getMM().sendMessage(s, LocaleEnum.missingTarget);
+				zh.getMM().sendMessage(s, LocaleEnum.MISSING_TARGET);
 				sendCommandUsage(subCommand, true, true);
 			}
 		}
 	}
 	
 	private void importDB() {
-		fullCommand = command + KeyWordEnum.dot.getValue() + CommandAdminEnum.IMPORT.getName().toLowerCase();
+		fullCommand = command + KeyWordEnum.DOT.getValue() + CommandAdminEnum.IMPORT.getName().toLowerCase();
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (argument.split(" ").length >= 2) {
 				String databaseName = argument.substring(argument.indexOf(" ") + 1);
 				boolean success = false;
 				if (databaseName.equalsIgnoreCase(DatabaseEnum.MYSQL.getName())) {
-					zh.getMM().sendMessageValue(s, LocaleEnum.databaseImportStarted, databaseName);
+					zh.getMM().sendMessageValue(s, LocaleEnum.DATABASE_IMPORT_STARTED, databaseName);
 					success = MySQLImporter.importData(zh);
 				}
 				else if (databaseName.equalsIgnoreCase(DatabaseEnum.SQLITE.getName())) {
-					zh.getMM().sendMessageValue(s, LocaleEnum.databaseImportStarted, databaseName);
+					zh.getMM().sendMessageValue(s, LocaleEnum.DATABASE_IMPORT_STARTED, databaseName);
 					success = SQLiteImporter.importData(zh);
 				}
 				else if (databaseName.equalsIgnoreCase(DatabaseEnum.YAML.getName())) {
-					zh.getMM().sendMessageValue(s, LocaleEnum.databaseImportStarted, databaseName);
+					zh.getMM().sendMessageValue(s, LocaleEnum.DATABASE_IMPORT_STARTED, databaseName);
 					success = YAMLImporter.importData(zh);
 				}
 				else if (displayConsole) {
-					displayAvailableDatabases(LocaleEnum.unknownDatabase);
+					displayAvailableDatabases(LocaleEnum.UNKNOWN_DATABASE);
 				}
 				if (displayConsole) {
 					if (success) {
-						zh.getMM().sendMessageValue(s, LocaleEnum.databaseImportSuccess, databaseName);
+						zh.getMM().sendMessageValue(s, LocaleEnum.DATABASE_IMPORT_SUCCESS, databaseName);
 					}
 					else {
-						zh.getMM().sendMessageValue(s, LocaleEnum.databaseImportFailure, databaseName);
+						zh.getMM().sendMessageValue(s, LocaleEnum.DATABASE_IMPORT_FAILURE, databaseName);
 					}
 				}
 			}
 			else if (displayConsole) {
-				displayAvailableDatabases(LocaleEnum.missingDatabase);
+				displayAvailableDatabases(LocaleEnum.MISSING_DATABASE);
 				sendCommandUsage(subCommand, true, true);
 			}
 		}
@@ -180,7 +180,7 @@ public class CommandAdmin extends AbstractCommand {
 		DatabaseEnum[] availableDatabaseArray = DatabaseEnum.values();
 		String availableDatabasesMessage = "";
 		for (int i = 0; i < availableDatabaseArray.length; ++i) {
-			availableDatabasesMessage += zh.getMM().getMessageValue(s, LocaleEnum.availableOptionFormat, availableDatabaseArray[i].getName(), true);
+			availableDatabasesMessage += zh.getMM().getMessageValue(s, LocaleEnum.AVAILABLE_OPTION_FORMAT, availableDatabaseArray[i].getName(), true);
 			if (i < availableDatabaseArray.length - 1) {
 				availableDatabasesMessage += ", ";
 			}

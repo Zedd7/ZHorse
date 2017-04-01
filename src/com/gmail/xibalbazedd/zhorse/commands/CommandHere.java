@@ -50,7 +50,7 @@ public class CommandHere extends AbstractCommand {
 			horse = zh.getHM().teleport(horse, destination);
 			if (horse != null) {
 				if (displayConsole) {
-					zh.getMM().sendMessageHorse(s, LocaleEnum.horseTeleported, horseName);
+					zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_TELEPORTED, horseName);
 				}
 				zh.getEM().payCommand(p, command);
 			}

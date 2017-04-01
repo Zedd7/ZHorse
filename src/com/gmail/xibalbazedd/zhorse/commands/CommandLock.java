@@ -55,7 +55,7 @@ public class CommandLock extends AbstractCommand {
 				if (zh.getDM().isHorseShared(horse.getUniqueId())) {
 					zh.getDM().updateHorseShared(horse.getUniqueId(), false);
 					if (displayConsole) {
-						zh.getMM().sendMessageHorse(s, LocaleEnum.horseUnShared, horseName);
+						zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_UNSHARED, horseName);
 					}
 				}
 				for (Entity passenger : horse.getPassengers()) {
@@ -66,19 +66,19 @@ public class CommandLock extends AbstractCommand {
 						if (!passengerIsOwner && !passengerHasPerm) {
 							horse.removePassenger(passenger);
 							String ownerName = zh.getDM().getOwnerName(horse.getUniqueId());
-							zh.getMM().sendMessagePlayer((CommandSender) passenger, LocaleEnum.horseBelongsTo, ownerName);
+							zh.getMM().sendMessagePlayer((CommandSender) passenger, LocaleEnum.HORSE_BELONGS_TO, ownerName);
 						}
 					}
 				}
 				zh.getDM().updateHorseLocked(horse.getUniqueId(), true);
 				if (displayConsole) {
-					zh.getMM().sendMessageHorse(s, LocaleEnum.horseLocked, horseName);
+					zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_LOCKED, horseName);
 				}
 			}
 			else {
 				zh.getDM().updateHorseLocked(horse.getUniqueId(), false);
 				if (displayConsole) {
-					zh.getMM().sendMessageHorse(s, LocaleEnum.horseUnLocked, horseName);
+					zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_UNLOCKED, horseName);
 				}
 			}
 			zh.getEM().payCommand(p, command);

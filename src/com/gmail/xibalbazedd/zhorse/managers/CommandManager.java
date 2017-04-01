@@ -24,9 +24,9 @@ public class CommandManager implements CommandExecutor {
 			PluginDescriptionFile pluginDescription = zh.getDescription();
 			String pluginNameAndVersion = String.format("%s %s", pluginDescription.getName(), pluginDescription.getVersion());
 			String author = pluginDescription.getAuthors().get(0);
-			String pluginHeader = zh.getMM().getMessagePlayerValue(s, LocaleEnum.pluginHeader, author, pluginNameAndVersion, true);			
-			LocaleEnum helpDescription = LocaleEnum.valueOf(CommandEnum.HELP.getName() + KeyWordEnum.description.getValue());
-			zh.getMM().sendMessageValue(s, LocaleEnum.headerFormat, pluginHeader, true);
+			String pluginHeader = zh.getMM().getMessagePlayerValue(s, LocaleEnum.PLUGIN_HEADER, author, pluginNameAndVersion, true);			
+			LocaleEnum helpDescription = LocaleEnum.valueOf(CommandEnum.HELP.getName() + KeyWordEnum.DESCRIPTION.getValue());
+			zh.getMM().sendMessageValue(s, LocaleEnum.HEADER_FORMAT, pluginHeader, true);
 			zh.getMM().sendMessageSpacer(s, helpDescription, 1, true);
 		}
 		else {
@@ -44,7 +44,7 @@ public class CommandManager implements CommandExecutor {
 				}
 			}
 			if (!commandValid && !zh.getCM().isConsoleMuted()) {
-				zh.getMM().sendMessageValue(s, LocaleEnum.unknownCommand, command);
+				zh.getMM().sendMessageValue(s, LocaleEnum.UNKNOWN_COMMAND, command);
 			}
 		}
 		return true;

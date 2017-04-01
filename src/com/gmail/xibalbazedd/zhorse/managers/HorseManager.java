@@ -227,7 +227,7 @@ public class HorseManager {
 		horse.setFireTicks(statsRecord.getFireTicks());
 		horse.setGlowing(statsRecord.isGlowing());
 		horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(statsRecord.getMaxHealth());
-		horse.setHealth(statsRecord.getHealth()); // Define max health before current health
+		horse.setHealth(statsRecord.getHealth()); // Define max HEALTH before current HEALTH
 		horse.setJumpStrength(statsRecord.getJumpStrength());
 		horse.setNoDamageTicks(statsRecord.getNoDamageTicks());
 		horse.setRemainingAir(statsRecord.getRemainingAir());

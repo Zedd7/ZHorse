@@ -89,7 +89,7 @@ public class LocaleManager {
         if (hidePrefix) {
         	return message;
         }
-        return getMessage(LocaleEnum.pluginPrefix.getIndex(), language, true) + " " + message;
+        return getMessage(LocaleEnum.PLUGIN_PREFIX.getIndex(), language, true) + " " + message;
 	}
 	
 	public boolean checkConformity() {

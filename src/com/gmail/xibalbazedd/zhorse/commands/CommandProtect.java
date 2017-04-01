@@ -52,13 +52,13 @@ public class CommandProtect extends AbstractCommand {
 			if (!zh.getDM().isHorseProtected(horse.getUniqueId())) {
 				zh.getDM().updateHorseProtected(horse.getUniqueId(), true);
 				if (displayConsole) {
-					zh.getMM().sendMessageHorse(s, LocaleEnum.horseProtected, horseName);
+					zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_PROTECTED, horseName);
 				}
 			}
 			else {
 				zh.getDM().updateHorseProtected(horse.getUniqueId(), false);
 				if (displayConsole) {
-					zh.getMM().sendMessageHorse(s, LocaleEnum.horseUnProtected, horseName);
+					zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_UNPROTECTED, horseName);
 				}
 			}
 			zh.getEM().payCommand(p, command);

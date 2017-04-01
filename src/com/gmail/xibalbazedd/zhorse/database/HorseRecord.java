@@ -8,9 +8,9 @@ public class HorseRecord {
 	private String owner;
 	private Integer id;
 	private String name;
-	private Boolean modeLocked;
-	private Boolean modeProtected;
-	private Boolean modeShared;
+	private Boolean locked;
+	private Boolean protected_;
+	private Boolean shared;
 	private String locationWorld;
 	private Integer locationX;
 	private Integer locationY;
@@ -21,9 +21,9 @@ public class HorseRecord {
 		String owner,
 		Integer id,
 		String name,
-		Boolean modeLocked,
-		Boolean modeProtected,
-		Boolean modeShared,
+		Boolean locked,
+		Boolean protected_,
+		Boolean shared,
 		String locationWorld,
 		Integer locationX,
 		Integer locationY,
@@ -33,9 +33,9 @@ public class HorseRecord {
 		this.owner = owner;
 		this.id = id;
 		this.name = name;
-		this.modeLocked = modeLocked;
-		this.modeProtected = modeProtected;
-		this.modeShared = modeShared;
+		this.locked = locked;
+		this.protected_ = protected_;
+		this.shared = shared;
 		this.locationWorld = locationWorld;
 		this.locationX = locationX;
 		this.locationY = locationY;
@@ -47,12 +47,12 @@ public class HorseRecord {
 		String owner,
 		Integer id,
 		String name,
-		Boolean modeLocked,
-		Boolean modeProtected,
-		Boolean modeShared,
+		Boolean locked,
+		Boolean protected_,
+		Boolean shared,
 		Location location)
 	{
-		this(uuid, owner, id, name, modeLocked, modeProtected, modeShared, location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+		this(uuid, owner, id, name, locked, protected_, shared, location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
 	}
 
 	public String getUUID() {
@@ -71,16 +71,16 @@ public class HorseRecord {
 		return name;
 	}
 
-	public Boolean getModeLocked() {
-		return modeLocked;
+	public Boolean isLocked() {
+		return locked;
 	}
 
-	public Boolean getModeProtected() {
-		return modeProtected;
+	public Boolean isProtected() {
+		return protected_;
 	}
 
-	public Boolean getModeShared() {
-		return modeShared;
+	public Boolean isShared() {
+		return shared;
 	}
 
 	public String getLocationWorld() {

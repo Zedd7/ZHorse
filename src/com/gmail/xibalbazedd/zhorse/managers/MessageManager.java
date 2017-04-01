@@ -344,7 +344,7 @@ public class MessageManager {
 			rawMessage = getSpace(spacer) + getFromLocale(s, index, hidePrefix);
 		}
 		else {
-			String costMessage = getSpace(spacer) + getMessageAmountValue(s, LocaleEnum.commandCost, cost, value, hidePrefix);
+			String costMessage = getSpace(spacer) + getMessageAmountValue(s, LocaleEnum.COMMAND_COST, cost, value, hidePrefix);
 			rawMessage = getSpace(spacer) + getFromLocale(s, index, hidePrefix) + costMessage;
 		}
 		String message = populateFlags(rawMessage, amount, horse, horseID, lang, max, perm, player, value);
@@ -366,14 +366,14 @@ public class MessageManager {
 	
 	private String populateFlags(String rawMessage, int amount, String horse, String horseID, String lang, int max, String perm, String player, String value) {
 		String message = rawMessage;
-		message = message.replace(KeyWordEnum.amountFlag.getValue(), Integer.toString(amount));
-		message = message.replace(KeyWordEnum.horseFlag.getValue(), horse);
-		message = message.replace(KeyWordEnum.horseIDFlag.getValue(), horseID);	
-		message = message.replace(KeyWordEnum.langFlag.getValue(), lang);
-		message = message.replace(KeyWordEnum.maxFlag.getValue(), Integer.toString(max));
-		message = message.replace(KeyWordEnum.permFlag.getValue(), perm);
-		message = message.replace(KeyWordEnum.playerFlag.getValue(), player);			
-		message = message.replace(KeyWordEnum.valueFlag.getValue(), value);		
+		message = message.replace(KeyWordEnum.AMOUNT_FLAG.getValue(), Integer.toString(amount));
+		message = message.replace(KeyWordEnum.HORSE_FLAG.getValue(), horse);
+		message = message.replace(KeyWordEnum.HORSE_ID_FLAG.getValue(), horseID);	
+		message = message.replace(KeyWordEnum.LANG_FLAG.getValue(), lang);
+		message = message.replace(KeyWordEnum.MAX_FLAG.getValue(), Integer.toString(max));
+		message = message.replace(KeyWordEnum.PERM_FLAG.getValue(), perm);
+		message = message.replace(KeyWordEnum.PLAYER_FLAG.getValue(), player);			
+		message = message.replace(KeyWordEnum.VALUE_FLAG.getValue(), value);		
 		message = applyColors(message);
 		return message;
 	}

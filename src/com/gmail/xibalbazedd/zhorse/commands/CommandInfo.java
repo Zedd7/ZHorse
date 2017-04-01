@@ -82,48 +82,48 @@ public class CommandInfo extends AbstractCommand {
 	}
 	
 	private void displayHeader() {
-		zh.getMM().sendMessageValue(s, LocaleEnum.headerFormat, zh.getMM().getMessage(s, LocaleEnum.horseInfoHeader, true), true);
+		zh.getMM().sendMessageValue(s, LocaleEnum.HEADER_FORMAT, zh.getMM().getMessage(s, LocaleEnum.HORSE_INFO_HEADER, true), true);
 	}
 	
 	private void displayHorseID() {
 		if (isOwner(false, true)) {
 			String horseID = horseRecord.getId().toString();
-			zh.getMM().sendMessageHorseIDSpacer(s, LocaleEnum.id, horseID, 1, true);
+			zh.getMM().sendMessageHorseIDSpacer(s, LocaleEnum.ID, horseID, 1, true);
 		}
 	}
 	
 	private void displayNames() {
 		String ownerName = ownerRecord.getName();
 		String horseName = horseRecord.getName();
-		zh.getMM().sendMessagePlayerSpacer(s, LocaleEnum.owner, ownerName, 1, true);
-		zh.getMM().sendMessageHorseSpacer(s, LocaleEnum.name, horseName, 1, true);
+		zh.getMM().sendMessagePlayerSpacer(s, LocaleEnum.OWNER, ownerName, 1, true);
+		zh.getMM().sendMessageHorseSpacer(s, LocaleEnum.NAME, horseName, 1, true);
 	}
 	
 	private void displayHealth() {
 		int health = statsRecord.getHealth().intValue();
 		int maxHealth = statsRecord.getMaxHealth().intValue();
-		zh.getMM().sendMessageAmountMaxSpacer(s, LocaleEnum.health, health, maxHealth, 1, true);
+		zh.getMM().sendMessageAmountMaxSpacer(s, LocaleEnum.HEALTH, health, maxHealth, 1, true);
 	}
 	
 	private void displaySpeed() {
 		double speed = statsRecord.getSpeed();
 		double maxSpeed = HorseStatisticEnum.MAX_SPEED.getValue(useVanillaStats);
 		int speedRatio = (int) ((speed / maxSpeed) * 100);
-		zh.getMM().sendMessageAmountSpacer(s, LocaleEnum.speed, speedRatio, 1, true);
+		zh.getMM().sendMessageAmountSpacer(s, LocaleEnum.SPEED, speedRatio, 1, true);
 	}
 	
 	private void displayJumpStrength() {
 		double jumpStrength = statsRecord.getJumpStrength();
 		double maxJumpStrength = HorseStatisticEnum.MAX_JUMP_STRENGTH.getValue(useVanillaStats);
 		int jumpRatio = (int) ((jumpStrength / maxJumpStrength) * 100);
-		zh.getMM().sendMessageAmountSpacer(s, LocaleEnum.jump, jumpRatio, 1, true);
+		zh.getMM().sendMessageAmountSpacer(s, LocaleEnum.JUMP, jumpRatio, 1, true);
 	}
 	
 	private void displayChestSize() {
 		if (horse instanceof ChestedHorse && statsRecord.isCarryingChest()) {
 			int strength = horse instanceof Llama ? statsRecord.getStrength() : (int) HorseStatisticEnum.MAX_LLAMA_STRENGTH.getValue(useVanillaStats);
 			int chestSize = strength * CHEST_SIZE_MULTIPLICATOR;
-			zh.getMM().sendMessageAmountSpacer(s, LocaleEnum.strength, chestSize, 1, true);
+			zh.getMM().sendMessageAmountSpacer(s, LocaleEnum.STRENGTH, chestSize, 1, true);
 		}
 	}
 	
@@ -134,24 +134,24 @@ public class CommandInfo extends AbstractCommand {
 			int z = (int) Math.floor(horseRecord.getLocationZ());
 			String world = horseRecord.getLocationWorld();
 			String location = String.format("%d/%d/%d : %s", x, y, z, world);
-			zh.getMM().sendMessageSpacerValue(s, LocaleEnum.location, 1, location, true);
+			zh.getMM().sendMessageSpacerValue(s, LocaleEnum.LOCATION, 1, location, true);
 		}
 	}
 	
 	private void displayStatus() {
 		String status = "";
-		if (horseRecord.getModeProtected()) {
-			status += zh.getMM().getMessageSpacer(s, LocaleEnum.modeProtected, 0, true);
+		if (horseRecord.isProtected()) {
+			status += zh.getMM().getMessageSpacer(s, LocaleEnum.PROTECTED, 0, true);
 		}
 		int spacer = status.isEmpty() ? 0 : 1;
-		if (horseRecord.getModeLocked()) {
-			status += zh.getMM().getMessageSpacer(s, LocaleEnum.modeLocked, spacer, true);
+		if (horseRecord.isLocked()) {
+			status += zh.getMM().getMessageSpacer(s, LocaleEnum.LOCKED, spacer, true);
 		}
-		else if (horseRecord.getModeShared()) {
-			status += zh.getMM().getMessageSpacer(s, LocaleEnum.modeShared, spacer, true);
+		else if (horseRecord.isShared()) {
+			status += zh.getMM().getMessageSpacer(s, LocaleEnum.SHARED, spacer, true);
 		}
 		if (!status.isEmpty()) {
-			zh.getMM().sendMessageSpacerValue(s, LocaleEnum.status, 1, status, true);
+			zh.getMM().sendMessageSpacerValue(s, LocaleEnum.STATUS, 1, status, true);
 		}
 	}
 	

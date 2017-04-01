@@ -53,18 +53,18 @@ public class CommandShare extends AbstractCommand {
 				if (zh.getDM().isHorseLocked(horse.getUniqueId())) {
 					zh.getDM().updateHorseLocked(horse.getUniqueId(), false);
 					if (displayConsole) {
-						zh.getMM().sendMessageHorse(s, LocaleEnum.horseUnLocked, horseName);
+						zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_UNLOCKED, horseName);
 					}
 				}
 				zh.getDM().updateHorseShared(horse.getUniqueId(), true);
 				if (displayConsole) {
-					zh.getMM().sendMessageHorse(s, LocaleEnum.horseShared, horseName);
+					zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_SHARED, horseName);
 				}
 			}
 			else {
 				zh.getDM().updateHorseShared(horse.getUniqueId(), false);
 				if (displayConsole) {
-					zh.getMM().sendMessageHorse(s, LocaleEnum.horseUnShared, horseName);
+					zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_UNSHARED, horseName);
 				}
 			}
 			zh.getEM().payCommand(p, command);

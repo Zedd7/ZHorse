@@ -52,7 +52,7 @@ public class CommandHeal extends AbstractCommand {
 		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
 			horse.setHealth(horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
 			if (displayConsole) {
-				zh.getMM().sendMessageHorse(s, LocaleEnum.horseHealed, horseName);
+				zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_HEALED, horseName);
 			}
 			zh.getEM().payCommand(p, command);
 		}

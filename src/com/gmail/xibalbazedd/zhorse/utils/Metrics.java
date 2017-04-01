@@ -68,7 +68,7 @@ public class Metrics {
     private static final String BASE_URL = "http://report.mcstats.org";
 
     /**
-     * The url used to report a server's status
+     * The url used to report a server's STATUS
      */
     private static final String REPORT_URL = "/plugin/%s";
 
@@ -98,7 +98,7 @@ public class Metrics {
     private final File configurationFile;
 
     /**
-     * Unique server id
+     * Unique server ID
      */
     private final String guid;
 
@@ -148,12 +148,12 @@ public class Metrics {
      * Construct and create a Graph that can be used to separate specific plotters to their own graphs on the metrics
      * website. Plotters can be added to the graph object returned.
      *
-     * @param name The name of the graph
+     * @param NAME The NAME of the graph
      * @return Graph object created. Will never return NULL under normal circumstances unless bad parameters are given
      */
     public Graph createGraph(final String name) {
         if (name == null) {
-            throw new IllegalArgumentException("Graph name cannot be null");
+            throw new IllegalArgumentException("Graph NAME cannot be null");
         }
 
         // Construct the graph object
@@ -169,7 +169,7 @@ public class Metrics {
     /**
      * Add a Graph object to BukkitMetrics that represents data for the plugin that should be sent to the backend
      *
-     * @param graph The name of the graph
+     * @param graph The NAME of the graph
      */
     public void addGraph(final Graph graph) {
         if (graph == null) {
@@ -207,7 +207,7 @@ public class Metrics {
                     try {
                         // This has to be synchronized or it can collide with the disable method.
                         synchronized (optOutLock) {
-                            // Disable Task, if it is running and the server owner decided to opt-out
+                            // Disable Task, if it is running and the server OWNER decided to opt-out
                             if (isOptOut() && task != null) {
                                 task.cancel();
                                 task = null;
@@ -239,7 +239,7 @@ public class Metrics {
     }
 
     /**
-     * Has the server owner denied plugin metrics?
+     * Has the server OWNER denied plugin metrics?
      *
      * @return true if metrics should be opted out of it
      */
@@ -271,7 +271,7 @@ public class Metrics {
     public void enable() throws IOException {
         // This has to be synchronized or it can collide with the check in the task.
         synchronized (optOutLock) {
-            // Check if the server owner has already set opt-out, if not, set it.
+            // Check if the server OWNER has already set opt-out, if not, set it.
             if (isOptOut()) {
                 configuration.set("opt-out", false);
                 configuration.save(configurationFile);
@@ -292,7 +292,7 @@ public class Metrics {
     public void disable() throws IOException {
         // This has to be synchronized or it can collide with the check in the task.
         synchronized (optOutLock) {
-            // Check if the server owner has already set opt-out, if not, set it.
+            // Check if the server OWNER has already set opt-out, if not, set it.
             if (!isOptOut()) {
                 configuration.set("opt-out", true);
                 configuration.save(configurationFile);
@@ -307,7 +307,7 @@ public class Metrics {
     }
 
     /**
-     * Gets the File object of the config file that should be used to store data such as the GUID and opt-out status
+     * Gets the File object of the config file that should be used to store data such as the GUID and opt-out STATUS
      *
      * @return the File object for the config file
      */
@@ -341,7 +341,7 @@ public class Metrics {
         StringBuilder json = new StringBuilder(1024);
         json.append('{');
 
-        // The plugin's description file containg all of the plugin data such as name, version, author, etc
+        // The plugin's description file containg all of the plugin data such as NAME, version, author, etc
         appendJSONPair(json, "guid", guid);
         appendJSONPair(json, "plugin_version", pluginVersion);
         appendJSONPair(json, "server_version", serverVersion);
@@ -620,7 +620,7 @@ public class Metrics {
     public static class Graph {
 
         /**
-         * The graph's name, alphanumeric and spaces only :) If it does not comply to the above when submitted, it is
+         * The graph's NAME, alphanumeric and spaces only :) If it does not comply to the above when submitted, it is
          * rejected
          */
         private final String name;
@@ -635,9 +635,9 @@ public class Metrics {
         }
 
         /**
-         * Gets the graph's name
+         * Gets the graph's NAME
          *
-         * @return the Graph's name
+         * @return the Graph's NAME
          */
         public String getName() {
             return name;
@@ -686,7 +686,7 @@ public class Metrics {
         }
 
         /**
-         * Called when the server owner decides to opt-out of BukkitMetrics while the server is running.
+         * Called when the server OWNER decides to opt-out of BukkitMetrics while the server is running.
          */
         protected void onOptOut() {
         }
@@ -698,21 +698,21 @@ public class Metrics {
     public static abstract class Plotter {
 
         /**
-         * The plot's name
+         * The plot's NAME
          */
         private final String name;
 
         /**
-         * Construct a plotter with the default plot name
+         * Construct a plotter with the default plot NAME
          */
         public Plotter() {
             this("Default");
         }
 
         /**
-         * Construct a plotter with a specific plot name
+         * Construct a plotter with a specific plot NAME
          *
-         * @param name the name of the plotter to use, which will show up on the website
+         * @param NAME the NAME of the plotter to use, which will show up on the website
          */
         public Plotter(final String name) {
             this.name = name;
@@ -728,9 +728,9 @@ public class Metrics {
         public abstract int getValue();
 
         /**
-         * Get the column name for the plotted point
+         * Get the column NAME for the plotted point
          *
-         * @return the plotted point's column name
+         * @return the plotted point's column NAME
          */
         public String getColumnName() {
             return name;

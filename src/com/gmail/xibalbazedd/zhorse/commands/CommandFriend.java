@@ -46,7 +46,7 @@ public class CommandFriend extends AbstractCommand {
 				}
 				else {
 					if (displayConsole) {
-						zh.getMM().sendMessageValue(s, LocaleEnum.unknownFriendCommand, subCommand);
+						zh.getMM().sendMessageValue(s, LocaleEnum.UNKNOWN_FRIEND_COMMAND, subCommand);
 					}
 					sendCommandFriendDescriptionList();
 				}
@@ -58,7 +58,7 @@ public class CommandFriend extends AbstractCommand {
 	}
 	
 	private void addFriend() {
-		fullCommand = command + KeyWordEnum.dot.getValue() + CommandFriendEnum.ADD.getName();
+		fullCommand = command + KeyWordEnum.DOT.getValue() + CommandFriendEnum.ADD.getName();
 		if (hasPermission(s, fullCommand , true, false)) {
 			argument = argument.split(" ").length >= 2 ? argument.substring(argument.indexOf(" ") + 1) : "";
 			if (applyArgumentToTarget()) {
@@ -67,11 +67,11 @@ public class CommandFriend extends AbstractCommand {
 						if (isPlayerDifferent()) {
 							if (!zh.getDM().isFriendOf(p.getUniqueId(), targetUUID)) {
 								zh.getDM().registerFriend(new FriendRecord(p.getUniqueId().toString(), targetUUID.toString()));
-								zh.getMM().sendMessagePlayer(s, LocaleEnum.friendAdded, targetName);
+								zh.getMM().sendMessagePlayer(s, LocaleEnum.FRIEND_ADDED, targetName);
 								zh.getEM().payCommand(p, command);
 							}
 							else if (displayConsole) {
-								zh.getMM().sendMessagePlayer(s, LocaleEnum.friendAlreadyAdded, targetName);
+								zh.getMM().sendMessagePlayer(s, LocaleEnum.FRIEND_ALREADY_ADDED, targetName);
 							}
 						}
 					}
@@ -84,7 +84,7 @@ public class CommandFriend extends AbstractCommand {
 	}
 	
 	private void removeFriend() {
-		fullCommand = command + KeyWordEnum.dot.getValue() + CommandFriendEnum.REMOVE.getName();
+		fullCommand = command + KeyWordEnum.DOT.getValue() + CommandFriendEnum.REMOVE.getName();
 		if (hasPermission(s, fullCommand , true, false)) {
 			argument = argument.split(" ").length >= 2 ? argument.substring(argument.indexOf(" ") + 1) : "";
 			if (applyArgumentToTarget()) {
@@ -93,11 +93,11 @@ public class CommandFriend extends AbstractCommand {
 						if (isRegistered(targetUUID)) {
 							if (zh.getDM().isFriendOf(p.getUniqueId(), targetUUID)) {
 								zh.getDM().removeFriend(p.getUniqueId(), targetUUID);
-								zh.getMM().sendMessagePlayer(s, LocaleEnum.friendRemoved, targetName);
+								zh.getMM().sendMessagePlayer(s, LocaleEnum.FRIEND_REMOVED, targetName);
 								zh.getEM().payCommand(p, command);
 							}
 							else if (displayConsole) {
-								zh.getMM().sendMessagePlayer(s, LocaleEnum.unknownFriend, targetName);
+								zh.getMM().sendMessagePlayer(s, LocaleEnum.UNKNOWN_FRIEND, targetName);
 							}
 						}
 					}
@@ -110,7 +110,7 @@ public class CommandFriend extends AbstractCommand {
 	}
 
 	private void sendFriendList() {
-		fullCommand = command + KeyWordEnum.dot.getValue() + CommandFriendEnum.LIST.getName();
+		fullCommand = command + KeyWordEnum.DOT.getValue() + CommandFriendEnum.LIST.getName();
 		if (hasPermission(s, fullCommand , true, false)) {
 			argument = argument.split(" ").length >= 2 ? argument.substring(argument.indexOf(" ") + 1) : "";
 			if (applyArgumentToTarget()) {
@@ -119,30 +119,30 @@ public class CommandFriend extends AbstractCommand {
 					List<String> friendNameReverseList = zh.getDM().getFriendNameReverseList(targetUUID);
 					if (samePlayer) {
 						if (friendNameList.size() > 0) {
-							displayFriendNames(LocaleEnum.friendList, friendNameList);
+							displayFriendNames(LocaleEnum.FRIEND_LIST, friendNameList);
 						}
 						else {
-							zh.getMM().sendMessage(s, LocaleEnum.noFriend);
+							zh.getMM().sendMessage(s, LocaleEnum.NO_FRIEND);
 						}
 						if (friendNameReverseList.size() > 0) {
-							displayFriendNames(LocaleEnum.friendListReverse, friendNameReverseList);
+							displayFriendNames(LocaleEnum.FRIEND_LIST_REVERSE, friendNameReverseList);
 						}
 						else {
-							zh.getMM().sendMessage(s, LocaleEnum.noFriendReverse);
+							zh.getMM().sendMessage(s, LocaleEnum.NO_FRIEND_REVERSE);
 						}
 					}
 					else {
 						if (friendNameList.size() > 0) {
-							displayFriendNames(LocaleEnum.friendListOther, friendNameList);
+							displayFriendNames(LocaleEnum.FRIEND_LIST_OTHER, friendNameList);
 						}
 						else {
-							zh.getMM().sendMessagePlayer(s, LocaleEnum.noFriendOther, targetName);
+							zh.getMM().sendMessagePlayer(s, LocaleEnum.NO_FRIEND_OTHER, targetName);
 						}
 						if (friendNameReverseList.size() > 0) {
-							displayFriendNames(LocaleEnum.friendListReverseOther, friendNameReverseList);
+							displayFriendNames(LocaleEnum.FRIEND_LIST_REVERSE_OTHER, friendNameReverseList);
 						}
 						else {
-							zh.getMM().sendMessagePlayer(s, LocaleEnum.noFriendReverseOther, targetName);
+							zh.getMM().sendMessagePlayer(s, LocaleEnum.NO_FRIEND_REVERSE_OTHER, targetName);
 						}
 					}
 				}
@@ -154,7 +154,7 @@ public class CommandFriend extends AbstractCommand {
 	private void displayFriendNames(LocaleEnum index, List<String> friendNameList) {
 		String friendNameListMessage = "";
 		for (int i = 0; i < friendNameList.size(); ++i) {
-			friendNameListMessage += zh.getMM().getMessagePlayer(s, LocaleEnum.friendListFormat, friendNameList.get(i), true);
+			friendNameListMessage += zh.getMM().getMessagePlayer(s, LocaleEnum.FRIEND_LIST_FORMAT, friendNameList.get(i), true);
 			if (i < friendNameList.size() - 1) {
 				friendNameListMessage += ", ";
 			}
