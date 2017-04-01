@@ -54,15 +54,18 @@ public enum KeyWordEnum {
 	
 	/* locale.yml keywords */
 	AMOUNT_FLAG("<amount>"),
-	DESCRIPTION("Description"),
 	HORSE_FLAG("<horse>"),
-	HORSE_ID_FLAG("<ID>"),
+	HORSE_ID_FLAG("<id>"),
 	LANG_FLAG("<lang>"),
 	MAX_FLAG("<max>"),
 	PERM_FLAG("<perm>"),
 	PLAYER_FLAG("<player>"),
-	USAGE("Usage"),
-	VALUE_FLAG("<value>");
+	VALUE_FLAG("<value>"),
+	
+	/* LocaleEnum keywords */
+	DESCRIPTION("DESCRIPTION"),
+	SEPARATOR("_"),
+	USAGE("USAGE");
 	
 	private String value;
 	

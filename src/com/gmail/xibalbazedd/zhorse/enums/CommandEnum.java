@@ -6,6 +6,7 @@ import java.util.List;
 public enum CommandEnum {
 	
 	ADMIN("admin", "com.gmail.xibalbazedd.zhorse.commands.CommandAdmin"),
+	BUY("buy", "com.gmail.xibalbazedd.zhorse.commands.CommandBuy"),
 	CLAIM("claim", "com.gmail.xibalbazedd.zhorse.commands.CommandClaim"),
 	FREE("free", "com.gmail.xibalbazedd.zhorse.commands.CommandFree"),
 	FRIEND("friend", "com.gmail.xibalbazedd.zhorse.commands.CommandFriend"),
@@ -20,6 +21,7 @@ public enum CommandEnum {
 	PROTECT("protect", "com.gmail.xibalbazedd.zhorse.commands.CommandProtect"),
 	RENAME("rename", "com.gmail.xibalbazedd.zhorse.commands.CommandRename"),
 	RELOAD("reload", "com.gmail.xibalbazedd.zhorse.commands.CommandReload"),
+	SELL("sell", "com.gmail.xibalbazedd.zhorse.commands.CommandSell"),
 	SETTINGS("settings", "com.gmail.xibalbazedd.zhorse.commands.CommandSettings"),
 	SHARE("share", "com.gmail.xibalbazedd.zhorse.commands.CommandShare"),
 	SPAWN("spawn", "com.gmail.xibalbazedd.zhorse.commands.CommandSpawn"),

@@ -135,6 +135,7 @@ public class EventManager implements Listener {
 				zh.getDM().removeHorse(horse.getUniqueId());
 				zh.getDM().removeHorseInventory(horse.getUniqueId());
 				zh.getDM().removeHorseStats(horse.getUniqueId());
+				zh.getDM().removeSale(horse.getUniqueId());
 			}
 		}
 	}

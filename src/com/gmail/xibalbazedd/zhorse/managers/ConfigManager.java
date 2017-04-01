@@ -306,14 +306,16 @@ public class ConfigManager {
 	}
 	
 	public boolean checkConformity() {
-		if (!(checkCommandsConformity()
-				&& checkDatabaseConformity()
-				&& checkGroupsConformity()
-				&& checkHorseNamesConformity()
-				&& checkLanguagesConformity()
-				&& checkProtectionsConformity()
-				&& checkSettingsConformity()
-				&& checkWorldsConformity())) {
+		boolean conform = true;
+		conform = checkCommandsConformity() && conform;
+		conform = checkDatabaseConformity() && conform;
+		conform = checkGroupsConformity() && conform;
+		conform = checkHorseNamesConformity() && conform;
+		conform = checkLanguagesConformity() && conform;
+		conform = checkProtectionsConformity() && conform;
+		conform = checkSettingsConformity() && conform;
+		conform = checkWorldsConformity() && conform;
+		if (!conform) {
 			zh.getLogger().severe("Fix that or delete config.yml and reload ZHorse.");
 			return false;
 		}
@@ -413,18 +415,32 @@ public class ConfigManager {
 		ConfigurationSection cs = config.getConfigurationSection("Groups");
 		if (cs != null) {
 			for (String group : cs.getKeys(false)) {
-				String color = config.getString("Groups." + group + ".color");
-		        if (color != null) {
+				if (!config.isSet("Groups." + group + ".color")) {
+					zh.getLogger().severe("The \"Groups." + group + ".color\" option is missing from the config !");
+		        	conform = false;
+		        }
+				else {
+					String color = config.getString("Groups." + group + ".color");
 					if (!MessageManager.isColor(color)) {
-		        		zh.getLogger().severe("The color \"" + color + "\" used for the group \"" + group + "\" is not a color !");
-		        		conform = false;
-		        	}
+			        	zh.getLogger().severe("The color \"" + color + "\" used for the group \"" + group + "\" is not a color !");
+			        	conform = false;
+			        }
+				}
+				if (!config.isSet("Groups." + group + ".color-bypass")) {
+					zh.getLogger().severe("The \"Groups." + group + ".color-bypass\" option is missing from the config !");
+		        	conform = false;
 		        }
-		        int claimsLimit = config.getInt("Groups." + group + ".claims-limit", 0);
-		        if (claimsLimit < 0 && claimsLimit != -1) {
-					zh.getLogger().severe("The claims-limit of the group \"" + group + "\" must be positive or -1 !");
-					conform = false;
+				if (!config.isSet("Groups." + group + ".claims-limit")) {
+					zh.getLogger().severe("The \"Groups." + group + ".claims-limit\" option is missing from the config !");
+		        	conform = false;
 		        }
+				else {
+					int claimsLimit = config.getInt("Groups." + group + ".claims-limit", 0);
+			        if (claimsLimit < 0 && claimsLimit != -1) {
+						zh.getLogger().severe("The claims-limit of the group \"" + group + "\" must be positive or -1 !");
+						conform = false;
+			        }
+				}
 			}
 		}
 		else {
@@ -436,7 +452,7 @@ public class ConfigManager {
 	
 	private boolean checkHorseNamesConformity() {
 		boolean conform = true;
-		if (!config.isSet("HorseNames.default-NAME")) {
+		if (!config.isSet("HorseNames.default-name")) {
 			zh.getLogger().severe("The \"HorseNames.default-NAME\" option is missing from the config !");
 			conform = false;
 		}
@@ -548,8 +564,8 @@ public class ConfigManager {
 	
 	private boolean checkSettingsConformity() {
 		boolean conform = true;
-		if (!config.isSet("Settings.allow-leash-on-dead-horse")) {
-			zh.getLogger().severe("The \"Settings.allow-leash-on-dead-horse\" option is missing from the config !");
+		if (!config.isSet("Settings.allow-leash-on-undead-horse")) {
+			zh.getLogger().severe("The \"Settings.allow-leash-on-undead-horse\" option is missing from the config !");
 			conform = false;
 		}
 		if (!config.isSet("Settings.block-leashed-teleport")) {

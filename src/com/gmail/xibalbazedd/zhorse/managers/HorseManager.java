@@ -68,6 +68,7 @@ public class HorseManager {
 						zh.getDM().updateHorseUUID(horseUUID, horse.getUniqueId());
 						zh.getDM().updateHorseInventoryUUID(horseUUID, horse.getUniqueId());
 						zh.getDM().updateHorseStatsUUID(horseUUID, horse.getUniqueId());
+						zh.getDM().updateSaleUUID(horseUUID, horse.getUniqueId());
 					}
 				}
 			}
@@ -203,8 +204,9 @@ public class HorseManager {
 				String ownerName = zh.getDM().getOwnerName(oldHorseUUID);
 				zh.getDM().updateHorseUUID(oldHorseUUID, newHorseUUID);
 				zh.getDM().updateHorseLocation(newHorseUUID, destination, true);
-				zh.getDM().updateHorseStatsUUID(oldHorseUUID, newHorseUUID);
 				zh.getDM().updateHorseInventoryUUID(oldHorseUUID, newHorseUUID);
+				zh.getDM().updateHorseStatsUUID(oldHorseUUID, newHorseUUID);
+				zh.getDM().updateSaleUUID(oldHorseUUID, newHorseUUID);
 				HorseStatsRecord statsRecord = new HorseStatsRecord(sourceHorse);
 				assignStats(copyHorse, statsRecord);
 				copyInventory(sourceHorse, copyHorse, statsRecord.isCarryingChest());

@@ -36,12 +36,23 @@ public class EconomyManager {
 		}
 		if (p != null) {
 			int amount = zh.getCM().getCommandCost(command);
-			if (isCommandFree(p, command) || econ.has(zh.getServer().getOfflinePlayer(p.getUniqueId()), amount)) {
+			if (isCommandFree(p, command) || canAffordPayment(p, amount)) {
 				return true;
 			}
-			String language = zh.getDM().getPlayerLanguage(p.getUniqueId());
-			String currencySymbol = zh.getLM().getMessage(LocaleEnum.CURRENCY_SYMBOL.getIndex(), language, true);
-			zh.getMM().sendMessageAmountValue((CommandSender)p, LocaleEnum.NOT_ENOUGH_MONEY, amount, currencySymbol);
+		}
+		return false;
+	}
+	
+	public boolean canAffordPayment(Player p, int amount) {
+		if (noEcon) {
+			return true;
+		}
+		if (p != null) {
+			if (econ.has(zh.getServer().getOfflinePlayer(p.getUniqueId()), amount)) {
+				return true;
+			}
+			String currencySymbol = zh.getMM().getMessage((CommandSender) p, LocaleEnum.CURRENCY_SYMBOL, true);
+			zh.getMM().sendMessageAmountValue((CommandSender) p, LocaleEnum.NOT_ENOUGH_MONEY, amount, currencySymbol);
 		}
 		return false;
 	}
@@ -75,19 +86,21 @@ public class EconomyManager {
 		int amount = zh.getCM().getCommandCost(command);
 		if (!isCommandFree(p, command)) {
 			econ.withdrawPlayer(zh.getServer().getOfflinePlayer(p.getUniqueId()), amount);
-			String language = zh.getDM().getPlayerLanguage(p.getUniqueId());
-			String currencySymbol = zh.getLM().getMessage(LocaleEnum.CURRENCY_SYMBOL.getIndex(), language, true);
-			zh.getMM().sendMessageAmountValue((CommandSender)p, LocaleEnum.COMMAND_PAID, amount, currencySymbol);
+			String currencySymbol = zh.getMM().getMessage((CommandSender) p, LocaleEnum.CURRENCY_SYMBOL, true);
+			zh.getMM().sendMessageAmountValue((CommandSender) p, LocaleEnum.COMMAND_PAID, amount, currencySymbol);
 		}
 	}
 	
-	private boolean isPlayerOnline(UUID playerUUID) {
-		for (Player p : zh.getServer().getOnlinePlayers()) {
-			if (p.getUniqueId().equals(playerUUID)) {
-				return true;
-			}
+	public void payPlayer(Player payer, UUID receiverUUID, int amount) {
+		if (noEcon) {
+			return;
 		}
-		return false;
+		econ.withdrawPlayer(payer, amount);
+		econ.depositPlayer(zh.getServer().getOfflinePlayer(receiverUUID), amount);
+	}
+	
+	private boolean isPlayerOnline(UUID playerUUID) {
+		return zh.getServer().getOfflinePlayer(playerUUID).isOnline();
 	}
 
 }

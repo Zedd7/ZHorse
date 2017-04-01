@@ -76,6 +76,7 @@ public class CommandInfo extends AbstractCommand {
 			displayChestSize();
 			displayLocation();
 			displayStatus();
+			displayPrice();
 			
 			zh.getEM().payCommand(p, command);
 		}
@@ -152,6 +153,14 @@ public class CommandInfo extends AbstractCommand {
 		}
 		if (!status.isEmpty()) {
 			zh.getMM().sendMessageSpacerValue(s, LocaleEnum.STATUS, 1, status, true);
+		}
+	}
+	
+	private void displayPrice() {
+		if (zh.getDM().isHorseForSale(horse.getUniqueId())) {
+			int price = zh.getDM().getSalePrice(horse.getUniqueId());
+			String currencySymbol = zh.getMM().getMessage(s, LocaleEnum.CURRENCY_SYMBOL, true);
+			zh.getMM().sendMessageAmountSpacerValue(s, LocaleEnum.PRICE, price, 1, currencySymbol, true);
 		}
 	}
 	

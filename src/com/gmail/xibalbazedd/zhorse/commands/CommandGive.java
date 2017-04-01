@@ -54,21 +54,22 @@ public class CommandGive extends AbstractCommand {
 		if (!hasReachedClaimsLimit(targetUUID) && isOwner() && isPlayerDifferent() && zh.getEM().canAffordCommand(p, command)) {
 			int horseID = zh.getDM().getNextHorseID(targetUUID);
 			horseName = zh.getDM().getHorseName(horse.getUniqueId());
-			boolean locked = zh.getDM().isHorseLocked(horse.getUniqueId());
-			boolean protect = zh.getDM().isHorseProtected(horse.getUniqueId());
-			boolean shared = zh.getDM().isHorseShared(horse.getUniqueId());
-			HorseRecord horseRecord = new HorseRecord(horse.getUniqueId().toString(), targetUUID.toString(), horseID, horseName, locked, protect, shared, horse.getLocation());
-			boolean success = zh.getDM().removeHorse(horse.getUniqueId(), p.getUniqueId());
-			success &= zh.getDM().registerHorse(horseRecord); // (Un)tracking not required
+			boolean lock = zh.getCM().shouldLockOnClaim();
+			boolean protect = zh.getCM().shouldProtectOnClaim();
+			boolean share = zh.getCM().shouldShareOnClaim();
+			HorseRecord horseRecord = new HorseRecord(horse.getUniqueId().toString(), targetUUID.toString(), horseID, horseName, lock, protect, share, horse.getLocation());
+			boolean success = zh.getDM().removeSale(horse.getUniqueId());
+			success &= zh.getDM().removeHorse(horse.getUniqueId(), p.getUniqueId());
+			success &= zh.getDM().registerHorse(horseRecord);
 			if (success) {
-				applyHorseName();
-				zh.getEM().payCommand(p, command);
+				applyHorseName(targetUUID);
 				if (displayConsole) {
 					zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.HORSE_GIVEN, horseName, targetName);
 					if (isPlayerOnline(targetUUID, true)) {
 						zh.getMM().sendMessageHorsePlayer(((CommandSender) zh.getServer().getPlayer(targetUUID)), LocaleEnum.HORSE_RECEIVED, horseName, p.getName());
 					}
 				}
+				zh.getEM().payCommand(p, command);
 			}
 		}
 	}

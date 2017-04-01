@@ -9,6 +9,9 @@ Commands:
   admin:
     auto-admin: true
     cost: 0
+  buy:
+    auto-admin: false
+    cost: 0
   claim:
     auto-admin: false
     cost: 0
@@ -50,6 +53,9 @@ Commands:
     cost: 0
   reload:
     auto-admin: true
+    cost: 0
+  sell:
+    auto-admin: false
     cost: 0
   settings:
     auto-admin: false

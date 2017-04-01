@@ -98,6 +98,7 @@ public class CommandAdmin extends AbstractCommand {
 							if (!zh.getDM().removeHorse(horseUUID, targetUUID, horseID)) success = false;
 							if (!zh.getDM().removeHorseInventory(horseUUID)) success = false;
 							if (!zh.getDM().removeHorseStats(horseUUID)) success = false;
+							if (!zh.getDM().removeSale(horseUUID)) success = false;
 						}
 						if (success) {
 							if (samePlayer) {
@@ -121,6 +122,7 @@ public class CommandAdmin extends AbstractCommand {
 					boolean success = zh.getDM().removeHorse(horseUUID, targetUUID, Integer.parseInt(horseID));
 					success &= zh.getDM().removeHorseInventory(horseUUID);
 					success &= zh.getDM().removeHorseStats(horseUUID);
+					success &= zh.getDM().removeSale(horseUUID);
 					if (success) {
 						if (samePlayer) {
 							zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_CLEARED, horseName);

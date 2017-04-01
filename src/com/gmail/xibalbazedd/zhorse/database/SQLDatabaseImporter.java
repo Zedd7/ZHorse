@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
 
-public class SQLDatabaseImporter {
+public abstract class SQLDatabaseImporter {
 	
 	protected static boolean fullImport(ZHorse zh, SQLDatabaseConnector db) {
 		boolean success = true;
@@ -90,7 +90,7 @@ public class SQLDatabaseImporter {
 		List<SaleRecord> saleRecordList = db.getSaleRecordList(query);
 		for (SaleRecord saleRecord : saleRecordList) {
 			UUID horseUUID = UUID.fromString(saleRecord.getUUID());
-			if (zh.getDM().isHorseRegistered(horseUUID) && !zh.getDM().isSaleRegistered(horseUUID)) {
+			if (zh.getDM().isHorseRegistered(horseUUID) && !zh.getDM().isHorseForSale(horseUUID)) {
 				success = zh.getDM().registerSale(saleRecord) && success;
 			}
 		}

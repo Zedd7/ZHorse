@@ -1,6 +1,6 @@
  main: com.gmail.xibalbazedd.zhorse.ZHorse
  name: ZHorse
- version: 1.6.5 snapshot 1
+ version: 1.6.5 snapshot 2
  depend: [Vault]
  description: This plugin provides an enhanced management of horses
  author: Z3dd7
@@ -26,6 +26,7 @@
     zh.use:
         description: Grants access to all player commands
         children:
+            zh.buy: true
             zh.claim: true
             zh.give: true
             zh.free: true
@@ -39,6 +40,7 @@
             zh.lock: true
             zh.protect: true
             zh.rename: true
+            zh.sell: true
             zh.settings.*: true
             zh.share: true
             zh.tp: true
@@ -69,6 +71,7 @@
         description: Grants admin access to all commands
         children:
             zh.admin.admin: true
+            zh.buy.admin: true
             zh.claim.admin: true
             zh.free.admin: true
             zh.friend.admin: true
@@ -83,6 +86,7 @@
             zh.protect.admin: true
             zh.reload.admin: true
             zh.rename.admin: true
+            zh.sell.admin: true
             zh.settings.admin: true
             zh.share.admin: true
             zh.spawn.admin: true
@@ -93,6 +97,7 @@
         description: Grants free access to all commands
         children:
             zh.admin.free: true
+            zh.buy.free: true
             zh.claim.free: true
             zh.free.free: true
             zh.friend.free: true
@@ -107,6 +112,7 @@
             zh.protect.free: true
             zh.reload.free: true
             zh.rename.free: true
+            zh.sell.free: true
             zh.settings.free: true
             zh.share.free: true
             zh.spawn.free: true

@@ -228,9 +228,9 @@ public class DataManager {
 		return UUID.fromString(db.getStringResult(query));
 	}
 	
-	public SaleRecord getSaleRecord(UUID horseUUID) {
-		String query = String.format("SELECT * FROM prefix_sale WHERE uuid = \"%s\"", horseUUID);
-		return db.getSaleRecord(query);
+	public int getSalePrice(UUID horseUUID) {
+		String query = String.format("SELECT price FROM prefix_sale WHERE uuid = \"%s\"", horseUUID);
+		return db.getIntegerResult(query);
 	}
 	
 	private boolean hasLocationChanged(UUID horseUUID, Location newLocation) {
@@ -252,6 +252,11 @@ public class DataManager {
 	public boolean isFriendOfOwner(UUID playerUUID, UUID horseUUID) {
 		UUID ownerUUID = getOwnerUUID(horseUUID);
 		return isFriendOf(ownerUUID, playerUUID);
+	}
+	
+	public boolean isHorseForSale(UUID horseUUID) {
+		String query = String.format("SELECT 1 FROM prefix_sale WHERE uuid = \"%s\"", horseUUID);
+		return db.hasResult(query);
 	}
 	
 	public boolean isHorseLocked(UUID horseUUID) {
@@ -301,11 +306,6 @@ public class DataManager {
 	
 	public boolean isPlayerRegistered(UUID playerUUID) {
 		String query = String.format("SELECT 1 FROM prefix_player WHERE uuid = \"%s\"", playerUUID);
-		return db.hasResult(query);
-	}
-	
-	public boolean isSaleRegistered(UUID horseUUID) {
-		String query = String.format("SELECT 1 FROM prefix_sale WHERE uuid = \"%s\"", horseUUID);
 		return db.hasResult(query);
 	}
 	
@@ -488,6 +488,11 @@ public class DataManager {
 	
 	public boolean updateHorseStatsUUID(UUID oldHorseUUID, UUID newHorseUUID) {
 		String update = String.format("UPDATE prefix_horse_stats SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
+		return db.executeUpdate(update);
+	}
+	
+	public boolean updateSaleUUID(UUID oldHorseUUID, UUID newHorseUUID) {
+		String update = String.format("UPDATE prefix_sale SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
 		return db.executeUpdate(update);
 	}
 	
