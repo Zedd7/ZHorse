@@ -86,7 +86,7 @@ public class ConfigManager {
 	}
 	
 	public int getDatabasePort() {
-		return config.getInt(KeyWordEnum.port.getValue());
+		return config.getInt(KeyWordEnum.port.getValue(), 0);
 	}
 	
 	public String getDatabaseTablePrefix() {

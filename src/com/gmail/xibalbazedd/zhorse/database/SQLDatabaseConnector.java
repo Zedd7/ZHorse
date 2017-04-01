@@ -14,7 +14,7 @@ import org.bukkit.World;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
 
-public class SQLDatabaseConnector {
+public abstract class SQLDatabaseConnector {
 	
 	protected static final String PREFIX_CODE = "prefix_";
 	
@@ -27,18 +27,7 @@ public class SQLDatabaseConnector {
 		this.zh = zh;
 	}
 	
-	public boolean isConnected() {
-		return connected;
-	}
-	
-	public String applyTablePrefix(String str) {
-		if (!tablePrefix.isEmpty()) {
-			return str.replaceAll(PREFIX_CODE, tablePrefix + "_");
-		}
-		else {
-			return str.replaceAll(PREFIX_CODE, "");
-		}
-	}
+	protected abstract void openConnection() throws SQLException;
 	
 	public void closeConnection() {									
 		try {
@@ -51,12 +40,37 @@ public class SQLDatabaseConnector {
 		}
 	}
 	
+	public boolean isConnected() {
+		return connected;
+	}
+	
+	protected void reconnect() throws SQLException {
+		if (connection.isClosed()) {
+			openConnection();
+		}
+	}
+	
+	public String applyTablePrefix(String str) {
+		if (!tablePrefix.isEmpty()) {
+			return str.replaceAll(PREFIX_CODE, tablePrefix + "_");
+		}
+		else {
+			return str.replaceAll(PREFIX_CODE, "");
+		}
+	}
+	
+	public PreparedStatement getPreparedStatement(String query) throws SQLException {
+		String prefixedQuery = applyTablePrefix(query);
+		reconnect();
+		return connection.prepareStatement(prefixedQuery);
+	}
+	
 	public boolean executeUpdate(String update) {
 		boolean result = false;
 		try (PreparedStatement statement = getPreparedStatement(update)) {
 			statement.executeUpdate();
 			result = true;
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return result;
@@ -69,7 +83,7 @@ public class SQLDatabaseConnector {
 			if (resultSet.next()) {
 				result = resultSet.getInt(1) == 1;
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return result;
@@ -82,7 +96,7 @@ public class SQLDatabaseConnector {
 			if (resultSet.next()) {
 				result = resultSet.getInt(1);
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return result;
@@ -100,7 +114,7 @@ public class SQLDatabaseConnector {
 				World world = zh.getServer().getWorld(worldName);
 				location = new Location(world, x, y, z);
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return location;
@@ -113,7 +127,7 @@ public class SQLDatabaseConnector {
 			while (resultSet.next()) {
 				resultList.add(getStringResult(resultSet));
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return resultList;
@@ -126,7 +140,7 @@ public class SQLDatabaseConnector {
 			if (resultSet.next()) {
 				result = getStringResult(resultSet);
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return result;
@@ -141,7 +155,7 @@ public class SQLDatabaseConnector {
 		try (PreparedStatement statement = getPreparedStatement(query)) {
 			ResultSet resultSet = statement.executeQuery();
 			hasResult = resultSet.next();
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return hasResult;
@@ -154,7 +168,7 @@ public class SQLDatabaseConnector {
 			while (resultSet.next()) {
 				friendRecordList.add(getFriendRecord(resultSet));
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return friendRecordList;
@@ -180,7 +194,7 @@ public class SQLDatabaseConnector {
 			while (resultSet.next()) {
 				horseRecordList.add(getHorseRecord(resultSet));
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return horseRecordList;
@@ -193,7 +207,7 @@ public class SQLDatabaseConnector {
 			if (resultSet.next()) {
 				horseRecord = getHorseRecord(resultSet);
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return horseRecord;
@@ -212,7 +226,7 @@ public class SQLDatabaseConnector {
 				}
 				inventoryItemRecordMap.get(horseUUID).add(inventoryItemRecord);
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		for (List<InventoryItemRecord> inventoryItemRecordList : inventoryItemRecordMap.values()) {
@@ -228,7 +242,7 @@ public class SQLDatabaseConnector {
 			while (resultSet.next()) {
 				inventoryItemRecordList.add(getInventoryItemRecord(resultSet));
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return new HorseInventoryRecord(inventoryItemRecordList);
@@ -241,7 +255,7 @@ public class SQLDatabaseConnector {
 			while (resultSet.next()) {
 				horseStatsRecordList.add(getHorseStatsRecord(resultSet));
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return horseStatsRecordList;
@@ -254,7 +268,7 @@ public class SQLDatabaseConnector {
 			if (resultSet.next()) {
 				horseStatsRecord = getHorseStatsRecord(resultSet);
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return horseStatsRecord;
@@ -267,7 +281,7 @@ public class SQLDatabaseConnector {
 			while (resultSet.next()) {
 				playerRecordList.add(getPlayerRecord(resultSet));
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return playerRecordList;
@@ -280,7 +294,7 @@ public class SQLDatabaseConnector {
 			if (resultSet.next()) {
 				playerRecord = getPlayerRecord(resultSet);
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return playerRecord;
@@ -293,7 +307,7 @@ public class SQLDatabaseConnector {
 			if (resultSet.next()) {
 				saleRecordList.add(getSaleRecord(resultSet));
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return saleRecordList;
@@ -306,15 +320,10 @@ public class SQLDatabaseConnector {
 			if (resultSet.next()) {
 				saleRecord = getSaleRecord(resultSet);
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return saleRecord;
-	}
-	
-	private PreparedStatement getPreparedStatement(String query) throws SQLException{
-		String prefixedQuery = applyTablePrefix(query);
-		return connection.prepareStatement(prefixedQuery);
 	}
 	
 	private FriendRecord getFriendRecord(ResultSet resultSet) throws SQLException {
@@ -418,7 +427,7 @@ public class SQLDatabaseConnector {
 				}
 				resultList.add(result);
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return resultList;
