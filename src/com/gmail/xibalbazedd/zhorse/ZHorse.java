@@ -1,7 +1,5 @@
 package com.gmail.xibalbazedd.zhorse;
 
-import java.io.IOException;
-
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -31,8 +29,8 @@ public class ZHorse extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		initDependencies();
-		initMetrics();
 		initManagers();
+		initMetrics();
 	}
 	
 	@Override
@@ -56,15 +54,6 @@ public class ZHorse extends JavaPlugin {
 		}
 	}
     
-    private void initMetrics() {
-    	try {
-    		Metrics metrics = new Metrics(this);
-			metrics.start();
-        } catch (IOException e) {
-        	getLogger().severe("Failed to start Metrics !");
-        }
-    }
-    
     private boolean initManagers() {
     	commandManager = new CommandManager(this);
 		configManager = new ConfigManager(this);
@@ -84,6 +73,33 @@ public class ZHorse extends JavaPlugin {
 		
 		return conformConfig && conformLocale;
 	}
+    
+    private void initMetrics() {
+		Metrics metrics = new Metrics(this);
+		
+		metrics.addCustomChart(new Metrics.SimplePie("default_language") {
+			
+            @Override
+            public String getValue() {
+                return configManager.getDefaultLanguage();
+            }
+            
+        });
+		
+		/* TODO Histogram chart of total claimed horses
+		 * ranges :
+		 * 	0-10
+		 * 	10-50
+		 * 	50-100
+		 * 	100-200
+		 * 	200-500
+		 * 	500-1000
+		 * 	1000-2000
+		 * 	2000-5000
+		 * 	5000-10000
+		 * 	10000+
+		 */
+    }
     
 	public boolean reload() {
 		eventManager.unregisterEvents();
