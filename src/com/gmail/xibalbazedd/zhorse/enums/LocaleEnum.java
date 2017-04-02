@@ -132,11 +132,13 @@ public enum LocaleEnum {
 	WORLD_UNCROSSABLE("Messages.worldUncrossable"),
 	
 	/* economy messages */
+	AFFORDABLE_COLOR("Economy.affordableColor"),
 	COMMAND_COST("Economy.commandCost"),
 	COMMAND_PAID("Economy.commandPaid"),
 	CURRENCY_SYMBOL("Economy.currencySymbol"),
 	HORSE_PRICE("Economy.horsePrice"),
 	NOT_ENOUGH_MONEY("Economy.notEnoughMoney"),
+	UNAFFORDABLE_COLOR("Economy.unaffordableColor"),
 	
 	/* horse informations */
 	HEALTH("Horse informations.health"),

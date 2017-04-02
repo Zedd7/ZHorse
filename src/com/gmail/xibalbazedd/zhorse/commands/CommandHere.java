@@ -55,7 +55,7 @@ public class CommandHere extends AbstractCommand {
 				zh.getEM().payCommand(p, command);
 			}
 			else {
-				s.sendMessage(ChatColor.RED + "It seems that horses cannot spawn here, please report this to ZHorse's dev.");
+				zh.getMM().sendRawMessage(s, ChatColor.RED + "It seems that horses cannot spawn here, please report this to ZHorse's dev.");
 			}
 		}
 	}

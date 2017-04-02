@@ -137,10 +137,12 @@ Messages:
   worldUncrossable: "<yellow>Teleportatie tussen youwe wereld en <gold><horse><yellow>'s wereld is geblokkeerd."
 
 Economy:
-  commandCost: " <green>(<value><amount>)"
+  affordableColor: "<green>"
+  unaffordableColor: "<red>"
+  commandCost: " (<value><amount>)"
   commandPaid: "<yellow>Dit commando kost je <gold><value><amount><yellow>."
   currencySymbol: "€"
-  horsePrice: " <green><value><amount>"
+  horsePrice: "<green> <value><amount>"
   notEnoughMoney: "<yellow>Je hebt geen <gold><value><amount><yellow>."
 
 Horse informations:
@@ -197,36 +199,36 @@ Settings command descriptions:
 
 Command usages:
   admin: "<gold>/zh admin<yellow> option value1 (value2)"
-  buy: "<gold>/zh buy<yellow> (paardNaam) (-i paardID) (-t spelerNaam) (-a)"
-  claim: "<gold>/zh claim<yellow> (paardNaam) (-i paardID) (-t spelerNaam) (-a)"
-  free: "<gold>/zh free<yellow> (-i paardID) (-t spelerNaam) (-a)"
-  friend: "<gold>/zh friend<yellow> option (value) (-t spelerNaam) (-a)"
-  give: "<gold>/zh give<yellow> (-i paardID) (-t) spelerNaam (-a)"
-  heal: "<gold>/zh heal<yellow> (-i paardID) (-t spelerNaam) (-a)"
-  help: "<gold>/zh help<yellow> (commandoNaam) (-t spelerNaam) (-a)"
-  here: "<gold>/zh here<yellow> (-i paardID) (-t spelerNaam) (-a)"
-  info: "<gold>/zh info<yellow> (-i paardID) (-t spelerNaam) (-a)"
-  kill: "<gold>/zh kill<yellow> (-i paardID) (-t spelerNaam) (-a)"
-  list: "<gold>/zh list<yellow> (-t spelerNaam) (-a)"
-  lock: "<gold>/zh lock<yellow> (-i paardID) (-t spelerNaam) (-a)"
-  rename: "<gold>/zh rename<yellow> (paardNaam) (-i paardID) (-t spelerNaam) (-a)"
-  protect: "<gold>/zh protect<yellow> (-i paardID) (-t spelerNaam) (-a)"
+  buy: "<gold>/zh buy<yellow> (paardNaam) (-i paardID) (-p spelerNaam) (-a)"
+  claim: "<gold>/zh claim<yellow> (paardNaam) (-i paardID) (-p spelerNaam) (-a)"
+  free: "<gold>/zh free<yellow> (-i paardID) (-p spelerNaam) (-a)"
+  friend: "<gold>/zh friend<yellow> option (value) (-p spelerNaam) (-a)"
+  give: "<gold>/zh give<yellow> (-i paardID) (-p) spelerNaam (-a)"
+  heal: "<gold>/zh heal<yellow> (-i paardID) (-p spelerNaam) (-a)"
+  help: "<gold>/zh help<yellow> (commandoNaam) (-p spelerNaam) (-a)"
+  here: "<gold>/zh here<yellow> (-i paardID) (-p spelerNaam) (-a)"
+  info: "<gold>/zh info<yellow> (-i paardID) (-p spelerNaam) (-a)"
+  kill: "<gold>/zh kill<yellow> (-i paardID) (-p spelerNaam) (-a)"
+  list: "<gold>/zh list<yellow> (-p spelerNaam) (-a)"
+  lock: "<gold>/zh lock<yellow> (-i paardID) (-p spelerNaam) (-a)"
+  rename: "<gold>/zh rename<yellow> (paardNaam) (-i paardID) (-p spelerNaam) (-a)"
+  protect: "<gold>/zh protect<yellow> (-i paardID) (-p spelerNaam) (-a)"
   reload: "<gold>/zh reload<yellow> (-a)"
-  sell: "<gold>/zh sell<yellow> (prijs) (-i paardID) (-t spelerNaam) (-a)"
-  settings: "<gold>/zh settings<yellow> option value (-t spelerNaam) (-a)"
-  share: "<gold>/zh share<yellow> (-i paardID) (-t spelerNaam) (-a)"
+  sell: "<gold>/zh sell<yellow> (prijs) (-i paardID) (-p spelerNaam) (-a)"
+  settings: "<gold>/zh settings<yellow> option value (-p spelerNaam) (-a)"
+  share: "<gold>/zh share<yellow> (-i paardID) (-p spelerNaam) (-a)"
   spawn: "<gold>/zh spawn<yellow> (variant) (stijl) (kleur) ('tamed') ('baby') (levens):(snelheid%):(springkracht%) (kracht)"
-  tame: "<gold>/zh tame<yellow> (-i paardID) (-t spelerNaam) (-a)"
-  tp: "<gold>/zh tp<yellow> (-i paardID) (-t spelerNaam) (-a)"
+  tame: "<gold>/zh tame<yellow> (-i paardID) (-p spelerNaam) (-a)"
+  tp: "<gold>/zh tp<yellow> (-i paardID) (-p spelerNaam) (-a)"
   
 Admin command usages:
-  clear: "<gold>/zh admin clear<yellow> (-t) spelerNaam (-i horseID)"
+  clear: "<gold>/zh admin clear<yellow> (-p) spelerNaam (-i horseID)"
   import: "<gold>/zh admin import<yellow> database"
 
 Friend command usages:
-  add: "<gold>/zh friend add<yellow> (-t) playerName"
+  add: "<gold>/zh friend add<yellow> (-p) playerName"
   list: "<gold>/zh friend add<yellow>"
-  remove: "<gold>/zh friend remove<yellow> (-t) playerName"
+  remove: "<gold>/zh friend remove<yellow> (-p) playerName"
 
 Settings command usages:
   favorite: "<gold>/zh settings favorite<yellow> (-i) horseID"

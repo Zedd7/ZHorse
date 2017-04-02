@@ -31,12 +31,16 @@ public class EconomyManager {
 	}
 	
 	public boolean canAffordCommand(Player p, String command) {
+		return canAffordCommand(p, command, false);
+	}
+	
+	public boolean canAffordCommand(Player p, String command, boolean hideConsole) {
 		if (noEcon) {
 			return true;
 		}
 		if (p != null) {
 			int amount = zh.getCM().getCommandCost(command);
-			if (isCommandFree(p, command) || canAffordPayment(p, amount)) {
+			if (isCommandFree(p, command) || canAffordPayment(p, amount, hideConsole)) {
 				return true;
 			}
 		}
@@ -44,6 +48,10 @@ public class EconomyManager {
 	}
 	
 	public boolean canAffordPayment(Player p, int amount) {
+		return canAffordPayment(p, amount, false);
+	}
+	
+	public boolean canAffordPayment(Player p, int amount, boolean hideConsole) {
 		if (noEcon) {
 			return true;
 		}
@@ -51,8 +59,10 @@ public class EconomyManager {
 			if (econ.has(zh.getServer().getOfflinePlayer(p.getUniqueId()), amount)) {
 				return true;
 			}
-			String currencySymbol = zh.getMM().getMessage((CommandSender) p, LocaleEnum.CURRENCY_SYMBOL, true);
-			zh.getMM().sendMessageAmountValue((CommandSender) p, LocaleEnum.NOT_ENOUGH_MONEY, amount, currencySymbol);
+			if (!hideConsole) {
+				String currencySymbol = zh.getMM().getMessage((CommandSender) p, LocaleEnum.CURRENCY_SYMBOL, true);
+				zh.getMM().sendMessageAmountValue((CommandSender) p, LocaleEnum.NOT_ENOUGH_MONEY, amount, currencySymbol);
+			}
 		}
 		return false;
 	}

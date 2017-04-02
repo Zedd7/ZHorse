@@ -84,7 +84,7 @@ public class LocaleManager {
         	}
         	Calendar cal = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-            return(ChatColor.RED + "Please ask an administrator to take a look at the server's logs at " + sdf.format(cal.getTime()));
+            return ChatColor.RED + "Please ask an administrator to take a look at the server's logs at " + sdf.format(cal.getTime());
         }
         if (hidePrefix) {
         	return message;

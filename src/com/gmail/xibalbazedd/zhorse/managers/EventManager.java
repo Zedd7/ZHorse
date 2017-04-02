@@ -55,7 +55,7 @@ public class EventManager implements Listener {
 
 	public EventManager(ZHorse zh) {
 		this.zh = zh;
-		this.displayConsole = !(zh.getCM().isConsoleMuted());
+		displayConsole = !(zh.getCM().isConsoleMuted());
 		zh.getServer().getPluginManager().registerEvents(this, zh);
 	}
 	
@@ -385,7 +385,7 @@ public class EventManager implements Listener {
 		}.runTaskLater(zh, 0);
 	}
 	
-	/* Allows to cancel onPlayerLeashEntityEvent */
+	/* Allow to cancel onPlayerLeashEntityEvent */
 	private class PlayerLeashDeadEntityEvent extends PlayerLeashEntityEvent {
 		
 		public PlayerLeashDeadEntityEvent(Entity leashedEntity, Entity leashHolder, Player p) {

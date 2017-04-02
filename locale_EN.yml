@@ -135,10 +135,12 @@ Messages:
   worldUncrossable: "<yellow>Teleportation between your world and <gold><horse><yellow>'s world is blocked."
 
 Economy:
-  commandCost: " <green>(<value><amount>)"
+  affordableColor: "<green>"
+  unaffordableColor: "<red>"
+  commandCost: " (<value><amount>)"
   commandPaid: "<yellow>This command cost you <gold><value><amount><yellow>."
   currencySymbol: "$"
-  horsePrice: " <green><value><amount>"
+  horsePrice: "<green> <value><amount>"
   notEnoughMoney: "<yellow>You don't have <gold><value><amount><yellow>."
 
 Horse informations:
@@ -195,36 +197,36 @@ Settings command descriptions:
 
 Command usages:
   admin: "<gold>/zh admin<yellow> option value1 (value2)"
-  buy: "<gold>/zh buy<yellow> (horseName) (-i horseID) (-t playerName) (-a)"
-  claim: "<gold>/zh claim<yellow> (horseName) (-i horseID) (-t playerName) (-a)"
-  free: "<gold>/zh free<yellow> (-i horseID) (-t playerName) (-a)"
-  friend: "<gold>/zh friend<yellow> option (value) (-t playerName) (-a)"
-  give: "<gold>/zh give<yellow> (-i horseID) (-t) playerName (-a)"
-  heal: "<gold>/zh heal<yellow> (-i horseID) (-t playerName) (-a)"
-  help: "<gold>/zh help<yellow> (commandName) (-t playerName) (-a)"
-  here: "<gold>/zh here<yellow> (-i horseID) (-t playerName) (-a)"
-  info: "<gold>/zh info<yellow> (-i horseID) (-t playerName) (-a)"
-  kill: "<gold>/zh kill<yellow> (-i horseID) (-t playerName) (-a)"
-  list: "<gold>/zh list<yellow> (-t playerName) (-a)"
-  lock: "<gold>/zh lock<yellow> (-i horseID) (-t playerName) (-a)"
-  rename: "<gold>/zh rename<yellow> (horseName) (-i horseID) (-t playerName) (-a)"
-  protect: "<gold>/zh protect<yellow> (-i horseID) (-t playerName) (-a)"
+  buy: "<gold>/zh buy<yellow> (horseName) (-i horseID) (-p playerName) (-a)"
+  claim: "<gold>/zh claim<yellow> (horseName) (-i horseID) (-p playerName) (-a)"
+  free: "<gold>/zh free<yellow> (-i horseID) (-p playerName) (-a)"
+  friend: "<gold>/zh friend<yellow> option (value) (-p playerName) (-a)"
+  give: "<gold>/zh give<yellow> (-i horseID) (-p) playerName (-a)"
+  heal: "<gold>/zh heal<yellow> (-i horseID) (-p playerName) (-a)"
+  help: "<gold>/zh help<yellow> (commandName) (-p playerName) (-a)"
+  here: "<gold>/zh here<yellow> (-i horseID) (-p playerName) (-a)"
+  info: "<gold>/zh info<yellow> (-i horseID) (-p playerName) (-a)"
+  kill: "<gold>/zh kill<yellow> (-i horseID) (-p playerName) (-a)"
+  list: "<gold>/zh list<yellow> (-p playerName) (-a)"
+  lock: "<gold>/zh lock<yellow> (-i horseID) (-p playerName) (-a)"
+  rename: "<gold>/zh rename<yellow> (horseName) (-i horseID) (-p playerName) (-a)"
+  protect: "<gold>/zh protect<yellow> (-i horseID) (-p playerName) (-a)"
   reload: "<gold>/zh reload<yellow> (-a)"
-  sell: "<gold>/zh sell<yellow> (price) (-i horseID) (-t playerName) (-a)"
-  settings: "<gold>/zh settings<yellow> option value (-t playerName) (-a)"
-  share: "<gold>/zh share<yellow> (-i horseID) (-t playerName) (-a)"
+  sell: "<gold>/zh sell<yellow> (price) (-i horseID) (-p playerName) (-a)"
+  settings: "<gold>/zh settings<yellow> option value (-p playerName) (-a)"
+  share: "<gold>/zh share<yellow> (-i horseID) (-p playerName) (-a)"
   spawn: "<gold>/zh spawn<yellow> (variant) (style) (color) ('tamed') ('baby') (health):(speed%):(jump%) (strength)"
-  tame: "<gold>/zh tame<yellow> (-i horseID) (-t playerName) (-a)"
-  tp: "<gold>/zh tp<yellow> (-i horseID) (-t playerName) (-a)"
+  tame: "<gold>/zh tame<yellow> (-i horseID) (-p playerName) (-a)"
+  tp: "<gold>/zh tp<yellow> (-i horseID) (-p playerName) (-a)"
 
 Admin command usages:
-  clear: "<gold>/zh admin clear<yellow> (-t) playerName (-i horseID)"
+  clear: "<gold>/zh admin clear<yellow> (-p) playerName (-i horseID)"
   import: "<gold>/zh admin import<yellow> database"
 
 Friend command usages:
-  add: "<gold>/zh friend add<yellow> (-t) playerName"
+  add: "<gold>/zh friend add<yellow> (-p) playerName"
   list: "<gold>/zh friend add<yellow>"
-  remove: "<gold>/zh friend remove<yellow> (-t) playerName"
+  remove: "<gold>/zh friend remove<yellow> (-p) playerName"
 
 Settings command usages:
   favorite: "<gold>/zh settings favorite<yellow> (-i) horseID"

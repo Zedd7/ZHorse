@@ -8,7 +8,8 @@ import com.gmail.xibalbazedd.zhorse.enums.ColorEnum;
 import com.gmail.xibalbazedd.zhorse.enums.KeyWordEnum;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
 
-public class MessageManager {	
+public class MessageManager {
+	
 	private static final int AMOUNT = 0;
 	private static final String HORSE = "";
 	private static final String HORSE_ID = "";
@@ -20,9 +21,11 @@ public class MessageManager {
 	private static final String VALUE = "";
 	
 	private ZHorse zh;
+	private boolean displayConsole;
 	
 	public MessageManager(ZHorse zh) {
 		this.zh = zh;
+		displayConsole = !(zh.getCM().isConsoleMuted());
 	}
 	
 	public String getMessage(CommandSender s, LocaleEnum index, boolean hidePrefix) {
@@ -359,6 +362,13 @@ public class MessageManager {
 	
 	public void sendMessageValue(CommandSender s, LocaleEnum index, String value, boolean hidePrefix) {
 		s.sendMessage(getMessageValue(s, index, value, hidePrefix));
+	}
+	
+	
+	public void sendRawMessage(CommandSender s, String message) {
+		if (displayConsole) {
+			s.sendMessage(message);
+		}
 	}
 	
 	private String getMessageFull(CommandSender s, LocaleEnum index, int amount, String horse, String horseID, String lang, int max, String perm, String player, int spacer, String value, boolean hidePrefix) {
