@@ -77,12 +77,12 @@ public abstract class AbstractCommand {
 					i++; // skip the ID
 				}
 			}
-			else if (a[i].equalsIgnoreCase("-t")) {
+			else if (a[i].equalsIgnoreCase("-p") || a[i].equalsIgnoreCase("-t")) {
 				valid = !targetMode && i != a.length - 1 && !a[i + 1].startsWith("-");
 				if (valid) { // avoid to exit the loop
 					targetMode = true;
 					targetName = a[i + 1];
-					i++; // saut du target
+					i++; // skip the target
 				}
 			}
 			else { // add to argument if not a flag
@@ -691,15 +691,20 @@ public abstract class AbstractCommand {
 				commandDescription = LocaleEnum.valueOf(commandLocaleIndex);
 				command = this.command;
 			}
-			if (zh.getEM().isCommandFree(targetUUID, command)) {
+			if (zh.getEM().isCommandFree(p.getUniqueId(), command)) {
 				zh.getMM().sendMessageSpacer(s, commandDescription, 1, true);
 			}
 			else {
+				String message = zh.getMM().getMessageSpacer(s, commandDescription, 1, true);
+				
 				int cost = zh.getCM().getCommandCost(command);
+				LocaleEnum costColorCodeIndex = zh.getEM().canAffordCommand(p, command, true) ? LocaleEnum.AFFORDABLE_COLOR : LocaleEnum.UNAFFORDABLE_COLOR;
+				String costColorCode = zh.getMM().getMessage(s, costColorCodeIndex, true);
+				
 				String currencySymbol = zh.getMM().getMessage(s, LocaleEnum.CURRENCY_SYMBOL, true);
 				String costMessage = zh.getMM().getMessageAmountValue(s, LocaleEnum.COMMAND_COST, cost, currencySymbol, true);
-				String message = zh.getMM().getMessage(s, commandDescription, true);
-				s.sendMessage(message + costMessage);
+				
+				zh.getMM().sendRawMessage(s, message + costColorCode + costMessage);
 			}
 		}
 	}
