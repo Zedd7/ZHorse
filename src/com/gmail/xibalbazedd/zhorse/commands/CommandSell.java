@@ -64,8 +64,8 @@ public class CommandSell extends AbstractCommand {
 					SaleRecord saleRecord = new SaleRecord(horse.getUniqueId().toString(), price);
 					if (zh.getDM().registerSale(saleRecord)) {
 						String currencySymbol = zh.getMM().getMessage(s, LocaleEnum.CURRENCY_SYMBOL, true);
-						String horseNameSuffix = zh.getMM().getMessageAmountValue(s, LocaleEnum.HORSE_PRICE, price, currencySymbol, true);
-						horse.setCustomName(horse.getCustomName() + ChatColor.RESET + " " + horseNameSuffix);
+						String horsePrice = zh.getMM().getMessageAmountValue(s, LocaleEnum.HORSE_PRICE, price, currencySymbol, true);
+						horse.setCustomName(horse.getCustomName() + ChatColor.RESET + horsePrice);
 						if (displayConsole) {
 							zh.getMM().sendMessageAmountHorseValue(s, LocaleEnum.HORSE_PUT_UP_FOR_SALE, price, horseName, currencySymbol);
 						}

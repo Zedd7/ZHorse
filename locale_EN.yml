@@ -135,10 +135,10 @@ Messages:
   worldUncrossable: "<yellow>Teleportation between your world and <gold><horse><yellow>'s world is blocked."
 
 Economy:
-  commandCost: "<green>(<value><amount>)"
+  commandCost: " <green>(<value><amount>)"
   commandPaid: "<yellow>This command cost you <gold><value><amount><yellow>."
   currencySymbol: "$"
-  horsePrice: "<green><value><amount>"
+  horsePrice: " <green><value><amount>"
   notEnoughMoney: "<yellow>You don't have <gold><value><amount><yellow>."
 
 Horse informations:

@@ -699,7 +699,7 @@ public abstract class AbstractCommand {
 				String currencySymbol = zh.getMM().getMessage(s, LocaleEnum.CURRENCY_SYMBOL, true);
 				String costMessage = zh.getMM().getMessageAmountValue(s, LocaleEnum.COMMAND_COST, cost, currencySymbol, true);
 				String message = zh.getMM().getMessage(s, commandDescription, true);
-				s.sendMessage(message + " " + costMessage);
+				s.sendMessage(message + costMessage);
 			}
 		}
 	}

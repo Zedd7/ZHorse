@@ -137,10 +137,10 @@ Messages:
   worldUncrossable: "<yellow>Teleportatie tussen youwe wereld en <gold><horse><yellow>'s wereld is geblokkeerd."
 
 Economy:
-  commandCost: "<green>(<value><amount>)"
+  commandCost: " <green>(<value><amount>)"
   commandPaid: "<yellow>Dit commando kost je <gold><value><amount><yellow>."
   currencySymbol: "€"
-  horsePrice: "<green><value><amount>"
+  horsePrice: " <green><value><amount>"
   notEnoughMoney: "<yellow>Je hebt geen <gold><value><amount><yellow>."
 
 Horse informations:
