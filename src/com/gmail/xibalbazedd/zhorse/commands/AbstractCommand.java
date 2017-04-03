@@ -702,7 +702,7 @@ public abstract class AbstractCommand {
 				String costColorCode = zh.getMM().getMessage(s, costColorCodeIndex, true);
 				
 				String currencySymbol = zh.getMM().getMessage(s, LocaleEnum.CURRENCY_SYMBOL, true);
-				String costMessage = zh.getMM().getMessageAmountValue(s, LocaleEnum.COMMAND_COST, cost, currencySymbol, true);
+				String costMessage = zh.getMM().getMessageAmountCurrency(s, LocaleEnum.COMMAND_COST, cost, currencySymbol, true);
 				
 				zh.getMM().sendRawMessage(s, message + costColorCode + costMessage);
 			}

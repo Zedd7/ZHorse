@@ -54,6 +54,7 @@ public enum KeyWordEnum {
 	
 	/* locale.yml keywords */
 	AMOUNT_FLAG("<amount>"),
+	CURRENCY_FLAG("<currency>"),
 	HORSE_FLAG("<horse>"),
 	HORSE_ID_FLAG("<id>"),
 	LANG_FLAG("<lang>"),

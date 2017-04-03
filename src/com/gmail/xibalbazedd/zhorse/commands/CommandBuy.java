@@ -12,7 +12,7 @@ public class CommandBuy extends AbstractCommand {
 	public CommandBuy(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
 		playerOnly = true;
-		needTarget = false;
+		needTarget = true;
 		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {
 			if (!idMode) {
 				if (!targetMode) {
@@ -57,12 +57,12 @@ public class CommandBuy extends AbstractCommand {
 							if (displayConsole) {
 								String buyerLanguage = zh.getDM().getPlayerLanguage(p.getUniqueId());
 								String buyerCurrencySymbol = zh.getLM().getMessage(LocaleEnum.CURRENCY_SYMBOL.getIndex(), buyerLanguage, true);
-								zh.getMM().sendMessageAmountHorseValue(s, LocaleEnum.HORSE_BOUGHT, price, horseName, buyerCurrencySymbol);
+								zh.getMM().sendMessageAmountCurrencyHorse(s, LocaleEnum.HORSE_BOUGHT, price, buyerCurrencySymbol, horseName);
 								if (isPlayerOnline(targetUUID, true)) {
 									String sellerLanguage = zh.getDM().getPlayerLanguage(targetUUID);
 									String sellerCurrencySymbol = zh.getLM().getMessage(LocaleEnum.CURRENCY_SYMBOL.getIndex(), sellerLanguage, true);
 									CommandSender seller = (CommandSender) zh.getServer().getPlayer(targetUUID);
-									zh.getMM().sendMessageAmountHorsePlayerValue(seller, LocaleEnum.HORSE_SOLD, price, previousHorseName, p.getName(), sellerCurrencySymbol);
+									zh.getMM().sendMessageAmountCurrencyHorsePlayer(seller, LocaleEnum.HORSE_SOLD, price, sellerCurrencySymbol, previousHorseName, p.getName());
 								}
 							}
 							zh.getEM().payPlayer(p, targetUUID, price);

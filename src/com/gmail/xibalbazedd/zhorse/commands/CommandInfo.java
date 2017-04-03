@@ -160,7 +160,7 @@ public class CommandInfo extends AbstractCommand {
 		if (zh.getDM().isHorseForSale(horse.getUniqueId())) {
 			int price = zh.getDM().getSalePrice(horse.getUniqueId());
 			String currencySymbol = zh.getMM().getMessage(s, LocaleEnum.CURRENCY_SYMBOL, true);
-			zh.getMM().sendMessageAmountSpacerValue(s, LocaleEnum.PRICE, price, 1, currencySymbol, true);
+			zh.getMM().sendMessageAmountCurrencySpacer(s, LocaleEnum.PRICE, price, currencySymbol, 1, true);
 		}
 	}
 	

@@ -61,7 +61,7 @@ public class EconomyManager {
 			}
 			if (!hideConsole) {
 				String currencySymbol = zh.getMM().getMessage((CommandSender) p, LocaleEnum.CURRENCY_SYMBOL, true);
-				zh.getMM().sendMessageAmountValue((CommandSender) p, LocaleEnum.NOT_ENOUGH_MONEY, amount, currencySymbol);
+				zh.getMM().sendMessageAmountCurrency((CommandSender) p, LocaleEnum.NOT_ENOUGH_MONEY, amount, currencySymbol);
 			}
 		}
 		return false;
@@ -97,7 +97,7 @@ public class EconomyManager {
 		if (!isCommandFree(p, command)) {
 			econ.withdrawPlayer(zh.getServer().getOfflinePlayer(p.getUniqueId()), amount);
 			String currencySymbol = zh.getMM().getMessage((CommandSender) p, LocaleEnum.CURRENCY_SYMBOL, true);
-			zh.getMM().sendMessageAmountValue((CommandSender) p, LocaleEnum.COMMAND_PAID, amount, currencySymbol);
+			zh.getMM().sendMessageAmountCurrency((CommandSender) p, LocaleEnum.COMMAND_PAID, amount, currencySymbol);
 		}
 	}
 	

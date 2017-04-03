@@ -2,7 +2,7 @@ Version: 1.6.5
 
 # You can use any of the following color flag formats : "&4", <4>, <dark_red>, <DARKRED>.
 # You can rework any message in this file but DO NOT add/remove flags that are not color flags !
-# However, you can swap any flag within the same line. This is their main purpose.
+# However, you can swap any flag within the same line. That is their main purpose.
 # Example: "<player> just gave you <horse>" or "<horse> has been given to you by <player>".
 
 Headers:
@@ -45,7 +45,7 @@ Messages:
   horseAlreadyClaimed: "<yellow>You have already claimed this horse."
   horseAlreadyOnSale: "<gold><horse><yellow> is already on sale."
   horseBelongsTo: "<yellow>That horse belongs to <gold><player><yellow>."
-  horseBought: "<yellow>You bought <gold><horse><yellow> for <gold><value><amount><yellow>."
+  horseBought: "<yellow>You bought <gold><horse><yellow> for <gold><currency><amount><yellow>."
   horseClaimed: "<gold><horse><yellow> was successfully claimed."
   horseCleared: "<gold><horse><yellow> has been cleared from the database."
   horseClearedOther: "<gold><player><yellow>'s <gold><horse><yellow> has been cleared from the database."
@@ -71,11 +71,11 @@ Messages:
   horseNotTamed: "<yellow>You must tame this horse first."
   horseOutOfRange: "<gold><horse><yellow> is beyond the <gold><max><yellow>-blocks maximum range."
   horseProtected: "<gold><horse><yellow> is now protected against some types of damage."
-  horsePutUpForSale: "<gold><horse><yellow> was put up for sale for <gold><value><amount><yellow>."
+  horsePutUpForSale: "<gold><horse><yellow> was put up for sale for <gold><currency><amount><yellow>."
   horseReceived: "<gold><player><yellow> gave you <gold><horse><yellow> !"
   horseRenamed: "<yellow>This horse is now known as <gold><horse><yellow>."
   horseShared: "<gold><horse><yellow> can now be used by everyone."
-  horseSold: "<yellow>You sold <gold><horse><yellow> to <gold><player><yellow> for <gold><value><amount><yellow>."
+  horseSold: "<yellow>You sold <gold><horse><yellow> to <gold><player><yellow> for <gold><currency><amount><yellow>."
   horseSpawned: "<yellow>A new horse has been successfully summoned."
   horseTamed: "<yellow>You successfully tamed this horse."
   horseTeleported: "<gold><horse> <yellow>has been teleported to you."
@@ -137,11 +137,11 @@ Messages:
 Economy:
   affordableColor: "<green>"
   unaffordableColor: "<red>"
-  commandCost: " (<value><amount>)"
-  commandPaid: "<yellow>This command cost you <gold><value><amount><yellow>."
+  commandCost: " (<currency><amount>)"
+  commandPaid: "<yellow>This command cost you <gold><currency><amount><yellow>."
   currencySymbol: "$"
-  horsePrice: "<green> <value><amount>"
-  notEnoughMoney: "<yellow>You don't have <gold><value><amount><yellow>."
+  horsePrice: "<green> <currency><amount>"
+  notEnoughMoney: "<yellow>You don't have <gold><currency><amount><yellow>."
 
 Horse informations:
   health: "<yellow>Health : <gold><amount><yellow>/<gold><max>"
@@ -151,7 +151,7 @@ Horse informations:
   locked: "[Lo]"
   name: "<yellow>Name : <gold><horse>"
   owner: "<yellow>Owner : <gold><player>"
-  price: "<yellow>Price : <gold><value><amount>"
+  price: "<yellow>Price : <gold><currency><amount>"
   protected: "[Pr]"
   shared: "[Sh]"
   speed: "<yellow>Speed : <gold><amount>%"
