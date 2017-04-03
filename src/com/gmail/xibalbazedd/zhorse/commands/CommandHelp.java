@@ -10,8 +10,6 @@ public class CommandHelp extends AbstractCommand {
 
 	public CommandHelp(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		playerOnly = true;
-		needTarget = false;
 		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {
 			if (!idMode) { // On 2 lines to avoid calling sendCommandUsage if horse is lost
 				if (!targetMode || (isRegistered(targetUUID) && isPlayerOnline(targetUUID, false))) {

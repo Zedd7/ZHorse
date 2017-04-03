@@ -19,8 +19,6 @@ public class CommandFriend extends AbstractCommand {
 
 	public CommandFriend(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		playerOnly = true;
-		needTarget = false;
 		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {
 			if (!idMode) {
 				execute();

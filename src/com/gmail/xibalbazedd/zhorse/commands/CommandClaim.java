@@ -13,8 +13,6 @@ public class CommandClaim extends AbstractCommand {
 	
 	public CommandClaim(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		playerOnly = true;
-		needTarget = false;
 		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {
 			if (!idMode) {
 				if (!targetMode) {
@@ -39,7 +37,7 @@ public class CommandClaim extends AbstractCommand {
 	}
 	
 	private void execute() {
-		if (!hasReachedClaimsLimit(p.getUniqueId()) && isClaimable() && craftHorseName(true) && zh.getEM().canAffordCommand(p, command)) {
+		if (!hasReachedClaimsLimit(false) && isClaimable() && craftHorseName(true) && zh.getEM().canAffordCommand(p, command)) {
 			int horseID = zh.getDM().getNextHorseID(p.getUniqueId());
 			boolean lock = zh.getCM().shouldLockOnClaim();
 			boolean protect = zh.getCM().shouldProtectOnClaim();

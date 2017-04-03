@@ -13,8 +13,6 @@ public class CommandSell extends AbstractCommand {
 
 	public CommandSell(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		playerOnly = true;
-		needTarget = false;
 		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {
 			if (!idMode) {
 				if (!targetMode) {

@@ -10,8 +10,6 @@ public class CommandRename extends AbstractCommand {
 
 	public CommandRename(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		playerOnly = true;
-		needTarget = false;
 		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {
 			if (!idMode) {
 				if (!targetMode) {

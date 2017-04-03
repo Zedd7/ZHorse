@@ -12,8 +12,6 @@ public class CommandList extends AbstractCommand {
 
 	public CommandList(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		playerOnly = true;
-		needTarget = false;
 		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled() && applyArgument(false)) {
 			if (!idMode) {
 				if (!targetMode || isRegistered(targetUUID)) {

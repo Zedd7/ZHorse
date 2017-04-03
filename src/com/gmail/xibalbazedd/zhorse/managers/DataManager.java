@@ -228,8 +228,13 @@ public class DataManager {
 		return UUID.fromString(db.getStringResult(query));
 	}
 	
-	public int getSalePrice(UUID horseUUID) {
+	public Integer getSalePrice(UUID horseUUID) {
 		String query = String.format("SELECT price FROM prefix_sale WHERE uuid = \"%s\"", horseUUID);
+		return db.getIntegerResult(query);
+	}
+	
+	public Integer getTotalHorsesCount() {
+		String query = "SELECT COUNT(1) FROM prefix_horse";
 		return db.getIntegerResult(query);
 	}
 	

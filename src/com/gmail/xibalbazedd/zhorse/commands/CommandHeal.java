@@ -11,8 +11,6 @@ public class CommandHeal extends AbstractCommand {
 
 	public CommandHeal(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		playerOnly = true;
-		needTarget = false;
 		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled() && applyArgument(true)) {
 			if (!idMode) {
 				if (!targetMode) {

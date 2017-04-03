@@ -1,5 +1,7 @@
 package com.gmail.xibalbazedd.zhorse;
 
+import java.util.HashMap;
+
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -41,6 +43,49 @@ public class ZHorse extends JavaPlugin {
 	
 	public void disable() {
 		getServer().getPluginManager().disablePlugin(this);
+	}
+	
+	public boolean reload() {
+		eventManager.unregisterEvents();
+		horseManager.untrackHorses();
+		dataManager.closeDatabase();
+		return initManagers();
+	}
+	
+	public ConfigManager getCM() {
+    	return configManager;
+    }
+	
+	public CommandManager getCmdM() {
+		return commandManager;
+	}
+    
+    public DataManager getDM() {
+    	return dataManager;
+    }
+	
+	public EconomyManager getEM() {
+		return economyManager;
+	}
+	
+	public EventManager getEvM() {
+		return eventManager;
+	}
+	
+	public HorseManager getHM() {
+		return horseManager;
+	}
+	
+	public LocaleManager getLM() {
+		return localeManager;
+	}
+	
+	public MessageManager getMM() {
+		return messageManager;
+	}
+	
+	public PermissionManager getPM() {
+		return permissionManager;
 	}
 	
 	private void initDependencies() {
@@ -86,62 +131,50 @@ public class ZHorse extends JavaPlugin {
             
         });
 		
-		/* TODO Histogram chart of total claimed horses
-		 * ranges :
-		 * 	0-10
-		 * 	10-50
-		 * 	50-100
-		 * 	100-200
-		 * 	200-500
-		 * 	500-1000
-		 * 	1000-2000
-		 * 	2000-5000
-		 * 	5000-10000
-		 * 	10000+
-		 */
+		metrics.addCustomChart(new Metrics.SimpleBarChart("total-horses-count") {
+
+			@Override
+			public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
+				int totalHorsesCount = dataManager.getTotalHorsesCount();
+				String binLabel = getBinLabel(totalHorsesCount);
+				valueMap.put(binLabel, 1);
+				return valueMap;
+			}
+			
+		});
     }
     
-	public boolean reload() {
-		eventManager.unregisterEvents();
-		horseManager.untrackHorses();
-		dataManager.closeDatabase();
-		return initManagers();
-	}
-	
-	public ConfigManager getCM() {
-    	return configManager;
+    private String getBinLabel(int totalHorsesCount) {
+    	if (totalHorsesCount < 10) {
+    		return "0-10";
+    	}
+    	else if (totalHorsesCount < 50) {
+    		return "10-50";
+    	}
+    	else if (totalHorsesCount < 100) {
+    		return "50-100";
+    	}
+    	else if (totalHorsesCount < 200) {
+    		return "100-200";
+    	}
+    	else if (totalHorsesCount < 500) {
+    		return "200-500";
+    	}
+    	else if (totalHorsesCount < 1000) {
+    		return "500-1000";
+    	}
+    	else if (totalHorsesCount < 2000) {
+    		return "1000-2000";
+    	}
+    	else if (totalHorsesCount < 5000) {
+    		return "2000-5000";
+    	}
+    	else if (totalHorsesCount < 10000) {
+    		return "5000-10000";
+    	}
+    	else {
+    		return "10000+";
+    	}
     }
-	
-	public CommandManager getCmdM() {
-		return commandManager;
-	}
-    
-    public DataManager getDM() {
-    	return dataManager;
-    }
-	
-	public EconomyManager getEM() {
-		return economyManager;
-	}
-	
-	public EventManager getEvM() {
-		return eventManager;
-	}
-	
-	public HorseManager getHM() {
-		return horseManager;
-	}
-	
-	public LocaleManager getLM() {
-		return localeManager;
-	}
-	
-	public MessageManager getMM() {
-		return messageManager;
-	}
-	
-	public PermissionManager getPM() {
-		return permissionManager;
-	}
 
 }

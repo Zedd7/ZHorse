@@ -41,13 +41,13 @@ public abstract class AbstractCommand {
 	protected String targetName;
 	protected boolean displayConsole;
 	protected boolean useVanillaStats;
-	protected boolean adminMode;
-	protected boolean idMode;
-	protected boolean needTarget;
 	protected boolean playerCommand;
-	protected boolean playerOnly;
-	protected boolean samePlayer;
-	protected boolean targetMode;
+	
+	protected boolean adminMode = false;
+	protected boolean idMode = false;
+	protected boolean targetMode = false;
+	protected boolean samePlayer = false;
+	protected boolean targetIsOwner = true;
 	
 	public AbstractCommand(ZHorse zh, CommandSender s, String[] a) {
 		this.zh = zh;
@@ -151,22 +151,23 @@ public abstract class AbstractCommand {
 			return true;
 		}
 		idMode = true;
-		UUID ownerUUID = needTarget ? p.getUniqueId() : targetUUID;
+		UUID ownerUUID = targetIsOwner ? targetUUID : p.getUniqueId();
 		horseName = zh.getDM().getHorseName(ownerUUID, argument); // fix potential case errors
 		Integer horseIDInt = zh.getDM().getHorseID(ownerUUID, horseName);
-		if (horseIDInt == null) {
-			if (displayConsole) {
-				if (samePlayer || needTarget) {
-					zh.getMM().sendMessageHorse(s, LocaleEnum.UNKNOWN_HORSE_NAME, horseName);
-				}
-				else {
-					zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.UNKNOWN_HORSE_NAME_OTHER, horseName, targetName);
-				}
-			}
-			return false;
+		if (horseIDInt != null) {
+			horseID = horseIDInt.toString();
+			return true;
 		}
-		horseID = horseIDInt.toString();
-		return true;
+		else if (displayConsole) {
+			if (samePlayer || !targetIsOwner) {
+				zh.getMM().sendMessageHorse(s, LocaleEnum.UNKNOWN_HORSE_NAME, horseName);
+			}
+			else {
+				zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.UNKNOWN_HORSE_NAME_OTHER, horseName, targetName);
+			}
+		}
+		return false;
+		
 	}
 	
 	protected boolean applyArgumentToTarget() {
@@ -266,17 +267,18 @@ public abstract class AbstractCommand {
 		return message;
 	}
 	
-	protected boolean hasReachedClaimsLimit(UUID playerUUID) {
+	protected boolean hasReachedClaimsLimit(boolean useTargetList) {
 		if (adminMode) {
 			return false;
 		}
+		UUID playerUUID = useTargetList ? targetUUID : p.getUniqueId();
 		int horseCount = zh.getDM().getHorseCount(playerUUID);
 		int claimsLimit = zh.getCM().getClaimsLimit(playerUUID);
 		if (horseCount < claimsLimit || claimsLimit == -1) {
 			return false;
 		}
 		else if (displayConsole) {
-			if (samePlayer) {
+			if (samePlayer || !useTargetList) {
 				zh.getMM().sendMessage(s, LocaleEnum.CLAIMS_LIMIT_REACHED);
 			}
 			else {
@@ -290,17 +292,17 @@ public abstract class AbstractCommand {
     	return (hasPermission(s, command, false, false));
 	}
 	
-	protected boolean hasPermission(UUID playerUUID, String command, boolean ignoreModes, boolean hideConsole) {
+	protected boolean hasPermission(UUID playerUUID, String command, boolean ignoreAdminMode, boolean hideConsole) {
 		if (isPlayerOnline(playerUUID, hideConsole)) {
     		CommandSender target = zh.getServer().getPlayer(playerUUID);
-    		return hasPermission(target, command, ignoreModes, hideConsole);
+    		return hasPermission(target, command, ignoreAdminMode, hideConsole);
     	}
     	return false;
 	}
 	
-	protected boolean hasPermission(CommandSender s, String command, boolean ignoreModes, boolean hideConsole) {
+	protected boolean hasPermission(CommandSender s, String command, boolean ignoreAdminMode, boolean hideConsole) {
 		String permission = KeyWordEnum.ZH_PREFIX.getValue() + command;
-    	if ((adminMode || (targetMode && !needTarget)) && !ignoreModes) {
+    	if (adminMode && !ignoreAdminMode) {
     		return hasPermissionAdmin(s, command, hideConsole);
     	}
     	if (zh.getPM().has(s, permission)) {
@@ -340,24 +342,25 @@ public abstract class AbstractCommand {
 			if (adminMode) {
 				return true;
 			}
-			if (horse.isTamed()) {
-				if (!zh.getDM().isHorseRegistered(horse.getUniqueId())) {
+				
+			if (!zh.getDM().isHorseRegistered(horse.getUniqueId())) {
+				if (horse.isTamed()) {
 					return true;
 				}
 				else if (displayConsole) {
-					if (zh.getDM().isHorseOwnedBy(p.getUniqueId(), horse.getUniqueId())) {
-						zh.getMM().sendMessage(s, LocaleEnum.HORSE_ALREADY_CLAIMED);
-					}
-					else {
-						if (!targetMode) {
-							targetName = zh.getDM().getOwnerName(horse.getUniqueId());
-						}
-						zh.getMM().sendMessagePlayer(s, LocaleEnum.HORSE_BELONGS_TO, targetName);
-					}
+					zh.getMM().sendMessage(s, LocaleEnum.HORSE_NOT_TAMED);
 				}
 			}
 			else if (displayConsole) {
-				zh.getMM().sendMessage(s, LocaleEnum.HORSE_NOT_TAMED);
+				if (zh.getDM().isHorseOwnedBy(p.getUniqueId(), horse.getUniqueId())) {
+					zh.getMM().sendMessage(s, LocaleEnum.HORSE_ALREADY_CLAIMED);
+				}
+				else {
+					if (!targetMode) {
+						targetName = zh.getDM().getOwnerName(horse.getUniqueId());
+					}
+					zh.getMM().sendMessagePlayer(s, LocaleEnum.HORSE_BELONGS_TO, targetName);
+				}
 			}
 		}
 		else if (displayConsole) {
@@ -508,12 +511,11 @@ public abstract class AbstractCommand {
 				PlayerRecord playerRecord = new PlayerRecord(p.getUniqueId().toString(), p.getName(), zh.getCM().getDefaultLanguage(), zh.getDM().getDefaultFavoriteHorseID());
 				zh.getDM().registerPlayer(playerRecord);
 			}
-			return playerCommand;
 		}
-		if (displayConsole && !hideConsole) {
+		else if (displayConsole && !hideConsole) {
+			playerCommand = false;
 			zh.getMM().sendMessage(s, LocaleEnum.PLAYER_COMMAND);
 		}
-		playerCommand = false;
 		return playerCommand;
 	}
 	
@@ -677,7 +679,9 @@ public abstract class AbstractCommand {
 	}
 	
 	protected void sendCommandDescription(String command, String permission, boolean subCommand) {
-		if (hasPermission(targetUUID, permission, true, true)) {
+		boolean displayCommand = hasPermission(targetUUID, permission, true, true); // Display commands that target can use
+		displayCommand &= samePlayer ? true : hasPermission(p.getUniqueId(), permission, true, true); // But hide command that player shouldn't see
+		if (displayCommand) {
 			LocaleEnum commandDescription;
 			if (!subCommand) {
 				commandDescription = LocaleEnum.valueOf(command.toUpperCase() + KeyWordEnum.SEPARATOR.getValue() + KeyWordEnum.DESCRIPTION.getValue());

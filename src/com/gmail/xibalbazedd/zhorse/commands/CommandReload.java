@@ -9,9 +9,7 @@ public class CommandReload extends AbstractCommand {
 
 	public CommandReload(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		playerOnly = false;
-		needTarget = false;
-		if (isPlayer(!playerOnly)) {
+		if (isPlayer(true)) {
 			if (analyseArguments() && hasPermission() && isWorldEnabled()) {
 				if (!idMode && !targetMode) {
 					execute();

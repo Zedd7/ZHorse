@@ -183,7 +183,7 @@ Command descriptions:
   tp: "<gold>/zh tp<gray>: <yellow>Teleport you to the horse."
 
 Admin command descriptions:
-  clear: "<gold>/zh admin clear<gray>: <yellow>Clear a horse from database."
+  clear: "<gold>/zh admin clear<gray>: <yellow>Clear a horse from the database."
   import: "<gold>/zh admin import<gray>: <yellow>Import external data in your current database."
 
 Friend command descriptions:
