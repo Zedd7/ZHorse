@@ -131,7 +131,16 @@ public class ZHorse extends JavaPlugin {
             
         });
 		
-		metrics.addCustomChart(new Metrics.SimpleBarChart("total-horses-count") {
+		metrics.addCustomChart(new Metrics.SimplePie("database_type") {
+			
+            @Override
+            public String getValue() {
+            	return configManager.getDatabaseType().getName();
+            }
+            
+        });
+		
+		metrics.addCustomChart(new Metrics.SimpleBarChart("total_horses_count") {
 
 			@Override
 			public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
