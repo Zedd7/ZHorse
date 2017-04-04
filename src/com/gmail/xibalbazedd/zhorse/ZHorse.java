@@ -122,15 +122,6 @@ public class ZHorse extends JavaPlugin {
     private void initMetrics() {
 		Metrics metrics = new Metrics(this);
 		
-		metrics.addCustomChart(new Metrics.SimplePie("default_language") {
-			
-            @Override
-            public String getValue() {
-                return configManager.getDefaultLanguage();
-            }
-            
-        });
-		
 		metrics.addCustomChart(new Metrics.SimplePie("database_type") {
 			
             @Override
@@ -140,12 +131,35 @@ public class ZHorse extends JavaPlugin {
             
         });
 		
+		metrics.addCustomChart(new Metrics.SimplePie("default_language") {
+			
+            @Override
+            public String getValue() {
+                return configManager.getDefaultLanguage();
+            }
+            
+        });
+		
+		metrics.addCustomChart(new Metrics.SimpleBarChart("owners_to_players_ratio") {
+
+			@Override
+			public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
+				int totalOwnersCount = dataManager.getTotalOwnersCount();
+				int totalPlayersCount = dataManager.getTotalPlayersCount();
+				int ownersToPlayersRatio = (int) ((totalOwnersCount / (double) totalPlayersCount) * 100);
+				String binLabel = getOwnersRatioBinLabel(ownersToPlayersRatio);
+				valueMap.put(binLabel, 1);
+				return valueMap;
+			}
+			
+		});
+		
 		metrics.addCustomChart(new Metrics.SimpleBarChart("total_horses_count") {
 
 			@Override
 			public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
 				int totalHorsesCount = dataManager.getTotalHorsesCount();
-				String binLabel = getBinLabel(totalHorsesCount);
+				String binLabel = getTotalHorsesBinLabel(totalHorsesCount);
 				valueMap.put(binLabel, 1);
 				return valueMap;
 			}
@@ -153,33 +167,51 @@ public class ZHorse extends JavaPlugin {
 		});
     }
     
-    private String getBinLabel(int totalHorsesCount) {
+    private String getOwnersRatioBinLabel(int ownersToPlayersRatio) {
+    	if (ownersToPlayersRatio < 20) {
+    		return "0% - 20%";
+    	}
+    	else if (ownersToPlayersRatio < 40) {
+    		return "20% - 40%";
+    	}
+    	else if (ownersToPlayersRatio < 60) {
+    		return "40% - 60%";
+    	}
+    	else if (ownersToPlayersRatio < 80) {
+    		return "60% - 80%";
+    	}
+    	else {
+    		return "80% - 100%";
+    	}
+    }
+    
+    private String getTotalHorsesBinLabel(int totalHorsesCount) {
     	if (totalHorsesCount < 10) {
-    		return "0-10";
+    		return "0 - 10";
     	}
     	else if (totalHorsesCount < 50) {
-    		return "10-50";
+    		return "10 - 50";
     	}
     	else if (totalHorsesCount < 100) {
-    		return "50-100";
+    		return "50 - 100";
     	}
     	else if (totalHorsesCount < 200) {
-    		return "100-200";
+    		return "100 - 200";
     	}
     	else if (totalHorsesCount < 500) {
-    		return "200-500";
+    		return "200 - 500";
     	}
     	else if (totalHorsesCount < 1000) {
-    		return "500-1000";
+    		return "500 - 1000";
     	}
     	else if (totalHorsesCount < 2000) {
-    		return "1000-2000";
+    		return "1000 - 2000";
     	}
     	else if (totalHorsesCount < 5000) {
-    		return "2000-5000";
+    		return "2000 - 5000";
     	}
     	else if (totalHorsesCount < 10000) {
-    		return "5000-10000";
+    		return "5000 - 10000";
     	}
     	else {
     		return "10000+";

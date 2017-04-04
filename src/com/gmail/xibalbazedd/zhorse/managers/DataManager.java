@@ -238,6 +238,16 @@ public class DataManager {
 		return db.getIntegerResult(query);
 	}
 	
+	public Integer getTotalOwnersCount() {
+		String query = "SELECT COUNT(1) FROM prefix_player p WHERE EXISTS (SELECT h.uuid FROM prefix_horse h WHERE h.owner = p.uuid)";
+		return db.getIntegerResult(query);
+	}
+	
+	public Integer getTotalPlayersCount() {
+		String query = "SELECT COUNT(1) FROM prefix_player";
+		return db.getIntegerResult(query);
+	}
+	
 	private boolean hasLocationChanged(UUID horseUUID, Location newLocation) {
 		Location oldLocation = getHorseLocation(horseUUID);
 		if (oldLocation != null) {
