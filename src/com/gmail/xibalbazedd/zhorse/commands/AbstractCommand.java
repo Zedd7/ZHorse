@@ -192,6 +192,13 @@ public abstract class AbstractCommand {
 		horse.setCustomName(customHorseName);
 	}
 	
+	protected void applyHorsePrice(int price) {
+		String defaultLanguage = zh.getCM().getDefaultLanguage();
+		String defaultCurrencySymbol = zh.getLM().getMessage(LocaleEnum.CURRENCY_SYMBOL.getIndex(), defaultLanguage, true);
+		String horsePrice = zh.getMM().getMessageAmountCurrency(s, LocaleEnum.HORSE_PRICE, price, defaultCurrencySymbol, true);
+		horse.setCustomName(horse.getCustomName() + ChatColor.RESET + horsePrice);
+	}
+	
 	protected boolean craftHorseName(boolean keepPreviousName) {
 		if (!argument.isEmpty()) {
 			return craftCustomHorseName();

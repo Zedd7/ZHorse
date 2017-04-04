@@ -48,6 +48,10 @@ public class CommandRename extends AbstractCommand {
 	private void execute() {
 		if (isOwner() && craftHorseName(false) && zh.getEM().canAffordCommand(p, command)) {
 			applyHorseName(targetUUID);
+			if (zh.getDM().isHorseForSale(horse.getUniqueId())) {
+				int price = zh.getDM().getSalePrice(horse.getUniqueId());
+				applyHorsePrice(price);
+			}
 			horse.setCustomNameVisible(true);
 			zh.getDM().updateHorseName(horse.getUniqueId(), horseName);
 			if (displayConsole) {

@@ -7,8 +7,6 @@ import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.database.SaleRecord;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
 
-import net.md_5.bungee.api.ChatColor;
-
 public class CommandSell extends AbstractCommand {
 
 	public CommandSell(ZHorse zh, CommandSender s, String[] a) {
@@ -61,10 +59,7 @@ public class CommandSell extends AbstractCommand {
 					}
 					SaleRecord saleRecord = new SaleRecord(horse.getUniqueId().toString(), price);
 					if (zh.getDM().registerSale(saleRecord)) {
-						String defaultLanguage = zh.getCM().getDefaultLanguage();
-						String defaultCurrencySymbol = zh.getLM().getMessage(LocaleEnum.CURRENCY_SYMBOL.getIndex(), defaultLanguage, true);
-						String horsePrice = zh.getMM().getMessageAmountCurrency(s, LocaleEnum.HORSE_PRICE, price, defaultCurrencySymbol, true);
-						horse.setCustomName(horse.getCustomName() + ChatColor.RESET + horsePrice);
+						applyHorsePrice(price);
 						if (displayConsole) {
 							String sellerCurrencySymbol = zh.getMM().getMessage(s, LocaleEnum.CURRENCY_SYMBOL, true);
 							zh.getMM().sendMessageAmountCurrencyHorse(s, LocaleEnum.HORSE_PUT_UP_FOR_SALE, price, sellerCurrencySymbol, horseName);
