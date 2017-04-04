@@ -1,4 +1,4 @@
-Version: 1.6.5
+Version: 1.6.6
 
 Commands:
 
@@ -206,6 +206,8 @@ Protections:
     enabled: false
   CONTACT:
     enabled: false
+  CRAMMING:
+    enabled: false
   CUSTOM:
     enabled: false
   DRAGON_BREATH:
@@ -225,6 +227,8 @@ Protections:
   FIRE_TICK:
     enabled: false
   FLY_INTO_WALL:
+    enabled: false
+  HOT_FLOOR:
     enabled: false
   LAVA:
     enabled: false
