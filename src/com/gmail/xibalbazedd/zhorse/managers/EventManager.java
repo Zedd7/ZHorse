@@ -7,8 +7,10 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AbstractHorse;
+import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LeashHitch;
+import org.bukkit.entity.Llama;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.SkeletonHorse;
@@ -41,7 +43,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.commands.CommandClaim;
+import com.gmail.xibalbazedd.zhorse.commands.CommandInfo;
+import com.gmail.xibalbazedd.zhorse.database.HorseStatsRecord;
 import com.gmail.xibalbazedd.zhorse.enums.CommandEnum;
+import com.gmail.xibalbazedd.zhorse.enums.HorseStatisticEnum;
 import com.gmail.xibalbazedd.zhorse.enums.KeyWordEnum;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
 import com.gmail.xibalbazedd.zhorse.utils.ChunkLoad;
@@ -235,8 +240,13 @@ public class EventManager implements Listener {
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent e) {
 		if (e.getRightClicked() instanceof AbstractHorse) {
 			AbstractHorse horse = (AbstractHorse) e.getRightClicked();
+			Player p = e.getPlayer();
+			
+			if (zh.getDM().isHorseForSale(horse.getUniqueId()) && !zh.getDM().isHorseOwnedBy(p.getUniqueId(), horse.getUniqueId())) {
+				displayHorseStats(horse, p);
+			}
+			
 			if (horse instanceof SkeletonHorse || horse instanceof ZombieHorse) {
-				Player p = e.getPlayer();
 				if (!horse.isLeashed() && zh.getCM().isLeashOnUndeadHorseAllowed()) {
 					HandEnum holdingHand = getHoldingHand(p, new ItemStack(Material.LEASH));
 					if (holdingHand.equals(HandEnum.MAIN) || holdingHand.equals(HandEnum.OFF)) { // if player is holding leash
@@ -252,7 +262,7 @@ public class EventManager implements Listener {
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		new PlayerJoin(zh, e.getPlayer());
@@ -312,6 +322,36 @@ public class EventManager implements Listener {
 		}
 	}
 	
+	private void displayHorseStats(AbstractHorse horse, Player p) {
+		zh.getMM().sendMessageValue((CommandSender) p, LocaleEnum.HEADER_FORMAT, zh.getMM().getMessage((CommandSender) p, LocaleEnum.HORSE_INFO_HEADER, true), true);
+		HorseStatsRecord statsRecord = new HorseStatsRecord(horse);
+		boolean useVanillaStats = zh.getCM().shouldUseVanillaStats();
+		
+		int health = statsRecord.getHealth().intValue();
+		int maxHealth = statsRecord.getMaxHealth().intValue();
+		zh.getMM().sendMessageAmountMaxSpacer((CommandSender) p, LocaleEnum.HEALTH, health, maxHealth, 1, true);
+		
+		double speed = statsRecord.getSpeed();
+		double maxSpeed = HorseStatisticEnum.MAX_SPEED.getValue(useVanillaStats);
+		int speedRatio = (int) ((speed / maxSpeed) * 100);
+		zh.getMM().sendMessageAmountSpacer((CommandSender) p, LocaleEnum.SPEED, speedRatio, 1, true);
+		
+		double jumpStrength = statsRecord.getJumpStrength();
+		double maxJumpStrength = HorseStatisticEnum.MAX_JUMP_STRENGTH.getValue(useVanillaStats);
+		int jumpRatio = (int) ((jumpStrength / maxJumpStrength) * 100);
+		zh.getMM().sendMessageAmountSpacer((CommandSender) p, LocaleEnum.JUMP, jumpRatio, 1, true);
+		
+		if (horse instanceof ChestedHorse && statsRecord.isCarryingChest()) {
+			int strength = horse instanceof Llama ? statsRecord.getStrength() : (int) HorseStatisticEnum.MAX_LLAMA_STRENGTH.getValue(useVanillaStats);
+			int chestSize = strength * CommandInfo.CHEST_SIZE_MULTIPLICATOR;
+			zh.getMM().sendMessageAmountSpacer((CommandSender) p, LocaleEnum.STRENGTH, chestSize, 1, true);
+		}
+		
+		int price = zh.getDM().getSalePrice(horse.getUniqueId());
+		String currencySymbol = zh.getMM().getMessage((CommandSender) p, LocaleEnum.CURRENCY_SYMBOL, true);
+		zh.getMM().sendMessageAmountCurrencySpacer((CommandSender) p, LocaleEnum.PRICE, price, currencySymbol, 1, true);
+	}
+	
 	private HandEnum getHoldingHand(Player p, ItemStack item) {
 		ItemStack mainHandItem = p.getInventory().getItemInMainHand();
 		ItemStack offHandItem = p.getInventory().getItemInOffHand();
@@ -361,7 +401,7 @@ public class EventManager implements Listener {
 			boolean isOwner = zh.getDM().isHorseOwnedBy(p.getUniqueId(), horse.getUniqueId());
 			boolean isFriend = zh.getDM().isFriendOfOwner(p.getUniqueId(), horse.getUniqueId());
 			boolean hasAdminPerm = zh.getPM().has(p, KeyWordEnum.ZH_PREFIX.getValue() + CommandEnum.LOCK.getName() + KeyWordEnum.ADMIN_SUFFIX.getValue());
-			if (!(isOwner || isFriend) && !hasAdminPerm) {
+			if (!isOwner && !isFriend && !hasAdminPerm) {
 				if (zh.getDM().isHorseLocked(horse.getUniqueId()) || (!zh.getDM().isHorseShared(horse.getUniqueId()) && (!horse.isEmpty() || mustBeShared))) {
 					if (displayConsole) {
 						String ownerName = zh.getDM().getOwnerName(horse.getUniqueId());

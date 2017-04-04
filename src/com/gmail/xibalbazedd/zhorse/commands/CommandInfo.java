@@ -16,7 +16,7 @@ import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
 
 public class CommandInfo extends AbstractCommand {
 	
-	private static final int CHEST_SIZE_MULTIPLICATOR = 3;
+	public static final int CHEST_SIZE_MULTIPLICATOR = 3;
 	
 	private HorseRecord horseRecord;
 	private HorseStatsRecord statsRecord;
