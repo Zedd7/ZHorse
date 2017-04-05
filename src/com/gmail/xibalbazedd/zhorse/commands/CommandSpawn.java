@@ -87,7 +87,7 @@ public class CommandSpawn extends AbstractCommand {
 					parsed = parseBaby(argument);
 				}
 				if (!parsed) {
-					parsed = parseDoubles(argument);
+					parsed = parseStats(argument);
 				}
 				if (!parsed) {
 					parsed = parseLlamaStrength(argument);
@@ -206,32 +206,42 @@ public class CommandSpawn extends AbstractCommand {
 		return false;
 	}
 	
-	private boolean parseDoubles(String argument) {
+	private boolean parseStats(String argument) {
 		if (StringUtils.countMatches(argument, DOUBLE_SEPARATOR) == 2) {
 			if (health == -1 && jumpStrength == -1 && speed == -1) {
-				Double[] doubles = buildDoubles(argument);
-				if (doubles != null) {
-					Double healthDouble = doubles[0];
-					if (healthDouble != null) {
-						valid &= isStatHealthValid(healthDouble);
+				Double[] stats = buildStats(argument);
+				if (stats != null) {
+					Double healthStat = stats[0];
+					if (healthStat != null) {
+						valid &= isStatHealthValid(healthStat);
 						if (valid) {
-							health = healthDouble;
+							health = healthStat;
 						}
 					}
-					Double speedDouble = doubles[1];
-					if (speedDouble != null) {
-						valid &= isStatSpeedValid(speedDouble);
+					Double speedStat = stats[1];
+					if (speedStat != null) {
+						valid &= isStatSpeedValid(speedStat);
 						if (valid) {
-							double maxSpeed = HorseStatisticEnum.MAX_SPEED.getValue(useVanillaStats);
-							speed = (speedDouble * maxSpeed) / 100;
+							if (!useExactStats) {
+								double maxSpeed = HorseStatisticEnum.MAX_SPEED.getValue(useVanillaStats);
+								speed = (speedStat * maxSpeed) / 100;
+							}
+							else {
+								speed = speedStat;
+							}
 						}
 					}
-					Double jumpDouble = doubles[2];
-					if (jumpDouble != null) {
-						valid &= isStatJumpStrengthValid(jumpDouble);
+					Double jumpStat = stats[2];
+					if (jumpStat != null) {
+						valid &= isStatJumpStrengthValid(jumpStat);
 						if (valid) {
-							double maxJumpStrength = HorseStatisticEnum.MAX_JUMP_STRENGTH.getValue(useVanillaStats);
-							jumpStrength = (jumpDouble * maxJumpStrength) / 100;
+							if (!useExactStats) {
+								double maxJumpStrength = HorseStatisticEnum.MAX_JUMP_STRENGTH.getValue(useVanillaStats);
+								jumpStrength = (jumpStat * maxJumpStrength) / 100;
+							}
+							else {
+								jumpStrength = jumpStat;
+							}
 						}
 					}
 					return true;
@@ -247,29 +257,29 @@ public class CommandSpawn extends AbstractCommand {
 		return false;
 	}
 	
-	private Double[] buildDoubles(String argument) {
+	private Double[] buildStats(String argument) {
 		int firstSeparatorIndex = argument.indexOf(DOUBLE_SEPARATOR);
 		int secondSeparatorIndex = argument.indexOf(DOUBLE_SEPARATOR, firstSeparatorIndex + 1);
 		String healthArg = argument.substring(0, firstSeparatorIndex);
 		String speedArg = argument.substring(firstSeparatorIndex + 1, secondSeparatorIndex);
 		String jumpArg = argument.substring(secondSeparatorIndex + 1);
-		Double healthDouble = null;
-		Double speedDouble = null;
-		Double jumpDouble = null;
+		Double healthStat = null;
+		Double speedStat = null;
+		Double jumpStat = null;
 		try {
 			if (!healthArg.isEmpty()) {
-				healthDouble = Double.parseDouble(healthArg.replaceAll("%", ""));
+				healthStat = Double.parseDouble(healthArg.replaceAll("%", ""));
 			}
 			if (!speedArg.isEmpty()) {
-				speedDouble = Double.parseDouble(speedArg.replaceAll("%", ""));
+				speedStat = Double.parseDouble(speedArg.replaceAll("%", ""));
 			}
 			if (!jumpArg.isEmpty()) {
-				jumpDouble = Double.parseDouble(jumpArg.replaceAll("%", ""));
+				jumpStat = Double.parseDouble(jumpArg.replaceAll("%", ""));
 			}
 		} catch (NumberFormatException e) {
 			return null;
 		}
-		return new Double[] {healthDouble, speedDouble, jumpDouble};
+		return new Double[] {healthStat, speedStat, jumpStat};
 	}
 	
 	private boolean parseLlamaStrength(String argument) {

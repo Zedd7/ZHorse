@@ -147,6 +147,7 @@ Horse informations:
   health: "<yellow>Santé : <gold><amount><yellow>/<gold><max>"
   id: "<yellow>ID : <gold><id>"
   jump: "<yellow>Hauteur de saut : <gold><amount>%"
+  jumpExact: "<yellow>Hauteur de saut : <gold><value>"
   location: "<yellow>Position : <gold><value>"
   locked: "[Lo]"
   name: "<yellow>Nom : <gold><horse>"
@@ -155,6 +156,7 @@ Horse informations:
   protected: "[Pr]"
   shared: "[Sh]"
   speed: "<yellow>Vitesse : <gold><amount>%"
+  speedExact: "<yellow>Vitesse : <gold><value>"
   status: "<yellow>Statut : <gold><value>"
   strength: "<yellow>Taille du coffre : <gold><amount>"
 

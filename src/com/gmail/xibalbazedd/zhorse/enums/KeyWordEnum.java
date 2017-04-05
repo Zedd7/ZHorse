@@ -49,6 +49,7 @@ public enum KeyWordEnum {
 	TYPE("Databases.type"),
 	USE_OLD_TELEPORT_METHOD("Settings.use-old-teleport-method"),
 	USER("Databases.mysql-config.user"),
+	USE_EXACT_STATS("Settings.use-exact-stats"),
 	USE_VANILLA_STATS("Settings.use-vanilla-stats"),
 	WORLDS_PREFIX("Worlds."),
 	

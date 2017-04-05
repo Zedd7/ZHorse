@@ -301,8 +301,13 @@ Settings:
   # The new method remove horses and respawn them at destination.
   use-old-teleport-method: false
   
+  # Set to true to use exact, unrounded horse stats.
+  # Does not affect actual horse stats, only apply to /zh spawn and /zh info.
+  # Example : The display of a speed of 42% will be replaced by 0.421.
+  use-exact-stats: false
+  
   # Set to false to use Bukkit thresholds for horse stats.
-  # Does not affect horse stats, only /zh spawn and /zh info.
+  # Does not affect actual horse stats, only apply to /zh spawn and /zh info.
   use-vanilla-stats: true
 
 Worlds:

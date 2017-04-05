@@ -28,6 +28,10 @@ public enum HorseStatisticEnum {
 		return bukkitValue;
 	}
 	
+	public double getValue() { // Assumes identical stats for vanilla and Bukkit
+		return vanillaValue;
+	}
+	
 	public double getValue(boolean vanilla) {
 		return vanilla ? vanillaValue : bukkitValue;
 	}

@@ -1,5 +1,6 @@
 package com.gmail.xibalbazedd.zhorse.commands;
 
+import java.util.Locale;
 import java.util.UUID;
 
 import org.bukkit.command.CommandSender;
@@ -16,11 +17,7 @@ import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
 
 public class CommandInfo extends AbstractCommand {
 	
-	public static final int CHEST_SIZE_MULTIPLICATOR = 3;
-	
-	private HorseRecord horseRecord;
-	private HorseStatsRecord statsRecord;
-	private PlayerRecord ownerRecord;
+	private static final int CHEST_SIZE_MULTIPLICATOR = 3;
 
 	public CommandInfo(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
@@ -61,72 +58,84 @@ public class CommandInfo extends AbstractCommand {
 
 	private void execute() {
 		if (zh.getEM().canAffordCommand(p, command)) {
-			horseRecord = zh.getDM().getHorseRecord(horse.getUniqueId());
-			statsRecord = new HorseStatsRecord(horse);
-			ownerRecord = zh.getDM().getPlayerRecord(UUID.fromString(horseRecord.getOwner()));
+			HorseRecord horseRecord = zh.getDM().getHorseRecord(horse.getUniqueId());
+			HorseStatsRecord statsRecord = new HorseStatsRecord(horse);
+			PlayerRecord ownerRecord = zh.getDM().getPlayerRecord(UUID.fromString(horseRecord.getOwner()));
 			
-			displayHeader();
-			displayHorseID();
-			displayNames();
-			displayHealth();
-			displaySpeed();
-			displayJumpStrength();
-			displayChestSize();
-			displayLocation();
-			displayStatus();
-			displayPrice();
+			displayInfoHeader(zh, s);
+			displayHorseID(zh, s, horseRecord);
+			displayNames(zh, s, horseRecord, ownerRecord);
+			displayHealth(zh, s, statsRecord);
+			displaySpeed(zh, s, statsRecord, useExactStats, useVanillaStats);
+			displayJumpStrength(zh, s, statsRecord, useExactStats, useVanillaStats);
+			displayChestSize(zh, s, horse, statsRecord);
+			displayLocation(zh, s, horseRecord);
+			displayStatus(zh, s, horseRecord);
+			displayPrice(zh, s, horse);
 			
 			zh.getEM().payCommand(p, command);
 		}
 	}
 	
-	private void displayHeader() {
+	public static void displayInfoHeader(ZHorse zh, CommandSender s) {
 		zh.getMM().sendMessageValue(s, LocaleEnum.HEADER_FORMAT, zh.getMM().getMessage(s, LocaleEnum.HORSE_INFO_HEADER, true), true);
 	}
 	
-	private void displayHorseID() {
+	private void displayHorseID(ZHorse zh, CommandSender s, HorseRecord horseRecord) {
 		if (isOwner(false, true)) {
 			String horseID = horseRecord.getId().toString();
 			zh.getMM().sendMessageHorseIDSpacer(s, LocaleEnum.ID, horseID, 1, true);
 		}
 	}
 	
-	private void displayNames() {
+	private void displayNames(ZHorse zh, CommandSender s, HorseRecord horseRecord, PlayerRecord ownerRecord) {
 		String ownerName = ownerRecord.getName();
 		String horseName = horseRecord.getName();
 		zh.getMM().sendMessagePlayerSpacer(s, LocaleEnum.OWNER, ownerName, 1, true);
 		zh.getMM().sendMessageHorseSpacer(s, LocaleEnum.NAME, horseName, 1, true);
 	}
 	
-	private void displayHealth() {
+	public static void displayHealth(ZHorse zh, CommandSender s, HorseStatsRecord statsRecord) {
 		int health = statsRecord.getHealth().intValue();
 		int maxHealth = statsRecord.getMaxHealth().intValue();
 		zh.getMM().sendMessageAmountMaxSpacer(s, LocaleEnum.HEALTH, health, maxHealth, 1, true);
 	}
 	
-	private void displaySpeed() {
+	public static void displaySpeed(ZHorse zh, CommandSender s, HorseStatsRecord statsRecord, boolean useExactStats, boolean useVanillaStats) {
 		double speed = statsRecord.getSpeed();
-		double maxSpeed = HorseStatisticEnum.MAX_SPEED.getValue(useVanillaStats);
-		int speedRatio = (int) ((speed / maxSpeed) * 100);
-		zh.getMM().sendMessageAmountSpacer(s, LocaleEnum.SPEED, speedRatio, 1, true);
+		if (!useExactStats) {
+			double maxSpeed = HorseStatisticEnum.MAX_SPEED.getValue(useVanillaStats);
+			int speedRatio = (int) ((speed / maxSpeed) * 100);
+			zh.getMM().sendMessageAmountSpacer(s, LocaleEnum.SPEED, speedRatio, 1, true);
+		}
+		else {
+			String speedInfo = String.format(Locale.US, "%.3f", speed);
+			zh.getMM().sendMessageSpacerValue(s, LocaleEnum.SPEED_EXACT, 1, speedInfo, true);
+		}
 	}
 	
-	private void displayJumpStrength() {
+	public static void displayJumpStrength(ZHorse zh, CommandSender s, HorseStatsRecord statsRecord, boolean useExactStats, boolean useVanillaStats) {
 		double jumpStrength = statsRecord.getJumpStrength();
-		double maxJumpStrength = HorseStatisticEnum.MAX_JUMP_STRENGTH.getValue(useVanillaStats);
-		int jumpRatio = (int) ((jumpStrength / maxJumpStrength) * 100);
-		zh.getMM().sendMessageAmountSpacer(s, LocaleEnum.JUMP, jumpRatio, 1, true);
+		if (!useExactStats) {
+			double maxJumpStrength = HorseStatisticEnum.MAX_JUMP_STRENGTH.getValue(useVanillaStats);
+			int jumpRatio = (int) ((jumpStrength / maxJumpStrength) * 100);
+			zh.getMM().sendMessageAmountSpacer(s, LocaleEnum.JUMP, jumpRatio, 1, true);
+		}
+		else {
+			String jumpInfo = String.format(Locale.US, "%.3f", jumpStrength);
+			zh.getMM().sendMessageSpacerValue(s, LocaleEnum.JUMP_EXACT, 1, jumpInfo, true);
+		}
 	}
 	
-	private void displayChestSize() {
+	public static void displayChestSize(ZHorse zh, CommandSender s, AbstractHorse horse, HorseStatsRecord statsRecord) {
 		if (horse instanceof ChestedHorse && statsRecord.isCarryingChest()) {
-			int strength = horse instanceof Llama ? statsRecord.getStrength() : (int) HorseStatisticEnum.MAX_LLAMA_STRENGTH.getValue(useVanillaStats);
+			int strength = horse instanceof Llama ? statsRecord.getStrength() : (int) HorseStatisticEnum.MAX_LLAMA_STRENGTH.getValue();
 			int chestSize = strength * CHEST_SIZE_MULTIPLICATOR;
 			zh.getMM().sendMessageAmountSpacer(s, LocaleEnum.STRENGTH, chestSize, 1, true);
 		}
 	}
 	
-	private void displayLocation() {
+	private void displayLocation(ZHorse zh, CommandSender s, HorseRecord horseRecord) {
 		if (isNotOnHorse(true)) {
 			int x = (int) Math.floor(horseRecord.getLocationX());
 			int y = (int) Math.floor(horseRecord.getLocationY());
@@ -137,7 +146,7 @@ public class CommandInfo extends AbstractCommand {
 		}
 	}
 	
-	private void displayStatus() {
+	private void displayStatus(ZHorse zh, CommandSender s, HorseRecord horseRecord) {
 		String status = "";
 		if (horseRecord.isProtected()) {
 			status += zh.getMM().getMessageSpacer(s, LocaleEnum.PROTECTED, 0, true);
@@ -154,7 +163,7 @@ public class CommandInfo extends AbstractCommand {
 		}
 	}
 	
-	private void displayPrice() {
+	public static void displayPrice(ZHorse zh, CommandSender s, AbstractHorse horse) {
 		if (zh.getDM().isHorseForSale(horse.getUniqueId())) {
 			int price = zh.getDM().getSalePrice(horse.getUniqueId());
 			String currencySymbol = zh.getMM().getMessage(s, LocaleEnum.CURRENCY_SYMBOL, true);

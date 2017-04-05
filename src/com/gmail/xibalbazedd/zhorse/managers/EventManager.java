@@ -7,10 +7,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AbstractHorse;
-import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LeashHitch;
-import org.bukkit.entity.Llama;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.SkeletonHorse;
@@ -46,7 +44,6 @@ import com.gmail.xibalbazedd.zhorse.commands.CommandClaim;
 import com.gmail.xibalbazedd.zhorse.commands.CommandInfo;
 import com.gmail.xibalbazedd.zhorse.database.HorseStatsRecord;
 import com.gmail.xibalbazedd.zhorse.enums.CommandEnum;
-import com.gmail.xibalbazedd.zhorse.enums.HorseStatisticEnum;
 import com.gmail.xibalbazedd.zhorse.enums.KeyWordEnum;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
 import com.gmail.xibalbazedd.zhorse.utils.ChunkLoad;
@@ -323,33 +320,15 @@ public class EventManager implements Listener {
 	}
 	
 	private void displayHorseStats(AbstractHorse horse, Player p) {
-		zh.getMM().sendMessageValue((CommandSender) p, LocaleEnum.HEADER_FORMAT, zh.getMM().getMessage((CommandSender) p, LocaleEnum.HORSE_INFO_HEADER, true), true);
 		HorseStatsRecord statsRecord = new HorseStatsRecord(horse);
+		boolean useExactStats = zh.getCM().shouldUseExactStats();
 		boolean useVanillaStats = zh.getCM().shouldUseVanillaStats();
-		
-		int health = statsRecord.getHealth().intValue();
-		int maxHealth = statsRecord.getMaxHealth().intValue();
-		zh.getMM().sendMessageAmountMaxSpacer((CommandSender) p, LocaleEnum.HEALTH, health, maxHealth, 1, true);
-		
-		double speed = statsRecord.getSpeed();
-		double maxSpeed = HorseStatisticEnum.MAX_SPEED.getValue(useVanillaStats);
-		int speedRatio = (int) ((speed / maxSpeed) * 100);
-		zh.getMM().sendMessageAmountSpacer((CommandSender) p, LocaleEnum.SPEED, speedRatio, 1, true);
-		
-		double jumpStrength = statsRecord.getJumpStrength();
-		double maxJumpStrength = HorseStatisticEnum.MAX_JUMP_STRENGTH.getValue(useVanillaStats);
-		int jumpRatio = (int) ((jumpStrength / maxJumpStrength) * 100);
-		zh.getMM().sendMessageAmountSpacer((CommandSender) p, LocaleEnum.JUMP, jumpRatio, 1, true);
-		
-		if (horse instanceof ChestedHorse && statsRecord.isCarryingChest()) {
-			int strength = horse instanceof Llama ? statsRecord.getStrength() : (int) HorseStatisticEnum.MAX_LLAMA_STRENGTH.getValue(useVanillaStats);
-			int chestSize = strength * CommandInfo.CHEST_SIZE_MULTIPLICATOR;
-			zh.getMM().sendMessageAmountSpacer((CommandSender) p, LocaleEnum.STRENGTH, chestSize, 1, true);
-		}
-		
-		int price = zh.getDM().getSalePrice(horse.getUniqueId());
-		String currencySymbol = zh.getMM().getMessage((CommandSender) p, LocaleEnum.CURRENCY_SYMBOL, true);
-		zh.getMM().sendMessageAmountCurrencySpacer((CommandSender) p, LocaleEnum.PRICE, price, currencySymbol, 1, true);
+		CommandInfo.displayInfoHeader(zh, (CommandSender) p);
+		CommandInfo.displayHealth(zh, (CommandSender) p, statsRecord);
+		CommandInfo.displaySpeed(zh, (CommandSender) p, statsRecord, useExactStats, useVanillaStats);
+		CommandInfo.displayJumpStrength(zh, (CommandSender) p, statsRecord, useExactStats, useVanillaStats);
+		CommandInfo.displayChestSize(zh, (CommandSender) p, horse, statsRecord);
+		CommandInfo.displayPrice(zh, (CommandSender) p, horse);
 	}
 	
 	private HandEnum getHoldingHand(Player p, ItemStack item) {

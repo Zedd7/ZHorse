@@ -301,6 +301,10 @@ public class ConfigManager {
 		return config.getBoolean(KeyWordEnum.USE_OLD_TELEPORT_METHOD.getValue(), false);
 	}
 	
+	public boolean shouldUseExactStats() {
+		return config.getBoolean(KeyWordEnum.USE_EXACT_STATS.getValue(), false);
+	}
+	
 	public boolean shouldUseVanillaStats() {
 		return config.getBoolean(KeyWordEnum.USE_VANILLA_STATS.getValue(), true);
 	}
@@ -602,6 +606,10 @@ public class ConfigManager {
 		}
 		if (!config.isSet("Settings.use-old-teleport-method")) {
 			zh.getLogger().severe("The \"Settings.use-old-teleport-method\" option is missing from the config !");
+			conform = false;
+		}
+		if (!config.isSet("Settings.use-exact-stats")) {
+			zh.getLogger().severe("The \"Settings.use-exact-stats\" option is missing from the config !");
 			conform = false;
 		}
 		if (!config.isSet("Settings.use-vanilla-stats")) {

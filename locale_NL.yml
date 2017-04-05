@@ -149,6 +149,7 @@ Horse informations:
   health: "<yellow>Levens : <gold><amount><yellow>/<gold><max>"
   id: "<yellow>ID : <gold><id>"
   jump: "<yellow>Spring kracht : <gold><amount>%"
+  jumpExact: "<yellow>Spring kracht : <gold><value>"
   location: "<yellow>Locatie : <gold><value>"
   locked: "[Gelocked]"
   name: "<yellow>Naam : <gold><horse>"
@@ -157,6 +158,7 @@ Horse informations:
   protected: "[Beschermd]"
   shared: "[Gedeeld]"
   speed: "<yellow>Snelheid : <gold><amount>%"
+  speedExact: "<yellow>Snelheid : <gold><value>"
   status: "<yellow>Status : <gold><value>"
   strength: "<yellow>Opslagruimte : <gold><amount>"
 

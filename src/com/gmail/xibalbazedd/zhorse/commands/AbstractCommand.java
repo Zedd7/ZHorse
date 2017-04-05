@@ -40,6 +40,7 @@ public abstract class AbstractCommand {
 	protected String horseName;
 	protected String targetName;
 	protected boolean displayConsole;
+	protected boolean useExactStats;
 	protected boolean useVanillaStats;
 	protected boolean playerCommand;
 	
@@ -55,6 +56,7 @@ public abstract class AbstractCommand {
 		this.s = s;
 		this.command = a[0].toLowerCase();
 		this.displayConsole = !(zh.getCM().isConsoleMuted());
+		this.useExactStats = zh.getCM().shouldUseExactStats();
 		this.useVanillaStats = zh.getCM().shouldUseVanillaStats();
 	}
 	
@@ -615,9 +617,15 @@ public abstract class AbstractCommand {
 	}
 	
 	protected boolean isStatSpeedValid(double speed) {
+		if (adminMode) {
+			return true;
+		}
 		double minSpeed = HorseStatisticEnum.MIN_SPEED.getValue(useVanillaStats);
 		double maxSpeed = HorseStatisticEnum.MAX_SPEED.getValue(useVanillaStats);
-		if (adminMode || (speed >= (minSpeed / maxSpeed) * 100 && speed <= 100)) {
+		if (!useExactStats && (speed >= (minSpeed / maxSpeed) * 100 && speed <= 100)) {
+			return true;
+		}
+		else if (speed >= minSpeed && speed <= maxSpeed) {
 			return true;
 		}
 		else if (displayConsole) {
@@ -627,9 +635,15 @@ public abstract class AbstractCommand {
 	}
 	
 	protected boolean isStatJumpStrengthValid(double jumpStrength) {
+		if (adminMode) {
+			return true;
+		}
 		double minJumpStrength = HorseStatisticEnum.MIN_JUMP_STRENGTH.getValue(useVanillaStats);
 		double maxJumpStrength = HorseStatisticEnum.MAX_JUMP_STRENGTH.getValue(useVanillaStats);
-		if (adminMode || (jumpStrength >= (minJumpStrength / maxJumpStrength) * 100 && jumpStrength <= 100)) {
+		if (!useExactStats && (jumpStrength >= (minJumpStrength / maxJumpStrength) * 100 && jumpStrength <= 100)) {
+			return true;
+		}
+		else if (jumpStrength >= minJumpStrength && jumpStrength <= maxJumpStrength) {
 			return true;
 		}
 		else if (displayConsole) {
