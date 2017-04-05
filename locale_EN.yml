@@ -84,6 +84,7 @@ Messages:
   horseUnshared: "<gold><horse><yellow> is no longer shared with people."
   horseUntamed: "<yellow>Horse successfully untamed."
   horseWithdrawnFromSale: "<gold><horse><yellow> has been withdrawn from sale."
+  idsSwapped: "<yellow>The two horse IDs have been swapped."
   invalidHealthArgument: "<yellow>The health must be between <gold><amount><yellow> and <gold><max><yellow>."
   invalidJumpArgument: "<yellow>The jump strength must be between <gold><amount>%<yellow> and <gold><max>%<yellow>."
   invalidSpeedArgument: "<yellow>The speed must be between <gold><amount>%<yellow> and <gold><max>%<yellow>."
@@ -99,6 +100,7 @@ Messages:
   missingArguments: "<yellow>Incorrect number or type of arguments. Do as follows :"
   missingDatabase: "<yellow>You must provide a database. Please use one of the followings : <value><yellow>."
   missingHorseId: "<yellow>You must provide a horse ID, please type <gold>/zh list<yellow> and choose an ID."
+  missingHorseIds: "<yellow>You must provide two horse IDs, please type <gold>/zh list<yellow> and choose two IDs."
   missingLanguage: "<yellow>You must provide a language. Please use one the followings : <value><yellow>."
   missingPermission: "<yellow>You don't have the <gold><perm><yellow> permission."
   missingPermissionOther: "<gold><player><yellow> doesn't have the <gold><perm><yellow> permission."
@@ -196,6 +198,7 @@ Friend command descriptions:
 Settings command descriptions:
   favorite: "<gold>/zh settings favorite<gray>: <yellow>Define your favorite horse."
   language: "<gold>/zh settings language<gray>: <yellow>Set ZHorse's language."
+  swap: "<gold>/zh settings swap<gray>: <yellow>Swap two horse IDs."
 
 Command usages:
   admin: "<gold>/zh admin<yellow> option value1 (value2)"
@@ -227,9 +230,10 @@ Admin command usages:
 
 Friend command usages:
   add: "<gold>/zh friend add<yellow> (-p) playerName"
-  list: "<gold>/zh friend add<yellow>"
+  list: "<gold>/zh friend list<yellow>"
   remove: "<gold>/zh friend remove<yellow> (-p) playerName"
 
 Settings command usages:
   favorite: "<gold>/zh settings favorite<yellow> (-i) horseID"
   language: "<gold>/zh settings language<yellow> value"
+  swap: "<gold>/zh settings swap<yellow> horseID1 horseID2"

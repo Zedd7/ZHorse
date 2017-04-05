@@ -66,6 +66,7 @@
             zh.settings: true
             zh.settings.favorite: true
             zh.settings.language: true
+            zh.settings.swap: true
         
     zh.*.admin:
         description: Grants admin access to all commands

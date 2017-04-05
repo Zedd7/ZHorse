@@ -86,6 +86,7 @@ Messages:
   horseUnshared: "<gold><horse><yellow> is niet langer gedeeld met andere mensen."
   horseUntamed: "<yellow>Het paard is succesvol verwijderd."
   horseWithdrawnFromSale: "<gold><horse><yellow> has been withdrawn from sale."
+  idsSwapped: "<yellow>The two horse IDs have been swapped."
   invalidHealthArgument: "<yellow>Het aantal levens moet tussen <gold><amount><yellow> en <gold><max><yellow> zijn."
   invalidJumpArgument: "<yellow>De spring kracht moet tussen <gold><amount>%<yellow> en <gold><max>%<yellow> zijn."
   invalidSpeedArgument: "<yellow>De snelheid moet tussen <gold><amount>%<yellow> en <gold><max>%<yellow> zijn."
@@ -101,6 +102,7 @@ Messages:
   missingArguments: "<yellow>Ongeldig aantal argumenten. Doe als volgt:"
   missingDatabase: "<yellow>Je moet een database opgeven. Gebruik één van de volgende : <value>"
   missingHorseId: "<yellow>Je moet een paard ID opgeven, typ <gold>/zh list<yellow> en kies een ID."
+  missingHorseIds: "<yellow>Je moet twee paard ID opgeven, typ <gold>/zh list<yellow> en kies twee ID."
   missingLanguage: "<yellow>Je moet een taal meegeven. Kies één van de volgende : <value>"
   missingPermission: "<yellow>Je hebt de <gold><perm><yellow> toestemming niet."
   missingPermissionOther: "<gold><player><yellow> heeft de <gold><perm><yellow> toestemming niet."
@@ -198,6 +200,7 @@ Friend command descriptions:
 Settings command descriptions:
   favorite: "<gold>/zh settings favorite<gray>: <yellow>Bepaal je favoriete paard."
   language: "<gold>/zh settings language<gray>: <yellow>ZHorses taal instellen."
+  swap: "<gold>/zh settings swap<gray>: <yellow>Swap two horse IDs."
 
 Command usages:
   admin: "<gold>/zh admin<yellow> option value1 (value2)"
@@ -224,14 +227,15 @@ Command usages:
   tp: "<gold>/zh tp<yellow> (-i paardID) (-p spelerNaam) (-a)"
   
 Admin command usages:
-  clear: "<gold>/zh admin clear<yellow> (-p) spelerNaam (-i horseID)"
+  clear: "<gold>/zh admin clear<yellow> (-p) spelerNaam (-i paardID)"
   import: "<gold>/zh admin import<yellow> database"
 
 Friend command usages:
   add: "<gold>/zh friend add<yellow> (-p) playerName"
-  list: "<gold>/zh friend add<yellow>"
+  list: "<gold>/zh friend list<yellow>"
   remove: "<gold>/zh friend remove<yellow> (-p) playerName"
 
 Settings command usages:
-  favorite: "<gold>/zh settings favorite<yellow> (-i) horseID"
+  favorite: "<gold>/zh settings favorite<yellow> (-i) paardID"
   language: "<gold>/zh settings language<yellow> value"
+  swap: "<gold>/zh settings swap<yellow> paardID1 paardID2"

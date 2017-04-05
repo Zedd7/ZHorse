@@ -445,6 +445,11 @@ public class DataManager {
 		return db.executeUpdate(update);
 	}
 	
+	public boolean updateHorseID(UUID horseUUID, int horseID) {
+		String update = String.format("UPDATE prefix_horse SET ID = %d WHERE uuid = \"%s\"", horseID, horseUUID);
+		return db.executeUpdate(update);
+	}
+	
 	public boolean updateHorseLocation(UUID horseUUID, Location location, boolean checkForChanges) {
 		if (checkForChanges && !hasLocationChanged(horseUUID, location)) {
 			return true;
@@ -454,8 +459,8 @@ public class DataManager {
 		return db.executeUpdate(update);
 	}
 	
-	public boolean updateHorseLocked(UUID horseUUID, boolean modeLocked) {
-		int lockedFlag = modeLocked ? 1 : 0;
+	public boolean updateHorseLocked(UUID horseUUID, boolean locked) {
+		int lockedFlag = locked ? 1 : 0;
 		String update = String.format("UPDATE prefix_horse SET locked = %d WHERE uuid = \"%s\"", lockedFlag, horseUUID);
 		return db.executeUpdate(update);
 	}
@@ -465,14 +470,14 @@ public class DataManager {
 		return db.executeUpdate(update);
 	}
 	
-	public boolean updateHorseProtected(UUID horseUUID, boolean modeProtected) {
-		int protectedFlag = modeProtected ? 1 : 0;
+	public boolean updateHorseProtected(UUID horseUUID, boolean protected_) {
+		int protectedFlag = protected_ ? 1 : 0;
 		String update = String.format("UPDATE prefix_horse SET protected = %d WHERE uuid = \"%s\"", protectedFlag, horseUUID);
 		return db.executeUpdate(update);
 	}
 	
-	public boolean updateHorseShared(UUID horseUUID, boolean modeShared) {
-		int sharedFlag = modeShared ? 1 : 0;
+	public boolean updateHorseShared(UUID horseUUID, boolean shared) {
+		int sharedFlag = shared ? 1 : 0;
 		String update = String.format("UPDATE prefix_horse SET shared = %d WHERE uuid = \"%s\"", sharedFlag, horseUUID);
 		return db.executeUpdate(update);
 	}

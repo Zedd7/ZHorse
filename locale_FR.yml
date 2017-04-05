@@ -84,6 +84,7 @@ Messages:
   horseUnshared: "<gold><horse><yellow> n'est plus libre d'utilisation pour les autres joueurs."
   horseUntamed: "<yellow>Ce cheval est revenu à la vie sauvage."
   horseWithdrawnFromSale: "<gold><horse><yellow> a été retiré de la vente."
+  idsSwapped: "<yellow>Les deux IDs de cheval ont été échangés."
   invalidHealthArgument: "<yellow>La vie doit être comprise entre <gold><amount><yellow> et <gold><max><yellow>."
   invalidJumpArgument: "<yellow>La force de saut doit être comprise entre <gold><amount>%<yellow> et <gold><max>%<yellow>."
   invalidSpeedArgument: "<yellow>La vitesse doit être comprise entre <gold><amount>%<yellow> et <gold><max>%<yellow>."
@@ -99,6 +100,7 @@ Messages:
   missingArguments: "<yellow>Nombre d'arguments incorrect. Faites comme suit :"
   missingDatabase: "<yellow>Vous devez fournir une base de données. Veuillez utiliser l'une des suivantes : <value>"
   missingHorseId: "<yellow>Vous devez fournir un ID, veuillez taper /zh list et choisissez un ID."
+  missingHorseIds: "<yellow>Vous devez fournir deux IDs, veuillez taper /zh list et choisissez deux IDs."
   missingLanguage: "<yellow>Vous devez fournir une langue. Veuillez utiliser l'une des suivantes : <value>"
   missingPermission: "<yellow>Vous n'avez pas la permission <gold><perm><yellow>."
   missingPermissionOther: "<gold><player><yellow> n'a pas la permission <gold><perm><yellow>."
@@ -196,6 +198,7 @@ Friend command descriptions:
 Settings command descriptions:
   favorite: "<gold>/zh settings favorite<gray>: <yellow>Défini votre cheval favori."
   language: "<gold>/zh settings language<gray>: <yellow>Défini la langue de ZHorse."
+  swap: "<gold>/zh settings swap<gray>: <yellow>Echange deux IDs de chevaux."
 
 Command usages:
   admin: "<gold>/zh admin<yellow> option valeur1 (valeur2)"
@@ -227,9 +230,10 @@ Admin command usages:
 
 Friend command usages:
   add: "<gold>/zh friend add<yellow> (-p) nomJoueur"
-  list: "<gold>/zh friend add<yellow>"
+  list: "<gold>/zh friend list<yellow>"
   remove: "<gold>/zh friend remove<yellow> (-p) nomJoueur"
 
 Settings command usages:
   favorite: "<gold>/zh settings favorite<yellow> (-i) chevalID"
   language: "<gold>/zh settings language<yellow> valeur"
+  swap: "<gold>/zh settings swap<yellow> chevalID1 chevalID2"

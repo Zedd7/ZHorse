@@ -81,6 +81,7 @@ public enum LocaleEnum {
 	HORSE_UNSHARED("Messages.horseUnshared"),
 	HORSE_UNTAMED("Messages.horseUntamed"),
 	HORSE_WITHDRAWN_FROM_SALE("Messages.horseWithdrawnFromSale"),
+	IDS_SWAPPED("Messages.idsSwapped"),
 	INVALID_HEALTH_ARGUMENT("Messages.invalidHealthArgument"),
 	INVALID_JUMP_ARGUMENT("Messages.invalidJumpArgument"),
 	INVALID_SPEED_ARGUMENT("Messages.invalidSpeedArgument"),
@@ -96,6 +97,7 @@ public enum LocaleEnum {
 	MISSING_ARGUMENTS("Messages.missingArguments"),
 	MISSING_DATABASE("Messages.missingDatabase"),
 	MISSING_HORSE_ID("Messages.missingHorseId"),
+	MISSING_HORSE_IDS("Messages.missingHorseIds"),
 	MISSING_LANGUAGE("Messages.missingLanguage"),
 	MISSING_PERMISSION("Messages.missingPermission"),
 	MISSING_PERMISSION_OTHER("Messages.missingPermissionOther"),
@@ -193,6 +195,7 @@ public enum LocaleEnum {
 	/* settings command descriptions */
 	SETTINGS_FAVORITE_DESCRIPTION("Settings command descriptions.favorite"),
 	SETTINGS_LANGUAGE_DESCRIPTION("Settings command descriptions.language"),
+	SETTINGS_SWAP_DESCRIPTION("Settings command descriptions.swap"),
 	
 	/* command usages */
 	ADMIN_USAGE("Command usages.admin"),
@@ -229,7 +232,8 @@ public enum LocaleEnum {
 	
 	/* settings command usages */
 	SETTINGS_FAVORITE_USAGE("Settings command usages.favorite"),
-	SETTINGS_LANGUAGE_USAGE("Settings command usages.language");
+	SETTINGS_LANGUAGE_USAGE("Settings command usages.language"),
+	SETTINGS_SWAP_USAGE("Settings command usages.swap");
 	
 	private String index;
 	

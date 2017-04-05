@@ -1,6 +1,7 @@
 package com.gmail.xibalbazedd.zhorse.commands;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AbstractHorse;
@@ -43,10 +44,16 @@ public class CommandSettings extends AbstractCommand {
 			if (!argument.isEmpty()) {
 				subCommand = argument.contains(" ") ? argument.substring(0, argument.indexOf(" ")) : argument;
 				if (subCommand.equalsIgnoreCase(CommandSettingsEnum.LANGUAGE.getName())) {
+					fullCommand = command + KeyWordEnum.DOT.getValue() + CommandSettingsEnum.FAVORITE.getName().toLowerCase();
 					setLanguage();
 				}
 				else if (subCommand.equalsIgnoreCase((CommandSettingsEnum.FAVORITE.getName()))) {
+					fullCommand = command + KeyWordEnum.DOT.getValue() + CommandSettingsEnum.LANGUAGE.getName();
 					setFavorite();
+				}
+				else if (subCommand.equalsIgnoreCase((CommandSettingsEnum.SWAP.getName()))) {
+					fullCommand = command + KeyWordEnum.DOT.getValue() + CommandSettingsEnum.SWAP.getName();
+					swapIDs();
 				}
 				else {
 					if (displayConsole) {
@@ -62,7 +69,6 @@ public class CommandSettings extends AbstractCommand {
 	}
 	
 	private void setFavorite() {
-		fullCommand = command + KeyWordEnum.DOT.getValue() + CommandSettingsEnum.FAVORITE.getName().toLowerCase();
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (argument.split(" ").length >= 2) {
 				idMode = true;
@@ -102,10 +108,9 @@ public class CommandSettings extends AbstractCommand {
 	}
 
 	private void setLanguage() {
-		fullCommand = command + KeyWordEnum.DOT.getValue() + CommandSettingsEnum.LANGUAGE.getName();
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (argument.split(" ").length >= 2) {
-				String language = argument.substring(argument.indexOf(" ")+1).toUpperCase();
+				String language = argument.substring(argument.indexOf(" ") + 1).toUpperCase();
 				if (zh.getCM().isLanguageAvailable(language)) {
 					if (!zh.getDM().getPlayerLanguage(targetUUID).equals(language)) {
 						zh.getDM().updatePlayerLanguage(targetUUID, language);
@@ -136,6 +141,34 @@ public class CommandSettings extends AbstractCommand {
 			}
 			else if (displayConsole) {
 				displayAvailableLanguages(LocaleEnum.MISSING_LANGUAGE);
+				sendCommandUsage(subCommand, true, true);
+			}
+		}
+	}
+	
+	private void swapIDs() {
+		if (hasPermission(s, fullCommand , true, false)) {
+			if (argument.split(" ").length == 3) {
+				String horseID1 = argument.split(" ")[1];
+				String horseID2 = argument.split(" ")[2];
+				if (isRegistered(targetUUID, horseID1) && isRegistered(targetUUID, horseID2)) {
+					int favoriteHorseID = zh.getDM().getPlayerFavoriteHorseID(targetUUID);
+					if (favoriteHorseID == Integer.parseInt(horseID1)) {
+						zh.getDM().updatePlayerFavorite(targetUUID, Integer.parseInt(horseID2));
+					}
+					else if (favoriteHorseID == Integer.parseInt(horseID2)) {
+						zh.getDM().updatePlayerFavorite(targetUUID, Integer.parseInt(horseID1));
+					}
+					UUID horseUUID1 = zh.getDM().getHorseUUID(targetUUID, Integer.parseInt(horseID1));
+					UUID horseUUID2 = zh.getDM().getHorseUUID(targetUUID, Integer.parseInt(horseID2));
+					zh.getDM().updateHorseID(horseUUID1, Integer.parseInt(horseID2));
+					zh.getDM().updateHorseID(horseUUID2, Integer.parseInt(horseID1));
+					zh.getMM().sendMessage(s, LocaleEnum.IDS_SWAPPED);
+					zh.getEM().payCommand(p, command);
+				}
+			}
+			else if (displayConsole) {
+				zh.getMM().sendMessage(s, LocaleEnum.MISSING_HORSE_IDS);
 				sendCommandUsage(subCommand, true, true);
 			}
 		}

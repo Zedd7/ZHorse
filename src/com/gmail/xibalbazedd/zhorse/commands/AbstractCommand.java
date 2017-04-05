@@ -574,11 +574,15 @@ public abstract class AbstractCommand {
 	}
 	
 	protected boolean isRegistered(UUID targetUUID, String horseID, boolean isOwner) {
-		if (horseID != null && zh.getDM().isHorseRegistered(targetUUID, Integer.parseInt(horseID))) {
-			horseName = zh.getDM().getHorseName(targetUUID, Integer.parseInt(horseID));
-			return true;
+		if (horseID != null) {
+			try {
+				if (zh.getDM().isHorseRegistered(targetUUID, Integer.parseInt(horseID))) {
+					horseName = zh.getDM().getHorseName(targetUUID, Integer.parseInt(horseID));
+					return true;
+				}
+			} catch (NumberFormatException e) {}
 		}
-		else if (displayConsole) {
+		if (displayConsole) {
 			if (targetUUID == null) {
 				zh.getMM().sendMessagePlayer(s, LocaleEnum.UNKNOWN_PLAYER, targetName);
 			}
