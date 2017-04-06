@@ -55,13 +55,13 @@ public enum KeyWordEnum {
 	
 	/* locale.yml keywords */
 	AMOUNT_FLAG("<amount>"),
-	CURRENCY_FLAG("<currency>"),
-	HORSE_FLAG("<horse>"),
+	CURRENCY_SYMBOL_FLAG("<currency>"),
+	HORSE_NAME_FLAG("<horse>"),
 	HORSE_ID_FLAG("<id>"),
-	LANG_FLAG("<lang>"),
+	LANGUAGE_FLAG("<lang>"),
 	MAX_FLAG("<max>"),
-	PERM_FLAG("<perm>"),
-	PLAYER_FLAG("<player>"),
+	PERMISSION_FLAG("<perm>"),
+	PLAYER_NAME_FLAG("<player>"),
 	VALUE_FLAG("<value>"),
 	
 	/* LocaleEnum keywords */

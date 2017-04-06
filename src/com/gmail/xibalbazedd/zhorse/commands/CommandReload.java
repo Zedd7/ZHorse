@@ -4,6 +4,7 @@ import org.bukkit.command.CommandSender;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
+import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
 
 public class CommandReload extends AbstractCommand {
 
@@ -34,12 +35,10 @@ public class CommandReload extends AbstractCommand {
 	private void execute() {
 		if (!playerCommand || (playerCommand && zh.getEM().canAffordCommand(p, command))) {
 			if (zh.reload()) {
-				if (displayConsole) {
-					zh.getMM().sendMessageValue(s, LocaleEnum.PLUGIN_RELOADED, zh.getDescription().getFullName());
-				}
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.PLUGIN_RELOADED) {{ setValue(zh.getDescription().getFullName()); }});
 			}
-			else if (displayConsole) {
-				zh.getMM().sendMessageValue(s, LocaleEnum.PLUGIN_RELOADED_WITH_ERRORS, zh.getDescription().getFullName());
+			else {
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.PLUGIN_RELOADED_WITH_ERRORS) {{ setValue(zh.getDescription().getFullName()); }});
 			}
 			if (playerCommand) {
 				zh.getEM().payCommand(p, command);

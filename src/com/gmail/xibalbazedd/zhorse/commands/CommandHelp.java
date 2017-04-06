@@ -5,6 +5,7 @@ import org.bukkit.command.CommandSender;
 import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.enums.CommandEnum;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
+import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
 
 public class CommandHelp extends AbstractCommand {
 
@@ -40,8 +41,8 @@ public class CommandHelp extends AbstractCommand {
 					}
 					zh.getEM().payCommand(p, command);
 				}
-				else if (displayConsole) {
-					zh.getMM().sendMessageValue(s, LocaleEnum.UNKNOWN_COMMAND, command);
+				else {
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_COMMAND) {{ setValue(command); }});
 				}
 			}
 		}

@@ -5,6 +5,7 @@ import org.bukkit.entity.AbstractHorse;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
+import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
 
 public class CommandTame extends AbstractCommand {
 
@@ -50,15 +51,11 @@ public class CommandTame extends AbstractCommand {
 			boolean tamed = horse.isTamed();
 			if (!tamed) {
 				horse.setTamed(true);
-				if (displayConsole) {
-					zh.getMM().sendMessage(s, LocaleEnum.HORSE_TAMED);
-				}
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_TAMED));
 			}
 			else {
 				horse.setTamed(false);
-				if (displayConsole) {
-					zh.getMM().sendMessage(s, LocaleEnum.HORSE_UNTAMED);
-				}
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_UNTAMED));
 			}
 			zh.getEM().payCommand(p, command);
 		}

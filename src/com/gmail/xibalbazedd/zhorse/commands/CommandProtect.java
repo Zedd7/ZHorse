@@ -5,6 +5,7 @@ import org.bukkit.entity.AbstractHorse;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
+import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
 
 public class CommandProtect extends AbstractCommand {
 
@@ -49,15 +50,11 @@ public class CommandProtect extends AbstractCommand {
 		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
 			if (!zh.getDM().isHorseProtected(horse.getUniqueId())) {
 				zh.getDM().updateHorseProtected(horse.getUniqueId(), true);
-				if (displayConsole) {
-					zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_PROTECTED, horseName);
-				}
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_PROTECTED) {{ setHorseName(horseName); }});
 			}
 			else {
 				zh.getDM().updateHorseProtected(horse.getUniqueId(), false);
-				if (displayConsole) {
-					zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_UNPROTECTED, horseName);
-				}
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_UNPROTECTED) {{ setHorseName(horseName); }});
 			}
 			zh.getEM().payCommand(p, command);
 		}

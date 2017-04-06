@@ -13,6 +13,7 @@ import com.gmail.xibalbazedd.zhorse.enums.CommandAdminEnum;
 import com.gmail.xibalbazedd.zhorse.enums.DatabaseEnum;
 import com.gmail.xibalbazedd.zhorse.enums.KeyWordEnum;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
+import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -52,9 +53,7 @@ public class CommandAdmin extends AbstractCommand {
 					importDB();
 				}
 				else {
-					if (displayConsole) {
-						zh.getMM().sendMessageValue(s, LocaleEnum.UNKNOWN_ADMIN_COMMAND, subCommand);
-					}
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_ADMIN_COMMAND) {{ setValue(subCommand); }});
 					sendCommandAdminDescriptionList();
 				}
 			}
@@ -100,10 +99,10 @@ public class CommandAdmin extends AbstractCommand {
 						}
 						if (success) {
 							if (samePlayer) {
-								zh.getMM().sendMessage(s, LocaleEnum.PLAYED_CLEARED);
+								zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.PLAYED_CLEARED));
 							}
 							else {
-								zh.getMM().sendMessagePlayer(s, LocaleEnum.PLAYER_CLEARED_OTHER, targetName);
+								zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.PLAYER_CLEARED_OTHER) {{ setPlayerName(targetName); }});
 							}
 							zh.getEM().payCommand(p, command);
 						}
@@ -123,17 +122,17 @@ public class CommandAdmin extends AbstractCommand {
 					success &= zh.getDM().removeSale(horseUUID);
 					if (success) {
 						if (samePlayer) {
-							zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_CLEARED, horseName);
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_CLEARED) {{ setHorseName(horseName); }});
 						}
 						else {
-							zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.HORSE_CLEARED_OTHER, horseName, targetName);
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_CLEARED_OTHER) {{ setHorseName(horseName); setPlayerName(targetName); }});
 						}
 						zh.getEM().payCommand(p, command);
 					}
 				}
 			}
-			else if (displayConsole) {
-				zh.getMM().sendMessage(s, LocaleEnum.MISSING_TARGET);
+			else {
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.MISSING_TARGET));
 				sendCommandUsage(subCommand, true, true);
 			}
 		}
@@ -146,30 +145,28 @@ public class CommandAdmin extends AbstractCommand {
 				String databaseName = argument.substring(argument.indexOf(" ") + 1);
 				boolean success = false;
 				if (databaseName.equalsIgnoreCase(DatabaseEnum.MYSQL.getName())) {
-					zh.getMM().sendMessageValue(s, LocaleEnum.DATABASE_IMPORT_STARTED, databaseName);
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.DATABASE_IMPORT_STARTED) {{ setValue(databaseName); }});
 					success = MySQLImporter.importData(zh);
 				}
 				else if (databaseName.equalsIgnoreCase(DatabaseEnum.SQLITE.getName())) {
-					zh.getMM().sendMessageValue(s, LocaleEnum.DATABASE_IMPORT_STARTED, databaseName);
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.DATABASE_IMPORT_STARTED) {{ setValue(databaseName); }});
 					success = SQLiteImporter.importData(zh);
 				}
 				else if (databaseName.equalsIgnoreCase(DatabaseEnum.YAML.getName())) {
-					zh.getMM().sendMessageValue(s, LocaleEnum.DATABASE_IMPORT_STARTED, databaseName);
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.DATABASE_IMPORT_STARTED) {{ setValue(databaseName); }});
 					success = YAMLImporter.importData(zh);
 				}
-				else if (displayConsole) {
+				else {
 					displayAvailableDatabases(LocaleEnum.UNKNOWN_DATABASE);
 				}
-				if (displayConsole) {
-					if (success) {
-						zh.getMM().sendMessageValue(s, LocaleEnum.DATABASE_IMPORT_SUCCESS, databaseName);
-					}
-					else {
-						zh.getMM().sendMessageValue(s, LocaleEnum.DATABASE_IMPORT_FAILURE, databaseName);
-					}
+				if (success) {
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.DATABASE_IMPORT_SUCCESS) {{ setValue(databaseName); }});
+				}
+				else {
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.DATABASE_IMPORT_FAILURE) {{ setValue(databaseName); }});
 				}
 			}
-			else if (displayConsole) {
+			else {
 				displayAvailableDatabases(LocaleEnum.MISSING_DATABASE);
 				sendCommandUsage(subCommand, true, true);
 			}
@@ -180,13 +177,15 @@ public class CommandAdmin extends AbstractCommand {
 		DatabaseEnum[] availableDatabaseArray = DatabaseEnum.values();
 		String availableDatabasesMessage = "";
 		for (int i = 0; i < availableDatabaseArray.length; ++i) {
-			availableDatabasesMessage += zh.getMM().getMessageValue(s, LocaleEnum.AVAILABLE_OPTION_FORMAT, availableDatabaseArray[i].getName(), true);
+			final String availableDatabase = availableDatabaseArray[i].getName();
+			availableDatabasesMessage += zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.AVAILABLE_OPTION_FORMAT) {{ setValue(availableDatabase); }}, true);
 			if (i < availableDatabaseArray.length - 1) {
 				availableDatabasesMessage += ", ";
 			}
 		}
 		availableDatabasesMessage += ChatColor.RESET;
-		zh.getMM().sendMessageValue(s, index, availableDatabasesMessage);
+		final String message = availableDatabasesMessage;
+		zh.getMM().sendMessage(s, new MessageConfig(index) {{ setValue(message); }});
 	}
 
 }

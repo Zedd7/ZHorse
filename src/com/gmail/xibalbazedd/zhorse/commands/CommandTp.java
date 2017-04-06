@@ -4,6 +4,7 @@ import org.bukkit.command.CommandSender;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
+import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
 
 public class CommandTp extends AbstractCommand {
 
@@ -38,9 +39,7 @@ public class CommandTp extends AbstractCommand {
 	private void execute() {
 		if (isOwner() && isWorldCrossable(p.getWorld()) && isWorldCrossable(horse.getWorld()) && isNotOnHorse() && isHorseInRangeTp() && zh.getEM().canAffordCommand(p, command)) {
 			p.teleport(horse);
-			if (displayConsole) {
-				zh.getMM().sendMessageHorse(s, LocaleEnum.TELEPORTED_TO_HORSE, horseName);
-			}
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.TELEPORTED_TO_HORSE) {{ setHorseName(horseName); }});
 			zh.getEM().payCommand(p, command);
 		}
 	}

@@ -6,6 +6,7 @@ import org.bukkit.entity.AbstractHorse;
 import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.database.HorseRecord;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
+import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
 
 public class CommandGive extends AbstractCommand {
 
@@ -62,11 +63,9 @@ public class CommandGive extends AbstractCommand {
 			success &= zh.getDM().registerHorse(horseRecord);
 			if (success) {
 				applyHorseName(targetUUID);
-				if (displayConsole) {
-					zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.HORSE_GIVEN, horseName, targetName);
-					if (isPlayerOnline(targetUUID, true)) {
-						zh.getMM().sendMessageHorsePlayer(((CommandSender) zh.getServer().getPlayer(targetUUID)), LocaleEnum.HORSE_RECEIVED, horseName, p.getName());
-					}
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_GIVEN) {{ setHorseName(horseName); setPlayerName(targetName); }});
+				if (isPlayerOnline(targetUUID, true)) {
+					zh.getMM().sendMessage(zh.getServer().getPlayer(targetUUID), new MessageConfig(LocaleEnum.HORSE_RECEIVED) {{ setHorseName(horseName); setPlayerName(p.getName()); }});
 				}
 				zh.getEM().payCommand(p, command);
 			}

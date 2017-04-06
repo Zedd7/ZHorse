@@ -5,6 +5,7 @@ import org.bukkit.entity.AbstractHorse;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
+import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
 
 public class CommandRename extends AbstractCommand {
 
@@ -54,9 +55,7 @@ public class CommandRename extends AbstractCommand {
 			}
 			horse.setCustomNameVisible(true);
 			zh.getDM().updateHorseName(horse.getUniqueId(), horseName);
-			if (displayConsole) {
-				zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_RENAMED, horseName);
-			}
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_RENAMED) {{ setHorseName(horseName); }});
 			zh.getEM().payCommand(p, command);
 		}
 	}

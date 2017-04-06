@@ -9,6 +9,7 @@ import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.enums.CommandEnum;
 import com.gmail.xibalbazedd.zhorse.enums.KeyWordEnum;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
+import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
 
 public class CommandManager implements CommandExecutor {
 	private ZHorse zh;
@@ -24,10 +25,10 @@ public class CommandManager implements CommandExecutor {
 			PluginDescriptionFile pluginDescription = zh.getDescription();
 			String pluginNameAndVersion = String.format("%s %s", pluginDescription.getName(), pluginDescription.getVersion());
 			String author = pluginDescription.getAuthors().get(0);
-			String pluginHeader = zh.getMM().getMessagePlayerValue(s, LocaleEnum.PLUGIN_HEADER, author, pluginNameAndVersion, true);			
+			String pluginHeader = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.PLUGIN_HEADER) {{ setPlayerName(author); setValue(pluginNameAndVersion); }}, true);			
 			LocaleEnum helpDescription = LocaleEnum.valueOf(CommandEnum.HELP.getName().toUpperCase() + KeyWordEnum.SEPARATOR.getValue() + KeyWordEnum.DESCRIPTION.getValue());
-			zh.getMM().sendMessageValue(s, LocaleEnum.HEADER_FORMAT, pluginHeader, true);
-			zh.getMM().sendMessageSpacer(s, helpDescription, 1, true);
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HEADER_FORMAT) {{ setValue(pluginHeader); }}, true);
+			zh.getMM().sendMessage(s, new MessageConfig(helpDescription) {{ setSpaceCount(1); }}, true);
 		}
 		else {
 			String command = a[0].toLowerCase();
@@ -43,8 +44,8 @@ public class CommandManager implements CommandExecutor {
 					break;
 				}
 			}
-			if (!commandValid && !zh.getCM().isConsoleMuted()) {
-				zh.getMM().sendMessageValue(s, LocaleEnum.UNKNOWN_COMMAND, command);
+			if (!commandValid) {
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_COMMAND) {{ setValue(command); }});
 			}
 		}
 		return true;

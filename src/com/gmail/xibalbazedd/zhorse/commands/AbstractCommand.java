@@ -23,6 +23,7 @@ import com.gmail.xibalbazedd.zhorse.enums.HorseVariantEnum;
 import com.gmail.xibalbazedd.zhorse.enums.KeyWordEnum;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
 import com.gmail.xibalbazedd.zhorse.managers.MessageManager;
+import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -30,6 +31,7 @@ public abstract class AbstractCommand {
 	
 	protected ZHorse zh;
 	protected CommandSender s;
+	protected CommandSender console;
 	protected Player p;
 	protected AbstractHorse horse;
 	protected UUID targetUUID;
@@ -39,7 +41,6 @@ public abstract class AbstractCommand {
 	protected String horseID;
 	protected String horseName;
 	protected String targetName;
-	protected boolean displayConsole;
 	protected boolean useExactStats;
 	protected boolean useVanillaStats;
 	protected boolean playerCommand;
@@ -54,10 +55,10 @@ public abstract class AbstractCommand {
 		this.zh = zh;
 		this.a = a;
 		this.s = s;
-		this.command = a[0].toLowerCase();
-		this.displayConsole = !(zh.getCM().isConsoleMuted());
-		this.useExactStats = zh.getCM().shouldUseExactStats();
-		this.useVanillaStats = zh.getCM().shouldUseVanillaStats();
+		console = zh.getServer().getConsoleSender();
+		command = a[0].toLowerCase();
+		useExactStats = zh.getCM().shouldUseExactStats();
+		useVanillaStats = zh.getCM().shouldUseVanillaStats();
 	}
 	
 	protected boolean analyseArguments() {
@@ -94,9 +95,7 @@ public abstract class AbstractCommand {
 				argument += a[i];
 			}
 			if (!valid) {
-				if (displayConsole) {
-					sendCommandUsage();
-				}
+				sendCommandUsage();
 				return false;
 			}
 		}
@@ -117,9 +116,7 @@ public abstract class AbstractCommand {
 				targetUUID = getPlayerUUID(targetName);
 			}
 			if (targetName == null || targetUUID == null) {
-				if (displayConsole) {
-					zh.getMM().sendMessagePlayer(s, LocaleEnum.UNKNOWN_PLAYER, targetName);
-				}
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_PLAYER) {{ setPlayerName(targetName); }});
 				return false;
 			}
 		}
@@ -149,9 +146,8 @@ public abstract class AbstractCommand {
 	}
 	
 	protected boolean applyArgumentToHorseID() {
-		if (idMode || argument.isEmpty()) {
-			return true;
-		}
+		if (idMode || argument.isEmpty()) return true;
+		
 		idMode = true;
 		UUID ownerUUID = targetIsOwner ? targetUUID : p.getUniqueId();
 		horseName = zh.getDM().getHorseName(ownerUUID, argument); // fix potential case errors
@@ -160,22 +156,21 @@ public abstract class AbstractCommand {
 			horseID = horseIDInt.toString();
 			return true;
 		}
-		else if (displayConsole) {
+		else {
 			if (samePlayer || !targetIsOwner) {
-				zh.getMM().sendMessageHorse(s, LocaleEnum.UNKNOWN_HORSE_NAME, horseName);
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_HORSE_NAME) {{ setHorseName(horseName); }});
 			}
 			else {
-				zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.UNKNOWN_HORSE_NAME_OTHER, horseName, targetName);
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_HORSE_NAME_OTHER) {{ setHorseName(horseName); setPlayerName(targetName); }});
 			}
+			return false;
 		}
-		return false;
 		
 	}
 	
 	protected boolean applyArgumentToTarget() {
-		if (targetMode) {
-			return true;
-		}
+		if (targetMode) return true;
+		
 		targetMode = !argument.isEmpty();
 		targetName = argument;
 		targetUUID = null;
@@ -189,15 +184,15 @@ public abstract class AbstractCommand {
 		}
 		else {
 			String groupColorCode = zh.getCM().getGroupColorCode(ownerUUID);
-			customHorseName = zh.getMM().applyColors(horseName, groupColorCode);
+			zh.getMM();
+			customHorseName = MessageManager.applyColors(horseName, groupColorCode);
 		}
 		horse.setCustomName(customHorseName);
 	}
 	
 	protected void applyHorsePrice(int price) {
-		String defaultLanguage = zh.getCM().getDefaultLanguage();
-		String defaultCurrencySymbol = zh.getLM().getMessage(LocaleEnum.CURRENCY_SYMBOL.getIndex(), defaultLanguage, true);
-		String horsePrice = zh.getMM().getMessageAmountCurrency(s, LocaleEnum.HORSE_PRICE, price, defaultCurrencySymbol, true);
+		String currencySymbol = zh.getMM().getMessage(console, new MessageConfig(LocaleEnum.CURRENCY_SYMBOL), true);
+		String horsePrice = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.HORSE_PRICE) {{ setAmount(price); setCurrencySymbol(currencySymbol); }}, true);
 		horse.setCustomName(horse.getCustomName() + ChatColor.RESET + horsePrice);
 	}
 	
@@ -212,7 +207,8 @@ public abstract class AbstractCommand {
 
 	private boolean craftCustomHorseName() {
 		if (adminMode || zh.getCM().isHorseNameAllowed()) {
-			horseName = zh.getMM().removeColors(argument);
+			zh.getMM();
+			horseName = MessageManager.removeColors(argument);
 			int maximumLength = zh.getCM().getMaximumHorseNameLength();
 			int minimumLength = zh.getCM().getMinimumHorseNameLength();
 			int length = horseName.length();
@@ -220,21 +216,21 @@ public abstract class AbstractCommand {
 				if (adminMode || !zh.getCM().isHorseNameBanned(horseName)) {
 					return true;
 				}
-				else if (displayConsole) {
-					zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_NAME_BANNED, horseName);
+				else {
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_NAME_BANNED) {{ setHorseName(horseName); }});
 				}
 			}
-			else if (displayConsole) {
+			else {
 				if (length < minimumLength) {
-					zh.getMM().sendMessageAmount(s, LocaleEnum.HORSE_NAME_TOO_SHORT, minimumLength);
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_NAME_TOO_SHORT) {{ setAmount(minimumLength); }});
 				}
 				else if (length > maximumLength) {
-					zh.getMM().sendMessageAmount(s, LocaleEnum.HORSE_NAME_TOO_LONG, maximumLength);
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_NAME_TOO_LONG) {{ setAmount(maximumLength); }});
 				}
 			}
 		}
-		else if (displayConsole) {
-			zh.getMM().sendMessage(s, LocaleEnum.HORSE_NAME_FORBIDDEN);
+		else {
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_NAME_FORBIDDEN));
 		}
 		return false;
 	}
@@ -243,7 +239,6 @@ public abstract class AbstractCommand {
 		if (adminMode || !zh.getCM().isHorseNameRequired()) {
 			if (keepPreviousName && zh.getDM().isHorseRegistered(horse.getUniqueId())) {
 				horseName = zh.getDM().getHorseName(horse.getUniqueId());
-				return true;
 			}
 			else {
 				if (zh.getCM().isRandomHorseNameEnabled()) {
@@ -252,49 +247,48 @@ public abstract class AbstractCommand {
 				else {
 					horseName = zh.getCM().getDefaultHorseName();
 				}
-				return true;
 			}
+			return true;
 		}
-		else if (displayConsole) {
-			zh.getMM().sendMessage(s, LocaleEnum.HORSE_NAME_MANDATORY);
+		else {
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_NAME_MANDATORY));
+			return false;
 		}
-		return false;
 	}
 	
 	protected UUID getPlayerUUID(String playerName) {
 		if (zh.getDM().isPlayerRegistered(playerName)) {
 			return zh.getDM().getPlayerUUID(playerName);
 		}
-		return null;
+		else {
+			return null;
+		}
 	}
 	
 	protected String getRemainingClaimsMessage(UUID playerUUID) {
-		String message = "";
 		int horseCount = zh.getDM().getHorseCount(playerUUID);
 		int maxClaims = zh.getCM().getClaimsLimit(playerUUID);
-		message = zh.getMM().getMessageAmountMax(s, LocaleEnum.REMAINING_CLAIMS_FORMAT, horseCount, maxClaims, true);
-		return message;
+		return zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.REMAINING_CLAIMS_FORMAT) {{ setAmount(horseCount); setMax(maxClaims); }}, true);
 	}
 	
 	protected boolean hasReachedClaimsLimit(boolean useTargetList) {
-		if (adminMode) {
-			return false;
-		}
+		if (adminMode) return false;
+		
 		UUID playerUUID = useTargetList ? targetUUID : p.getUniqueId();
 		int horseCount = zh.getDM().getHorseCount(playerUUID);
 		int claimsLimit = zh.getCM().getClaimsLimit(playerUUID);
 		if (horseCount < claimsLimit || claimsLimit == -1) {
 			return false;
 		}
-		else if (displayConsole) {
+		else {
 			if (samePlayer || !useTargetList) {
-				zh.getMM().sendMessage(s, LocaleEnum.CLAIMS_LIMIT_REACHED);
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.CLAIMS_LIMIT_REACHED));
 			}
 			else {
-				zh.getMM().sendMessagePlayer(s, LocaleEnum.CLAIMS_LIMIT_REACHED_OTHER, targetName);
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.CLAIMS_LIMIT_REACHED_OTHER) {{ setPlayerName(targetName); }});
 			}
+			return true;
 		}
-		return true;
 	}
 	
 	protected boolean hasPermission() {
@@ -306,7 +300,9 @@ public abstract class AbstractCommand {
     		CommandSender target = zh.getServer().getPlayer(playerUUID);
     		return hasPermission(target, command, ignoreAdminMode, hideConsole);
     	}
-    	return false;
+		else {
+			return false;
+		}
 	}
 	
 	protected boolean hasPermission(CommandSender s, String command, boolean ignoreAdminMode, boolean hideConsole) {
@@ -317,10 +313,12 @@ public abstract class AbstractCommand {
     	if (zh.getPM().has(s, permission)) {
     		return true;
     	}
-    	else if (displayConsole && !hideConsole) {
-    		zh.getMM().sendMessagePerm(s, LocaleEnum.MISSING_PERMISSION, permission);
+    	else {
+    		if (!hideConsole) {
+    			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.MISSING_PERMISSION) {{ setPermission(permission); }});
+    		}
+    		return false;
     	}
-    	return false;
 	}
 	
 	protected boolean hasPermissionAdmin(boolean hideConsole) {
@@ -332,7 +330,9 @@ public abstract class AbstractCommand {
     		CommandSender target = zh.getServer().getPlayer(playerUUID);
     		return hasPermissionAdmin(target, command, hideConsole);
     	}
-    	return false;
+		else {
+			return false;
+		}
 	}
 	
 	protected boolean hasPermissionAdmin(CommandSender s, String command, boolean hideConsole) {
@@ -340,44 +340,44 @@ public abstract class AbstractCommand {
 		if (zh.getPM().has(s, permission)) {
         	return true;
 		}
-        else if (displayConsole && !hideConsole) {
-        	zh.getMM().sendMessagePerm(s, LocaleEnum.MISSING_PERMISSION, permission);
+        else {
+        	if (!hideConsole) {
+        		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.MISSING_PERMISSION) {{ setPermission(permission); }});
+        	}
+        	return false;
         }
-    	return false;
 	}
 	
 	protected boolean isClaimable() {
 		if (horse != null) {
-			if (adminMode) {
-				return true;
-			}
+			if (adminMode) return true;
 				
 			if (!zh.getDM().isHorseRegistered(horse.getUniqueId())) {
 				if (horse.isTamed()) {
 					return true;
 				}
-				else if (displayConsole) {
-					zh.getMM().sendMessage(s, LocaleEnum.HORSE_NOT_TAMED);
+				else {
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_NOT_TAMED));
 				}
 			}
-			else if (displayConsole) {
+			else {
 				if (zh.getDM().isHorseOwnedBy(p.getUniqueId(), horse.getUniqueId())) {
-					zh.getMM().sendMessage(s, LocaleEnum.HORSE_ALREADY_CLAIMED);
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_ALREADY_CLAIMED));
 				}
 				else {
 					if (!targetMode) {
 						targetName = zh.getDM().getOwnerName(horse.getUniqueId());
 					}
-					zh.getMM().sendMessagePlayer(s, LocaleEnum.HORSE_BELONGS_TO, targetName);
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_BELONGS_TO) {{ setPlayerName(targetName); }});
 				}
 			}
 		}
-		else if (displayConsole) {
+		else {
 			if (idMode && !targetMode) {
-				zh.getMM().sendMessageHorseID(s, LocaleEnum.UNKNOWN_HORSE_ID, horseID);
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_HORSE_ID) {{ setHorseID(horseID); }});
 			}
 			else if (idMode && targetMode) {
-				zh.getMM().sendMessageHorseIDPlayer(s, LocaleEnum.UNKNOWN_HORSE_ID_OTHER, horseID, targetName);
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_HORSE_ID_OTHER) {{ setHorseID(horseID); setPlayerName(targetName); }});
 			}
 		}
 		return false;
@@ -394,9 +394,8 @@ public abstract class AbstractCommand {
 	}
 	
 	protected boolean isHorseInRange(int maxRadius) {
-		if (adminMode) {
-			return true;
-		}
+		if (adminMode) return true;
+		
 		Location playerLocation = p.getLocation();
 		Location horseLocation = horse.getLocation();
 		int xDistance = Math.abs(Math.abs(playerLocation.getBlockX()) - Math.abs(horseLocation.getBlockX()));
@@ -405,10 +404,10 @@ public abstract class AbstractCommand {
 		if (distance <= maxRadius || maxRadius == -1 || !playerLocation.getWorld().equals(horseLocation.getWorld())) {
 			return true;
 		}
-		else if (displayConsole) {
-			zh.getMM().sendMessageHorseMax(s, LocaleEnum.HORSE_OUT_OF_RANGE, horseName, maxRadius);
+		else {
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_OUT_OF_RANGE) {{ setHorseName(horseName); setMax(maxRadius); }});
+			return false;
 		}
-		return false;
 	}
 	
 	protected boolean isHorseLeashed() {
@@ -419,28 +418,29 @@ public abstract class AbstractCommand {
 		else if (adminMode || !blockLeashedTeleport) {
 			return false;
 		}
-		else if (displayConsole) {
+		else {
 			Entity leashHolder = horse.getLeashHolder();
 			if (leashHolder instanceof Player) {
 				String leashHolderName = ((Player) leashHolder).getName();
-				zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.HORSE_LEASHED_BY, horseName, leashHolderName);
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_LEASHED_BY) {{ setHorseName(horseName); setPlayerName(leashHolderName); }});
 			}
 			else {
-				zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_LEASHED, horseName);
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_LEASHED) {{ setHorseName(horseName); }});
 			}
-		}
-		return true;
+			return true;
+		}		
 	}
 	
 	protected boolean isHorseLoaded(boolean useTargetUUID) {
 		if (horse != null) {
 			return true;
 		}
-		else if (displayConsole) {
+		else {
 			UUID ownerUUID = useTargetUUID ? targetUUID : p.getUniqueId();
-			zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_NOT_FOUND, zh.getDM().getHorseName(ownerUUID, Integer.parseInt(horseID)));
+			String horseName = zh.getDM().getHorseName(ownerUUID, Integer.parseInt(horseID));
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_NOT_FOUND) {{ setHorseName(horseName); }});
+			return false;
 		}
-		return false;
 	}
 	
 	protected boolean isHorseMounted() {
@@ -453,12 +453,12 @@ public abstract class AbstractCommand {
 			horse.eject();
 			return false;
 		}		
-		else if (displayConsole) {
+		else {
 			Entity mainPassenger = passengerList.get(0);
 			String passengerName = mainPassenger instanceof Player ? ((Player) mainPassenger).getName() : "creature";
-			zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.HORSE_MOUNTED_BY, horseName, passengerName);
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_MOUNTED_BY) {{ setHorseName(horseName); setPlayerName(passengerName); }});
+			return true;
 		}
-		return true;
 	}
 	
 	protected boolean isNotOnHorse() {
@@ -469,20 +469,24 @@ public abstract class AbstractCommand {
 		if (adminMode || p.getVehicle() != horse) {
 			return true;
 		}
-		else if (displayConsole && !hideConsole) {
-			zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_MOUNTED, horseName);
+		else {
+			if (!hideConsole) {
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_MOUNTED) {{ setHorseName(horseName); }});
+			}
+			return false;
 		}
-		return false;
 	}
 	
 	protected boolean isOnHorse(boolean hideConsole) {
 		if (p.isInsideVehicle() && p.getVehicle() instanceof AbstractHorse) {
 			return true;
 		}
-		else if (displayConsole && !hideConsole) {
-			zh.getMM().sendMessage(s, LocaleEnum.NOT_ON_HORSE);
+		else {
+			if (!hideConsole) {
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.NOT_ON_HORSE));
+			}
+			return false;
 		}
-		return false;
 	}
 	
 	protected boolean isOwner() {
@@ -501,11 +505,13 @@ public abstract class AbstractCommand {
 		if ((adminMode && !ignoreModes) || zh.getDM().isHorseOwnedBy(playerUUID, horse.getUniqueId())) {
 			return true;
 		}
-		else if (displayConsole && !hideConsole) {
-			String ownerName = zh.getDM().getOwnerName(horse.getUniqueId());
-			zh.getMM().sendMessagePlayer(s, LocaleEnum.HORSE_BELONGS_TO, ownerName);
+		else {
+			if (!hideConsole) {
+				String ownerName = zh.getDM().getOwnerName(horse.getUniqueId());
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_BELONGS_TO) {{ setPlayerName(ownerName); }});
+			}
+			return false;
 		}
-		return false;
 	}
 	
 	protected boolean isPlayer() {
@@ -521,9 +527,9 @@ public abstract class AbstractCommand {
 				zh.getDM().registerPlayer(playerRecord);
 			}
 		}
-		else if (displayConsole && !hideConsole) {
+		else if (!hideConsole) {
 			playerCommand = false;
-			zh.getMM().sendMessage(s, LocaleEnum.PLAYER_COMMAND);
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.PLAYER_COMMAND));
 		}
 		return playerCommand;
 	}
@@ -532,20 +538,22 @@ public abstract class AbstractCommand {
 		if (adminMode || !samePlayer) {
 			return true;
 		}
-		else if (displayConsole) {
-			zh.getMM().sendMessage(s, LocaleEnum.SAME_PLAYER);
+		else {
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.SAME_PLAYER));
+			return false;
 		}
-		return false;
 	}
 	
 	protected boolean isPlayerOnline(UUID playerUUID, boolean hideConsole) {
 		if (playerUUID != null && zh.getServer().getOfflinePlayer(playerUUID).isOnline()) {
 			return true;
 		}
-    	if (displayConsole && !hideConsole) {
-    		zh.getMM().sendMessagePlayer(s, LocaleEnum.PLAYER_OFFLINE, targetName);
-    	}
-		return false;
+		else {
+			if (!hideConsole) {
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.PLAYER_OFFLINE) {{ setPlayerName(targetName); }});
+			}
+			return false;
+		}
 	}
 	
 	protected boolean isRegistered(AbstractHorse horse) {
@@ -553,20 +561,20 @@ public abstract class AbstractCommand {
 			horseName = zh.getDM().getHorseName(horse.getUniqueId());
 			return true;
 		}
-		else if (displayConsole) {
-			zh.getMM().sendMessage(s, LocaleEnum.HORSE_NOT_CLAIMED);
+		else {
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_NOT_CLAIMED));
+			return false;
 		}
-		return false;
 	}
 	
 	protected boolean isRegistered(UUID targetUUID) {
 		if (targetUUID != null && zh.getDM().isPlayerRegistered(targetUUID)) {
 			return true;
 		}
-		else if (displayConsole) {
-			zh.getMM().sendMessagePlayer(s, LocaleEnum.UNKNOWN_PLAYER, targetName);
+		else {
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_PLAYER) {{ setPlayerName(targetName); }});
+			return false;
 		}
-		return false;
 	}
 	
 	protected boolean isRegistered(UUID targetUUID, String horseID) {
@@ -582,26 +590,25 @@ public abstract class AbstractCommand {
 				}
 			} catch (NumberFormatException e) {}
 		}
-		if (displayConsole) {
-			if (targetUUID == null) {
-				zh.getMM().sendMessagePlayer(s, LocaleEnum.UNKNOWN_PLAYER, targetName);
-			}
-			else {
-				if (horseID == null) {
-					if (samePlayer || isOwner) {
-						zh.getMM().sendMessageHorse(s, LocaleEnum.UNKNOWN_HORSE_NAME, horseName);
-					}
-					else {
-						zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.UNKNOWN_HORSE_NAME_OTHER, horseName, targetName);
-					}
+		
+		if (targetUUID == null) {
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_PLAYER) {{ setPlayerName(targetName); }});
+		}
+		else {
+			if (horseID == null) {
+				if (samePlayer || isOwner) {
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_HORSE_NAME) {{ setHorseName(horseName); }});
 				}
 				else {
-					if (samePlayer || isOwner) {
-						zh.getMM().sendMessageHorseID(s, LocaleEnum.UNKNOWN_HORSE_ID, horseID);
-					}
-					else {
-						zh.getMM().sendMessageHorseIDPlayer(s, LocaleEnum.UNKNOWN_HORSE_ID_OTHER, horseID, targetName);
-					}
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_HORSE_NAME_OTHER) {{ setHorseName(horseName); setPlayerName(targetName); }});
+				}
+			}
+			else {
+				if (samePlayer || isOwner) {
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_HORSE_ID) {{ setHorseID(horseID); }});
+				}
+				else {
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_HORSE_ID_OTHER) {{ setHorseID(horseID); setPlayerName(targetName); }});
 				}
 			}
 		}
@@ -614,16 +621,15 @@ public abstract class AbstractCommand {
 		if (adminMode || (health >= minHealth && health <= maxHealth)) {
 			return true;
 		}
-		else if (displayConsole) {
-			zh.getMM().sendMessageAmountMax(s, LocaleEnum.INVALID_HEALTH_ARGUMENT, (int) minHealth, (int) maxHealth);
+		else {
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.INVALID_HEALTH_ARGUMENT) {{ setAmount((int) minHealth); setMax((int) maxHealth); }});
+			return false;
 		}
-		return false;
 	}
 	
 	protected boolean isStatSpeedValid(double speed) {
-		if (adminMode) {
-			return true;
-		}
+		if (adminMode) return true;
+		
 		double minSpeed = HorseStatisticEnum.MIN_SPEED.getValue(useVanillaStats);
 		double maxSpeed = HorseStatisticEnum.MAX_SPEED.getValue(useVanillaStats);
 		if (!useExactStats && (speed >= (minSpeed / maxSpeed) * 100 && speed <= 100)) {
@@ -632,16 +638,15 @@ public abstract class AbstractCommand {
 		else if (speed >= minSpeed && speed <= maxSpeed) {
 			return true;
 		}
-		else if (displayConsole) {
-			zh.getMM().sendMessageAmountMax(s, LocaleEnum.INVALID_SPEED_ARGUMENT, (int) Math.ceil((minSpeed / maxSpeed) * 100), 100);
+		else {
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.INVALID_SPEED_ARGUMENT) {{ setAmount((int) Math.ceil((minSpeed / maxSpeed) * 100)); setMax(100); }});
+			return false;
 		}
-		return false;
 	}
 	
 	protected boolean isStatJumpStrengthValid(double jumpStrength) {
-		if (adminMode) {
-			return true;
-		}
+		if (adminMode) return true;
+		
 		double minJumpStrength = HorseStatisticEnum.MIN_JUMP_STRENGTH.getValue(useVanillaStats);
 		double maxJumpStrength = HorseStatisticEnum.MAX_JUMP_STRENGTH.getValue(useVanillaStats);
 		if (!useExactStats && (jumpStrength >= (minJumpStrength / maxJumpStrength) * 100 && jumpStrength <= 100)) {
@@ -650,10 +655,10 @@ public abstract class AbstractCommand {
 		else if (jumpStrength >= minJumpStrength && jumpStrength <= maxJumpStrength) {
 			return true;
 		}
-		else if (displayConsole) {
-			zh.getMM().sendMessageAmountMax(s, LocaleEnum.INVALID_JUMP_ARGUMENT, (int) Math.ceil((minJumpStrength / maxJumpStrength) * 100), 100);
+		else {
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.INVALID_JUMP_ARGUMENT) {{ setAmount((int) Math.ceil((minJumpStrength / maxJumpStrength) * 100)); setMax(100); }});
+			return false;
 		}
-		return false;
 	}
 	
 	protected boolean isStatLlamaStrengthValid(int llamaStrenth) {
@@ -662,45 +667,48 @@ public abstract class AbstractCommand {
 		if (adminMode || (llamaStrenth >= minLlamaStrength && llamaStrenth <= maxLlamaStrength)) {
 			return true;
 		}
-		else if (displayConsole) {
-			zh.getMM().sendMessageAmountMax(s, LocaleEnum.INVALID_STRENGTH_ARGUMENT, minLlamaStrength, maxLlamaStrength);
+		else {
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.INVALID_STRENGTH_ARGUMENT) {{ setAmount(minLlamaStrength); setMax(maxLlamaStrength); }});
+			return false;
 		}
-		return false;
 	}
 	
 	protected boolean isWorldCrossable(World world) {
 		if (adminMode || zh.getCM().isWorldCrossable(world)) {
 			return true;
 		}
-		else if (displayConsole) {
-			zh.getMM().sendMessageHorse(s, LocaleEnum.WORLD_UNCROSSABLE, horseName);
+		else {
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.WORLD_UNCROSSABLE) {{ setHorseName(horseName); }});
+			return false;
 		}
-		return false;
 	}
 
 	protected boolean isWorldEnabled() {
 		if (adminMode || zh.getCM().isWorldEnabled(p.getWorld())) {
 			return true;
 		}
-		else if (displayConsole) {
-			zh.getMM().sendMessage(s, LocaleEnum.WORLD_DISABLED);
+		else {
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.WORLD_DISABLED));
+			return false;
 		}
-		return false;
 	}
 	
 	protected boolean ownsHorse(UUID playerUUID, boolean hideConsole) {
 		if (zh.getDM().getHorseCount(playerUUID) > 0) {
 			return true;
 		}
-		else if (displayConsole && !hideConsole) {
-			if (samePlayer) {
-				zh.getMM().sendMessageValue(s, LocaleEnum.NO_HORSE_OWNED, getRemainingClaimsMessage(playerUUID));
+		else {
+			if (!hideConsole) {
+				String remainingClaimsMessage = getRemainingClaimsMessage(playerUUID);
+				if (samePlayer) {
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.NO_HORSE_OWNED) {{ setValue(remainingClaimsMessage); }});
+				}
+				else {
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.NO_HORSE_OWNED_OTHER) {{ setPlayerName(targetName); setValue(remainingClaimsMessage); }});
+				}
 			}
-			else {
-				zh.getMM().sendMessagePlayerValue(s, LocaleEnum.NO_HORSE_OWNED_OTHER, targetName, getRemainingClaimsMessage(playerUUID));
-			}
+			return false;
 		}
-		return false;
 	}
 	
 	protected void sendCommandDescription(String command, String permission, boolean subCommand) {
@@ -721,68 +729,60 @@ public abstract class AbstractCommand {
 				command = this.command;
 			}
 			if (zh.getEM().isCommandFree(p.getUniqueId(), command)) {
-				zh.getMM().sendMessageSpacer(s, commandDescription, 1, true);
+				zh.getMM().sendMessage(s, new MessageConfig(commandDescription) {{ setSpaceCount(1); }}, true);
 			}
 			else {
-				String message = zh.getMM().getMessageSpacer(s, commandDescription, 1, true);
+				String message = zh.getMM().getMessage(s, new MessageConfig(commandDescription) {{ setSpaceCount(1); }}, true);
 				
 				int cost = zh.getCM().getCommandCost(command);
 				LocaleEnum costColorCodeIndex = zh.getEM().canAffordCommand(p, command, true) ? LocaleEnum.AFFORDABLE_COLOR : LocaleEnum.UNAFFORDABLE_COLOR;
-				String costColorCode = zh.getMM().getMessage(s, costColorCodeIndex, true);
+				String costColorCode = zh.getMM().getMessage(s, new MessageConfig(costColorCodeIndex), true);
 				
-				String currencySymbol = zh.getMM().getMessage(s, LocaleEnum.CURRENCY_SYMBOL, true);
-				String costMessage = zh.getMM().getMessageAmountCurrency(s, LocaleEnum.COMMAND_COST, cost, currencySymbol, true);
+				String currencySymbol = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.CURRENCY_SYMBOL), true);
+				String costMessage = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.COMMAND_COST) {{ setAmount(cost); setCurrencySymbol(currencySymbol); }}, true);
 				
-				zh.getMM().sendRawMessage(s, message + costColorCode + costMessage);
+				zh.getMM().sendMessage(s, message + costColorCode + costMessage);
 			}
 		}
 	}
 
 	protected void sendCommandDescriptionList() {
-		if (displayConsole) {
-			String header = zh.getMM().getMessage(s, LocaleEnum.COMMAND_LIST_HEADER, true);
-			zh.getMM().sendMessageValue(s, LocaleEnum.HEADER_FORMAT, header, true);
-			for (CommandEnum command : CommandEnum.values()) {
-				String commandName = command.getName();
-				String permission = commandName;
-				sendCommandDescription(commandName, permission, false);
-			}
+		String header = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.COMMAND_LIST_HEADER), true);
+		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HEADER_FORMAT) {{ setValue(header); }}, true);
+		for (CommandEnum command : CommandEnum.values()) {
+			String commandName = command.getName();
+			String permission = commandName;
+			sendCommandDescription(commandName, permission, false);
 		}
 	}
 	
 	protected void sendCommandAdminDescriptionList() {
-		if (displayConsole) {
-			String header = zh.getMM().getMessage(s, LocaleEnum.ADMIN_COMMAND_LIST_HEADER, true);
-			zh.getMM().sendMessageValue(s, LocaleEnum.HEADER_FORMAT, header, true);
-			for (CommandAdminEnum command : CommandAdminEnum.values()) {
-				String commandName = command.getName();
-				String permission = this.command + KeyWordEnum.DOT.getValue() + command.getName();				
-				sendCommandDescription(commandName, permission, true);
-			}
+		String header = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.ADMIN_COMMAND_LIST_HEADER), true);
+		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HEADER_FORMAT) {{ setValue(header); }}, true);
+		for (CommandAdminEnum command : CommandAdminEnum.values()) {
+			String commandName = command.getName();
+			String permission = this.command + KeyWordEnum.DOT.getValue() + command.getName();				
+			sendCommandDescription(commandName, permission, true);
 		}
 	}
 	
 	protected void sendCommandFriendDescriptionList() {
-		if (displayConsole) {
-			String header = zh.getMM().getMessage(s, LocaleEnum.FRIEND_COMMAND_LIST_HEADER, true);
-			zh.getMM().sendMessageValue(s, LocaleEnum.HEADER_FORMAT, header, true);
-			for (CommandFriendEnum command : CommandFriendEnum.values()) {
-				String commandName = command.getName();
-				String permission = this.command + KeyWordEnum.DOT.getValue() + command.getName();
-				sendCommandDescription(commandName, permission, true);
-			}
+		String header = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.FRIEND_COMMAND_LIST_HEADER), true);
+		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HEADER_FORMAT) {{ setValue(header); }}, true);
+		for (CommandFriendEnum command : CommandFriendEnum.values()) {
+			String commandName = command.getName();
+			String permission = this.command + KeyWordEnum.DOT.getValue() + command.getName();
+			sendCommandDescription(commandName, permission, true);
 		}
 	}
 	
 	protected void sendCommandSettingsDescriptionList() {
-		if (displayConsole) {
-			String header = zh.getMM().getMessage(s, LocaleEnum.SETTINGS_COMMAND_LIST_HEADER, true);
-			zh.getMM().sendMessageValue(s, LocaleEnum.HEADER_FORMAT, header, true);
-			for (CommandSettingsEnum command : CommandSettingsEnum.values()) {
-				String commandName = command.getName();
-				String permission = this.command + KeyWordEnum.DOT.getValue() + command.getName();
-				sendCommandDescription(commandName, permission, true);
-			}
+		String header = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.SETTINGS_COMMAND_LIST_HEADER), true);
+		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HEADER_FORMAT) {{ setValue(header); }}, true);
+		for (CommandSettingsEnum command : CommandSettingsEnum.values()) {
+			String commandName = command.getName();
+			String permission = this.command + KeyWordEnum.DOT.getValue() + command.getName();
+			sendCommandDescription(commandName, permission, true);
 		}
 	}
 	
@@ -791,63 +791,55 @@ public abstract class AbstractCommand {
 	}
 	
 	protected void sendCommandUsage(String command, boolean subCommand, boolean hideError) {
-		if (displayConsole) {
-			if (!hideError) {
-				zh.getMM().sendMessage(s, LocaleEnum.MISSING_ARGUMENTS);
-			}
-			
-			LocaleEnum commandUsage;
-			if (!subCommand) {
-				commandUsage = LocaleEnum.valueOf(command.toUpperCase() + KeyWordEnum.SEPARATOR.getValue() + KeyWordEnum.USAGE.getValue());
-			}
-			else {
-				String commandUsageIndex = this.command.toUpperCase()
-					+ KeyWordEnum.SEPARATOR.getValue()
-					+ command.toUpperCase()
-					+ KeyWordEnum.SEPARATOR.getValue()
-					+ KeyWordEnum.USAGE.getValue();
-				commandUsage = LocaleEnum.valueOf(commandUsageIndex);
-			}			
-			zh.getMM().sendMessageSpacer(s, LocaleEnum.COMMAND_USAGE_HEADER, 1, true);
-			String commandUsageMessage = zh.getMM().getMessage(s, commandUsage, true);
-			zh.getMM().sendMessageSpacerValue(s, LocaleEnum.COMMAND_USAGE_FORMAT, 1, commandUsageMessage, true);
+		if (!hideError) {
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.MISSING_ARGUMENTS));
 		}
+		
+		LocaleEnum commandUsage;
+		if (!subCommand) {
+			commandUsage = LocaleEnum.valueOf(command.toUpperCase() + KeyWordEnum.SEPARATOR.getValue() + KeyWordEnum.USAGE.getValue());
+		}
+		else {
+			String commandUsageIndex = this.command.toUpperCase()
+				+ KeyWordEnum.SEPARATOR.getValue()
+				+ command.toUpperCase()
+				+ KeyWordEnum.SEPARATOR.getValue()
+				+ KeyWordEnum.USAGE.getValue();
+			commandUsage = LocaleEnum.valueOf(commandUsageIndex);
+		}			
+		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.COMMAND_USAGE_HEADER) {{ setSpaceCount(1); }}, true);
+		String commandUsageMessage = zh.getMM().getMessage(s, new MessageConfig(commandUsage), true);
+		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.COMMAND_USAGE_FORMAT) {{ setSpaceCount(1); setValue(commandUsageMessage); }}, true);
 	}
 	
 	protected void sendHorseColorList() {
-		if (displayConsole) {
-			sendHorseOptionList(Horse.Color.values(), LocaleEnum.LIST_HORSE_COLOR);
-		}
+		sendHorseOptionList(Horse.Color.values(), LocaleEnum.LIST_HORSE_COLOR);
 	}
 	
 	protected void sendLlamaColorList() {
-		if (displayConsole) {
-			sendHorseOptionList(Llama.Color.values(), LocaleEnum.LIST_LLAMA_COLOR);
-		}
+		sendHorseOptionList(Llama.Color.values(), LocaleEnum.LIST_LLAMA_COLOR);
 	}
 
 	protected void sendHorseStyleList() {
-		if (displayConsole) {
-			sendHorseOptionList(Horse.Style.values(), LocaleEnum.LIST_HORSE_STYLE);
-		}
+		sendHorseOptionList(Horse.Style.values(), LocaleEnum.LIST_HORSE_STYLE);
 	}
 
 	protected void sendAbstractHorseVariantList() {
-		if (displayConsole) {
-			sendHorseOptionList(HorseVariantEnum.getAllCodeArray(), LocaleEnum.LIST_HORSE_VARIANT);
-		}
+		sendHorseOptionList(HorseVariantEnum.getAllCodeArray(), LocaleEnum.LIST_HORSE_VARIANT);
 	}
 	
 	protected <T> void sendHorseOptionList (T[] horseOptionArray, LocaleEnum index) {
 		String horseOptionArrayMessage = "";
 		for (int i = 0; i < horseOptionArray.length; i++) {
-			horseOptionArrayMessage += zh.getMM().getMessageValue(s, LocaleEnum.HORSE_OPTION_FORMAT, horseOptionArray[i].toString().toLowerCase(), true);
+			final String horseOption = horseOptionArray[i].toString().toLowerCase();
+			horseOptionArrayMessage += zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.HORSE_OPTION_FORMAT) {{ setValue(horseOption); }}, true);
 			if (i < horseOptionArray.length - 1) {
 				horseOptionArrayMessage += ", ";
 			}
 		}
 		horseOptionArrayMessage += ChatColor.RESET;
-		zh.getMM().sendMessageSpacerValue(s, index, 1, horseOptionArrayMessage, true);
+		final String message = horseOptionArrayMessage;
+		zh.getMM().sendMessage(s, new MessageConfig(index) {{ setSpaceCount(1); setValue(message); }}, true);
 	}
 
 }

@@ -7,6 +7,7 @@ import org.bukkit.entity.AbstractHorse;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
+import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
 
 public class CommandFree extends AbstractCommand {
 
@@ -63,9 +64,7 @@ public class CommandFree extends AbstractCommand {
 			if (success) {
 				horse.setCustomName(null);
 				horse.setCustomNameVisible(false);
-				if (displayConsole) {
-					zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_FREED, horseName);
-				}
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_FREED) {{ setHorseName(horseName); }});
 				zh.getEM().payCommand(p, command);
 			}
 		}	
@@ -80,10 +79,10 @@ public class CommandFree extends AbstractCommand {
 		success &= zh.getDM().removeSale(horseUUID);
 		if (success) {
 			if (samePlayer) {
-				zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_CLEARED, horseName);
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_CLEARED) {{ setHorseName(horseName); }});
 			}
 			else {
-				zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.HORSE_CLEARED_OTHER, horseName, targetName);
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_CLEARED_OTHER) {{ setHorseName(horseName); setPlayerName(targetName); }});
 			}
 			zh.getEM().payCommand(p, command);
 		}

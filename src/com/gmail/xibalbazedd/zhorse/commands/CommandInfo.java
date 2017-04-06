@@ -14,6 +14,7 @@ import com.gmail.xibalbazedd.zhorse.database.HorseStatsRecord;
 import com.gmail.xibalbazedd.zhorse.database.PlayerRecord;
 import com.gmail.xibalbazedd.zhorse.enums.HorseStatisticEnum;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
+import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
 
 public class CommandInfo extends AbstractCommand {
 	
@@ -78,27 +79,28 @@ public class CommandInfo extends AbstractCommand {
 	}
 	
 	public static void displayInfoHeader(ZHorse zh, CommandSender s) {
-		zh.getMM().sendMessageValue(s, LocaleEnum.HEADER_FORMAT, zh.getMM().getMessage(s, LocaleEnum.HORSE_INFO_HEADER, true), true);
+		String rawHeader = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.HORSE_INFO_HEADER), true);
+		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HEADER_FORMAT) {{ setValue(rawHeader); }}, true);
 	}
 	
 	private void displayHorseID(ZHorse zh, CommandSender s, HorseRecord horseRecord) {
 		if (isOwner(false, true)) {
 			String horseID = horseRecord.getId().toString();
-			zh.getMM().sendMessageHorseIDSpacer(s, LocaleEnum.ID, horseID, 1, true);
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.ID) {{ setHorseID(horseID); setSpaceCount(1); }}, true);
 		}
 	}
 	
 	private void displayNames(ZHorse zh, CommandSender s, HorseRecord horseRecord, PlayerRecord ownerRecord) {
 		String ownerName = ownerRecord.getName();
 		String horseName = horseRecord.getName();
-		zh.getMM().sendMessagePlayerSpacer(s, LocaleEnum.OWNER, ownerName, 1, true);
-		zh.getMM().sendMessageHorseSpacer(s, LocaleEnum.NAME, horseName, 1, true);
+		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.OWNER) {{ setPlayerName(ownerName); setSpaceCount(1); }}, true);
+		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.NAME) {{ setHorseName(horseName); setSpaceCount(1); }}, true);
 	}
 	
 	public static void displayHealth(ZHorse zh, CommandSender s, HorseStatsRecord statsRecord) {
 		int health = statsRecord.getHealth().intValue();
 		int maxHealth = statsRecord.getMaxHealth().intValue();
-		zh.getMM().sendMessageAmountMaxSpacer(s, LocaleEnum.HEALTH, health, maxHealth, 1, true);
+		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HEALTH) {{ setAmount(health); setMax(maxHealth); setSpaceCount(1); }}, true);
 	}
 	
 	public static void displaySpeed(ZHorse zh, CommandSender s, HorseStatsRecord statsRecord, boolean useExactStats, boolean useVanillaStats) {
@@ -106,11 +108,11 @@ public class CommandInfo extends AbstractCommand {
 		if (!useExactStats) {
 			double maxSpeed = HorseStatisticEnum.MAX_SPEED.getValue(useVanillaStats);
 			int speedRatio = (int) ((speed / maxSpeed) * 100);
-			zh.getMM().sendMessageAmountSpacer(s, LocaleEnum.SPEED, speedRatio, 1, true);
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.SPEED) {{ setAmount(speedRatio); setSpaceCount(1); }}, true);
 		}
 		else {
 			String speedInfo = String.format(Locale.US, "%.3f", speed);
-			zh.getMM().sendMessageSpacerValue(s, LocaleEnum.SPEED_EXACT, 1, speedInfo, true);
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.SPEED_EXACT) {{ setSpaceCount(1); setValue(speedInfo); }}, true);
 		}
 	}
 	
@@ -119,11 +121,11 @@ public class CommandInfo extends AbstractCommand {
 		if (!useExactStats) {
 			double maxJumpStrength = HorseStatisticEnum.MAX_JUMP_STRENGTH.getValue(useVanillaStats);
 			int jumpRatio = (int) ((jumpStrength / maxJumpStrength) * 100);
-			zh.getMM().sendMessageAmountSpacer(s, LocaleEnum.JUMP, jumpRatio, 1, true);
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.JUMP) {{ setAmount(jumpRatio); setSpaceCount(1); }}, true);
 		}
 		else {
 			String jumpInfo = String.format(Locale.US, "%.3f", jumpStrength);
-			zh.getMM().sendMessageSpacerValue(s, LocaleEnum.JUMP_EXACT, 1, jumpInfo, true);
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.JUMP_EXACT) {{ setSpaceCount(1); setValue(jumpInfo); }}, true);
 		}
 	}
 	
@@ -131,7 +133,7 @@ public class CommandInfo extends AbstractCommand {
 		if (horse instanceof ChestedHorse && statsRecord.isCarryingChest()) {
 			int strength = horse instanceof Llama ? statsRecord.getStrength() : (int) HorseStatisticEnum.MAX_LLAMA_STRENGTH.getValue();
 			int chestSize = strength * CHEST_SIZE_MULTIPLICATOR;
-			zh.getMM().sendMessageAmountSpacer(s, LocaleEnum.STRENGTH, chestSize, 1, true);
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STRENGTH) {{ setAmount(chestSize); setSpaceCount(1); }}, true);
 		}
 	}
 	
@@ -142,32 +144,33 @@ public class CommandInfo extends AbstractCommand {
 			int z = (int) Math.floor(horseRecord.getLocationZ());
 			String world = horseRecord.getLocationWorld();
 			String location = String.format("%d/%d/%d : %s", x, y, z, world);
-			zh.getMM().sendMessageSpacerValue(s, LocaleEnum.LOCATION, 1, location, true);
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.LOCATION) {{ setSpaceCount(1); setValue(location); }}, true);
 		}
 	}
 	
 	private void displayStatus(ZHorse zh, CommandSender s, HorseRecord horseRecord) {
 		String status = "";
 		if (horseRecord.isProtected()) {
-			status += zh.getMM().getMessageSpacer(s, LocaleEnum.PROTECTED, 0, true);
+			status += zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.PROTECTED) {{ setSpaceCount(0); }}, true);
 		}
-		int spacer = status.isEmpty() ? 0 : 1;
+		int spaceCount = status.isEmpty() ? 0 : 1;
 		if (horseRecord.isLocked()) {
-			status += zh.getMM().getMessageSpacer(s, LocaleEnum.LOCKED, spacer, true);
+			status += zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.LOCKED) {{ setSpaceCount(spaceCount); }}, true);
 		}
 		else if (horseRecord.isShared()) {
-			status += zh.getMM().getMessageSpacer(s, LocaleEnum.SHARED, spacer, true);
+			status += zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.SHARED) {{ setSpaceCount(spaceCount); }}, true);
 		}
 		if (!status.isEmpty()) {
-			zh.getMM().sendMessageSpacerValue(s, LocaleEnum.STATUS, 1, status, true);
+			final String message = status;
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STATUS) {{ setSpaceCount(1); setValue(message); }}, true);
 		}
 	}
 	
 	public static void displayPrice(ZHorse zh, CommandSender s, AbstractHorse horse) {
 		if (zh.getDM().isHorseForSale(horse.getUniqueId())) {
 			int price = zh.getDM().getSalePrice(horse.getUniqueId());
-			String currencySymbol = zh.getMM().getMessage(s, LocaleEnum.CURRENCY_SYMBOL, true);
-			zh.getMM().sendMessageAmountCurrencySpacer(s, LocaleEnum.PRICE, price, currencySymbol, 1, true);
+			String currencySymbol = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.CURRENCY_SYMBOL), true);
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.PRICE) {{ setAmount(price); setCurrencySymbol(currencySymbol); setSpaceCount(1); }}, true);
 		}
 	}
 	

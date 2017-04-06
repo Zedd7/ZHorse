@@ -6,6 +6,7 @@ import org.bukkit.entity.AbstractHorse;
 import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.database.SaleRecord;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
+import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
 
 public class CommandSell extends AbstractCommand {
 
@@ -60,10 +61,8 @@ public class CommandSell extends AbstractCommand {
 					SaleRecord saleRecord = new SaleRecord(horse.getUniqueId().toString(), price);
 					if (zh.getDM().registerSale(saleRecord)) {
 						applyHorsePrice(price);
-						if (displayConsole) {
-							String sellerCurrencySymbol = zh.getMM().getMessage(s, LocaleEnum.CURRENCY_SYMBOL, true);
-							zh.getMM().sendMessageAmountCurrencyHorse(s, LocaleEnum.HORSE_PUT_UP_FOR_SALE, price, sellerCurrencySymbol, horseName);
-						}
+						String sellerCurrencySymbol = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.CURRENCY_SYMBOL), true);
+						zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_PUT_UP_FOR_SALE) {{ setAmount(price); setCurrencySymbol(sellerCurrencySymbol); setHorseName(horseName); }});
 						zh.getEM().payCommand(p, command);
 					}
 				} catch (NumberFormatException e) {
@@ -71,16 +70,14 @@ public class CommandSell extends AbstractCommand {
 				}
 			}
 			else {
-				if (!argument.isEmpty() && displayConsole) {
-					zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_ALREADY_ON_SALE, horseName);
+				if (!argument.isEmpty()) {
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_ALREADY_ON_SALE) {{ setHorseName(horseName); }});
 				}
 				else {
 					zh.getDM().removeSale(horse.getUniqueId());
 					horseName = zh.getDM().getHorseName(horse.getUniqueId());
 					applyHorseName(targetUUID);
-					if (displayConsole) {
-						zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_WITHDRAWN_FROM_SALE, horseName);
-					}
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_WITHDRAWN_FROM_SALE) {{ setHorseName(horseName); }});
 					zh.getEM().payCommand(p, command);
 				}
 			}

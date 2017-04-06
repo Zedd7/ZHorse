@@ -5,6 +5,7 @@ import org.bukkit.entity.AbstractHorse;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
+import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
 
 public class CommandKill extends AbstractCommand {
 
@@ -48,8 +49,8 @@ public class CommandKill extends AbstractCommand {
 	private void execute() {
 		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
 			horse.setHealth(0);
-			if (displayConsole && !samePlayer) {
-				zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_DIED, horseName);
+			if (!samePlayer) {
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_DIED) {{ setHorseName(horseName); }});
 			}
 			zh.getEM().payCommand(p, command);
 		}

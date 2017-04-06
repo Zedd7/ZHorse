@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
+import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
 
 public class CommandHere extends AbstractCommand {
 
@@ -47,13 +48,11 @@ public class CommandHere extends AbstractCommand {
 			}
 			horse = zh.getHM().teleport(horse, destination);
 			if (horse != null) {
-				if (displayConsole) {
-					zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_TELEPORTED, horseName);
-				}
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_TELEPORTED) {{ setHorseName(horseName); }});
 				zh.getEM().payCommand(p, command);
 			}
 			else {
-				zh.getMM().sendRawMessage(s, ChatColor.RED + "It seems that horses cannot spawn here, please report this to ZHorse's dev.");
+				zh.getMM().sendMessage(s, ChatColor.RED + "It seems that horses cannot spawn here, please report this to the developer. (https://github.com/Xibalba/ZHorse/issues/new)");
 			}
 		}
 	}

@@ -11,6 +11,7 @@ import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.enums.CommandSettingsEnum;
 import com.gmail.xibalbazedd.zhorse.enums.KeyWordEnum;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
+import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -56,9 +57,7 @@ public class CommandSettings extends AbstractCommand {
 					swapIDs();
 				}
 				else {
-					if (displayConsole) {
-						zh.getMM().sendMessageValue(s, LocaleEnum.UNKNOWN_SETTINGS_COMMAND, subCommand);
-					}
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_SETTINGS_COMMAND) {{ setValue(subCommand); }});
 					sendCommandSettingsDescriptionList();
 				}
 			}
@@ -79,29 +78,29 @@ public class CommandSettings extends AbstractCommand {
 					if (!zh.getDM().getPlayerFavoriteHorseID(targetUUID).toString().equals(horseID)) {
 						zh.getDM().updatePlayerFavorite(targetUUID, Integer.parseInt(horseID));
 						if (samePlayer) {
-							zh.getMM().sendMessageHorse(s, LocaleEnum.FAVORITE_EDITED, horseName);
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.FAVORITE_EDITED) {{ setHorseName(horseName); }});
 						}
 						else {
-							zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.FAVORITE_EDITED_OTHER, horseName, targetName);
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.FAVORITE_EDITED_OTHER) {{ setHorseName(horseName); setPlayerName(targetName); }});
 							if (isPlayerOnline(targetUUID, true)) {
 								Player target = zh.getServer().getPlayer(targetUUID);
-								zh.getMM().sendMessageHorse((CommandSender)target, LocaleEnum.FAVORITE_EDITED, horseName);
+								zh.getMM().sendMessage(target, new MessageConfig(LocaleEnum.FAVORITE_EDITED) {{ setHorseName(horseName); }});
 							}
 						}
 						zh.getEM().payCommand(p, command);
 					}
-					else if (displayConsole) {
+					else {
 						if (samePlayer) {
-							zh.getMM().sendMessageHorse(s, LocaleEnum.FAVORITE_ALREADY_SET, horseName);
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.FAVORITE_ALREADY_SET) {{ setHorseName(horseName); }});
 						}
 						else {
-							zh.getMM().sendMessageHorsePlayer(s, LocaleEnum.FAVORITE_ALREADY_SET_OTHER, horseName, targetName);
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.FAVORITE_ALREADY_SET_OTHER) {{ setHorseName(horseName); setPlayerName(targetName); }});
 						}
 					}
 				}
 			}
-			else if (displayConsole) {
-				zh.getMM().sendMessage(s, LocaleEnum.MISSING_HORSE_ID);
+			else {
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.MISSING_HORSE_ID));
 				sendCommandUsage(subCommand, true, true);
 			}
 		}
@@ -115,31 +114,31 @@ public class CommandSettings extends AbstractCommand {
 					if (!zh.getDM().getPlayerLanguage(targetUUID).equals(language)) {
 						zh.getDM().updatePlayerLanguage(targetUUID, language);
 						if (samePlayer) {
-							zh.getMM().sendMessageLang(s, LocaleEnum.LANGUAGE_EDITED, language);
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.LANGUAGE_EDITED) {{ setLanguage(language); }});
 						}
 						else {
-							zh.getMM().sendMessageLangPlayer(s, LocaleEnum.LANGUAGE_EDITED_OTHER, language, targetName);
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.LANGUAGE_EDITED_OTHER) {{ setLanguage(language); setPlayerName(targetName); }});
 							if (isPlayerOnline(targetUUID, true)) {
 								Player target = zh.getServer().getPlayer(targetUUID);
-								zh.getMM().sendMessageLang((CommandSender)target, LocaleEnum.LANGUAGE_EDITED, language);
+								zh.getMM().sendMessage(target, new MessageConfig(LocaleEnum.LANGUAGE_EDITED) {{ setLanguage(language); }});
 							}
 						}
 						zh.getEM().payCommand(p, command);
 					}
-					else if (displayConsole) {
+					else {
 						if (samePlayer) {
-							zh.getMM().sendMessageLang(s, LocaleEnum.LANGUAGE_ALREADY_USED, language);
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.LANGUAGE_ALREADY_USED) {{ setLanguage(language); }});
 						}
 						else {
-							zh.getMM().sendMessageLangPlayer(s, LocaleEnum.LANGUAGE_ALREADY_USED_OTHER, language, targetName);
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.LANGUAGE_ALREADY_USED_OTHER) {{ setLanguage(language); setPlayerName(targetName); }});
 						}
 					}
 				}
-				else if (displayConsole) {
+				else {
 					displayAvailableLanguages(LocaleEnum.UNKNOWN_LANGUAGE, language);
 				}
 			}
-			else if (displayConsole) {
+			else {
 				displayAvailableLanguages(LocaleEnum.MISSING_LANGUAGE);
 				sendCommandUsage(subCommand, true, true);
 			}
@@ -163,12 +162,12 @@ public class CommandSettings extends AbstractCommand {
 					UUID horseUUID2 = zh.getDM().getHorseUUID(targetUUID, Integer.parseInt(horseID2));
 					zh.getDM().updateHorseID(horseUUID1, Integer.parseInt(horseID2));
 					zh.getDM().updateHorseID(horseUUID2, Integer.parseInt(horseID1));
-					zh.getMM().sendMessage(s, LocaleEnum.IDS_SWAPPED);
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.IDS_SWAPPED));
 					zh.getEM().payCommand(p, command);
 				}
 			}
-			else if (displayConsole) {
-				zh.getMM().sendMessage(s, LocaleEnum.MISSING_HORSE_IDS);
+			else {
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.MISSING_HORSE_IDS));
 				sendCommandUsage(subCommand, true, true);
 			}
 		}
@@ -177,22 +176,24 @@ public class CommandSettings extends AbstractCommand {
 	private void displayAvailableLanguages(LocaleEnum index) {
 		displayAvailableLanguages(index, null);
 	}
-
+	
 	private void displayAvailableLanguages(LocaleEnum index, String language) {
 		List<String> availableLanguages = zh.getCM().getAvailableLanguages();
 		String availableLanguagesMessage = "";
 		for (int i = 0; i < availableLanguages.size(); ++i) {
-			availableLanguagesMessage += zh.getMM().getMessageValue(s, LocaleEnum.AVAILABLE_OPTION_FORMAT, availableLanguages.get(i), true);
+			final String availableLanguage = availableLanguages.get(i);
+			availableLanguagesMessage += zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.AVAILABLE_OPTION_FORMAT) {{ setValue(availableLanguage); }}, true);
 			if (i < availableLanguages.size() - 1) {
 				availableLanguagesMessage += ", ";
 			}
 		}
 		availableLanguagesMessage += ChatColor.RESET;
+		final String message = availableLanguagesMessage;
 		if (language != null) {
-			zh.getMM().sendMessageLangValue(s, index, language, availableLanguagesMessage);
+			zh.getMM().sendMessage(s, new MessageConfig(index) {{ setLanguage(language); setValue(message); }});
 		}
 		else {
-			zh.getMM().sendMessageValue(s, index, availableLanguagesMessage);
+			zh.getMM().sendMessage(s, new MessageConfig(index) {{ setValue(message); }});
 		}
 	}
 

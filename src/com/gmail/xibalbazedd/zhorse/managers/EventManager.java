@@ -48,16 +48,15 @@ import com.gmail.xibalbazedd.zhorse.enums.KeyWordEnum;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
 import com.gmail.xibalbazedd.zhorse.utils.ChunkLoad;
 import com.gmail.xibalbazedd.zhorse.utils.ChunkUnload;
+import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
 import com.gmail.xibalbazedd.zhorse.utils.PlayerJoin;
 
 public class EventManager implements Listener {
 		
 	private ZHorse zh;
-	private boolean displayConsole;
 
 	public EventManager(ZHorse zh) {
 		this.zh = zh;
-		displayConsole = !(zh.getCM().isConsoleMuted());
 		zh.getServer().getPluginManager().registerEvents(this, zh);
 	}
 	
@@ -127,10 +126,8 @@ public class EventManager implements Listener {
 				UUID ownerUUID = zh.getDM().getOwnerUUID(horse.getUniqueId());
 				for (Player p : zh.getServer().getOnlinePlayers()) {
 					if (p.getUniqueId().equals(ownerUUID)) {
-						if (displayConsole) {
-							String horseName = zh.getDM().getHorseName(horse.getUniqueId());
-							zh.getMM().sendMessageHorse((CommandSender) p, LocaleEnum.HORSE_DIED, horseName);
-						}
+						String horseName = zh.getDM().getHorseName(horse.getUniqueId());
+						zh.getMM().sendMessage(p, new MessageConfig(LocaleEnum.HORSE_DIED) {{ setHorseName(horseName); }});
 					}
 				}
 				zh.getHM().untrackHorse(horse.getUniqueId());
@@ -151,9 +148,7 @@ public class EventManager implements Listener {
 				new CommandClaim(zh, (CommandSender) e.getOwner(), a);
 			}
 			else if (zh.getPM().has((Player) e.getOwner(), KeyWordEnum.ZH_PREFIX.getValue() + CommandEnum.CLAIM.getName())) {
-				if (displayConsole) {
-					zh.getMM().sendMessage((CommandSender) e.getOwner(), LocaleEnum.HORSE_MANUALLY_TAMED);
-				}
+				zh.getMM().sendMessage((Player) e.getOwner(), new MessageConfig(LocaleEnum.HORSE_MANUALLY_TAMED));
 			}
 		}
 	}
@@ -365,10 +360,8 @@ public class EventManager implements Listener {
 			boolean isFriend = zh.getDM().isFriendOfOwner(p.getUniqueId(), horse.getUniqueId());
 			boolean hasAdminPerm = zh.getPM().has(p, KeyWordEnum.ZH_PREFIX.getValue() + CommandEnum.PROTECT.getName() + KeyWordEnum.ADMIN_SUFFIX.getValue());
 			if ((!(isOwner || isFriend) || isOwnerAttackBlocked) && !hasAdminPerm) {
-				if (displayConsole) {
-					String horseName = zh.getDM().getHorseName(horse.getUniqueId());
-					zh.getMM().sendMessageHorse((CommandSender) p, LocaleEnum.HORSE_IS_PROTECTED, horseName);
-				}
+				String horseName = zh.getDM().getHorseName(horse.getUniqueId());
+				zh.getMM().sendMessage(p, new MessageConfig(LocaleEnum.HORSE_IS_PROTECTED) {{ setHorseName(horseName); }});
 				return false;
 			}
 		}
@@ -382,10 +375,8 @@ public class EventManager implements Listener {
 			boolean hasAdminPerm = zh.getPM().has(p, KeyWordEnum.ZH_PREFIX.getValue() + CommandEnum.LOCK.getName() + KeyWordEnum.ADMIN_SUFFIX.getValue());
 			if (!isOwner && !isFriend && !hasAdminPerm) {
 				if (zh.getDM().isHorseLocked(horse.getUniqueId()) || (!zh.getDM().isHorseShared(horse.getUniqueId()) && (!horse.isEmpty() || mustBeShared))) {
-					if (displayConsole) {
-						String ownerName = zh.getDM().getOwnerName(horse.getUniqueId());
-						zh.getMM().sendMessagePlayer((CommandSender) p, LocaleEnum.HORSE_BELONGS_TO, ownerName);
-					}
+					String ownerName = zh.getDM().getOwnerName(horse.getUniqueId());
+					zh.getMM().sendMessage(p, new MessageConfig(LocaleEnum.HORSE_BELONGS_TO) {{ setPlayerName(ownerName); }});
 					return false;
 				}
 			}

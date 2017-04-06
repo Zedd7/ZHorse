@@ -5,6 +5,7 @@ import org.bukkit.entity.AbstractHorse;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
+import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
 
 public class CommandShare extends AbstractCommand {
 
@@ -50,20 +51,14 @@ public class CommandShare extends AbstractCommand {
 			if (!zh.getDM().isHorseShared(horse.getUniqueId())) {
 				if (zh.getDM().isHorseLocked(horse.getUniqueId())) {
 					zh.getDM().updateHorseLocked(horse.getUniqueId(), false);
-					if (displayConsole) {
-						zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_UNLOCKED, horseName);
-					}
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_UNLOCKED) {{ setHorseName(horseName); }});
 				}
 				zh.getDM().updateHorseShared(horse.getUniqueId(), true);
-				if (displayConsole) {
-					zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_SHARED, horseName);
-				}
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_SHARED) {{ setHorseName(horseName); }});
 			}
 			else {
 				zh.getDM().updateHorseShared(horse.getUniqueId(), false);
-				if (displayConsole) {
-					zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_UNSHARED, horseName);
-				}
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_UNSHARED) {{ setHorseName(horseName); }});
 			}
 			zh.getEM().payCommand(p, command);
 		}

@@ -14,6 +14,7 @@ import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.enums.HorseStatisticEnum;
 import com.gmail.xibalbazedd.zhorse.enums.HorseVariantEnum;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
+import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
 
 public class CommandSpawn extends AbstractCommand {
 	
@@ -54,9 +55,7 @@ public class CommandSpawn extends AbstractCommand {
 			parseArguments();
 			if (valid) {
 				craftHorse();
-				if (displayConsole) {
-					zh.getMM().sendMessage(s, LocaleEnum.HORSE_SPAWNED);
-				}
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_SPAWNED));
 				zh.getEM().payCommand(p, command);
 			}
 			else {
@@ -94,7 +93,7 @@ public class CommandSpawn extends AbstractCommand {
 				}
 				if (!parsed) {
 					valid = false;
-					zh.getMM().sendMessageValue(s, LocaleEnum.UNKNOWN_SPAWN_ARGUMENT, argument);
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_SPAWN_ARGUMENT) {{ setValue(argument); }});
 				}
 			}
 		}

@@ -6,6 +6,7 @@ import org.bukkit.entity.AbstractHorse;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
+import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
 
 public class CommandHeal extends AbstractCommand {
 
@@ -49,9 +50,7 @@ public class CommandHeal extends AbstractCommand {
 	private void execute() {
 		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
 			horse.setHealth(horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
-			if (displayConsole) {
-				zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_HEALED, horseName);
-			}
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_HEALED) {{ setHorseName(horseName); }});
 			zh.getEM().payCommand(p, command);
 		}
 	}

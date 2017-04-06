@@ -8,6 +8,7 @@ import com.gmail.xibalbazedd.zhorse.database.HorseInventoryRecord;
 import com.gmail.xibalbazedd.zhorse.database.HorseRecord;
 import com.gmail.xibalbazedd.zhorse.database.HorseStatsRecord;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
+import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
 
 public class CommandClaim extends AbstractCommand {
 	
@@ -60,9 +61,7 @@ public class CommandClaim extends AbstractCommand {
 				applyHorseName(p.getUniqueId());
 				horse.setCustomNameVisible(true);
 				horse.setTamed(true);
-				if (displayConsole) {
-					zh.getMM().sendMessageHorse(s, LocaleEnum.HORSE_CLAIMED, horseName);
-				}
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_CLAIMED) {{ setHorseName(horseName); }});
 				zh.getEM().payCommand(p, command);
 			}
 		}

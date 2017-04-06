@@ -6,30 +6,123 @@ import org.bukkit.entity.Player;
 import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.enums.ColorEnum;
 import com.gmail.xibalbazedd.zhorse.enums.KeyWordEnum;
-import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
+import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
 
 public class MessageManager {
-	
-	private static final int AMOUNT = 0;
-	private static final String CURRENCY = "";
-	private static final String HORSE = "";
-	private static final String HORSE_ID = "";
-	private static final String LANG = "";
-	private static final int MAX = 0;
-	private static final String PERM = "";
-	private static final String PLAYER = "";
-	private static final int SPACER = 0;
-	private static final String VALUE = "";
 	
 	private ZHorse zh;
 	private boolean displayConsole;
 	
 	public MessageManager(ZHorse zh) {
 		this.zh = zh;
-		displayConsole = !(zh.getCM().isConsoleMuted());
+		displayConsole = !zh.getCM().isConsoleMuted();
 	}
 	
-	public String getMessage(CommandSender s, LocaleEnum index, boolean hidePrefix) {
+	public void sendMessage(Player player, String message) {
+		sendMessage((CommandSender) player, message);
+	}
+	
+	public void sendMessage(CommandSender recipient, String message) {
+		if (displayConsole) {
+			recipient.sendMessage(message);
+		}
+	}
+	
+	public void sendMessage(Player recipient, MessageConfig messageConfig) {
+		sendMessage(recipient, messageConfig, false);
+	}
+	
+	public void sendMessage(Player recipient, MessageConfig messageConfig, boolean hidePrefix) {
+		sendMessage((CommandSender) recipient, messageConfig, hidePrefix);
+	}
+	
+	public void sendMessage(CommandSender recipient, MessageConfig messageConfig) {
+		sendMessage(recipient, messageConfig, false);
+	}
+	
+	public void sendMessage(CommandSender recipient, MessageConfig messageConfig, boolean hidePrefix) {
+		if (displayConsole) {
+			String message = getMessage(recipient, messageConfig, hidePrefix);
+			recipient.sendMessage(message);
+		}
+	}
+	
+	public String getMessage(CommandSender recipient, MessageConfig messageConfig, boolean hidePrefix) {
+		String language = getLanguage(recipient);
+		String rawMessage = craftSpaces(messageConfig.getSpaceCount()) + getRawMessage(messageConfig, language, hidePrefix);
+		String message = populateFlags(rawMessage, messageConfig);
+		return message;
+	}
+	
+	private String getLanguage(CommandSender recipient) {
+		return recipient instanceof Player ? zh.getDM().getPlayerLanguage(((Player) recipient).getUniqueId()) : zh.getCM().getDefaultLanguage();
+	}
+	
+	private String getRawMessage(MessageConfig messageConfig, String language, boolean hidePrefix) {
+		return zh.getLM().getMessage(messageConfig.getIndex(), language, hidePrefix);
+	}
+	
+	private String craftSpaces(int spaceCount) {
+		String spaces = "";
+		while (spaces.length() < spaceCount) {
+			spaces += " ";
+		}
+		return spaces;
+	}
+	
+	private String populateFlags(String rawMessage, MessageConfig messageConfig) {
+		String message = rawMessage;
+		message = populateFlag(message, KeyWordEnum.AMOUNT_FLAG, messageConfig.getAmount());
+		message = populateFlag(message, KeyWordEnum.CURRENCY_SYMBOL_FLAG, messageConfig.getCurrencySymbol());
+		message = populateFlag(message, KeyWordEnum.HORSE_NAME_FLAG, messageConfig.getHorseName());
+		message = populateFlag(message, KeyWordEnum.HORSE_ID_FLAG, messageConfig.getHorseID());	
+		message = populateFlag(message, KeyWordEnum.LANGUAGE_FLAG, messageConfig.getLanguage());
+		message = populateFlag(message, KeyWordEnum.MAX_FLAG, messageConfig.getMax());
+		message = populateFlag(message, KeyWordEnum.PERMISSION_FLAG, messageConfig.getPermission());
+		message = populateFlag(message, KeyWordEnum.PLAYER_NAME_FLAG, messageConfig.getPlayerName());			
+		message = populateFlag(message, KeyWordEnum.VALUE_FLAG, messageConfig.getValue());		
+		
+		message = applyColors(message);
+		return message;
+	}
+	
+	private String populateFlag(String rawMessage, KeyWordEnum flag, String flagContent) {
+		return rawMessage.replace(flag.getValue(), flagContent);
+	}
+	
+	public static String applyColors(String message, String colorCode) {
+		return applyColors(colorCode + message);
+	}
+	
+	public static String applyColors(String rawMessage) {
+		String message = rawMessage;
+		for (ColorEnum color : ColorEnum.values()) {
+			for (String code : color.getCodeArray()) {
+				message = message.replaceAll("(?i)" + code, color.getColor().toString()); // (?i) makes replaceAll case insensitive
+			}
+		}
+		return message;
+	}
+	
+	public static String removeColors(String rawMessage) {
+		String message = rawMessage;
+		for (ColorEnum color : ColorEnum.values()) {
+			for (String code : color.getCodeArray()) {
+				message = message.replaceAll("(?i)" + code, ""); // (?i) makes replaceAll case insensitive
+			}
+		}
+		return message;
+	}
+	
+	public static boolean isColor(String colorCode) {
+		return !colorCode.equals(applyColors((colorCode)));
+	}
+	
+	public static boolean isColorized(String message) {
+		return !(message.isEmpty() || message.equals(applyColors((message))));
+	}
+	
+	/*public String getMessage(CommandSender s, LocaleEnum index, boolean hidePrefix) {
 		return getMessageFull(s, index, AMOUNT, CURRENCY, HORSE, HORSE_ID, LANG, MAX, PERM, PLAYER, SPACER, VALUE, hidePrefix);
 	}
 	
@@ -155,9 +248,9 @@ public class MessageManager {
 	
 	public String getMessageValue(CommandSender s, LocaleEnum index, String value, boolean hidePrefix) {
 		return getMessageFull(s, index, AMOUNT, CURRENCY, HORSE, HORSE_ID, LANG, MAX, PERM, PLAYER, SPACER, value, hidePrefix);
-	}
+	}*/
 	
-	public void sendMessage(CommandSender s, LocaleEnum index) {
+	/*public void sendMessage(CommandSender s, LocaleEnum index) {
 		s.sendMessage(getMessage(s, index, false));
 	}
 	
@@ -411,79 +504,6 @@ public class MessageManager {
 	
 	public void sendMessageValue(CommandSender s, LocaleEnum index, String value, boolean hidePrefix) {
 		s.sendMessage(getMessageValue(s, index, value, hidePrefix));
-	}
-	
-	
-	public void sendRawMessage(CommandSender s, String message) {
-		if (displayConsole) {
-			s.sendMessage(message);
-		}
-	}
-	
-	private String getMessageFull(CommandSender s, LocaleEnum index, int amount, String currency, String horse, String horseID, String lang, int max, String perm, String player, int spacer, String value, boolean hidePrefix) {
-		String rawMessage = getSpace(spacer) + getFromLocale(s, index, hidePrefix);
-		String message = populateFlags(rawMessage, amount, currency, horse, horseID, lang, max, perm, player, value);
-		return message;
-	}
-	
-	private String getFromLocale(CommandSender s, LocaleEnum index, boolean hidePrefix) {
-		String language = s instanceof Player ? zh.getDM().getPlayerLanguage(((Player) s).getUniqueId()) : zh.getCM().getDefaultLanguage();
-		return zh.getLM().getMessage(index.getIndex(), language, hidePrefix);
-	}
-	
-	private String getSpace(int spacer) {
-		String space = "";
-		while (space.length() < spacer) {
-			space += " ";
-		}
-		return space;
-	}
-	
-	private String populateFlags(String rawMessage, int amount, String currency, String horse, String horseID, String lang, int max, String perm, String player, String value) {
-		String message = rawMessage;
-		message = message.replace(KeyWordEnum.AMOUNT_FLAG.getValue(), Integer.toString(amount));
-		message = message.replace(KeyWordEnum.CURRENCY_FLAG.getValue(), currency);
-		message = message.replace(KeyWordEnum.HORSE_FLAG.getValue(), horse);
-		message = message.replace(KeyWordEnum.HORSE_ID_FLAG.getValue(), horseID);	
-		message = message.replace(KeyWordEnum.LANG_FLAG.getValue(), lang);
-		message = message.replace(KeyWordEnum.MAX_FLAG.getValue(), Integer.toString(max));
-		message = message.replace(KeyWordEnum.PERM_FLAG.getValue(), perm);
-		message = message.replace(KeyWordEnum.PLAYER_FLAG.getValue(), player);			
-		message = message.replace(KeyWordEnum.VALUE_FLAG.getValue(), value);		
-		message = applyColors(message);
-		return message;
-	}
-	
-	public static String applyColors(String rawMessage) {
-		String message = rawMessage;
-		for (ColorEnum color : ColorEnum.values()) {
-			for (String code : color.getCodeArray()) {
-				message = message.replaceAll("(?i)" + code, color.getColor().toString()); // (?i) makes replaceAll case insensitive
-			}
-		}
-		return message;
-	}
-	
-	public String applyColors(String message, String colorCode) {
-		return applyColors(colorCode + message);
-	}
-	
-	public String removeColors(String rawMessage) {
-		String message = rawMessage;
-		for (ColorEnum color : ColorEnum.values()) {
-			for (String code : color.getCodeArray()) {
-				message = message.replaceAll("(?i)" + code, ""); // (?i) makes replaceAll case insensitive
-			}
-		}
-		return message;
-	}
-	
-	public static boolean isColor(String colorCode) {
-		return !colorCode.equals(applyColors((colorCode)));
-	}
-	
-	public static boolean isColorized(String message) {
-		return !(message.isEmpty() || message.equals(applyColors((message))));
-	}
+	}*/
 
 }
