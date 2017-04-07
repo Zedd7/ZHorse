@@ -1,5 +1,6 @@
 package com.gmail.xibalbazedd.zhorse.database;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,6 +12,7 @@ public abstract class SQLDatabaseImporter {
 		boolean success = true;
 		success &= importPlayers(zh, db);
 		success &= importFriends(zh, db);
+		success &= importPendingMessages(zh, db);
 		success &= importHorses(zh, db);
 		success &= importHorseStats(zh, db);
 		success &= importHorseInventories(zh, db);
@@ -40,6 +42,20 @@ public abstract class SQLDatabaseImporter {
 			UUID recipientUUID = UUID.fromString(friendRecord.getRecipient());
 			if (!zh.getDM().isFriendOf(requesterUUID, recipientUUID)) {
 				success = zh.getDM().registerFriend(friendRecord) && success;
+			}
+		}
+		return success;
+	}
+	
+	private static boolean importPendingMessages(ZHorse zh, SQLDatabaseConnector db) {
+		boolean success = true;
+		String query = "SELECT * FROM prefix_pending_message";
+		List<PendingMessageRecord> messageRecordList = db.getPendingMessageRecordList(query);
+		for (PendingMessageRecord messageRecord : messageRecordList) {
+			UUID playerUUID = UUID.fromString(messageRecord.getUUID());
+			Date date = messageRecord.getDate();
+			if (!zh.getDM().isPendingMessageRegistered(playerUUID, date)) {
+				success = zh.getDM().registerPendingMessage(messageRecord) && success;
 			}
 		}
 		return success;

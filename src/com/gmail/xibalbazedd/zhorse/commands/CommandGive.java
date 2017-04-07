@@ -64,9 +64,7 @@ public class CommandGive extends AbstractCommand {
 			if (success) {
 				applyHorseName(targetUUID);
 				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_GIVEN) {{ setHorseName(horseName); setPlayerName(targetName); }});
-				if (isPlayerOnline(targetUUID, true)) {
-					zh.getMM().sendMessage(zh.getServer().getPlayer(targetUUID), new MessageConfig(LocaleEnum.HORSE_RECEIVED) {{ setHorseName(horseName); setPlayerName(p.getName()); }});
-				}
+				zh.getMM().sendPendingMessage(targetUUID, new MessageConfig(LocaleEnum.HORSE_RECEIVED) {{ setHorseName(horseName); setPlayerName(p.getName()); }});
 				zh.getEM().payCommand(p, command);
 			}
 		}

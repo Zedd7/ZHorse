@@ -1,9 +1,13 @@
 package com.gmail.xibalbazedd.zhorse.managers;
 
+import java.util.UUID;
+
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
+import com.gmail.xibalbazedd.zhorse.database.PendingMessageRecord;
 import com.gmail.xibalbazedd.zhorse.enums.ColorEnum;
 import com.gmail.xibalbazedd.zhorse.enums.KeyWordEnum;
 import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
@@ -47,15 +51,36 @@ public class MessageManager {
 		}
 	}
 	
+	public void sendPendingMessage(UUID recipientUUID, MessageConfig messageConfig) {
+		String language = getLanguage(recipientUUID);
+		String message = getMessage(language, messageConfig, false);
+		OfflinePlayer recipient = zh.getServer().getOfflinePlayer(recipientUUID);
+		if (recipient.isOnline()) {
+			((Player) recipient).sendMessage(message);
+		}
+		else {
+			PendingMessageRecord messageRecord = new PendingMessageRecord(recipientUUID.toString(), message);
+			zh.getDM().registerPendingMessage(messageRecord);
+		}
+	}
+	
 	public String getMessage(CommandSender recipient, MessageConfig messageConfig, boolean hidePrefix) {
 		String language = getLanguage(recipient);
+		return getMessage(language, messageConfig, hidePrefix);
+	}
+	
+	public String getMessage(String language, MessageConfig messageConfig, boolean hidePrefix) {
 		String rawMessage = craftSpaces(messageConfig.getSpaceCount()) + getRawMessage(messageConfig, language, hidePrefix);
 		String message = populateFlags(rawMessage, messageConfig);
 		return message;
 	}
 	
 	private String getLanguage(CommandSender recipient) {
-		return recipient instanceof Player ? zh.getDM().getPlayerLanguage(((Player) recipient).getUniqueId()) : zh.getCM().getDefaultLanguage();
+		return recipient instanceof Player ? getLanguage(((Player) recipient).getUniqueId()) : zh.getCM().getDefaultLanguage();
+	}
+	
+	private String getLanguage(UUID recipientUUID) {
+		return zh.getDM().getPlayerLanguage(recipientUUID);
 	}
 	
 	private String getRawMessage(MessageConfig messageConfig, String language, boolean hidePrefix) {

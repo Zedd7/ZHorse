@@ -1,6 +1,7 @@
 package com.gmail.xibalbazedd.zhorse.database;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -214,7 +215,7 @@ public abstract class SQLDatabaseConnector {
 	}
 	
 	public List<HorseInventoryRecord> getHorseInventoryRecordList(String query) {
-		List<HorseInventoryRecord> horseInventoryRecordList = new ArrayList<>();
+		List<HorseInventoryRecord> inventoryRecordList = new ArrayList<>();
 		Map<String, List<InventoryItemRecord>> inventoryItemRecordMap = new HashMap<>();
 		try (PreparedStatement statement = getPreparedStatement(query)) {
 			ResultSet resultSet = statement.executeQuery();
@@ -230,48 +231,76 @@ public abstract class SQLDatabaseConnector {
 			e.printStackTrace();
 		}
 		for (List<InventoryItemRecord> inventoryItemRecordList : inventoryItemRecordMap.values()) {
-			horseInventoryRecordList.add(new HorseInventoryRecord(inventoryItemRecordList));
+			inventoryRecordList.add(new HorseInventoryRecord(inventoryItemRecordList));
 		}
-		return horseInventoryRecordList;
+		return inventoryRecordList;
 	}
 	
 	public HorseInventoryRecord getHorseInventoryRecord(String query) {
+		HorseInventoryRecord inventoryRecord = null;
 		List<InventoryItemRecord> inventoryItemRecordList = new ArrayList<>();
 		try (PreparedStatement statement = getPreparedStatement(query)) {
 			ResultSet resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				inventoryItemRecordList.add(getInventoryItemRecord(resultSet));
 			}
+			inventoryRecord = new HorseInventoryRecord(inventoryItemRecordList);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return new HorseInventoryRecord(inventoryItemRecordList);
+		return inventoryRecord;
 	}
 	
 	public List<HorseStatsRecord> getHorseStatsRecordList(String query) {
-		List<HorseStatsRecord> horseStatsRecordList = new ArrayList<>();
+		List<HorseStatsRecord> statsRecordList = new ArrayList<>();
 		try (PreparedStatement statement = getPreparedStatement(query)) {
 			ResultSet resultSet = statement.executeQuery();
 			while (resultSet.next()) {
-				horseStatsRecordList.add(getHorseStatsRecord(resultSet));
+				statsRecordList.add(getHorseStatsRecord(resultSet));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return horseStatsRecordList;
+		return statsRecordList;
 	}
 	
 	public HorseStatsRecord getHorseStatsRecord(String query) {
-		HorseStatsRecord horseStatsRecord = null;
+		HorseStatsRecord statsRecord = null;
 		try (PreparedStatement statement = getPreparedStatement(query)) {
 			ResultSet resultSet = statement.executeQuery();
 			if (resultSet.next()) {
-				horseStatsRecord = getHorseStatsRecord(resultSet);
+				statsRecord = getHorseStatsRecord(resultSet);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return horseStatsRecord;
+		return statsRecord;
+	}
+	
+	public List<PendingMessageRecord> getPendingMessageRecordList(String query) {
+		List<PendingMessageRecord> messageRecordList = new ArrayList<>();
+		try (PreparedStatement statement = getPreparedStatement(query)) {
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next()) {
+				messageRecordList.add(getPendingMessageRecord(resultSet));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return messageRecordList;
+	}
+	
+	public PendingMessageRecord getPendingMessageRecord(String query) {
+		PendingMessageRecord messageRecord = null;
+		try (PreparedStatement statement = getPreparedStatement(query)) {
+			ResultSet resultSet = statement.executeQuery();
+			if (resultSet.next()) {
+				messageRecord = getPendingMessageRecord(resultSet);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return messageRecord;
 	}
 	
 	public List<PlayerRecord> getPlayerRecordList(String query) {
@@ -336,9 +365,9 @@ public abstract class SQLDatabaseConnector {
 	private HorseRecord getHorseRecord(ResultSet resultSet) throws SQLException {
 		return new HorseRecord(
 			resultSet.getString("uuid"),
-			resultSet.getString("OWNER"),
-			resultSet.getInt("ID"),
-			resultSet.getString("NAME"),
+			resultSet.getString("owner"),
+			resultSet.getInt("id"),
+			resultSet.getString("name"),
 			resultSet.getInt("locked") == 1,
 			resultSet.getInt("protected") == 1,
 			resultSet.getInt("shared") == 1,
@@ -367,7 +396,7 @@ public abstract class SQLDatabaseConnector {
 			resultSet.getString("customName"),
 			resultSet.getInt("domestication"),
 			resultSet.getInt("fireTicks"),
-			resultSet.getDouble("HEALTH"),
+			resultSet.getDouble("health"),
 			resultSet.getInt("isCarryingChest") == 1,
 			resultSet.getInt("isCustomNameVisible") == 1,
 			resultSet.getInt("isGlowing") == 1,
@@ -377,17 +406,25 @@ public abstract class SQLDatabaseConnector {
 			resultSet.getInt("noDamageTicks"),
 			resultSet.getInt("remainingAir"),
 			resultSet.getDouble("SPEED"),
-			resultSet.getInt("STRENGTH"),
+			resultSet.getInt("strength"),
 			resultSet.getString("style"),
 			resultSet.getInt("ticksLived"),
 			resultSet.getString("type")
 		);
 	}
 	
+	private PendingMessageRecord getPendingMessageRecord(ResultSet resultSet) throws SQLException {
+		return new PendingMessageRecord(
+			resultSet.getString("uuid"),
+			new Date(resultSet.getTimestamp("date").getTime()),
+			resultSet.getString("message")
+		);
+	}
+	
 	private PlayerRecord getPlayerRecord(ResultSet resultSet) throws SQLException {
 		return new PlayerRecord(
 			resultSet.getString("uuid"),
-			resultSet.getString("NAME"),
+			resultSet.getString("name"),
 			resultSet.getString("language"),
 			resultSet.getInt("favorite")
 		);

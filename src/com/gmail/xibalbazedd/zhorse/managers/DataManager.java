@@ -1,6 +1,8 @@
 package com.gmail.xibalbazedd.zhorse.managers;
 
 import java.io.IOException;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -17,6 +19,7 @@ import com.gmail.xibalbazedd.zhorse.database.HorseRecord;
 import com.gmail.xibalbazedd.zhorse.database.HorseStatsRecord;
 import com.gmail.xibalbazedd.zhorse.database.InventoryItemRecord;
 import com.gmail.xibalbazedd.zhorse.database.MySQLConnector;
+import com.gmail.xibalbazedd.zhorse.database.PendingMessageRecord;
 import com.gmail.xibalbazedd.zhorse.database.PlayerRecord;
 import com.gmail.xibalbazedd.zhorse.database.SQLDatabaseConnector;
 import com.gmail.xibalbazedd.zhorse.database.SQLiteConnector;
@@ -26,11 +29,12 @@ import com.gmail.xibalbazedd.zhorse.enums.DatabaseEnum;
 public class DataManager {
 	
 	private static final String TABLE_SCRIPTS_PATH = "res\\sql\\%s-table.sql";
-	private static final String[] TABLE_ARRAY = {"player", "friend", "horse", "horse_stats", "inventory_item", "sale"};
+	private static final String[] TABLE_ARRAY = {"player", "friend", "pending_message", "horse", "horse_stats", "inventory_item", "sale"};
 	
 	private ZHorse zh;
 	private SQLDatabaseConnector db;
 	private boolean connected = false;
+	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 	
 	public DataManager(ZHorse zh) {
 		this.zh = zh;
@@ -80,27 +84,27 @@ public class DataManager {
 	}
 	
 	public List<String> getFriendNameList(UUID playerUUID) {
-		String query = String.format("SELECT NAME FROM prefix_player WHERE uuid IN (SELECT recipient FROM prefix_friend WHERE requester = \"%s\") ORDER BY NAME ASC", playerUUID);
+		String query = String.format("SELECT name FROM prefix_player WHERE uuid IN (SELECT recipient FROM prefix_friend WHERE requester = \"%s\") ORDER BY NAME ASC", playerUUID);
 		return db.getStringResultList(query);
 	}
 	
 	public List<String> getFriendNameReverseList(UUID playerUUID) {
-		String query = String.format("SELECT NAME FROM prefix_player WHERE uuid IN (SELECT requester FROM prefix_friend WHERE recipient = \"%s\") ORDER BY NAME ASC", playerUUID);
+		String query = String.format("SELECT name FROM prefix_player WHERE uuid IN (SELECT requester FROM prefix_friend WHERE recipient = \"%s\") ORDER BY NAME ASC", playerUUID);
 		return db.getStringResultList(query);
 	}
 	
 	public Integer getHorseCount(UUID ownerUUID) {
-		String query = String.format("SELECT COUNT(1) FROM prefix_horse WHERE OWNER = \"%s\"", ownerUUID);
+		String query = String.format("SELECT COUNT(1) FROM prefix_horse WHERE owner = \"%s\"", ownerUUID);
 		return db.getIntegerResult(query);
 	}
 	
 	public Integer getHorseID(UUID horseUUID) {
-		String query = String.format("SELECT ID FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
+		String query = String.format("SELECT id FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
 		return db.getIntegerResult(query);
 	}
 	
 	public Integer getHorseID(UUID ownerUUID, String horseName) {
-		String query = String.format("SELECT ID FROM prefix_horse WHERE OWNER = \"%s\" AND NAME = \"%s\"", ownerUUID, horseName);
+		String query = String.format("SELECT id FROM prefix_horse WHERE owner = \"%s\" AND name = \"%s\"", ownerUUID, horseName);
 		return db.getIntegerResult(query);
 	}
 	
@@ -115,17 +119,17 @@ public class DataManager {
 	}
 	
 	public String getHorseName(UUID horseUUID) {
-		String query = String.format("SELECT NAME FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
+		String query = String.format("SELECT name FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
 		return db.getStringResult(query);
 	}
 	
 	public String getHorseName(UUID ownerUUID, int horseID) {
-		String query = String.format("SELECT NAME FROM prefix_horse WHERE OWNER = \"%s\" AND ID = %d", ownerUUID, horseID);
+		String query = String.format("SELECT name FROM prefix_horse WHERE owner = \"%s\" AND id = %d", ownerUUID, horseID);
 		return db.getStringResult(query);
 	}
 	
 	public String getHorseName(UUID ownerUUID, String wrongCaseHorseName) {
-		String query = String.format("SELECT NAME FROM prefix_horse WHERE OWNER = \"%s\"", ownerUUID);
+		String query = String.format("SELECT name FROM prefix_horse WHERE owner = \"%s\"", ownerUUID);
 		List<String> horseNameList = db.getStringResultList(query);
 		for (String horseName : horseNameList) {
 			if (wrongCaseHorseName.equalsIgnoreCase(horseName)) {
@@ -136,7 +140,7 @@ public class DataManager {
 	}
 	
 	public List<String> getHorseNameList(UUID ownerUUID) {
-		String query = String.format("SELECT NAME FROM prefix_horse WHERE OWNER = \"%s\" ORDER BY ID ASC", ownerUUID);
+		String query = String.format("SELECT name FROM prefix_horse WHERE owner = \"%s\" ORDER BY id ASC", ownerUUID);
 		return db.getStringResultList(query);
 	}
 	
@@ -146,7 +150,7 @@ public class DataManager {
 	}
 	
 	public UUID getHorseUUID(UUID ownerUUID, int horseID) {
-		String query = String.format("SELECT uuid FROM prefix_horse WHERE OWNER = \"%s\" AND ID = %d", ownerUUID, horseID);
+		String query = String.format("SELECT uuid FROM prefix_horse WHERE owner = \"%s\" AND id = %d", ownerUUID, horseID);
 		return UUID.fromString(db.getStringResult(query));
 	}
 	
@@ -174,7 +178,7 @@ public class DataManager {
 	}
 	
 	public Integer getNextHorseID(UUID ownerUUID) {
-		String query = String.format("SELECT MAX(ID) FROM prefix_horse WHERE OWNER = \"%s\"", ownerUUID);
+		String query = String.format("SELECT MAX(id) FROM prefix_horse WHERE owner = \"%s\"", ownerUUID);
 		Integer horseID = db.getIntegerResult(query);
 		if (horseID == null) {
 			horseID = 0;
@@ -188,8 +192,13 @@ public class DataManager {
 	}
 	
 	public UUID getOwnerUUID(UUID horseUUID) {
-		String query = String.format("SELECT OWNER FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
+		String query = String.format("SELECT owner FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
 		return UUID.fromString(db.getStringResult(query));
+	}
+	
+	public List<PendingMessageRecord> getPendingMessageRecordList(UUID playerUUID) {
+		String query = String.format("SELECT * FROM prefix_pending_message WHERE uuid = \"%s\" ORDER BY date ASC", playerUUID);
+		return db.getPendingMessageRecordList(query);
 	}
 	
 	public Integer getPlayerFavoriteHorseID(UUID ownerUUID) {
@@ -203,7 +212,7 @@ public class DataManager {
 	}
 	
 	public String getPlayerName(String wrongCasePlayerName) {
-		String query = "SELECT NAME FROM prefix_player";
+		String query = "SELECT name FROM prefix_player";
 		List<String> playerNameList = db.getStringResultList(query);
 		for (String playerName : playerNameList) {
 			if (wrongCasePlayerName.equalsIgnoreCase(playerName)) {
@@ -214,7 +223,7 @@ public class DataManager {
 	}
 	
 	public String getPlayerName(UUID playerUUID) {
-		String query = String.format("SELECT NAME FROM prefix_player WHERE uuid = \"%s\"", playerUUID);
+		String query = String.format("SELECT name FROM prefix_player WHERE uuid = \"%s\"", playerUUID);
 		return db.getStringResult(query);
 	}
 	
@@ -224,7 +233,7 @@ public class DataManager {
 	}
 	
 	public UUID getPlayerUUID(String playerName) {
-		String query = String.format("SELECT uuid FROM prefix_player WHERE NAME = \"%s\"", playerName);
+		String query = String.format("SELECT uuid FROM prefix_player WHERE name = \"%s\"", playerName);
 		return UUID.fromString(db.getStringResult(query));
 	}
 	
@@ -280,7 +289,7 @@ public class DataManager {
 	}
 	
 	public boolean isHorseOwnedBy(UUID ownerUUID, UUID horseUUID) {
-		String query = String.format("SELECT 1 FROM prefix_horse WHERE uuid = \"%s\" AND OWNER = \"%s\"", horseUUID, ownerUUID);
+		String query = String.format("SELECT 1 FROM prefix_horse WHERE uuid = \"%s\" AND owner = \"%s\"", horseUUID, ownerUUID);
 		return db.hasResult(query);
 	}
 	
@@ -295,7 +304,7 @@ public class DataManager {
 	}
 	
 	public boolean isHorseRegistered(UUID ownerUUID, int horseID) {
-		String query = String.format("SELECT 1 FROM prefix_horse WHERE OWNER = \"%s\" AND ID = %d", ownerUUID, horseID);
+		String query = String.format("SELECT 1 FROM prefix_horse WHERE owner = \"%s\" AND id = %d", ownerUUID, horseID);
 		return db.hasResult(query);
 	}
 	
@@ -314,8 +323,13 @@ public class DataManager {
 		return db.hasResult(query);
 	}
 	
+	public boolean isPendingMessageRegistered(UUID playerUUID, Date date) {
+		String query = String.format("SELECT 1 FROM prefix_pending_message WHERE uuid = \"%s\" AND date = \"%s\"", playerUUID, dateFormat.format(date));
+		return db.hasResult(query);
+	}
+	
 	public boolean isPlayerRegistered(String playerName) {
-		String query = String.format("SELECT 1 FROM prefix_player WHERE NAME = \"%s\"", playerName);
+		String query = String.format("SELECT 1 FROM prefix_player WHERE name = \"%s\"", playerName);
 		return db.hasResult(query);
 	}
 	
@@ -389,6 +403,12 @@ public class DataManager {
 		return db.executeUpdate(update);
 	}
 	
+	public boolean registerPendingMessage(PendingMessageRecord messageRecord) {
+		String update = String.format("INSERT INTO prefix_pending_message VALUES (\"%s\", \"%s\", \"%s\")",
+				messageRecord.getUUID(), dateFormat.format(messageRecord.getDate()), messageRecord.getMessage());
+		return db.executeUpdate(update);
+	}
+	
 	public boolean registerPlayer(PlayerRecord playerRecord) {
 		String update = String.format("INSERT INTO prefix_player VALUES (\"%s\", \"%s\", \"%s\", %d)",
 			playerRecord.getUUID(), playerRecord.getName(), playerRecord.getLanguage(), playerRecord.getFavorite());
@@ -426,7 +446,7 @@ public class DataManager {
 		}
 		String saleUpdate = String.format("DELETE FROM prefix_sale WHERE uuid = \"%s\"", horseUUID);
 		String horseUpdate = String.format("DELETE FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
-		String idUpdate = String.format("UPDATE prefix_horse SET ID = ID - 1 WHERE OWNER = \"%s\" AND ID > %d", ownerUUID, horseID);
+		String idUpdate = String.format("UPDATE prefix_horse SET id = id - 1 WHERE owner = \"%s\" AND id > %d", ownerUUID, horseID);
 		return db.executeUpdate(saleUpdate) && db.executeUpdate(horseUpdate) && db.executeUpdate(idUpdate);
 	}
 	
@@ -440,13 +460,18 @@ public class DataManager {
 		return db.executeUpdate(update);
 	}
 	
+	public boolean removePendingMessages(UUID playerUUID) {
+		String update = String.format("DELETE FROM prefix_pending_message WHERE uuid = \"%s\"", playerUUID);
+		return db.executeUpdate(update);
+	}
+	
 	public boolean removeSale(UUID horseUUID) {
 		String update = String.format("DELETE FROM prefix_sale WHERE uuid = \"%s\"", horseUUID);
 		return db.executeUpdate(update);
 	}
 	
 	public boolean updateHorseID(UUID horseUUID, int horseID) {
-		String update = String.format("UPDATE prefix_horse SET ID = %d WHERE uuid = \"%s\"", horseID, horseUUID);
+		String update = String.format("UPDATE prefix_horse SET id = %d WHERE uuid = \"%s\"", horseID, horseUUID);
 		return db.executeUpdate(update);
 	}
 	
@@ -466,7 +491,7 @@ public class DataManager {
 	}
 	
 	public boolean updateHorseName(UUID horseUUID, String name) {
-		String update = String.format("UPDATE prefix_horse SET NAME = \"%s\" WHERE uuid = \"%s\"", name, horseUUID);
+		String update = String.format("UPDATE prefix_horse SET name = \"%s\" WHERE uuid = \"%s\"", name, horseUUID);
 		return db.executeUpdate(update);
 	}
 	
@@ -527,7 +552,7 @@ public class DataManager {
 	}
 	
 	public boolean updatePlayerName(UUID playerUUID, String name) {
-		String update = String.format("UPDATE prefix_player SET NAME = \"%s\" WHERE uuid = \"%s\"", name, playerUUID);
+		String update = String.format("UPDATE prefix_player SET name = \"%s\" WHERE uuid = \"%s\"", name, playerUUID);
 		return db.executeUpdate(update);
 	}
 

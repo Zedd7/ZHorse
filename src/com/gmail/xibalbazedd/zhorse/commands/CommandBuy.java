@@ -2,7 +2,6 @@ package com.gmail.xibalbazedd.zhorse.commands;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AbstractHorse;
-import org.bukkit.entity.Player;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.database.HorseRecord;
@@ -55,16 +54,13 @@ public class CommandBuy extends AbstractCommand {
 						if (success) {
 							applyHorseName(p.getUniqueId());
 							String buyerLanguage = zh.getDM().getPlayerLanguage(p.getUniqueId());
+							String sellerLanguage = zh.getDM().getPlayerLanguage(targetUUID);
 							String buyerCurrencySymbol = zh.getLM().getMessage(LocaleEnum.CURRENCY_SYMBOL.getIndex(), buyerLanguage, true);
+							String sellerCurrencySymbol = zh.getLM().getMessage(LocaleEnum.CURRENCY_SYMBOL.getIndex(), sellerLanguage, true);
 							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_BOUGHT) {{ setAmount(price); setCurrencySymbol(buyerCurrencySymbol); setHorseName(horseName); }});
-							if (isPlayerOnline(targetUUID, true)) {
-								String sellerLanguage = zh.getDM().getPlayerLanguage(targetUUID);
-								String sellerCurrencySymbol = zh.getLM().getMessage(LocaleEnum.CURRENCY_SYMBOL.getIndex(), sellerLanguage, true);
-								Player seller = zh.getServer().getPlayer(targetUUID);
-								zh.getMM().sendMessage(seller, new MessageConfig(LocaleEnum.HORSE_SOLD) {{
-									setAmount(price); setCurrencySymbol(sellerCurrencySymbol); setHorseName(previousHorseName); setPlayerName(p.getName());
-								}});
-							}
+							zh.getMM().sendPendingMessage(targetUUID, new MessageConfig(LocaleEnum.HORSE_SOLD) {{
+								setAmount(price); setCurrencySymbol(sellerCurrencySymbol); setHorseName(previousHorseName); setPlayerName(p.getName());
+							}});
 							zh.getEM().payPlayer(p, targetUUID, price);
 							zh.getEM().payCommand(p, command);
 						}

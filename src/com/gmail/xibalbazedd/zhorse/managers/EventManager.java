@@ -124,12 +124,8 @@ public class EventManager implements Listener {
 			AbstractHorse horse = (AbstractHorse) e.getEntity();
 			if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
 				UUID ownerUUID = zh.getDM().getOwnerUUID(horse.getUniqueId());
-				for (Player p : zh.getServer().getOnlinePlayers()) {
-					if (p.getUniqueId().equals(ownerUUID)) {
-						String horseName = zh.getDM().getHorseName(horse.getUniqueId());
-						zh.getMM().sendMessage(p, new MessageConfig(LocaleEnum.HORSE_DIED) {{ setHorseName(horseName); }});
-					}
-				}
+				String horseName = zh.getDM().getHorseName(horse.getUniqueId());
+				zh.getMM().sendPendingMessage(ownerUUID, new MessageConfig(LocaleEnum.HORSE_DIED) {{ setHorseName(horseName); }});
 				zh.getHM().untrackHorse(horse.getUniqueId());
 				zh.getDM().removeHorse(horse.getUniqueId());
 				zh.getDM().removeHorseInventory(horse.getUniqueId());

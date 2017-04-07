@@ -1,14 +1,21 @@
 package com.gmail.xibalbazedd.zhorse.utils;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
+import com.gmail.xibalbazedd.zhorse.database.PendingMessageRecord;
 import com.gmail.xibalbazedd.zhorse.database.PlayerRecord;
 
 public class PlayerJoin {
+	
+	private static SimpleDateFormat dateFormat = new SimpleDateFormat("(HH:mm - dd/MM/yyyy)");
 	
 	public PlayerJoin(ZHorse zh, Player player) {
 		UUID playerUUID = player.getUniqueId();
@@ -26,9 +33,8 @@ public class PlayerJoin {
 		}
 		else {
 			if (!playerName.equalsIgnoreCase(zh.getDM().getPlayerName(playerUUID))) {
-				
 				Bukkit.getScheduler().runTaskAsynchronously(zh, new Runnable() {
-
+					
 					@Override
 					public void run() {
 						zh.getDM().updatePlayerName(playerUUID, playerName);
@@ -36,6 +42,28 @@ public class PlayerJoin {
 					
 				});
 			}
+			
+			Bukkit.getScheduler().runTaskAsynchronously(zh, new Runnable() {
+
+				@Override
+				public void run() {
+					List<PendingMessageRecord> messageRecordList = zh.getDM().getPendingMessageRecordList(player.getUniqueId());
+					zh.getDM().removePendingMessages(player.getUniqueId());
+					Bukkit.getScheduler().scheduleSyncDelayedTask(zh, new Runnable() {
+
+						@Override
+						public void run() {
+							for (PendingMessageRecord messageRecord : messageRecordList) {
+								String message = messageRecord.getMessage();
+								Date date = messageRecord.getDate();
+								zh.getMM().sendMessage(player, message + " " + ChatColor.RESET + dateFormat.format(date));
+							}
+						}
+						
+					}, 5 * 20L);
+				}
+				
+			});
 		}
 	}
 }

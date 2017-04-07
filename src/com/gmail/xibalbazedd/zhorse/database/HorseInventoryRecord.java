@@ -18,7 +18,7 @@ public class HorseInventoryRecord {
 	}
 	
 	public HorseInventoryRecord(List<InventoryItemRecord> itemRecordList) {
-		this(itemRecordList.get(0).getUUID(), itemRecordList);
+		this(!itemRecordList.isEmpty() ? itemRecordList.get(0).getUUID() : "null", itemRecordList);
 	}
 	
 	public HorseInventoryRecord(AbstractHorse horse) {

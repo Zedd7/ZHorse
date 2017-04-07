@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AbstractHorse;
-import org.bukkit.entity.Player;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.enums.CommandSettingsEnum;
@@ -82,10 +81,6 @@ public class CommandSettings extends AbstractCommand {
 						}
 						else {
 							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.FAVORITE_EDITED_OTHER) {{ setHorseName(horseName); setPlayerName(targetName); }});
-							if (isPlayerOnline(targetUUID, true)) {
-								Player target = zh.getServer().getPlayer(targetUUID);
-								zh.getMM().sendMessage(target, new MessageConfig(LocaleEnum.FAVORITE_EDITED) {{ setHorseName(horseName); }});
-							}
 						}
 						zh.getEM().payCommand(p, command);
 					}
@@ -118,10 +113,6 @@ public class CommandSettings extends AbstractCommand {
 						}
 						else {
 							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.LANGUAGE_EDITED_OTHER) {{ setLanguage(language); setPlayerName(targetName); }});
-							if (isPlayerOnline(targetUUID, true)) {
-								Player target = zh.getServer().getPlayer(targetUUID);
-								zh.getMM().sendMessage(target, new MessageConfig(LocaleEnum.LANGUAGE_EDITED) {{ setLanguage(language); }});
-							}
 						}
 						zh.getEM().payCommand(p, command);
 					}
