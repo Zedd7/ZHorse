@@ -146,7 +146,6 @@ public enum LocaleEnum {
 	HEALTH("Horse informations.health"),
 	ID("Horse informations.id"),
 	JUMP("Horse informations.jump"),
-	JUMP_EXACT("Horse informations.jumpExact"),
 	LOCATION("Horse informations.location"),
 	LOCKED("Horse informations.locked"),
 	NAME("Horse informations.name"),
@@ -155,7 +154,6 @@ public enum LocaleEnum {
 	PROTECTED("Horse informations.protected"),
 	SHARED("Horse informations.shared"),
 	SPEED("Horse informations.speed"),
-	SPEED_EXACT("Horse informations.speedExact"),
 	STATUS("Horse informations.status"),
 	STRENGTH("Horse informations.strength"),
 	

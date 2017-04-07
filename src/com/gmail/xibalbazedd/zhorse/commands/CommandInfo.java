@@ -1,6 +1,5 @@
 package com.gmail.xibalbazedd.zhorse.commands;
 
-import java.util.Locale;
 import java.util.UUID;
 
 import org.bukkit.command.CommandSender;
@@ -104,28 +103,26 @@ public class CommandInfo extends AbstractCommand {
 	}
 	
 	public static void displaySpeed(ZHorse zh, CommandSender s, HorseStatsRecord statsRecord, boolean useExactStats, boolean useVanillaStats) {
-		double speed = statsRecord.getSpeed();
+		Double speed = statsRecord.getSpeed();
 		if (!useExactStats) {
 			double maxSpeed = HorseStatisticEnum.MAX_SPEED.getValue(useVanillaStats);
-			int speedRatio = (int) ((speed / maxSpeed) * 100);
-			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.SPEED) {{ setAmount(speedRatio); setSpaceCount(1); }}, true);
+			double speedRatio = speed / maxSpeed;
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.SPEED) {{ setAmount(speedRatio); setSpaceCount(1); setUsePercentage(true); }}, true);
 		}
 		else {
-			String speedInfo = String.format(Locale.US, "%.3f", speed);
-			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.SPEED_EXACT) {{ setSpaceCount(1); setValue(speedInfo); }}, true);
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.SPEED) {{ setAmount(speed); setSpaceCount(1); setArithmeticPrecision(3); }}, true);
 		}
 	}
 	
 	public static void displayJumpStrength(ZHorse zh, CommandSender s, HorseStatsRecord statsRecord, boolean useExactStats, boolean useVanillaStats) {
-		double jumpStrength = statsRecord.getJumpStrength();
+		Double jumpStrength = statsRecord.getJumpStrength();
 		if (!useExactStats) {
 			double maxJumpStrength = HorseStatisticEnum.MAX_JUMP_STRENGTH.getValue(useVanillaStats);
-			int jumpRatio = (int) ((jumpStrength / maxJumpStrength) * 100);
-			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.JUMP) {{ setAmount(jumpRatio); setSpaceCount(1); }}, true);
+			double jumpRatio = jumpStrength / maxJumpStrength;
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.JUMP) {{ setAmount(jumpRatio); setSpaceCount(1); setUsePercentage(true); }}, true);
 		}
 		else {
-			String jumpInfo = String.format(Locale.US, "%.3f", jumpStrength);
-			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.JUMP_EXACT) {{ setSpaceCount(1); setValue(jumpInfo); }}, true);
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.JUMP) {{ setAmount(jumpStrength); setSpaceCount(1); setArithmeticPrecision(3); }}, true);
 		}
 	}
 	

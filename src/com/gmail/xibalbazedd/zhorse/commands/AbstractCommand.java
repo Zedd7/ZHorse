@@ -632,15 +632,23 @@ public abstract class AbstractCommand {
 		
 		double minSpeed = HorseStatisticEnum.MIN_SPEED.getValue(useVanillaStats);
 		double maxSpeed = HorseStatisticEnum.MAX_SPEED.getValue(useVanillaStats);
-		if (!useExactStats && (speed >= (minSpeed / maxSpeed) * 100 && speed <= 100)) {
-			return true;
-		}
-		else if (speed >= minSpeed && speed <= maxSpeed) {
-			return true;
+		if (useExactStats) {
+			if (speed >= minSpeed && speed <= maxSpeed) {
+				return true;
+			}
+			else {
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.INVALID_SPEED_ARGUMENT) {{ setAmount(minSpeed); setMax(maxSpeed); setArithmeticPrecision(3); }});
+				return false;
+			}
 		}
 		else {
-			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.INVALID_SPEED_ARGUMENT) {{ setAmount((int) Math.ceil((minSpeed / maxSpeed) * 100)); setMax(100); }});
-			return false;
+			if (speed >= (minSpeed / maxSpeed) * 100 && speed <= 100) {
+				return true;
+			}
+			else {
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.INVALID_SPEED_ARGUMENT) {{ setAmount(minSpeed / maxSpeed); setMax(1); setUsePercentage(true); }});
+				return false;
+			}		
 		}
 	}
 	
@@ -649,15 +657,23 @@ public abstract class AbstractCommand {
 		
 		double minJumpStrength = HorseStatisticEnum.MIN_JUMP_STRENGTH.getValue(useVanillaStats);
 		double maxJumpStrength = HorseStatisticEnum.MAX_JUMP_STRENGTH.getValue(useVanillaStats);
-		if (!useExactStats && (jumpStrength >= (minJumpStrength / maxJumpStrength) * 100 && jumpStrength <= 100)) {
-			return true;
-		}
-		else if (jumpStrength >= minJumpStrength && jumpStrength <= maxJumpStrength) {
-			return true;
+		if (useExactStats) {
+			if (jumpStrength >= minJumpStrength && jumpStrength <= maxJumpStrength) {
+				return true;
+			}
+			else {
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.INVALID_JUMP_ARGUMENT) {{ setAmount(minJumpStrength); setMax(maxJumpStrength); setArithmeticPrecision(3); }});
+				return false;
+			}
 		}
 		else {
-			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.INVALID_JUMP_ARGUMENT) {{ setAmount((int) Math.ceil((minJumpStrength / maxJumpStrength) * 100)); setMax(100); }});
-			return false;
+			if (jumpStrength >= (minJumpStrength / maxJumpStrength) * 100 && jumpStrength <= 100) {
+				return true;
+			}
+			else {
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.INVALID_JUMP_ARGUMENT) {{ setAmount(minJumpStrength / maxJumpStrength); setMax(1); setUsePercentage(true); }});
+				return false;
+			}
 		}
 	}
 	
@@ -828,7 +844,7 @@ public abstract class AbstractCommand {
 		sendHorseOptionList(HorseVariantEnum.getAllCodeArray(), LocaleEnum.LIST_HORSE_VARIANT);
 	}
 	
-	protected <T> void sendHorseOptionList (T[] horseOptionArray, LocaleEnum index) {
+	protected <T> void sendHorseOptionList(T[] horseOptionArray, LocaleEnum index) {
 		String horseOptionArrayMessage = "";
 		for (int i = 0; i < horseOptionArray.length; i++) {
 			final String horseOption = horseOptionArray[i].toString().toLowerCase();

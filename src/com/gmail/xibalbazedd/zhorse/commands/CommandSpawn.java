@@ -221,12 +221,12 @@ public class CommandSpawn extends AbstractCommand {
 					if (speedStat != null) {
 						valid &= isStatSpeedValid(speedStat);
 						if (valid) {
-							if (!useExactStats) {
-								double maxSpeed = HorseStatisticEnum.MAX_SPEED.getValue(useVanillaStats);
-								speed = (speedStat * maxSpeed) / 100;
+							if (useExactStats) {
+								speed = speedStat;
 							}
 							else {
-								speed = speedStat;
+								double maxSpeed = HorseStatisticEnum.MAX_SPEED.getValue(useVanillaStats);
+								speed = (speedStat * maxSpeed) / 100;
 							}
 						}
 					}
@@ -234,12 +234,12 @@ public class CommandSpawn extends AbstractCommand {
 					if (jumpStat != null) {
 						valid &= isStatJumpStrengthValid(jumpStat);
 						if (valid) {
-							if (!useExactStats) {
-								double maxJumpStrength = HorseStatisticEnum.MAX_JUMP_STRENGTH.getValue(useVanillaStats);
-								jumpStrength = (jumpStat * maxJumpStrength) / 100;
+							if (useExactStats) {
+								jumpStrength = jumpStat;
 							}
 							else {
-								jumpStrength = jumpStat;
+								double maxJumpStrength = HorseStatisticEnum.MAX_JUMP_STRENGTH.getValue(useVanillaStats);
+								jumpStrength = (jumpStat * maxJumpStrength) / 100;
 							}
 						}
 					}

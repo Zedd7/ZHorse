@@ -1,20 +1,28 @@
 package com.gmail.xibalbazedd.zhorse.utils;
 
+import java.math.RoundingMode;
+import java.text.NumberFormat;
+import java.util.Locale;
+
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
 
 public class MessageConfig {
 	
 	private LocaleEnum index;
 	
-	private Integer amount;
+	private int arithmeticPrecision = 0;
+	private int spaceCount = 0;
+	private boolean usePercentage = false;
+	
+	private Number amount;
 	private String currencySymbol;
 	private String horseName;
 	private String horseID;
 	private String language;
-	private Integer max;
+	private Number max;
 	private String permission;
 	private String playerName;
-	private Integer spaceCount;
+	
 	private String value;
 	
 	public MessageConfig(LocaleEnum index) {
@@ -28,12 +36,36 @@ public class MessageConfig {
 	public void setIndex(LocaleEnum index) {
 		this.index = index;
 	}
+	
+	public int getArithmeticPrecision() {
+		return arithmeticPrecision;
+	}
+
+	public void setArithmeticPrecision(int arithmeticPrecision) {
+		this.arithmeticPrecision = arithmeticPrecision;
+	}
+	
+	public int getSpaceCount() {
+		return spaceCount;
+	}
+
+	public void setSpaceCount(int spaceCount) {
+		this.spaceCount = spaceCount;
+	}
+	
+	public boolean shouldUsePercentage() {
+		return usePercentage;
+	}
+
+	public void setUsePercentage(boolean usePercentage) {
+		this.usePercentage = usePercentage;
+	}
 
 	public String getAmount() {
 		return getFlagContent(amount);
 	}
 
-	public void setAmount(Integer amount) {
+	public void setAmount(Number amount) {
 		this.amount = amount;
 	}
 
@@ -56,6 +88,10 @@ public class MessageConfig {
 	public String getHorseID() {
 		return getFlagContent(horseID);
 	}
+	
+	public void setHorseID(Integer horseID) {
+		setHorseID(Integer.toString(horseID));
+	}
 
 	public void setHorseID(String horseID) {
 		this.horseID = horseID;
@@ -73,7 +109,7 @@ public class MessageConfig {
 		return getFlagContent(max);
 	}
 
-	public void setMax(Integer max) {
+	public void setMax(Number max) {
 		this.max = max;
 	}
 	
@@ -93,14 +129,6 @@ public class MessageConfig {
 		this.playerName = playerName;
 	}
 
-	public int getSpaceCount() {
-		return spaceCount;
-	}
-
-	public void setSpaceCount(Integer spaceCount) {
-		this.spaceCount = spaceCount;
-	}
-
 	public String getValue() {
 		return getFlagContent(value);
 	}
@@ -110,7 +138,24 @@ public class MessageConfig {
 	}
 	
 	private String getFlagContent(Object token) {
-		return token != null ? token.toString() : "";
+		String flagContent = "";
+		if (token != null) {
+			if (token instanceof Number) {
+				NumberFormat numberFormatter = usePercentage ? NumberFormat.getPercentInstance(Locale.US) : NumberFormat.getNumberInstance(Locale.US);
+				numberFormatter.setMaximumFractionDigits(arithmeticPrecision);
+				numberFormatter.setMinimumFractionDigits(arithmeticPrecision);
+				numberFormatter.setRoundingMode(RoundingMode.HALF_UP);
+				/*if (token instanceof Double) {
+					String format = "%." + arithmeticPrecision + "f";
+					flagContent = String.format(Locale.US, format, token);
+				}*/
+				flagContent = numberFormatter.format(token);
+			}
+			else {
+				flagContent = token.toString();
+			}
+		}
+		return flagContent;
 	}
 
 }
