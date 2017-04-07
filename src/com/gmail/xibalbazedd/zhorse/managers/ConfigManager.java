@@ -148,18 +148,18 @@ public class ConfigManager {
 		String groupName = null;
 		if (playerUUID != null) {
 			Player p = zh.getServer().getPlayer(playerUUID);
-			if (p != null && p.hasPlayedBefore()) {
+			if (p != null) {
 				groupName = zh.getPM().getPrimaryGroup(p);
 			}
 			else {
 				OfflinePlayer op = zh.getServer().getOfflinePlayer(playerUUID);
-				if (op != null && op.hasPlayedBefore()) {
+				if (op.hasPlayedBefore()) {
 					String world = zh.getServer().getWorlds().get(0).getName();
 					groupName = zh.getPM().getPrimaryGroup(world, op);
 				}
 			}
 			groupName = getExactGroupName(groupName);
-			if (p != null && p.hasPlayedBefore() && (groupName == null || !config.contains(KeyWordEnum.GROUPS_PREFIX.getValue() + groupName))) {
+			if (p != null && (groupName == null || !config.contains(KeyWordEnum.GROUPS_PREFIX.getValue() + groupName))) {
 				groupName = getSurrogateGroupName(p);
 			}
 		}
