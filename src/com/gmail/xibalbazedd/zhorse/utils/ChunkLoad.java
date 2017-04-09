@@ -16,7 +16,10 @@ public class ChunkLoad {
 		for (Entity entity : chunk.getEntities()) {
 			if (entity instanceof AbstractHorse) {
 				AbstractHorse horse = (AbstractHorse) entity;
-				if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
+				if (!horse.getMetadata("zhorse_duplicate").isEmpty()) {
+					horse.remove();
+				}
+				else if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
 					 zh.getHM().trackHorse(horse);					 
 					 UUID horseUUID = horse.getUniqueId();
 					 Location horseLocation = horse.getLocation();

@@ -65,6 +65,7 @@ public class CommandFriend extends AbstractCommand {
 							if (!zh.getDM().isFriendOf(p.getUniqueId(), targetUUID)) {
 								zh.getDM().registerFriend(new FriendRecord(p.getUniqueId().toString(), targetUUID.toString()));
 								zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.FRIEND_ADDED) {{ setPlayerName(targetName); }});
+								zh.getMM().sendPendingMessage(targetUUID, new MessageConfig(LocaleEnum.FRIEND_ADDED_REVERSE) {{ setPlayerName(p.getName()); }});
 								zh.getEM().payCommand(p, command);
 							}
 							else {
@@ -91,6 +92,7 @@ public class CommandFriend extends AbstractCommand {
 							if (zh.getDM().isFriendOf(p.getUniqueId(), targetUUID)) {
 								zh.getDM().removeFriend(p.getUniqueId(), targetUUID);
 								zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.FRIEND_REMOVED) {{ setPlayerName(targetName); }});
+								zh.getMM().sendPendingMessage(targetUUID, new MessageConfig(LocaleEnum.FRIEND_REMOVED_REVERSE) {{ setPlayerName(p.getName()); }});
 								zh.getEM().payCommand(p, command);
 							}
 							else {

@@ -22,6 +22,7 @@ import org.bukkit.entity.Horse;
 import org.bukkit.entity.LeashHitch;
 import org.bukkit.entity.Llama;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.database.HorseInventoryRecord;
@@ -282,6 +283,7 @@ public class HorseManager {
 	
 	public void removeHorse(AbstractHorse horse, String horseName, String ownerName) {		
 		boolean chunkWasLoaded = loadChunk(horse.getLocation());
+		horse.setMetadata("zhorse_duplicate", new FixedMetadataValue(zh, horse.getUniqueId()));
 		horse.remove(); // Entity::remove fails when the chunk is not loaded
 		if (!chunkWasLoaded) {
 			unloadChunk(horse.getLocation());
