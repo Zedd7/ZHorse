@@ -220,6 +220,8 @@ public class HorseManager {
 	}
 
 	private void assignStats(AbstractHorse horse, HorseStatsRecord statsRecord) {
+		horse.setOwner(zh.getServer().getOfflinePlayer(zh.getDM().getOwnerUUID(horse.getUniqueId())));
+		
 		horse.setAge(statsRecord.getAge());
 		horse.setBreed(statsRecord.canBreed());
 		horse.setCanPickupItems(statsRecord.canPickupItems());
