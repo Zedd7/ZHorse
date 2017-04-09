@@ -32,6 +32,8 @@ import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerUnleashEntityEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
@@ -251,6 +253,7 @@ public class EventManager implements Listener {
 			
 			if (!horse.isAdult() && horse.getPassengers().isEmpty() && zh.getCM().isFoalRidingAllowed()) {
 				if (!p.isSneaking() // Allow to give food, open inventory, put on leash or place chest
+						&& !(horse.isLeashed() && horse.getLeashHolder().equals(p))
 						&& getHoldingHand(p, new ItemStack(Material.LEASH)).equals(HandEnum.NONE)
 						&& getHoldingHand(p, new ItemStack(Material.SADDLE)).equals(HandEnum.NONE)
 						&& getHoldingHand(p, new ItemStack(Material.IRON_BARDING)).equals(HandEnum.NONE)
@@ -272,6 +275,20 @@ public class EventManager implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		new PlayerJoin(zh, e.getPlayer());
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerKick(PlayerKickEvent e) {
+		if (e.getPlayer().getVehicle() != null) {
+			e.getPlayer().getVehicle().eject();
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerQuit(PlayerQuitEvent e) {
+		if (e.getPlayer().getVehicle() != null) {
+			e.getPlayer().getVehicle().eject();
+		}
 	}
 	
 	@EventHandler
