@@ -225,6 +225,10 @@ public class ConfigManager {
 		return config.getBoolean(KeyWordEnum.MUTE_CONSOLE.getValue(), false);
 	}
 	
+	public boolean isFoalRidingAllowed() {
+		return config.getBoolean(KeyWordEnum.ALLOW_FOAL_RIDING.getValue(), true);
+	}
+	
 	public boolean isHorseNameAllowed() {
 		return getMaximumHorseNameLength() != 0;
 	}

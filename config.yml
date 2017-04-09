@@ -126,12 +126,6 @@ Groups:
 
 HorseNames:
 
-  # The default name given to horses if random naming is disabled.
-  default-name: DefaultHorseName
-
-  # Set to false to disable random naming.
-  give-random-names: true
-
   # The maximum lenght of a horse's name.
   # If set to 1-36, horse naming is optional.
   # If set to 0, horse naming is forbbiden.
@@ -141,6 +135,12 @@ HorseNames:
   # If set to more than 0, horse naming is mandatory.
   # If set to 0, horse naming is unrestricted.
   minimum-length: 0
+
+  # The default name given to horses if random naming is disabled.
+  default-name: DefaultHorseName
+
+  # Set to false to disable random naming.
+  give-random-names: true
 
   # The names that are given randomly if random naming is enabled.
   random-names:
@@ -257,6 +257,9 @@ Protections:
 
 Settings:
 
+  # Set to false to block foal riding and claiming.
+  allow-foal-riding: true
+
   # Set to false to block leashes on undead horses. (tamed only !)
   allow-leash-on-undead-horse: true
 
@@ -301,9 +304,8 @@ Settings:
   # The new method remove horses and respawn them at destination.
   use-old-teleport-method: false
   
-  # Set to true to use exact, unrounded horse stats.
+  # Set to true to use exact, unrounded horse stats (without %).
   # Does not affect actual horse stats, only apply to /zh spawn and /zh info.
-  # Example : The display of a speed of 42% will be replaced by 0.421.
   use-exact-stats: false
   
   # Set to false to use Bukkit thresholds for horse stats.

@@ -9,6 +9,7 @@ public enum KeyWordEnum {
 	ZH_PREFIX("zh."),
 	
 	/* config.yml keywords */
+	ALLOW_FOAL_RIDING("Settings.allow-foal-riding"),
 	ALLOW_LEASH_ON_UNDEAD_HORSE("Settings.allow-leash-on-undead-horse"),
 	AVAILABLE_LANGUAGES("Languages.available"),
 	AUTO_ADMIN_SUFFIX(".auto-admin"),
@@ -24,7 +25,7 @@ public enum KeyWordEnum {
 	CROSSABLE_SUFFIX(".crossable"),
 	DATABASE("Databases.mysql-config.database"),
 	DEFAULT_LANGUAGE("Languages.default"),
-	DEFAULT_NAME("HorseNames.default-NAME"),
+	DEFAULT_NAME("HorseNames.default-name"),
 	ENABLED_SUFFIX(".enabled"),
 	FILENAME("Databases.sqlite-config.filename"),
 	GIVE_RANDOM_NAMES("HorseNames.give-random-names"),

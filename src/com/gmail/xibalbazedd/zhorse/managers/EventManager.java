@@ -237,16 +237,34 @@ public class EventManager implements Listener {
 			if (horse instanceof SkeletonHorse || horse instanceof ZombieHorse) {
 				if (!horse.isLeashed() && zh.getCM().isLeashOnUndeadHorseAllowed()) {
 					HandEnum holdingHand = getHoldingHand(p, new ItemStack(Material.LEASH));
-					if (holdingHand.equals(HandEnum.MAIN) || holdingHand.equals(HandEnum.OFF)) { // if player is holding leash
+					if (!holdingHand.equals(HandEnum.NONE)) { // If player is holding a leash
 						cancelEvent(e, p, true, true);
-						PlayerLeashDeadEntityEvent ev = new PlayerLeashDeadEntityEvent(horse, p, p);
-						zh.getServer().getPluginManager().callEvent(ev);
-						if (!ev.isCancelled()) {
+						PlayerLeashEntityEvent event = new PlayerLeashEntityEvent(horse, p, p);
+						zh.getServer().getPluginManager().callEvent(event);
+						if (!event.isCancelled()) {
 							consumeItem(p, holdingHand);
 							horse.setLeashHolder(p);
 						}
 					}
-				}					
+				}
+			}
+			
+			if (!horse.isAdult() && horse.getPassengers().isEmpty() && zh.getCM().isFoalRidingAllowed()) {
+				if (!p.isSneaking() // Allow to give food, open inventory, put on leash or place chest
+						&& getHoldingHand(p, new ItemStack(Material.LEASH)).equals(HandEnum.NONE)
+						&& getHoldingHand(p, new ItemStack(Material.SADDLE)).equals(HandEnum.NONE)
+						&& getHoldingHand(p, new ItemStack(Material.IRON_BARDING)).equals(HandEnum.NONE)
+						&& getHoldingHand(p, new ItemStack(Material.GOLD_BARDING)).equals(HandEnum.NONE)
+						&& getHoldingHand(p, new ItemStack(Material.DIAMOND_BARDING)).equals(HandEnum.NONE)
+						&& getHoldingHand(p, new ItemStack(Material.CHEST)).equals(HandEnum.NONE))
+				{
+					cancelEvent(e, p, true, true);
+					VehicleEnterEvent event = new VehicleEnterEvent(horse, p);
+					zh.getServer().getPluginManager().callEvent(event);
+					if (!event.isCancelled()) {
+						horse.addPassenger(p);
+					}
+				}
 			}
 		}
 	}
@@ -389,15 +407,6 @@ public class EventManager implements Listener {
 			}
 			
 		}.runTaskLater(zh, 0);
-	}
-	
-	/* Allow to cancel onPlayerLeashEntityEvent */
-	private class PlayerLeashDeadEntityEvent extends PlayerLeashEntityEvent {
-		
-		public PlayerLeashDeadEntityEvent(Entity leashedEntity, Entity leashHolder, Player p) {
-			super(leashedEntity, leashHolder, p);
-		}
-		
 	}
 	
 	private enum HandEnum {
