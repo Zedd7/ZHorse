@@ -56,6 +56,7 @@ Messages:
   horseGiven: "<yellow>You gave <gold><horse><yellow> to <gold><player><yellow>."
   horseHealed: "<gold><horse><yellow> has been fully healed."
   horseIsProtected: "<gold><horse><yellow> is protected against attacks."
+  horseKilled: "<gold><horse><yellow> was just killed by <gold><player><yellow>."
   horseLeashed: "<gold><horse><yellow> is leashed to a fence."
   horseLeashedBy: "<gold><horse><yellow> is leashed by <gold><player><yellow>."
   horseLocked: "<gold><horse><yellow> is now protected against thieves."

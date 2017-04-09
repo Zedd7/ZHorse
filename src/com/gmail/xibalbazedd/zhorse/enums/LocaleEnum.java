@@ -53,6 +53,7 @@ public enum LocaleEnum {
 	HORSE_GIVEN("Messages.horseGiven"),
 	HORSE_HEALED("Messages.horseHealed"),
 	HORSE_IS_PROTECTED("Messages.horseIsProtected"),
+	HORSE_KILLED("Messages.horseKilled"),
 	HORSE_LEASHED("Messages.horseLeashed"),
 	HORSE_LEASHED_BY("Messages.horseLeashedBy"),
 	HORSE_LOCKED("Messages.horseLocked"),
