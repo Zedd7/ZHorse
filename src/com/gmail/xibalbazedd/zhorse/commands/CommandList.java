@@ -43,15 +43,18 @@ public class CommandList extends AbstractCommand {
 					String horseID = Integer.toString(i); // order verified with "ORDER BY" SQL instruction
 					String horseName = horseNameList.get(i - 1);	
 					UUID horseUUID = zh.getDM().getHorseUUID(targetUUID, Integer.parseInt(horseID));
-					String status = "";
-					if (zh.getDM().isHorseProtected(horseUUID)) {
-						status += zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.PROTECTED) {{ setSpaceCount(1); }}, true);
-					}
+					String status = "";					
 					if (zh.getDM().isHorseLocked(horseUUID)) {
 						status += zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.LOCKED) {{ setSpaceCount(1); }}, true);
 					}
 					else if (zh.getDM().isHorseShared(horseUUID)) {
 						status += zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.SHARED) {{ setSpaceCount(1); }}, true);
+					}
+					else {
+						status += zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.RESTRICTED) {{ setSpaceCount(1); }}, true);
+					}
+					if (zh.getDM().isHorseProtected(horseUUID)) {
+						status += zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.PROTECTED) {{ setSpaceCount(1); }}, true);
 					}
 					final String message = status;
 					if (horseID.equals(favorite)) {

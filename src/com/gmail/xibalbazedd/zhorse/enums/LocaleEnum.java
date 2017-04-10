@@ -155,6 +155,7 @@ public enum LocaleEnum {
 	OWNER("Horse informations.owner"),
 	PRICE("Horse informations.price"),
 	PROTECTED("Horse informations.protected"),
+	RESTRICTED("Horse informations.restricted"),
 	SHARED("Horse informations.shared"),
 	SPEED("Horse informations.speed"),
 	STATUS("Horse informations.status"),

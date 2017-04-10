@@ -146,21 +146,22 @@ public class CommandInfo extends AbstractCommand {
 	}
 	
 	private void displayStatus(ZHorse zh, CommandSender s, HorseRecord horseRecord) {
-		String status = "";
-		if (horseRecord.isProtected()) {
-			status += zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.PROTECTED) {{ setSpaceCount(0); }}, true);
-		}
-		int spaceCount = status.isEmpty() ? 0 : 1;
+		String status = "";		
 		if (horseRecord.isLocked()) {
-			status += zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.LOCKED) {{ setSpaceCount(spaceCount); }}, true);
+			status += zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.LOCKED) {{ setSpaceCount(0); }}, true);
 		}
 		else if (horseRecord.isShared()) {
-			status += zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.SHARED) {{ setSpaceCount(spaceCount); }}, true);
+			status += zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.SHARED) {{ setSpaceCount(0); }}, true);
 		}
-		if (!status.isEmpty()) {
-			final String message = status;
-			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STATUS) {{ setSpaceCount(1); setValue(message); }}, true);
+		else {
+			status += zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.RESTRICTED) {{ setSpaceCount(0); }}, true);
 		}
+		int spaceCount = status.isEmpty() ? 0 : 1;
+		if (horseRecord.isProtected()) {
+			status += zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.PROTECTED) {{ setSpaceCount(spaceCount); }}, true);
+		}
+		final String message = status;
+		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STATUS) {{ setSpaceCount(1); setValue(message); }}, true);
 	}
 	
 	public static void displayPrice(ZHorse zh, CommandSender s, AbstractHorse horse) {
