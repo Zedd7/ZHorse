@@ -119,20 +119,6 @@ public class ConfigManager {
 		return config.getString(KeyWordEnum.DEFAULT_LANGUAGE.getValue(), null);
 	}
 	
-	private String getExactGroupName(String groupName) {
-		if (groupName != null) {
-			ConfigurationSection cs = config.getConfigurationSection(KeyWordEnum.GROUPS.getValue());
-			if (cs != null) {
-				for (String exactGroupName : cs.getKeys(false)) {
-					if (groupName.equalsIgnoreCase(exactGroupName)) {
-						return exactGroupName;
-					}
-				}
-			}
-		}
-		return groupName;
-	}
-	
 	public String getGroupColorCode(UUID playerUUID) {
 		String colorCode = "<WHITE>";
 		if (playerUUID != null) {
@@ -142,28 +128,6 @@ public class ConfigManager {
 		    }
 		}
 		return colorCode;
-	}
-	
-	private String getGroupName(UUID playerUUID) {
-		String groupName = null;
-		if (playerUUID != null) {
-			Player p = zh.getServer().getPlayer(playerUUID);
-			if (p != null) {
-				groupName = zh.getPM().getPrimaryGroup(p);
-			}
-			else {
-				OfflinePlayer op = zh.getServer().getOfflinePlayer(playerUUID);
-				if (op.hasPlayedBefore()) {
-					String world = zh.getServer().getWorlds().get(0).getName();
-					groupName = zh.getPM().getPrimaryGroup(world, op);
-				}
-			}
-			groupName = getExactGroupName(groupName);
-			if (p != null && (groupName == null || !config.contains(KeyWordEnum.GROUPS_PREFIX.getValue() + groupName))) {
-				groupName = getSurrogateGroupName(p);
-			}
-		}
-		return groupName;
 	}
 	
 	public int getMaximumHorseNameLength() {
@@ -190,21 +154,6 @@ public class ConfigManager {
 			randomHorseName = randomHorseNameList.get(random.nextInt(randomHorseNameList.size()));
 		}
 		return randomHorseName;
-	}
-	
-	private String getSurrogateGroupName(Player p) {
-		if (p != null) {
-			ConfigurationSection cs = config.getConfigurationSection(KeyWordEnum.GROUPS.getValue());
-			if (cs != null) {
-				for (String groupName : cs.getKeys(false)) {
-					String permission = config.getString(KeyWordEnum.GROUPS_PREFIX.getValue() + groupName + KeyWordEnum.PERMISSION_SUFFIX.getValue(), null);
-					if (permission != null && zh.getPM().has(p, permission)) {
-						return groupName;
-					}
-				}
-			}
-		}
-		return null;
 	}
 	
 	public boolean isAutoAdminModeEnabled(String command) {
@@ -311,6 +260,57 @@ public class ConfigManager {
 	
 	public boolean shouldUseVanillaStats() {
 		return config.getBoolean(KeyWordEnum.USE_VANILLA_STATS.getValue(), true);
+	}
+	
+	private String getExactGroupName(String groupName) {
+		if (groupName != null) {
+			ConfigurationSection cs = config.getConfigurationSection(KeyWordEnum.GROUPS.getValue());
+			if (cs != null) {
+				for (String exactGroupName : cs.getKeys(false)) {
+					if (groupName.equalsIgnoreCase(exactGroupName)) {
+						return exactGroupName;
+					}
+				}
+			}
+		}
+		return groupName;
+	}
+	
+	private String getGroupName(UUID playerUUID) {
+		String groupName = null;
+		if (playerUUID != null) {
+			Player p = zh.getServer().getPlayer(playerUUID);
+			if (p != null) {
+				groupName = zh.getPM().getPrimaryGroup(p);
+			}
+			else {
+				OfflinePlayer op = zh.getServer().getOfflinePlayer(playerUUID);
+				if (op.hasPlayedBefore()) {
+					String world = zh.getServer().getWorlds().get(0).getName();
+					groupName = zh.getPM().getPrimaryGroup(world, op);
+				}
+			}
+			groupName = getExactGroupName(groupName);
+			if (p != null && (groupName == null || !config.contains(KeyWordEnum.GROUPS_PREFIX.getValue() + groupName))) {
+				groupName = getSurrogateGroupName(p);
+			}
+		}
+		return groupName;
+	}
+	
+	private String getSurrogateGroupName(Player p) {
+		if (p != null) {
+			ConfigurationSection cs = config.getConfigurationSection(KeyWordEnum.GROUPS.getValue());
+			if (cs != null) {
+				for (String groupName : cs.getKeys(false)) {
+					String permission = config.getString(KeyWordEnum.GROUPS_PREFIX.getValue() + groupName + KeyWordEnum.PERMISSION_SUFFIX.getValue(), null);
+					if (permission != null && zh.getPM().has(p, permission)) {
+						return groupName;
+					}
+				}
+			}
+		}
+		return null;
 	}
 	
 	public boolean checkConformity() {

@@ -109,6 +109,7 @@ Messages:
   missingLanguage: "<yellow>Je moet een taal meegeven. Kies één van de volgende : <value>"
   missingPermission: "<yellow>Je hebt de <gold><perm><yellow> toestemming niet."
   missingPermissionOther: "<gold><player><yellow> heeft de <gold><perm><yellow> toestemming niet."
+  missingStatsDisplayMode: "<yellow>You must provide a stats display mode. Please use one the followings : <value><yellow>."
   missingTarget: "<yellow>Je moet een spelernaam opgeven."
   noFriend: "<yellow>Je hebt geen vrienden."
   noFriendOther: "<gold><player><yellow> heeft geen vrienden."
@@ -124,6 +125,10 @@ Messages:
   pluginReloaded: "<gold><value><yellow> is succesvol herladen."
   pluginReloadedWithErrors: "<gold><value><yellow> is herladen met fouten."
   samePlayer: "<yellow>Je kan jezelf niet selecteren."
+  statsDisplayModeAlreadyUsed: "<yellow>You are already using the display mode <gold><value><yellow>."
+  statsDisplayModeAlreadyUsedOther: "<gold><player><yellow> is already using the display mode <gold><value><yellow>."
+  statsDisplayModeEdited: "<yellow>You are now using the display mode <gold><value><yellow>."
+  statsDisplayModeEditedOther: "<gold><player><yellow> is now using the display mode <gold><value><yellow>."
   teleportedToHorse: "<yellow>Je bent naar <gold><horse><yellow> geteleporteerd."
   unknownAdminCommand: "<gold><value><yellow> is geen /zh admin sub-commando."
   unknownCommand: "<yellow>Dit is geen ZHorse commando."
@@ -138,6 +143,7 @@ Messages:
   unknownPlayer: "<gold><player><yellow> is niet geregistreerd."
   unknownSettingsCommand: "<gold><value><yellow> is geen /zh settings sub-commando."
   unknownSpawnArgument: "<gold><value><yellow> is geen geldig argument voor /zh spawn."
+  unknownStatsDisplayMode: "<yellow>This is not a supported display mode. Please use one the followings : <value>"
   worldDisabled: "<gold>ZHorse<yellow> is uitgeschakeld in deze wereld."
   worldUncrossable: "<yellow>Teleportatie tussen youwe wereld en <gold><horse><yellow>'s wereld is geblokkeerd."
 
@@ -202,6 +208,7 @@ Friend command descriptions:
 Settings command descriptions:
   favorite: "<gold>/zh settings favorite<gray>: <yellow>Bepaal je favoriete paard."
   language: "<gold>/zh settings language<gray>: <yellow>ZHorses taal instellen."
+  stats: "<gold>/zh settings stats<gray>: <yellow>Define horse stats display mode."
   swap: "<gold>/zh settings swap<gray>: <yellow>Twee paard ID's verwisselen."
 
 Command usages:
@@ -240,4 +247,5 @@ Friend command usages:
 Settings command usages:
   favorite: "<gold>/zh settings favorite<yellow> (-i) paardID"
   language: "<gold>/zh settings language<yellow> value"
+  stats: "<gold>/zh settings stats<yellow> displayMode"
   swap: "<gold>/zh settings swap<yellow> paardID1 paardID2"

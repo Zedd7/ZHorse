@@ -16,6 +16,10 @@ import net.md_5.bungee.api.ChatColor;
 
 public class CommandSettings extends AbstractCommand {
 	
+	private static final String EXACT_DISPLAY_MODE = "exact";
+	private static final String ROUNDED_DISPLAY_MODE = "rounded";
+	private static final String[] STATS_DISPLAY_MODE_ARRAY = {EXACT_DISPLAY_MODE, ROUNDED_DISPLAY_MODE};
+	
 	private String fullCommand;
 	private String subCommand;
 
@@ -42,14 +46,18 @@ public class CommandSettings extends AbstractCommand {
 	private void execute() {
 		if ((!targetMode || samePlayer || hasPermissionAdmin(false)) && zh.getEM().canAffordCommand(p, command)) {
 			if (!argument.isEmpty()) {
-				subCommand = argument.contains(" ") ? argument.substring(0, argument.indexOf(" ")) : argument;
-				if (subCommand.equalsIgnoreCase(CommandSettingsEnum.LANGUAGE.getName())) {
+				subCommand = argument.contains(" ") ? argument.split(" ")[0] : argument;
+				if (subCommand.equalsIgnoreCase((CommandSettingsEnum.FAVORITE.getName()))) {
+					fullCommand = command + KeyWordEnum.DOT.getValue() + CommandSettingsEnum.LANGUAGE.getName();
+					setFavorite();
+				}
+				else if (subCommand.equalsIgnoreCase(CommandSettingsEnum.LANGUAGE.getName())) {
 					fullCommand = command + KeyWordEnum.DOT.getValue() + CommandSettingsEnum.FAVORITE.getName().toLowerCase();
 					setLanguage();
 				}
-				else if (subCommand.equalsIgnoreCase((CommandSettingsEnum.FAVORITE.getName()))) {
-					fullCommand = command + KeyWordEnum.DOT.getValue() + CommandSettingsEnum.LANGUAGE.getName();
-					setFavorite();
+				else if (subCommand.equalsIgnoreCase((CommandSettingsEnum.STATS.getName()))) {
+					fullCommand = command + KeyWordEnum.DOT.getValue() + CommandSettingsEnum.STATS.getName();
+					setStatsDisplay();
 				}
 				else if (subCommand.equalsIgnoreCase((CommandSettingsEnum.SWAP.getName()))) {
 					fullCommand = command + KeyWordEnum.DOT.getValue() + CommandSettingsEnum.SWAP.getName();
@@ -136,6 +144,52 @@ public class CommandSettings extends AbstractCommand {
 		}
 	}
 	
+	private void setStatsDisplay() {
+		if (hasPermission(s, fullCommand , true, false)) {
+			if (argument.split(" ").length == 2) {
+				String displayMode = argument.substring(argument.indexOf(" ") + 1);
+				boolean validDisplayMode = false;
+				Boolean shouldDisplayExactStats = null;
+				if (displayMode.equalsIgnoreCase(EXACT_DISPLAY_MODE)) {
+					validDisplayMode = true;
+					shouldDisplayExactStats = true;
+				}
+				else if (displayMode.equalsIgnoreCase(ROUNDED_DISPLAY_MODE)) {
+					validDisplayMode = true;
+					shouldDisplayExactStats = false;
+				}
+				if (validDisplayMode) {
+					if (shouldDisplayExactStats ^ zh.getDM().isPlayerDisplayingExactStats(targetUUID)) { // XOR
+						zh.getDM().updatePlayerDisplayExactStats(targetUUID, shouldDisplayExactStats);
+						if (samePlayer) {
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STATS_DISPLAY_MODE_EDITED) {{ setValue(displayMode); }});
+						}
+						else {
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STATS_DISPLAY_MODE_EDITED_OTHER) {{ setValue(displayMode); setPlayerName(targetName); }});
+						}
+						zh.getEM().payCommand(p, command);
+					}
+					else {
+						if (samePlayer) {
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STATS_DISPLAY_MODE_ALREADY_USED) {{ setValue(displayMode); }});
+						}
+						else {
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STATS_DISPLAY_MODE_ALREADY_USED_OTHER) {{ setValue(displayMode); setPlayerName(targetName); }});
+						}
+					}
+				}
+				else {
+					displayAvailableStatsDisplayMode(LocaleEnum.UNKNOWN_STATS_DISPLAY_MODE);
+				}
+				
+			}
+			else {
+				displayAvailableStatsDisplayMode(LocaleEnum.MISSING_STATS_DISPLAY_MODE);
+				sendCommandUsage(subCommand, true, true);
+			}
+		}
+	}
+	
 	private void swapIDs() {
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (argument.split(" ").length == 3) {
@@ -186,6 +240,20 @@ public class CommandSettings extends AbstractCommand {
 		else {
 			zh.getMM().sendMessage(s, new MessageConfig(index) {{ setValue(message); }});
 		}
+	}
+	
+	private void displayAvailableStatsDisplayMode(LocaleEnum index) {
+		String availableStatsDisplayModesMessage = "";
+		for (int i = 0; i < STATS_DISPLAY_MODE_ARRAY.length; ++i) {
+			final String availableDisplayMode = STATS_DISPLAY_MODE_ARRAY[i];
+			availableStatsDisplayModesMessage += zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.AVAILABLE_OPTION_FORMAT) {{ setValue(availableDisplayMode); }}, true);
+			if (i < STATS_DISPLAY_MODE_ARRAY.length - 1) {
+				availableStatsDisplayModesMessage += ", ";
+			}
+		}
+		availableStatsDisplayModesMessage += ChatColor.RESET;
+		final String message = availableStatsDisplayModesMessage;
+		zh.getMM().sendMessage(s, new MessageConfig(index) {{ setValue(message); }});
 	}
 
 }

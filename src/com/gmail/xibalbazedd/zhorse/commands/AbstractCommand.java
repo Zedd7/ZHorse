@@ -57,7 +57,6 @@ public abstract class AbstractCommand {
 		this.s = s;
 		console = zh.getServer().getConsoleSender();
 		command = a[0].toLowerCase();
-		useExactStats = zh.getCM().shouldUseExactStats();
 		useVanillaStats = zh.getCM().shouldUseVanillaStats();
 	}
 	
@@ -523,9 +522,13 @@ public abstract class AbstractCommand {
 			p = (Player) s;
 			playerCommand = true;
 			if (!zh.getDM().isPlayerRegistered(p.getUniqueId())) {
-				PlayerRecord playerRecord = new PlayerRecord(p.getUniqueId().toString(), p.getName(), zh.getCM().getDefaultLanguage(), zh.getDM().getDefaultFavoriteHorseID());
+				String language = zh.getCM().getDefaultLanguage();
+				int favorite = zh.getDM().getDefaultFavoriteHorseID();
+				boolean displayExactStats = zh.getCM().shouldUseExactStats();
+				PlayerRecord playerRecord = new PlayerRecord(p.getUniqueId().toString(), p.getName(), language, favorite, displayExactStats);
 				zh.getDM().registerPlayer(playerRecord);
 			}
+			useExactStats = zh.getDM().isPlayerDisplayingExactStats(p.getUniqueId());
 		}
 		else if (!hideConsole) {
 			playerCommand = false;
@@ -776,9 +779,7 @@ public abstract class AbstractCommand {
 		String header = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.ADMIN_COMMAND_LIST_HEADER), true);
 		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HEADER_FORMAT) {{ setValue(header); }}, true);
 		for (CommandAdminEnum command : CommandAdminEnum.values()) {
-			String commandName = command.getName();
-			String permission = this.command + KeyWordEnum.DOT.getValue() + command.getName();				
-			sendCommandDescription(commandName, permission, true);
+			sendSubCommandDescription(command.getName());
 		}
 	}
 	
@@ -786,9 +787,7 @@ public abstract class AbstractCommand {
 		String header = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.FRIEND_COMMAND_LIST_HEADER), true);
 		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HEADER_FORMAT) {{ setValue(header); }}, true);
 		for (CommandFriendEnum command : CommandFriendEnum.values()) {
-			String commandName = command.getName();
-			String permission = this.command + KeyWordEnum.DOT.getValue() + command.getName();
-			sendCommandDescription(commandName, permission, true);
+			sendSubCommandDescription(command.getName());
 		}
 	}
 	
@@ -796,10 +795,14 @@ public abstract class AbstractCommand {
 		String header = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.SETTINGS_COMMAND_LIST_HEADER), true);
 		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HEADER_FORMAT) {{ setValue(header); }}, true);
 		for (CommandSettingsEnum command : CommandSettingsEnum.values()) {
-			String commandName = command.getName();
-			String permission = this.command + KeyWordEnum.DOT.getValue() + command.getName();
-			sendCommandDescription(commandName, permission, true);
+			sendSubCommandDescription(command.getName());
 		}
+	}
+	
+	protected void sendSubCommandDescription(String subCommandName) {
+		String commandName = subCommandName;
+		String permission = this.command + KeyWordEnum.DOT.getValue() + subCommandName;
+		sendCommandDescription(commandName, permission, true);
 	}
 	
 	protected void sendCommandUsage() {

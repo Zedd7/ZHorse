@@ -28,13 +28,15 @@ import com.gmail.xibalbazedd.zhorse.enums.DatabaseEnum;
 
 public class DataManager {
 	
-	private static final String TABLE_SCRIPTS_PATH = "res\\sql\\%s-table.sql";
+	private static final String TABLE_SCRIPTS_PATH = "res\\sql\\tables\\%s-table.sql";
+	private static final String PATCH_SCRIPTS_PATH = "res\\sql\\patches\\%s-patch.sql";
 	private static final String[] TABLE_ARRAY = {"player", "friend", "pending_message", "horse", "horse_stats", "inventory_item", "sale"};
+	private static final String[] PATCH_ARRAY = {"1.6.6"};
+	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 	
 	private ZHorse zh;
 	private SQLDatabaseConnector db;
 	private boolean connected = false;
-	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 	
 	public DataManager(ZHorse zh) {
 		this.zh = zh;
@@ -53,7 +55,10 @@ public class DataManager {
 			String databaseType = database != null ? database.getName() : "Unknown database";
 			zh.getLogger().severe(String.format("The database %s is not supported !", databaseType));
 		}
-		connected = db != null && db.isConnected() && updateTables();
+		connected = db != null && db.isConnected();
+		if (connected) {
+			executeSQLScripts();
+		}
 	}
 	
 	public void closeDatabase() {
@@ -62,21 +67,26 @@ public class DataManager {
 		}
 	}
 	
-	private boolean updateTables() {
-		boolean success = true;
-		String update = "";
-		String scriptsPath = TABLE_SCRIPTS_PATH.replace('\\', '/'); // Dark Magic Industries
-		for (String table : TABLE_ARRAY) {
-			try {
-				String scriptPath = String.format(scriptsPath, table);
-				update = IOUtils.toString(zh.getResource(scriptPath), "utf-8");
-				update = db.applyTablePrefix(update);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			success &= db.executeUpdate(update);
+	private void executeSQLScripts() {
+		String tableScriptsPath = TABLE_SCRIPTS_PATH.replace('\\', '/'); // Dark Magic Industries
+		String patchScriptsPath = PATCH_SCRIPTS_PATH.replace('\\', '/'); // Dark Magic Industries
+		for (String tableName : TABLE_ARRAY) {
+			executeSQLScript(tableScriptsPath, tableName, false);
 		}
-		return success;
+		for (String patchName : PATCH_ARRAY) {
+			executeSQLScript(patchScriptsPath, patchName, true);
+		}
+	}
+	
+	private void executeSQLScript(String folderPath, String scriptName, boolean hideExceptions) {
+		try {
+			String scriptPath = String.format(folderPath, scriptName);
+			String update = IOUtils.toString(zh.getResource(scriptPath), "utf-8");
+			String prefixedUpdate = db.applyTablePrefix(update);
+			db.executeUpdate(prefixedUpdate, hideExceptions);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public Integer getDefaultFavoriteHorseID() {
@@ -324,8 +334,13 @@ public class DataManager {
 	}
 	
 	public boolean isPendingMessageRegistered(UUID playerUUID, Date date) {
-		String query = String.format("SELECT 1 FROM prefix_pending_message WHERE uuid = \"%s\" AND date = \"%s\"", playerUUID, dateFormat.format(date));
+		String query = String.format("SELECT 1 FROM prefix_pending_message WHERE uuid = \"%s\" AND date = \"%s\"", playerUUID, DATE_FORMAT.format(date));
 		return db.hasResult(query);
+	}
+	
+	public boolean isPlayerDisplayingExactStats(UUID playerUUID) {
+		String query = String.format("SELECT display_exact_stats FROM prefix_player WHERE uuid = \"%s\"", playerUUID);
+		return db.getBooleanResult(query);
 	}
 	
 	public boolean isPlayerRegistered(String playerName) {
@@ -405,13 +420,13 @@ public class DataManager {
 	
 	public boolean registerPendingMessage(PendingMessageRecord messageRecord) {
 		String update = String.format("INSERT INTO prefix_pending_message VALUES (\"%s\", \"%s\", \"%s\")",
-				messageRecord.getUUID(), dateFormat.format(messageRecord.getDate()), messageRecord.getMessage());
+				messageRecord.getUUID(), DATE_FORMAT.format(messageRecord.getDate()), messageRecord.getMessage());
 		return db.executeUpdate(update);
 	}
 	
 	public boolean registerPlayer(PlayerRecord playerRecord) {
-		String update = String.format("INSERT INTO prefix_player VALUES (\"%s\", \"%s\", \"%s\", %d)",
-			playerRecord.getUUID(), playerRecord.getName(), playerRecord.getLanguage(), playerRecord.getFavorite());
+		String update = String.format("INSERT INTO prefix_player VALUES (\"%s\", \"%s\", \"%s\", %d, %d)",
+			playerRecord.getUUID(), playerRecord.getName(), playerRecord.getLanguage(), playerRecord.getFavorite(), playerRecord.displayExactStats() ? 1 : 0);
 		return db.executeUpdate(update);
 	}
 	
@@ -538,6 +553,11 @@ public class DataManager {
 	
 	public boolean updateSaleUUID(UUID oldHorseUUID, UUID newHorseUUID) {
 		String update = String.format("UPDATE prefix_sale SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
+		return db.executeUpdate(update);
+	}
+	
+	public boolean updatePlayerDisplayExactStats(UUID playerUUID, boolean displayExactStats) {
+		String update = String.format("UPDATE prefix_player SET display_exact_stats = %d WHERE uuid = \"%s\"", displayExactStats ? 1 : 0, playerUUID);
 		return db.executeUpdate(update);
 	}
 	

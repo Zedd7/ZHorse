@@ -168,8 +168,14 @@ public class ZHorse extends JavaPlugin {
     }
     
     private String getOwnersRatioBinLabel(int ownersToPlayersRatio) {
-    	if (ownersToPlayersRatio < 20) {
-    		return "0% - 20%";
+    	if (ownersToPlayersRatio < 5) {
+    		return "0% - 5%";
+    	}
+    	else if (ownersToPlayersRatio < 10) {
+    		return "5% - 10%";
+    	}
+    	else if (ownersToPlayersRatio < 20) {
+    		return "10% - 20%";
     	}
     	else if (ownersToPlayersRatio < 40) {
     		return "20% - 40%";
@@ -186,8 +192,11 @@ public class ZHorse extends JavaPlugin {
     }
     
     private String getTotalHorsesBinLabel(int totalHorsesCount) {
-    	if (totalHorsesCount < 10) {
-    		return "0 - 10";
+    	if (totalHorsesCount < 5) {
+    		return "0 - 5";
+    	}
+    	else if (totalHorsesCount < 10) {
+    		return "5 - 10";
     	}
     	else if (totalHorsesCount < 50) {
     		return "10 - 50";

@@ -2,23 +2,18 @@ package com.gmail.xibalbazedd.zhorse.enums;
 
 public enum CommandSettingsEnum {
 	
-	FAVORITE("favorite", "com.gmail.xibalbazedd.zhorse.commands.CommandSettings"),
-	LANGUAGE("language", "com.gmail.xibalbazedd.zhorse.commands.CommandSettings"),
-	SWAP("swap", "com.gmail.xibalbazedd.zhorse.commands.CommandSettings");
+	FAVORITE("favorite"),
+	LANGUAGE("language"),
+	STATS("stats"),
+	SWAP("swap");
 	
 	private final String name;
-	private final String classPath;
 	
-	CommandSettingsEnum(final String name, final String classPath) {
+	CommandSettingsEnum(final String name) {
 		this.name = name;
-		this.classPath = classPath;
 	}
 	
 	public String getName() {
 		return name;
-	}
-	
-	public String getClassPath() {
-		return classPath;
 	}
 }

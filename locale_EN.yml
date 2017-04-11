@@ -107,6 +107,7 @@ Messages:
   missingLanguage: "<yellow>You must provide a language. Please use one the followings : <value><yellow>."
   missingPermission: "<yellow>You don't have the <gold><perm><yellow> permission."
   missingPermissionOther: "<gold><player><yellow> doesn't have the <gold><perm><yellow> permission."
+  missingStatsDisplayMode: "<yellow>You must provide a stats display mode. Please use one the followings : <value><yellow>."
   missingTarget: "<yellow>You must provide a player name."
   noFriend: "<yellow>You don't have any friend."
   noFriendOther: "<gold><player><yellow> doesn't have any friend."
@@ -122,6 +123,10 @@ Messages:
   pluginReloaded: "<gold><value><yellow> has been successfully reloaded."
   pluginReloadedWithErrors: "<gold><value><yellow> has been reloaded with errors."
   samePlayer: "<yellow>You can't target yourself."
+  statsDisplayModeAlreadyUsed: "<yellow>You are already using the display mode <gold><value><yellow>."
+  statsDisplayModeAlreadyUsedOther: "<gold><player><yellow> is already using the display mode <gold><value><yellow>."
+  statsDisplayModeEdited: "<yellow>You are now using the display mode <gold><value><yellow>."
+  statsDisplayModeEditedOther: "<gold><player><yellow> is now using the display mode <gold><value><yellow>."
   teleportedToHorse: "<yellow>You have been teleported to <gold><horse><yellow>."
   unknownAdminCommand: "<gold><value><yellow> is not a /zh admin sub-command."
   unknownCommand: "<gold><value><yellow> is not a ZHorse command."
@@ -136,6 +141,7 @@ Messages:
   unknownPlayer: "<gold><player><yellow> is not a registered player."
   unknownSettingsCommand: "<gold><value><yellow> is not a /zh settings sub-command."
   unknownSpawnArgument: "<gold><value><yellow> is not a valid argument for /zh spawn."
+  unknownStatsDisplayMode: "<yellow>This is not a supported display mode. Please use one the followings : <value>"
   worldDisabled: "<gold>ZHorse<yellow> is disabled on this world."
   worldUncrossable: "<yellow>Teleportation between your world and <gold><horse><yellow>'s world is blocked."
 
@@ -200,6 +206,7 @@ Friend command descriptions:
 Settings command descriptions:
   favorite: "<gold>/zh settings favorite<gray>: <yellow>Define your favorite horse."
   language: "<gold>/zh settings language<gray>: <yellow>Set ZHorse's language."
+  stats: "<gold>/zh settings stats<gray>: <yellow>Define horse stats display mode."
   swap: "<gold>/zh settings swap<gray>: <yellow>Swap two horse IDs."
 
 Command usages:
@@ -238,4 +245,5 @@ Friend command usages:
 Settings command usages:
   favorite: "<gold>/zh settings favorite<yellow> (-i) horseID"
   language: "<gold>/zh settings language<yellow> value"
+  stats: "<gold>/zh settings stats<yellow> displayMode"
   swap: "<gold>/zh settings swap<yellow> horseID1 horseID2"

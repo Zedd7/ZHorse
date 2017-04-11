@@ -1,0 +1,1 @@
+ALTER TABLE prefix_player ADD display_exact_stats INT NOT NULL DEFAULT 0;

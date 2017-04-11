@@ -67,12 +67,18 @@ public abstract class SQLDatabaseConnector {
 	}
 	
 	public boolean executeUpdate(String update) {
+		return executeUpdate(update, false);
+	}
+	
+	public boolean executeUpdate(String update, boolean hideExceptions) {
 		boolean result = false;
 		try (PreparedStatement statement = getPreparedStatement(update)) {
 			statement.executeUpdate();
 			result = true;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			if (!hideExceptions) {
+				e.printStackTrace();
+			}
 		}
 		return result;
 	}
@@ -426,7 +432,8 @@ public abstract class SQLDatabaseConnector {
 			resultSet.getString("uuid"),
 			resultSet.getString("name"),
 			resultSet.getString("language"),
-			resultSet.getInt("favorite")
+			resultSet.getInt("favorite"),
+			resultSet.getInt("display_exact_stats") == 1
 		);
 	}
 	

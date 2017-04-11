@@ -6,12 +6,14 @@ public class PlayerRecord {
 	private String name;
 	private String language;
 	private Integer favorite;
+	private Boolean displayExactStats;
 	
-	public PlayerRecord(String uuid, String name, String language, Integer favorite) {
+	public PlayerRecord(String uuid, String name, String language, Integer favorite, Boolean displayExactStats) {
 		this.uuid = uuid;
 		this.name = name;
 		this.language = language;
 		this.favorite = favorite;
+		this.displayExactStats = displayExactStats;
 	}
 
 	public String getUUID() {
@@ -28,6 +30,10 @@ public class PlayerRecord {
 
 	public Integer getFavorite() {
 		return favorite;
+	}
+	
+	public Boolean displayExactStats() {
+		return displayExactStats;
 	}
 
 }

@@ -304,7 +304,7 @@ Settings:
   # The new method remove horses and respawn them at destination.
   use-old-teleport-method: false
   
-  # Set to true to use exact, unrounded horse stats (without %).
+  # Set to true to make default stats display mode use unrounded horse stats.
   # Does not affect actual horse stats, only apply to /zh spawn and /zh info.
   use-exact-stats: false
   

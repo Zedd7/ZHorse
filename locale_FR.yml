@@ -107,6 +107,7 @@ Messages:
   missingLanguage: "<yellow>Vous devez fournir une langue. Veuillez utiliser l'une des suivantes : <value>"
   missingPermission: "<yellow>Vous n'avez pas la permission <gold><perm><yellow>."
   missingPermissionOther: "<gold><player><yellow> n'a pas la permission <gold><perm><yellow>."
+  missingStatsDisplayMode: "<yellow>Vous devez fournir un mode d'affichage pour les stats. Veuillez utiliser l'un des suivants : <value><yellow>."
   missingTarget: "<yellow>Vous devez fournir un nom de joueur."
   noFriend: "<yellow>Vous n'avez aucun ami."
   noFriendOther: "<gold><player><yellow> n'a aucun ami."
@@ -122,6 +123,10 @@ Messages:
   pluginReloaded: "<gold><value><yellow> a été rechargé avec succès."
   pluginReloadedWithErrors: "<gold><value><yellow> a été rechargé avec des erreurs."
   samePlayer: "<yellow>Vous ne pouvez pas vous sélectionner vous-même."
+  statsDisplayModeAlreadyUsed: "<yellow>Vous utilisez déjà le mode d'affichage <gold><value><yellow>."
+  statsDisplayModeAlreadyUsedOther: "<gold><player><yellow> utilise déjà le mode d'affichage <gold><value><yellow>."
+  statsDisplayModeEdited: "<yellow>Vous utilisez maintenant le mode d'affichage <gold><value><yellow>."
+  statsDisplayModeEditedOther: "<gold><player><yellow> utilise maintenant le mode d'affichage <gold><value><yellow>."
   teleportedToHorse: "<yellow>Vous avez été téléporté à <gold><horse><yellow>."
   unknownAdminCommand: "<gold><value><yellow> n'est pas une sous-commande de /zh admin."
   unknownCommand: "<gold><value><yellow> n'est pas une commande de ZHorse."
@@ -136,6 +141,7 @@ Messages:
   unknownPlayer: "<gold><player><yellow> n'est pas un joueur enregistré."
   unknownSettingsCommand: "<gold><value><yellow> n'est pas une sous-commande de /zh settings."
   unknownSpawnArgument: "<gold><value><yellow> n'est pas un argument valide pour /zh spawn."
+  unknownStatsDisplayMode: "<yellow>Ceci n'est pas un mode d'affichage supporté. Veuillez utiliser l'un des suivants : <value>"
   worldDisabled: "<gold>ZHorse<yellow> est désactivé sur ce monde."
   worldUncrossable: "<yellow>La téléportation entre votre monde et celui de <gold><horse><yellow> est bloquée."
 
@@ -200,6 +206,7 @@ Friend command descriptions:
 Settings command descriptions:
   favorite: "<gold>/zh settings favorite<gray>: <yellow>Défini votre cheval favori."
   language: "<gold>/zh settings language<gray>: <yellow>Défini la langue de ZHorse."
+  stats: "<gold>/zh settings stats<gray>: <yellow>Défini le mode d'affichage des stats de chevaux."
   swap: "<gold>/zh settings swap<gray>: <yellow>Echange deux IDs de chevaux."
 
 Command usages:
@@ -238,4 +245,5 @@ Friend command usages:
 Settings command usages:
   favorite: "<gold>/zh settings favorite<yellow> (-i) chevalID"
   language: "<gold>/zh settings language<yellow> valeur"
+  stats: "<gold>/zh settings stats<yellow> modeAffichage"
   swap: "<gold>/zh settings swap<yellow> chevalID1 chevalID2"

@@ -104,6 +104,7 @@ public enum LocaleEnum {
 	MISSING_LANGUAGE("Messages.missingLanguage"),
 	MISSING_PERMISSION("Messages.missingPermission"),
 	MISSING_PERMISSION_OTHER("Messages.missingPermissionOther"),
+	MISSING_STATS_DISPLAY_MODE("Messages.missingStatsDisplayMode"),
 	MISSING_TARGET("Messages.missingTarget"),
 	NO_FRIEND("Messages.noFriend"),
 	NO_FRIEND_OTHER("Messages.noFriendOther"),
@@ -119,6 +120,10 @@ public enum LocaleEnum {
 	PLUGIN_RELOADED("Messages.pluginReloaded"),
 	PLUGIN_RELOADED_WITH_ERRORS("Messages.pluginReloadedWithErrors"),
 	SAME_PLAYER("Messages.samePlayer"),
+	STATS_DISPLAY_MODE_ALREADY_USED("Messages.statsDisplayModeAlreadyUsed"),
+	STATS_DISPLAY_MODE_ALREADY_USED_OTHER("Messages.statsDisplayModeAlreadyUsedOther"),
+	STATS_DISPLAY_MODE_EDITED("Messages.statsDisplayModeEdited"),
+	STATS_DISPLAY_MODE_EDITED_OTHER("Messages.statsDisplayModeEditedOther"),
 	TELEPORTED_TO_HORSE("Messages.teleportedToHorse"),
 	UNKNOWN_ADMIN_COMMAND("Messages.unknownAdminCommand"),
 	UNKNOWN_COMMAND("Messages.unknownCommand"),
@@ -133,6 +138,7 @@ public enum LocaleEnum {
 	UNKNOWN_PLAYER("Messages.unknownPlayer"),
 	UNKNOWN_SETTINGS_COMMAND("Messages.unknownSettingsCommand"),
 	UNKNOWN_SPAWN_ARGUMENT("Messages.unknownSpawnArgument"),
+	UNKNOWN_STATS_DISPLAY_MODE("Messages.unknownStatsDisplayMode"),
 	WORLD_DISABLED("Messages.worldDisabled"),
 	WORLD_UNCROSSABLE("Messages.worldUncrossable"),
 	
@@ -197,6 +203,7 @@ public enum LocaleEnum {
 	/* settings command descriptions */
 	SETTINGS_FAVORITE_DESCRIPTION("Settings command descriptions.favorite"),
 	SETTINGS_LANGUAGE_DESCRIPTION("Settings command descriptions.language"),
+	SETTINGS_STATS_DESCRIPTION("Settings command descriptions.stats"),
 	SETTINGS_SWAP_DESCRIPTION("Settings command descriptions.swap"),
 	
 	/* command usages */
@@ -235,6 +242,7 @@ public enum LocaleEnum {
 	/* settings command usages */
 	SETTINGS_FAVORITE_USAGE("Settings command usages.favorite"),
 	SETTINGS_LANGUAGE_USAGE("Settings command usages.language"),
+	SETTINGS_STATS_USAGE("Settings command usages.stats"),
 	SETTINGS_SWAP_USAGE("Settings command usages.swap");
 	
 	private String index;
