@@ -66,6 +66,7 @@
             zh.settings: true
             zh.settings.favorite: true
             zh.settings.language: true
+            zh.settings.stats: true
             zh.settings.swap: true
         
     zh.*.admin:
