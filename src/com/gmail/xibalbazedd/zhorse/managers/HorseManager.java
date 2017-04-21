@@ -65,11 +65,7 @@ public class HorseManager {
 					HorseInventoryRecord inventoryRecord = zh.getDM().getHorseInventoryRecord(horseUUID);
 					HorseStatsRecord statsRecord = zh.getDM().getHorseStatsRecord(horseUUID);
 					if (inventoryRecord != null && statsRecord != null) {
-						horse = spawnHorse(location, inventoryRecord, statsRecord);
-						zh.getDM().updateHorseUUID(horseUUID, horse.getUniqueId());
-						zh.getDM().updateHorseInventoryUUID(horseUUID, horse.getUniqueId());
-						zh.getDM().updateHorseStatsUUID(horseUUID, horse.getUniqueId());
-						zh.getDM().updateSaleUUID(horseUUID, horse.getUniqueId());
+						horse = spawnHorse(location, inventoryRecord, statsRecord, horseUUID);
 					}
 				}
 			}
@@ -190,7 +186,7 @@ public class HorseManager {
 		}
 	}
 	
-	public AbstractHorse teleport(AbstractHorse sourceHorse, Location destination) {
+	public AbstractHorse teleportHorse(AbstractHorse sourceHorse, Location destination) {
 		if (zh.getCM().shouldUseOldTeleportMethod()) {
 			sourceHorse.teleport(destination);
 			zh.getDM().updateHorseLocation(sourceHorse.getUniqueId(), destination, false);
@@ -221,7 +217,8 @@ public class HorseManager {
 	}
 
 	private void assignStats(AbstractHorse horse, HorseStatsRecord statsRecord) {
-		horse.setOwner(zh.getServer().getOfflinePlayer(zh.getDM().getOwnerUUID(horse.getUniqueId())));
+		UUID ownerUUID = zh.getDM().getOwnerUUID(horse.getUniqueId());
+		horse.setOwner(zh.getServer().getOfflinePlayer(ownerUUID));
 		
 		horse.setAge(statsRecord.getAge());
 		horse.setBreed(statsRecord.canBreed());
@@ -290,11 +287,15 @@ public class HorseManager {
 		}
 	}
 	
-	public AbstractHorse spawnHorse(Location location, HorseInventoryRecord inventoryRecord, HorseStatsRecord statsRecord) {
+	public AbstractHorse spawnHorse(Location location, HorseInventoryRecord inventoryRecord, HorseStatsRecord statsRecord, UUID oldHorseUUID) {
 		EntityType type = EntityType.valueOf(statsRecord.getType());
 		boolean chunkWasLoaded = loadChunk(location);
 		AbstractHorse horse = (AbstractHorse) location.getWorld().spawnEntity(location, type);
 		if (horse != null) {
+			zh.getDM().updateHorseUUID(oldHorseUUID, horse.getUniqueId());
+			zh.getDM().updateHorseInventoryUUID(oldHorseUUID, horse.getUniqueId());
+			zh.getDM().updateHorseStatsUUID(oldHorseUUID, horse.getUniqueId());
+			zh.getDM().updateSaleUUID(oldHorseUUID, horse.getUniqueId());
 			assignStats(horse, statsRecord);
 			assignInventory(horse, inventoryRecord, statsRecord.isCarryingChest());
 			if (chunkWasLoaded) {

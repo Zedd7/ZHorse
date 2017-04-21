@@ -179,7 +179,7 @@ public class DataManager {
 	
 	public HorseInventoryRecord getHorseInventoryRecord(UUID horseUUID) {
 		String query = String.format("SELECT * FROM prefix_inventory_item WHERE uuid = \"%s\"", horseUUID);
-		return db.getHorseInventoryRecord(query);
+		return db.getHorseInventoryRecord(query, horseUUID);
 	}
 	
 	public HorseStatsRecord getHorseStatsRecord(UUID horseUUID) {
@@ -203,7 +203,8 @@ public class DataManager {
 	
 	public UUID getOwnerUUID(UUID horseUUID) {
 		String query = String.format("SELECT owner FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
-		return UUID.fromString(db.getStringResult(query));
+		String result = db.getStringResult(query);
+		return result != null ? UUID.fromString(result) : null;
 	}
 	
 	public List<PendingMessageRecord> getPendingMessageRecordList(UUID playerUUID) {

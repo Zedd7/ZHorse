@@ -165,7 +165,7 @@ public class EventManager implements Listener {
 				e.setCancelled(true);
 				Location destination = e.getTo();
 				if (zh.getCM().isWorldCrossable(destination.getWorld())) {
-					zh.getHM().teleport(horse, destination);
+					zh.getHM().teleportHorse(horse, destination);
 				}
 			}
 		}
@@ -178,7 +178,7 @@ public class EventManager implements Listener {
 			if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
 				e.setCancelled(true);
 				if (zh.getCM().isWorldEnabled(e.getTo().getWorld())) {
-					zh.getHM().teleport(horse, e.getTo());
+					zh.getHM().teleportHorse(horse, e.getTo());
 				}
 			}
 		}

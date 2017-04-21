@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -237,12 +238,13 @@ public abstract class SQLDatabaseConnector {
 			e.printStackTrace();
 		}
 		for (List<InventoryItemRecord> inventoryItemRecordList : inventoryItemRecordMap.values()) {
-			inventoryRecordList.add(new HorseInventoryRecord(inventoryItemRecordList));
+			String horseUUID = inventoryItemRecordList.get(0).getUUID();
+			inventoryRecordList.add(new HorseInventoryRecord(horseUUID, inventoryItemRecordList));
 		}
 		return inventoryRecordList;
 	}
 	
-	public HorseInventoryRecord getHorseInventoryRecord(String query) {
+	public HorseInventoryRecord getHorseInventoryRecord(String query, UUID inventoryHolderUUID) {
 		HorseInventoryRecord inventoryRecord = null;
 		List<InventoryItemRecord> inventoryItemRecordList = new ArrayList<>();
 		try (PreparedStatement statement = getPreparedStatement(query)) {
@@ -250,7 +252,8 @@ public abstract class SQLDatabaseConnector {
 			while (resultSet.next()) {
 				inventoryItemRecordList.add(getInventoryItemRecord(resultSet));
 			}
-			inventoryRecord = new HorseInventoryRecord(inventoryItemRecordList);
+			String horseUUID = !inventoryItemRecordList.isEmpty() ? inventoryItemRecordList.get(0).getUUID() : inventoryHolderUUID.toString();
+			inventoryRecord = new HorseInventoryRecord(horseUUID, inventoryItemRecordList);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
