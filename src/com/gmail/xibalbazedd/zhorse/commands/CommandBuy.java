@@ -53,6 +53,9 @@ public class CommandBuy extends AbstractCommand {
 						success &= zh.getDM().registerHorse(horseRecord);
 						if (success) {
 							applyHorseName(p.getUniqueId());
+							horse.setOwner(zh.getServer().getOfflinePlayer(p.getUniqueId()));
+							zh.getEM().payPlayer(p, targetUUID, price);
+							
 							String buyerLanguage = zh.getDM().getPlayerLanguage(p.getUniqueId());
 							String sellerLanguage = zh.getDM().getPlayerLanguage(targetUUID);
 							String buyerCurrencySymbol = zh.getLM().getMessage(LocaleEnum.CURRENCY_SYMBOL.getIndex(), buyerLanguage, true);
@@ -61,7 +64,6 @@ public class CommandBuy extends AbstractCommand {
 							zh.getMM().sendPendingMessage(targetUUID, new MessageConfig(LocaleEnum.HORSE_SOLD) {{
 								setAmount(price); setCurrencySymbol(sellerCurrencySymbol); setHorseName(previousHorseName); setPlayerName(p.getName());
 							}});
-							zh.getEM().payPlayer(p, targetUUID, price);
 							zh.getEM().payCommand(p, command);
 						}
 					}

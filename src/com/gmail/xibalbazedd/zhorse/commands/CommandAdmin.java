@@ -85,17 +85,7 @@ public class CommandAdmin extends AbstractCommand {
 					if (isRegistered(targetUUID)) {
 						boolean success = true;
 						for (int horseID = 1; horseID <= zh.getDM().getHorseCount(targetUUID); horseID++) {
-							AbstractHorse horse = zh.getHM().getHorse(targetUUID, horseID);
-							if (horse != null) {
-								horse.setCustomName(null);
-								horse.setCustomNameVisible(false);
-							}
-							UUID horseUUID = zh.getDM().getHorseUUID(targetUUID, horseID);
-							zh.getHM().untrackHorse(horseUUID);
-							if (!zh.getDM().removeHorse(horseUUID, targetUUID, horseID)) success = false;
-							if (!zh.getDM().removeHorseInventory(horseUUID)) success = false;
-							if (!zh.getDM().removeHorseStats(horseUUID)) success = false;
-							if (!zh.getDM().removeSale(horseUUID)) success = false;
+							if (!clearHorse(targetUUID, horseID)) success = false;
 						}
 						if (success) {
 							if (samePlayer) {
@@ -109,17 +99,7 @@ public class CommandAdmin extends AbstractCommand {
 					}
 				}
 				else if (isRegistered(targetUUID, horseID)) {
-					AbstractHorse horse = zh.getHM().getHorse(targetUUID, Integer.parseInt(horseID));
-					if (horse != null) {
-						horse.setCustomName(null);
-						horse.setCustomNameVisible(false);
-					}
-					UUID horseUUID = zh.getDM().getHorseUUID(targetUUID, Integer.parseInt(horseID));
-					zh.getHM().untrackHorse(horseUUID);
-					boolean success = zh.getDM().removeHorse(horseUUID, targetUUID, Integer.parseInt(horseID));
-					success &= zh.getDM().removeHorseInventory(horseUUID);
-					success &= zh.getDM().removeHorseStats(horseUUID);
-					success &= zh.getDM().removeSale(horseUUID);
+					boolean success = clearHorse(targetUUID, Integer.parseInt(horseID));
 					if (success) {
 						if (samePlayer) {
 							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_CLEARED) {{ setHorseName(horseName); }});
@@ -136,6 +116,22 @@ public class CommandAdmin extends AbstractCommand {
 				sendCommandUsage(subCommand, true, true);
 			}
 		}
+	}
+	
+	private boolean clearHorse(UUID ownerUUID, int horseID) {
+		boolean success = true;
+		AbstractHorse horse = zh.getHM().getHorse(ownerUUID, horseID);
+		if (horse != null) {
+			horse.setCustomName(null);
+			horse.setCustomNameVisible(false);
+		}
+		UUID horseUUID = zh.getDM().getHorseUUID(ownerUUID, horseID);
+		zh.getHM().untrackHorse(horseUUID);
+		if (!zh.getDM().removeHorse(horseUUID, ownerUUID, horseID)) success = false;
+		if (!zh.getDM().removeHorseInventory(horseUUID)) success = false;
+		if (!zh.getDM().removeHorseStats(horseUUID)) success = false;
+		if (!zh.getDM().removeSale(horseUUID)) success = false;
+		return success;
 	}
 	
 	private void importDB() {
