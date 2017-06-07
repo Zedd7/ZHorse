@@ -1,6 +1,5 @@
 package com.gmail.xibalbazedd.zhorse.managers;
 
-import java.io.IOException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -8,7 +7,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-import org.apache.commons.io.IOUtils;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 
@@ -28,14 +26,15 @@ import com.gmail.xibalbazedd.zhorse.enums.DatabaseEnum;
 
 public class DataManager {
 	
-	private static final String TABLE_SCRIPTS_PATH = "res\\sql\\tables\\%s-table.sql";
-	private static final String PATCH_SCRIPTS_PATH = "res\\sql\\patches\\%s-patch.sql";
-	private static final String[] TABLE_ARRAY = {"player", "friend", "pending_message", "horse", "horse_stats", "inventory_item", "sale"};
-	private static final String[] PATCH_ARRAY = {"1.6.6"};
+	public static final String[] TABLE_ARRAY = {"player", "friend", "pending_message", "horse", "horse_stats", "inventory_item", "sale"};
+	public static final String[] PATCH_ARRAY = {"1.6.6"};
+	
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 	
 	private ZHorse zh;
 	private SQLDatabaseConnector db;
+	private List<String> tableScriptList;
+	private List<String> patchScriptList;
 	private boolean connected = false;
 	
 	public DataManager(ZHorse zh) {
@@ -57,7 +56,7 @@ public class DataManager {
 		}
 		connected = db != null && db.isConnected();
 		if (connected) {
-			executeSQLScripts();
+			executeScripts();
 		}
 	}
 	
@@ -67,26 +66,23 @@ public class DataManager {
 		}
 	}
 	
-	private void executeSQLScripts() {
-		String tableScriptsPath = TABLE_SCRIPTS_PATH.replace('\\', '/'); // Dark Magic Industries
-		String patchScriptsPath = PATCH_SCRIPTS_PATH.replace('\\', '/'); // Dark Magic Industries
-		for (String tableName : TABLE_ARRAY) {
-			executeSQLScript(tableScriptsPath, tableName, false);
+	public void setScriptLists(List<String> tableScriptList, List<String> patchScriptList) {
+		this.tableScriptList = tableScriptList;
+		this.patchScriptList = patchScriptList;
+	}
+	
+	public void executeScripts() {
+		for (String tableScript : tableScriptList) {
+			executeSQLScript(tableScript, false);
 		}
-		for (String patchName : PATCH_ARRAY) {
-			executeSQLScript(patchScriptsPath, patchName, true);
+		for (String patchScript : patchScriptList) {
+			executeSQLScript(patchScript, true);
 		}
 	}
 	
-	private void executeSQLScript(String folderPath, String scriptName, boolean hideExceptions) {
-		try {
-			String scriptPath = String.format(folderPath, scriptName);
-			String update = IOUtils.toString(zh.getResource(scriptPath), "utf-8");
-			String prefixedUpdate = db.applyTablePrefix(update);
-			db.executeUpdate(prefixedUpdate, hideExceptions);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	private void executeSQLScript(String update, boolean hideExceptions) {
+		String prefixedUpdate = db.applyTablePrefix(update);
+		db.executeUpdate(prefixedUpdate, hideExceptions);
 	}
 	
 	public Integer getDefaultFavoriteHorseID() {

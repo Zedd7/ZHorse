@@ -14,6 +14,7 @@ import com.gmail.xibalbazedd.zhorse.managers.HorseManager;
 import com.gmail.xibalbazedd.zhorse.managers.LocaleManager;
 import com.gmail.xibalbazedd.zhorse.managers.MessageManager;
 import com.gmail.xibalbazedd.zhorse.managers.PermissionManager;
+import com.gmail.xibalbazedd.zhorse.managers.ResourceManager;
 import com.gmail.xibalbazedd.zhorse.utils.Metrics;
 
 public class ZHorse extends JavaPlugin {
@@ -27,6 +28,7 @@ public class ZHorse extends JavaPlugin {
 	private LocaleManager localeManager;
 	private MessageManager messageManager;
 	private PermissionManager permissionManager;
+	private ResourceManager resourceManager;
 	
 	@Override
 	public void onEnable() {
@@ -88,6 +90,10 @@ public class ZHorse extends JavaPlugin {
 		return permissionManager;
 	}
 	
+	public ResourceManager getRM() {
+		return resourceManager;
+	}
+	
 	private void initDependencies() {
 		Plugin vault = getServer().getPluginManager().getPlugin("Vault");
 		if (vault != null && !vault.isEnabled()) {
@@ -109,9 +115,10 @@ public class ZHorse extends JavaPlugin {
 		localeManager = new LocaleManager(this);
 		messageManager = new MessageManager(this);
 		permissionManager = new PermissionManager(this);
+		resourceManager = new ResourceManager(this);
 		
-		boolean conformConfig = configManager.checkConformity();
-		boolean conformLocale = localeManager.checkConformity();
+		boolean conformConfig = configManager.checkConformity(); // TODO merge in RM
+		boolean conformLocale = localeManager.checkConformity(); // TODO merge in RM
 		
 		dataManager.openDatabase();
 		horseManager.trackHorses();

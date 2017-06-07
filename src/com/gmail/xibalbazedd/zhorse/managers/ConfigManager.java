@@ -1,6 +1,5 @@
 package com.gmail.xibalbazedd.zhorse.managers;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -18,11 +17,9 @@ import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.enums.CommandEnum;
 import com.gmail.xibalbazedd.zhorse.enums.DatabaseEnum;
 import com.gmail.xibalbazedd.zhorse.enums.KeyWordEnum;
-import com.gmail.xibalbazedd.zhorse.utils.Utf8YamlConfiguration;
 
 public class ConfigManager {
 	
-	private static final String CONFIG_PATH = "config.yml";
 	private static final int HORSE_NAME_LENGTH_LIMIT = 36; // Limited by DB
 	
 	private ZHorse zh;
@@ -30,12 +27,10 @@ public class ConfigManager {
 	
 	public ConfigManager(ZHorse zh) {
 		this.zh = zh;
-		File configFile = new File(zh.getDataFolder(), CONFIG_PATH);
-    	if (!configFile.exists()) {
-			zh.getLogger().info(CONFIG_PATH + " is missing... Creating it.");
-			zh.saveResource(CONFIG_PATH, false);
-		}
-    	config = Utf8YamlConfiguration.loadConfiguration(configFile);
+	}
+	
+	public void setConfig(FileConfiguration config) {
+		this.config = config;
 	}
 
 	public List<String> getAvailableLanguages() {

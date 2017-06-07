@@ -5,9 +5,9 @@ import java.util.UUID;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
-import com.gmail.xibalbazedd.zhorse.utils.Utf8YamlConfiguration;
 
 public class YAMLImporter {
 	
@@ -27,7 +27,7 @@ public class YAMLImporter {
 			zh.getLogger().severe(String.format("No file could be found at \"%s\" !", dbFile.getPath()));
 			return null;
 		}
-		return Utf8YamlConfiguration.loadConfiguration(dbFile);
+		return YamlConfiguration.loadConfiguration(dbFile);
 	}
 	
 	private static boolean importPlayers(ZHorse zh, FileConfiguration db) {

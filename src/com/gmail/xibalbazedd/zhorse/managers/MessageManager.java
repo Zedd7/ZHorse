@@ -19,7 +19,8 @@ public class MessageManager {
 	
 	public MessageManager(ZHorse zh) {
 		this.zh = zh;
-		displayConsole = !zh.getCM().isConsoleMuted();
+		// displayConsole = !zh.getCM().isConsoleMuted(); TODO rétablir après RM
+		displayConsole = true;
 	}
 	
 	public void sendMessage(Player player, String message) {
