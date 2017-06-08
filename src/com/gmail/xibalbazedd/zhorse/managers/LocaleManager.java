@@ -21,6 +21,10 @@ public class LocaleManager {
 		this.zh = zh;
 	}
 	
+	public Map<String, FileConfiguration> getLocales() {
+		return locales;
+	}
+	
 	public void setLocales(Map<String, FileConfiguration> locales) {
 		this.locales = locales;
 	}

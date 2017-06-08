@@ -13,6 +13,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
+import com.gmail.xibalbazedd.zhorse.utils.ConfigValidator;
+import com.gmail.xibalbazedd.zhorse.utils.LocaleValidator;
+import com.gmail.xibalbazedd.zhorse.utils.YamlResourceValidator;
 
 public class ResourceManager {
 	
@@ -31,6 +34,26 @@ public class ResourceManager {
 		this.zh = zh;
 		loadSQLResources();
 		loadYamlResources();
+	}
+	
+	public boolean validateResources() {
+		FileConfiguration config = zh.getCM().getConfig();
+		FileConfiguration configModel = getYamlResource(CONFIG_FILE_NAME);
+		File configFile = new File(zh.getDataFolder(), CONFIG_FILE_NAME);
+		YamlResourceValidator configValidator = new ConfigValidator(zh, config, configModel, configFile, CONFIG_FILE_NAME);
+		boolean configValid = configValidator.validate();
+		
+		Map<String, FileConfiguration> locales = zh.getLM().getLocales();
+		boolean localesValid = true;
+		for (String language : locales.keySet()) {
+			String localeFileName = String.format(LOCALE_FILE_NAME_FORMAT, language);
+			FileConfiguration locale = locales.get(language);
+			FileConfiguration localeModel = getYamlResource(localeFileName);
+			File localeFile = new File(zh.getDataFolder(), localeFileName);
+			YamlResourceValidator localeValidator = new LocaleValidator(zh, locale, localeModel, localeFile, localeFileName);
+			if (!localeValidator.validate()) localesValid = false;
+		}
+		return configValid && localesValid;
 	}
 	
 	private void loadSQLResources() {
@@ -53,17 +76,6 @@ public class ResourceManager {
 			sqlPatchScriptList.add(getSQLResource(SQL_PATCHES_FOLDER_PATH, scriptFileName));
 		}
 		return sqlPatchScriptList;
-	}
-	
-	private String getSQLResource(String folderPath, String resourceName) {
-		String resourcePath = folderPath + resourceName;
-		String resource = null;
-		try {
-			resource = IOUtils.toString(zh.getResource(resourcePath), "UTF-8");
-		} catch (Exception e) {
-			zh.getLogger().log(Level.SEVERE, "Could not extract resource file from jar : " + resourceName, e);
-		}
-		return resource;
 	}
 	
 	private void loadYamlResources() {
@@ -102,11 +114,34 @@ public class ResourceManager {
     		}
 		}
 		
-		YamlConfiguration resource = new YamlConfiguration();
+    	FileConfiguration resource = new YamlConfiguration();
 		try {
 			resource.load(resourceFile);
 		} catch (Exception e) {
 			zh.getLogger().log(Level.SEVERE, "Could not load resource file : " + resourceName, e);
+		}
+		return resource;
+	}
+	
+	private String getSQLResource(String folderPath, String resourceName) {
+		String resourcePath = folderPath + resourceName;
+		String resource = null;
+		try {
+			resource = IOUtils.toString(zh.getResource(resourcePath), "UTF-8");
+		} catch (Exception e) {
+			zh.getLogger().log(Level.SEVERE, "Could not extract resource file from jar : " + resourceName, e);
+		}
+		return resource;
+	}
+	
+	private FileConfiguration getYamlResource(String resourceName) {
+		String resourcePath = YAML_FOLDER_PATH + resourceName;
+		FileConfiguration resource = new YamlConfiguration();
+		try {
+			String resourceContent = IOUtils.toString(zh.getResource(resourcePath), "UTF-8");
+			resource.loadFromString(resourceContent);
+		} catch (Exception e) {
+			zh.getLogger().log(Level.SEVERE, "Could not extract resource file from jar : " + resourceName, e);
 		}
 		return resource;
 	}

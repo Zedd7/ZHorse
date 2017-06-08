@@ -432,7 +432,7 @@ public class EventManager implements Listener {
 		}.runTaskLater(zh, 0);
 	}
 	
-	private enum HandEnum {
+	public enum HandEnum {
 		
 		MAIN,
 		OFF,
@@ -440,7 +440,7 @@ public class EventManager implements Listener {
 		
 	}
 	
-	private enum CustomAttackType {
+	public enum CustomAttackType {
 		
 		OWNER("OWNER_ATTACK"),
 		PLAYER("PLAYER_ATTACK");

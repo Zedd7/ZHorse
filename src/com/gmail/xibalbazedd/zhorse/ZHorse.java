@@ -117,13 +117,12 @@ public class ZHorse extends JavaPlugin {
 		permissionManager = new PermissionManager(this);
 		resourceManager = new ResourceManager(this);
 		
-		boolean conformConfig = configManager.checkConformity(); // TODO merge in RM
-		boolean conformLocale = localeManager.checkConformity(); // TODO merge in RM
+		boolean resourcesValid = resourceManager.validateResources();
 		
 		dataManager.openDatabase();
 		horseManager.trackHorses();
 		
-		return conformConfig && conformLocale;
+		return resourcesValid;
 	}
     
     private void initMetrics() {

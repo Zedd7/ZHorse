@@ -219,6 +219,8 @@ Protections:
     enabled: false
   ENTITY_EXPLOSION:
     enabled: false
+  ENTITY_SWEEP_ATTACK:
+    enabled: false
   FALL:
     enabled: false
   FALLING_BLOCK:
