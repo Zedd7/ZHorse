@@ -1,3 +1,1 @@
-# ZHorse
-
-## All the documentation is here : http://dev.bukkit.org/bukkit-plugins/zhorse/
+## You can find the complete documentation for ZHorse on the wiki : https://github.com/Xibalba/ZHorse/wiki
