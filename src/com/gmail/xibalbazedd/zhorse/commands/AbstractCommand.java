@@ -489,19 +489,25 @@ public abstract class AbstractCommand {
 	}
 	
 	protected boolean isOwner() {
-		return isOwner(p.getUniqueId(), false, false);
+		return isOwner(p.getUniqueId(), false, false, false);
+	}
+	
+	protected boolean isOwner(boolean considerFriendOwner) {
+		return isOwner(p.getUniqueId(), considerFriendOwner, false, false);
 	}
 	
 	protected boolean isOwner(boolean ignoreModes, boolean hideConsole) {
-		return isOwner(p.getUniqueId(), ignoreModes, hideConsole);
+		return isOwner(p.getUniqueId(), false, ignoreModes, hideConsole);
 	}
 	
 	protected boolean isOwner(UUID playerUUID, boolean hideConsole) {
-		return isOwner(playerUUID, false, hideConsole);
+		return isOwner(playerUUID, false, false, hideConsole);
 	}
 	
-	protected boolean isOwner(UUID playerUUID, boolean ignoreModes, boolean hideConsole) {
-		if ((adminMode && !ignoreModes) || zh.getDM().isHorseOwnedBy(playerUUID, horse.getUniqueId())) {
+	protected boolean isOwner(UUID playerUUID, boolean considerFriendOwner, boolean ignoreModes, boolean hideConsole) {
+		if ((adminMode && !ignoreModes)
+				|| zh.getDM().isHorseOwnedBy(playerUUID, horse.getUniqueId())
+				|| (considerFriendOwner && zh.getDM().isFriendOfOwner(playerUUID, horse.getUniqueId()))) {
 			return true;
 		}
 		else {

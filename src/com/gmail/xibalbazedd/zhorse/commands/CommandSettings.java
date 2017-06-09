@@ -29,7 +29,7 @@ public class CommandSettings extends AbstractCommand {
 			if (!idMode) {
 				if (isOnHorse(true)) { // select the horse w/ or w/o target
 					horse = (AbstractHorse) p.getVehicle();
-					if (isOwner(targetUUID, true, true)) {
+					if (isOwner(targetUUID, false, true, true)) {
 						idMode = true;
 						Integer horseIDInt = zh.getDM().getHorseID(horse.getUniqueId());
 						horseID = horseIDInt != null ? horseIDInt.toString() : null;

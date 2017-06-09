@@ -47,7 +47,7 @@ public class CommandKill extends AbstractCommand {
 	}
 
 	private void execute() {
-		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
+		if (isOwner(true) && zh.getEM().canAffordCommand(p, command)) {
 			horse.setHealth(0);
 			if (!samePlayer) {
 				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_DIED) {{ setHorseName(horseName); }});

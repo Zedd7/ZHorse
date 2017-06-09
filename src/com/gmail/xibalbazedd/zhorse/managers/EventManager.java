@@ -82,11 +82,10 @@ public class EventManager implements Listener {
 			AbstractHorse horse = (AbstractHorse) e.getEntity();
 			if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
 				if (zh.getDM().isHorseProtected(horse.getUniqueId())) {
-					DamageCause damageCause = e.getCause();
-					
-					/* If the damage is not already handled by onEntityDamageByEntity */
-					if (!(damageCause.equals(DamageCause.ENTITY_ATTACK)
+					DamageCause damageCause = e.getCause();					
+					if (!(damageCause.equals(DamageCause.ENTITY_ATTACK) // If not already handled by onEntityDamageByEntity
 							|| damageCause.equals(DamageCause.ENTITY_EXPLOSION)
+							|| damageCause.equals(DamageCause.ENTITY_SWEEP_ATTACK)
 							|| damageCause.equals(DamageCause.PROJECTILE)
 							|| damageCause.equals(DamageCause.MAGIC))) {
 						if (zh.getCM().isProtectionEnabled(damageCause.name())) {
@@ -187,8 +186,7 @@ public class EventManager implements Listener {
 	@EventHandler
 	public void onHangingBreak(HangingBreakEvent e) {
 		RemoveCause removeCause = e.getCause();		
-		/* if the remove cause is not already handled by onHangingBreakByEntity */
-		if (!removeCause.equals(RemoveCause.ENTITY)) {
+		if (!removeCause.equals(RemoveCause.ENTITY)) { // If not already handled by onHangingBreakByEntity
 			if (e.getEntity() instanceof LeashHitch) {
 				LeashHitch leashHitch = (LeashHitch) e.getEntity();
 				for (AbstractHorse horse : zh.getHM().getTrackedHorses().values()) {
