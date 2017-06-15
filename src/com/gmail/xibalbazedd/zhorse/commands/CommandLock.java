@@ -58,7 +58,7 @@ public class CommandLock extends AbstractCommand {
 				for (Entity passenger : horse.getPassengers()) {
 					if (passenger instanceof Player) {
 						adminMode = false;
-						boolean passengerIsOwner = isOwner(passenger.getUniqueId(), true);
+						boolean passengerIsOwner = isOwner(passenger.getUniqueId(), true, false, true);
 						boolean passengerHasPerm = hasPermissionAdmin(passenger.getUniqueId(), command, true);
 						if (!passengerIsOwner && !passengerHasPerm) {
 							horse.removePassenger(passenger);

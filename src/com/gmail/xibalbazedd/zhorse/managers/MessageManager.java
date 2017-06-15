@@ -1,5 +1,6 @@
 package com.gmail.xibalbazedd.zhorse.managers;
 
+import java.text.SimpleDateFormat;
 import java.util.UUID;
 
 import org.bukkit.OfflinePlayer;
@@ -14,12 +15,15 @@ import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
 
 public class MessageManager {
 	
+	public static final SimpleDateFormat DATE_FORMAT_TIMESTAMP = new SimpleDateFormat("(HH:mm - dd/MM/yyyy)");
+	public static final SimpleDateFormat DATE_FORMAT_VERBOSE = new SimpleDateFormat("dd/MM/yyyy (HH:mm)");
+	
 	private ZHorse zh;
 	private boolean displayConsole;
 	
 	public MessageManager(ZHorse zh) {
 		this.zh = zh;
-		// displayConsole = !zh.getCM().isConsoleMuted(); TODO rétablir après RM
+		// displayConsole = !zh.getCM().isConsoleMuted(); TODO rétablir après ResourceManager
 		displayConsole = true;
 	}
 	

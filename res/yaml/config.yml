@@ -45,14 +45,17 @@ Commands:
   lock:
     auto-admin: false
     cost: 0
-  rename:
+  protect:
     auto-admin: false
     cost: 0
-  protect:
+  rename:
     auto-admin: false
     cost: 0
   reload:
     auto-admin: true
+    cost: 0
+  rez:
+    auto-admin: false
     cost: 0
   sell:
     auto-admin: false
@@ -103,7 +106,7 @@ Groups:
   # The value of claims-limit defines how much horses a player can claim.
   # The permission is optional if the group is defined in a perms plugin.
   # Membership of the group is simulated for whoever has the permission.
-  
+
   visitor:
     color: <f>
     color-bypass: false
@@ -193,7 +196,7 @@ Protections:
 
   # The list of damage types that /zh protect will block.
   # Disable any protection by negating "enabled" or deleting the line.
-  
+
   # Damages caused by players only.
 
   OWNER_ATTACK:
@@ -268,7 +271,7 @@ Settings:
 
   # Set to true to block /zh here on leashed horses.
   block-leashed-teleport: false
-  
+
   # Set to true to block /zh here on mounted horses.
   block-mounted-teleport: false
 
@@ -296,21 +299,26 @@ Settings:
   mute-console: false
 
   # Set to false to disable respawn of missing horses.
-  # If a horse happen to be missing (possible bug) and its
+  # If a horse happens to be missing (possible bug) and its
   # stats and inventory are registered in the database (automatic),
-  # a perfect copy of it will be respawned at its last seen location.
+  # a perfect copy of it will be spawned at its last seen location.
   respawn-missing-horse: true
+
+  # The number of dead horses kept in the database for each player.
+  # Higher values allow players to resurrect more dead horses.
+  # Lower values (including 0) use less space in the database.
+  rez-stack-size: 3
 
   # Set to true to switch to the teleportation method used in 1.4-.
   # This is only recommended for servers using plugins that are
   # incompatible with the new 1.5+ teleportation method.
   # The new method remove horses and respawn them at destination.
   use-old-teleport-method: false
-  
+
   # Set to true to make default stats display mode use unrounded horse stats.
   # Does not affect actual horse stats, only apply to /zh spawn and /zh info.
   use-exact-stats: false
-  
+
   # Set to false to use Bukkit thresholds for horse stats.
   # Does not affect actual horse stats, only apply to /zh spawn and /zh info.
   use-vanilla-stats: true

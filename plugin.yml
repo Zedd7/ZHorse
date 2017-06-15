@@ -1,6 +1,6 @@
  main: com.gmail.xibalbazedd.zhorse.ZHorse
  name: ZHorse
- version: 1.6.7 snapshot 3
+ version: 1.6.7 snapshot 4
  depend: [Vault]
  description: This plugin provides an enhanced management of horses
  author: Z3dd7
@@ -10,7 +10,7 @@
       description: Main ZHorse command
       usage: /<command> [arguments]
       aliases: [zh]
-      
+ 
  permissions:
     zh.*:
         description: Grants full access to ZHorse
@@ -28,39 +28,40 @@
         children:
             zh.buy: true
             zh.claim: true
-            zh.give: true
             zh.free: true
             zh.friend.*: true
+            zh.give: true
             zh.heal: true
-            zh.info: true
-            zh.kill: true
             zh.help: true
             zh.here: true
+            zh.info: true
+            zh.kill: true
             zh.list: true
             zh.lock: true
             zh.protect: true
             zh.rename: true
+            zh.rez: true
             zh.sell: true
             zh.settings.*: true
             zh.share: true
             zh.tp: true
-            
-    zh.admin.* :
+
+    zh.admin.*:
         description: Grants access to all admin subcommands
         children:
             zh.admin: true
             zh.admin.clear: true
             zh.admin.import: true
 
-    zh.friend.* :
+    zh.friend.*:
         description: Grants access to all friend subcommands
         children:
             zh.friend: true
             zh.friend.add: true
             zh.friend.list: true
             zh.friend.remove: true
-            
-    zh.settings.* :
+
+    zh.settings.*:
         description: Grants access to all settings subcommands
         children:
             zh.settings: true
@@ -68,7 +69,7 @@
             zh.settings.language: true
             zh.settings.stats: true
             zh.settings.swap: true
-        
+
     zh.*.admin:
         description: Grants admin access to all commands
         children:
@@ -88,14 +89,15 @@
             zh.protect.admin: true
             zh.reload.admin: true
             zh.rename.admin: true
+            zh.rez.admin: true
             zh.sell.admin: true
             zh.settings.admin: true
             zh.share.admin: true
             zh.spawn.admin: true
             zh.tame.admin: true
             zh.tp.admin: true
-            
-    zh.*.free :
+
+    zh.*.free:
         description: Grants free access to all commands
         children:
             zh.admin.free: true
@@ -114,6 +116,7 @@
             zh.protect.free: true
             zh.reload.free: true
             zh.rename.free: true
+            zh.rez.free: true
             zh.sell.free: true
             zh.settings.free: true
             zh.share.free: true

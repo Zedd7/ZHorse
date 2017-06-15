@@ -12,6 +12,7 @@ import org.bukkit.Location;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.database.FriendRecord;
+import com.gmail.xibalbazedd.zhorse.database.HorseDeathRecord;
 import com.gmail.xibalbazedd.zhorse.database.HorseInventoryRecord;
 import com.gmail.xibalbazedd.zhorse.database.HorseRecord;
 import com.gmail.xibalbazedd.zhorse.database.HorseStatsRecord;
@@ -26,10 +27,12 @@ import com.gmail.xibalbazedd.zhorse.enums.DatabaseEnum;
 
 public class DataManager {
 	
-	public static final String[] TABLE_ARRAY = {"player", "friend", "pending_message", "horse", "horse_stats", "inventory_item", "sale"};
+	public static final String[] TABLE_ARRAY = {"player", "friend", "pending_message", "horse", "horse_death", "horse_stats", "inventory_item", "sale"};
 	public static final String[] PATCH_ARRAY = {"1.6.6"};
 	
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+	private static final int DEAD_HORSE_ID = -1;
+	private static final int DEFAULT_FAVORITE_HORSE_ID = 1;
 	
 	private ZHorse zh;
 	private SQLDatabaseConnector db;
@@ -85,8 +88,12 @@ public class DataManager {
 		db.executeUpdate(prefixedUpdate, hideExceptions);
 	}
 	
+	public Integer getDeadHorseID() {
+		return DEAD_HORSE_ID;
+	}
+	
 	public Integer getDefaultFavoriteHorseID() {
-		return 1;
+		return DEFAULT_FAVORITE_HORSE_ID;
 	}
 	
 	public List<String> getFriendNameList(UUID playerUUID) {
@@ -99,8 +106,18 @@ public class DataManager {
 		return db.getStringResultList(query);
 	}
 	
-	public Integer getHorseCount(UUID ownerUUID) {
-		String query = String.format("SELECT COUNT(1) FROM prefix_horse WHERE owner = \"%s\"", ownerUUID);
+	public List<String> getAliveHorseNameList(UUID ownerUUID) {
+		String query = String.format("SELECT h.name FROM prefix_horse h WHERE owner = \"%s\" AND h.uuid NOT IN (SELECT hd.uuid FROM prefix_horse_death hd) ORDER BY h.id ASC", ownerUUID);
+		return db.getStringResultList(query);
+	}
+	
+	public Integer getAliveHorseCount(UUID ownerUUID) {
+		String query = String.format("SELECT COUNT(1) FROM prefix_horse h WHERE owner = \"%s\" AND h.uuid NOT IN (SELECT hd.uuid FROM prefix_horse_death hd)", ownerUUID);
+		return db.getIntegerResult(query);
+	}
+	
+	public Integer getDeadHorseCount(UUID ownerUUID) {
+		String query = String.format("SELECT COUNT(1) FROM prefix_horse h, prefix_horse_death hd WHERE owner = \"%s\" AND h.uuid = hd.uuid", ownerUUID);
 		return db.getIntegerResult(query);
 	}
 	
@@ -145,16 +162,6 @@ public class DataManager {
 		return wrongCaseHorseName;
 	}
 	
-	public List<String> getHorseNameList(UUID ownerUUID) {
-		String query = String.format("SELECT name FROM prefix_horse WHERE owner = \"%s\" ORDER BY id ASC", ownerUUID);
-		return db.getStringResultList(query);
-	}
-	
-	public HorseRecord getHorseRecord(UUID horseUUID) {
-		String query = String.format("SELECT * FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
-		return db.getHorseRecord(query);
-	}
-	
 	public UUID getHorseUUID(UUID ownerUUID, int horseID) {
 		String query = String.format("SELECT uuid FROM prefix_horse WHERE owner = \"%s\" AND id = %d", ownerUUID, horseID);
 		return UUID.fromString(db.getStringResult(query));
@@ -173,23 +180,29 @@ public class DataManager {
 		return horseUUIDList;
 	}
 	
-	public HorseInventoryRecord getHorseInventoryRecord(UUID horseUUID) {
-		String query = String.format("SELECT * FROM prefix_inventory_item WHERE uuid = \"%s\"", horseUUID);
-		return db.getHorseInventoryRecord(query, horseUUID);
-	}
-	
-	public HorseStatsRecord getHorseStatsRecord(UUID horseUUID) {
-		String query = String.format("SELECT * FROM prefix_horse_stats WHERE uuid = \"%s\"", horseUUID);
-		return db.getHorseStatsRecord(query);
-	}
-	
 	public Integer getNextHorseID(UUID ownerUUID) {
-		String query = String.format("SELECT MAX(id) FROM prefix_horse WHERE owner = \"%s\"", ownerUUID);
+		String query = String.format("SELECT MAX(h.id) FROM prefix_horse h WHERE h.owner = \"%s\" AND h.uuid NOT IN (SELECT hd.uuid FROM prefix_horse_death hd)", ownerUUID);
 		Integer horseID = db.getIntegerResult(query);
 		if (horseID == null) {
 			horseID = 0;
 		}
 		return horseID + 1;
+	}
+	
+	public UUID getNewestHorseDeathUUID(UUID ownerUUID) {
+		String query = String.format(
+				"SELECT hd1.uuid FROM prefix_horse_death hd1 WHERE hd1.date = (SELECT MAX(hd2.date) FROM prefix_horse_death hd2 WHERE hd2.uuid IN (SELECT h.uuid FROM prefix_horse h WHERE h.owner = \"%s\"))",
+				ownerUUID);
+		String result = db.getStringResult(query);
+		return result != null ? UUID.fromString(result) : null;
+	}
+	
+	public UUID getOldestHorseDeathUUID(UUID ownerUUID) {
+		String query = String.format(
+				"SELECT hd1.uuid FROM prefix_horse_death hd1 WHERE hd1.date = (SELECT MIN(hd2.date) FROM prefix_horse_death hd2 WHERE hd2.uuid IN (SELECT h.uuid FROM prefix_horse h WHERE h.owner = \"%s\"))",
+				ownerUUID);
+		String result = db.getStringResult(query);
+		return result != null ? UUID.fromString(result) : null;
 	}
 	
 	public String getOwnerName(UUID horseUUID) {
@@ -201,11 +214,6 @@ public class DataManager {
 		String query = String.format("SELECT owner FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
 		String result = db.getStringResult(query);
 		return result != null ? UUID.fromString(result) : null;
-	}
-	
-	public List<PendingMessageRecord> getPendingMessageRecordList(UUID playerUUID) {
-		String query = String.format("SELECT * FROM prefix_pending_message WHERE uuid = \"%s\" ORDER BY date ASC", playerUUID);
-		return db.getPendingMessageRecordList(query);
 	}
 	
 	public Integer getPlayerFavoriteHorseID(UUID ownerUUID) {
@@ -234,11 +242,6 @@ public class DataManager {
 		return db.getStringResult(query);
 	}
 	
-	public PlayerRecord getPlayerRecord(UUID playerUUID) {
-		String query = String.format("SELECT * FROM prefix_player WHERE uuid = \"%s\"", playerUUID);
-		return db.getPlayerRecord(query);
-	}
-	
 	public UUID getPlayerUUID(String playerName) {
 		String query = String.format("SELECT uuid FROM prefix_player WHERE name = \"%s\"", playerName);
 		return UUID.fromString(db.getStringResult(query));
@@ -262,6 +265,36 @@ public class DataManager {
 	public Integer getTotalPlayersCount() {
 		String query = "SELECT COUNT(1) FROM prefix_player";
 		return db.getIntegerResult(query);
+	}
+	
+	public HorseRecord getHorseRecord(UUID horseUUID) {
+		String query = String.format("SELECT * FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
+		return db.getHorseRecord(query);
+	}
+	
+	public List<HorseDeathRecord> getHorseDeathRecordList(UUID ownerUUID) {
+		String query = String.format("SELECT * FROM prefix_horse_death hd WHERE uuid IN (SELECT h.uuid FROM prefix_horse h WHERE owner = \"%s\") ORDER BY hd.date DESC", ownerUUID);
+		return db.getHorseDeathRecordList(query);
+	}
+	
+	public HorseInventoryRecord getHorseInventoryRecord(UUID horseUUID) {
+		String query = String.format("SELECT * FROM prefix_inventory_item WHERE uuid = \"%s\"", horseUUID);
+		return db.getHorseInventoryRecord(query, horseUUID);
+	}
+	
+	public HorseStatsRecord getHorseStatsRecord(UUID horseUUID) {
+		String query = String.format("SELECT * FROM prefix_horse_stats WHERE uuid = \"%s\"", horseUUID);
+		return db.getHorseStatsRecord(query);
+	}
+	
+	public PlayerRecord getPlayerRecord(UUID playerUUID) {
+		String query = String.format("SELECT * FROM prefix_player WHERE uuid = \"%s\"", playerUUID);
+		return db.getPlayerRecord(query);
+	}
+	
+	public List<PendingMessageRecord> getPendingMessageRecordList(UUID playerUUID) {
+		String query = String.format("SELECT * FROM prefix_pending_message WHERE uuid = \"%s\" ORDER BY date ASC", playerUUID);
+		return db.getPendingMessageRecordList(query);
 	}
 	
 	private boolean hasLocationChanged(UUID horseUUID, Location newLocation) {
@@ -323,6 +356,11 @@ public class DataManager {
 	public boolean isHorseInventoryRegistered(UUID horseUUID) {
 		String query = String.format("SELECT 1 FROM prefix_inventory_item WHERE uuid = \"%s\"", horseUUID);
 		return db.hasResult(query);
+	}	
+	
+	public boolean isHorseDeathRegistered(UUID horseUUID) {
+		String query = String.format("SELECT 1 FROM prefix_horse_death WHERE uuid = \"%s\"", horseUUID);
+		return db.hasResult(query);
 	}
 	
 	public boolean isHorseStatsRegistered(UUID horseUUID) {
@@ -370,6 +408,36 @@ public class DataManager {
 			horseRecord.getLocationZ()
 		);
 		return db.executeUpdate(update);
+	}
+	
+	public boolean registerHorseDeath(HorseDeathRecord horseDeathRecord) {
+		boolean success = true;
+		UUID horseUUID = UUID.fromString(horseDeathRecord.getUUID());
+		UUID ownerUUID = getOwnerUUID(horseUUID);
+		int horseID = getHorseID(horseUUID);
+		int maxDeadHorseCount = zh.getCM().getRezStackMaxSize();
+		if (maxDeadHorseCount > 0) {
+			int deadHorseCount = getDeadHorseCount(ownerUUID);
+			if (deadHorseCount >= maxDeadHorseCount) {
+				UUID oldestHorseDeathUUID = getOldestHorseDeathUUID(ownerUUID);
+				success &= removeHorseDeath(oldestHorseDeathUUID);
+				success &= removeHorse(oldestHorseDeathUUID);
+				success &= removeHorseInventory(oldestHorseDeathUUID);
+				success &= removeHorseStats(oldestHorseDeathUUID);
+			}
+			String horseUpdate = String.format("UPDATE prefix_horse SET id = %s WHERE uuid = \"%s\"", DEAD_HORSE_ID, horseUUID);
+			String horseDeathUpdate = String.format("INSERT INTO prefix_horse_death VALUES (\"%s\", \"%s\")",
+					horseDeathRecord.getUUID(), DATE_FORMAT.format(horseDeathRecord.getDate()));
+			success &= updateHorseIDMapping(ownerUUID, horseID);
+			success &= db.executeUpdate(horseUpdate);
+			success &= db.executeUpdate(horseDeathUpdate);
+		}
+		else {
+			success &= removeHorse(horseUUID);
+			success &= removeHorseInventory(horseUUID);
+			success &= removeHorseStats(horseUUID);
+		}
+		return success;
 	}
 	
 	public boolean registerHorseInventory(HorseInventoryRecord horseInventoryRecord) {
@@ -449,17 +517,13 @@ public class DataManager {
 	}
 	
 	public boolean removeHorse(UUID horseUUID, UUID ownerUUID, int horseID) {
-		int favorite = getPlayerFavoriteHorseID(ownerUUID);
-		if (horseID == favorite) {
-			updatePlayerFavorite(ownerUUID, getDefaultFavoriteHorseID());
-		}
-		else if (horseID < favorite) {
-			updatePlayerFavorite(ownerUUID, favorite - 1);
-		}
-		String saleUpdate = String.format("DELETE FROM prefix_sale WHERE uuid = \"%s\"", horseUUID);
-		String horseUpdate = String.format("DELETE FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
-		String idUpdate = String.format("UPDATE prefix_horse SET id = id - 1 WHERE owner = \"%s\" AND id > %d", ownerUUID, horseID);
-		return db.executeUpdate(saleUpdate) && db.executeUpdate(horseUpdate) && db.executeUpdate(idUpdate);
+		String update = String.format("DELETE FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
+		return updateHorseIDMapping(ownerUUID, horseID) && db.executeUpdate(update);
+	}
+	
+	public boolean removeHorseDeath(UUID horseUUID) {
+		String update = String.format("DELETE FROM prefix_horse_death WHERE uuid = \"%s\"", horseUUID);
+		return db.executeUpdate(update);
 	}
 	
 	public boolean removeHorseInventory(UUID horseUUID) {
@@ -484,6 +548,18 @@ public class DataManager {
 	
 	public boolean updateHorseID(UUID horseUUID, int horseID) {
 		String update = String.format("UPDATE prefix_horse SET id = %d WHERE uuid = \"%s\"", horseID, horseUUID);
+		return db.executeUpdate(update);
+	}
+	
+	public boolean updateHorseIDMapping(UUID ownerUUID, int removedHorseID) {
+		int favoriteHorseID = getPlayerFavoriteHorseID(ownerUUID);
+		if (removedHorseID == favoriteHorseID) {
+			updatePlayerFavoriteHorseID(ownerUUID, DEFAULT_FAVORITE_HORSE_ID);
+		}
+		else if (removedHorseID < favoriteHorseID && removedHorseID != DEAD_HORSE_ID) {
+			updatePlayerFavoriteHorseID(ownerUUID, favoriteHorseID - 1);
+		}
+		String update = String.format("UPDATE prefix_horse SET id = id - 1 WHERE owner = \"%s\" AND id > %d AND %d <> %d", ownerUUID, removedHorseID, removedHorseID, DEAD_HORSE_ID);
 		return db.executeUpdate(update);
 	}
 	
@@ -558,7 +634,7 @@ public class DataManager {
 		return db.executeUpdate(update);
 	}
 	
-	public boolean updatePlayerFavorite(UUID playerUUID, int favorite) {
+	public boolean updatePlayerFavoriteHorseID(UUID playerUUID, int favorite) {
 		String update = String.format("UPDATE prefix_player SET favorite = %d WHERE uuid = \"%s\"", favorite, playerUUID);
 		return db.executeUpdate(update);
 	}

@@ -39,17 +39,19 @@ public class CommandClaim extends AbstractCommand {
 	
 	private void execute() {
 		if (!hasReachedClaimsLimit(false) && isClaimable() && craftHorseName(true) && zh.getEM().canAffordCommand(p, command)) {
-			int horseID = zh.getDM().getNextHorseID(p.getUniqueId());
 			boolean lock = zh.getCM().shouldLockOnClaim();
 			boolean protect = zh.getCM().shouldProtectOnClaim();
 			boolean share = zh.getCM().shouldShareOnClaim();
-			HorseRecord horseRecord = new HorseRecord(horse.getUniqueId().toString(), p.getUniqueId().toString(), horseID, horseName, lock, protect, share, horse.getLocation());
-			boolean success = zh.getDM().removeSale(horse.getUniqueId());
+			boolean success = true;
 			if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
+				success &= zh.getDM().removeSale(horse.getUniqueId());
+				success &= zh.getDM().removeHorseDeath(horse.getUniqueId());
 				success &= zh.getDM().removeHorseInventory(horse.getUniqueId());
 				success &= zh.getDM().removeHorseStats(horse.getUniqueId());
 				success &= zh.getDM().removeHorse(horse.getUniqueId());
 			}
+			int horseID = zh.getDM().getNextHorseID(p.getUniqueId());
+			HorseRecord horseRecord = new HorseRecord(horse.getUniqueId().toString(), p.getUniqueId().toString(), horseID, horseName, lock, protect, share, horse.getLocation());
 			success &= zh.getDM().registerHorse(horseRecord);
 			if (success) {
 				HorseInventoryRecord horseInventoryRecord = new HorseInventoryRecord(horse);

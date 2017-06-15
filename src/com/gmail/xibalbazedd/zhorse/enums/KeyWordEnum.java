@@ -49,6 +49,7 @@ public enum KeyWordEnum {
 	PROTECT_ON_CLAIM("Settings.protect-on-claim"),
 	RANDOM_NAMES("HorseNames.random-names"),
 	RESPAWN_MISSING_HORSE("Settings.respawn-missing-horse"),
+	REZ_STACK_SIZE("Settings.rez-stack-size"),
 	SETTINGS("Settings"),
 	SHARE_ON_CLAIM("Settings.share-on-claim"),
 	TABLE_PREFIX("Databases.mysql-config.table-prefix"),
@@ -61,7 +62,7 @@ public enum KeyWordEnum {
 	WORLDS("Worlds"),
 	WORLDS_PREFIX("Worlds."),
 	
-	/* locale.yml keywords */
+	/* locale_XX.yml keywords */
 	AMOUNT_FLAG("<amount>"),
 	CURRENCY_SYMBOL_FLAG("<currency>"),
 	HORSE_NAME_FLAG("<horse>"),

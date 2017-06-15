@@ -84,7 +84,7 @@ public class CommandAdmin extends AbstractCommand {
 				if (!idMode) {
 					if (isRegistered(targetUUID)) {
 						boolean success = true;
-						for (int horseID = 1; horseID <= zh.getDM().getHorseCount(targetUUID); horseID++) {
+						for (int horseID = 1; horseID <= zh.getDM().getAliveHorseCount(targetUUID); horseID++) {
 							if (!clearHorse(targetUUID, horseID)) success = false;
 						}
 						if (success) {
@@ -127,10 +127,11 @@ public class CommandAdmin extends AbstractCommand {
 		}
 		UUID horseUUID = zh.getDM().getHorseUUID(ownerUUID, horseID);
 		zh.getHM().untrackHorse(horseUUID);
+		if (!zh.getDM().removeSale(horseUUID)) success = false;
+		if (!zh.getDM().removeHorseDeath(horseUUID)) success = false;
 		if (!zh.getDM().removeHorse(horseUUID, ownerUUID, horseID)) success = false;
 		if (!zh.getDM().removeHorseInventory(horseUUID)) success = false;
 		if (!zh.getDM().removeHorseStats(horseUUID)) success = false;
-		if (!zh.getDM().removeSale(horseUUID)) success = false;
 		return success;
 	}
 	

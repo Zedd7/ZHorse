@@ -49,6 +49,7 @@ public class CommandBuy extends AbstractCommand {
 						boolean share = zh.getCM().shouldShareOnClaim();
 						HorseRecord horseRecord = new HorseRecord(horse.getUniqueId().toString(), p.getUniqueId().toString(), horseID, horseName, lock, protect, share, horse.getLocation());
 						boolean success = zh.getDM().removeSale(horse.getUniqueId());
+						success &= zh.getDM().removeHorseDeath(horse.getUniqueId());
 						success &= zh.getDM().removeHorse(horse.getUniqueId(), targetUUID);
 						success &= zh.getDM().registerHorse(horseRecord);
 						if (success) {

@@ -150,6 +150,10 @@ public class ConfigManager {
 		return randomHorseName;
 	}
 	
+	public int getRezStackMaxSize() {
+		return config.getInt(KeyWordEnum.REZ_STACK_SIZE.getValue(), 0);
+	}
+	
 	public boolean isAutoAdminModeEnabled(String command) {
 		return command != null && config.getBoolean(KeyWordEnum.COMMANDS_PREFIX.getValue() + command + KeyWordEnum.AUTO_ADMIN_SUFFIX.getValue(), false);
 	}

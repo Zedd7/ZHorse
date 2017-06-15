@@ -44,6 +44,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.commands.CommandClaim;
 import com.gmail.xibalbazedd.zhorse.commands.CommandInfo;
+import com.gmail.xibalbazedd.zhorse.database.HorseDeathRecord;
 import com.gmail.xibalbazedd.zhorse.database.HorseStatsRecord;
 import com.gmail.xibalbazedd.zhorse.enums.CommandEnum;
 import com.gmail.xibalbazedd.zhorse.enums.KeyWordEnum;
@@ -134,10 +135,8 @@ public class EventManager implements Listener {
 					zh.getMM().sendPendingMessage(ownerUUID, new MessageConfig(LocaleEnum.HORSE_DIED) {{ setHorseName(horseName); }});
 				}
 				zh.getHM().untrackHorse(horse.getUniqueId());
-				zh.getDM().removeHorse(horse.getUniqueId());
-				zh.getDM().removeHorseInventory(horse.getUniqueId());
-				zh.getDM().removeHorseStats(horse.getUniqueId());
 				zh.getDM().removeSale(horse.getUniqueId());
+				zh.getDM().registerHorseDeath(new HorseDeathRecord(horse.getUniqueId().toString()));
 			}
 		}
 	}

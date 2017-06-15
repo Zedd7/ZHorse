@@ -221,6 +221,32 @@ public abstract class SQLDatabaseConnector {
 		return horseRecord;
 	}
 	
+	public List<HorseDeathRecord> getHorseDeathRecordList(String query) {
+		List<HorseDeathRecord> horseDeathRecordList = new ArrayList<>();
+		try (PreparedStatement statement = getPreparedStatement(query)) {
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next()) {
+				horseDeathRecordList.add(getHorseDeathRecord(resultSet));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return horseDeathRecordList;
+	}
+	
+	public HorseDeathRecord getHorseDeathRecord(String query) {
+		HorseDeathRecord horseDeathRecord = null;
+		try (PreparedStatement statement = getPreparedStatement(query)) {
+			ResultSet resultSet = statement.executeQuery();
+			if (resultSet.next()) {
+				horseDeathRecord = getHorseDeathRecord(resultSet);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return horseDeathRecord;
+	}
+	
 	public List<HorseInventoryRecord> getHorseInventoryRecordList(String query) {
 		List<HorseInventoryRecord> inventoryRecordList = new ArrayList<>();
 		Map<String, List<InventoryItemRecord>> inventoryItemRecordMap = new HashMap<>();
@@ -387,11 +413,10 @@ public abstract class SQLDatabaseConnector {
 		);
 	}
 	
-	private InventoryItemRecord getInventoryItemRecord(ResultSet resultSet) throws SQLException {
-		return new InventoryItemRecord(
+	private HorseDeathRecord getHorseDeathRecord(ResultSet resultSet) throws SQLException {
+		return new HorseDeathRecord(
 			resultSet.getString("uuid"),
-			resultSet.getInt("slot"),
-			resultSet.getString("data")
+			new Date(resultSet.getTimestamp("date").getTime())
 		);
 	}
 	
@@ -419,6 +444,14 @@ public abstract class SQLDatabaseConnector {
 			resultSet.getString("style"),
 			resultSet.getInt("ticksLived"),
 			resultSet.getString("type")
+		);
+	}
+	
+	private InventoryItemRecord getInventoryItemRecord(ResultSet resultSet) throws SQLException {
+		return new InventoryItemRecord(
+			resultSet.getString("uuid"),
+			resultSet.getInt("slot"),
+			resultSet.getString("data")
 		);
 	}
 	

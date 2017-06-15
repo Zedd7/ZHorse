@@ -200,6 +200,9 @@ public class ConfigValidator extends YamlResourceValidator {
 			}
 			validateOptionSet(KeyWordEnum.MUTE_CONSOLE.getValue());
 			validateOptionSet(KeyWordEnum.RESPAWN_MISSING_HORSE.getValue());
+			if (validateOptionSet(KeyWordEnum.REZ_STACK_SIZE.getValue())) {
+				validatePositive(KeyWordEnum.REZ_STACK_SIZE.getValue());
+			}
 			validateOptionSet(KeyWordEnum.USE_OLD_TELEPORT_METHOD.getValue());
 			validateOptionSet(KeyWordEnum.USE_EXACT_STATS.getValue());
 			validateOptionSet(KeyWordEnum.USE_VANILLA_STATS.getValue());

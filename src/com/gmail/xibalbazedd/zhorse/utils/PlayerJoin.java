@@ -1,7 +1,6 @@
 package com.gmail.xibalbazedd.zhorse.utils;
 
 import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,10 +11,9 @@ import org.bukkit.entity.Player;
 import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.database.PendingMessageRecord;
 import com.gmail.xibalbazedd.zhorse.database.PlayerRecord;
+import com.gmail.xibalbazedd.zhorse.managers.MessageManager;
 
 public class PlayerJoin {
-	
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("(HH:mm - dd/MM/yyyy)");
 	
 	public PlayerJoin(ZHorse zh, Player player) {
 		UUID playerUUID = player.getUniqueId();
@@ -59,7 +57,7 @@ public class PlayerJoin {
 							for (PendingMessageRecord messageRecord : messageRecordList) {
 								String message = messageRecord.getMessage();
 								Date date = messageRecord.getDate();
-								zh.getMM().sendMessage(player, message + " " + ChatColor.RESET + DATE_FORMAT.format(date));
+								zh.getMM().sendMessage(player, message + " " + ChatColor.RESET + MessageManager.DATE_FORMAT_TIMESTAMP.format(date));
 							}
 						}
 						

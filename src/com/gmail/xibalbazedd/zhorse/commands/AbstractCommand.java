@@ -265,16 +265,22 @@ public abstract class AbstractCommand {
 	}
 	
 	protected String getRemainingClaimsMessage(UUID playerUUID) {
-		int horseCount = zh.getDM().getHorseCount(playerUUID);
+		int livingHorseCount = zh.getDM().getAliveHorseCount(playerUUID);
 		int maxClaims = zh.getCM().getClaimsLimit(playerUUID);
-		return zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.REMAINING_CLAIMS_FORMAT) {{ setAmount(horseCount); setMax(maxClaims); }}, true);
+		return zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.REMAINING_CLAIMS_FORMAT) {{ setAmount(livingHorseCount); setMax(maxClaims); }}, true);
+	}
+	
+	protected String getRemainingDeathsMessage(UUID playerUUID) {
+		int deadHorseCount = zh.getDM().getDeadHorseCount(playerUUID);
+		int maxDeadHorses = zh.getCM().getRezStackMaxSize();
+		return zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.REMAINING_CLAIMS_FORMAT) {{ setAmount(deadHorseCount); setMax(maxDeadHorses); }}, true);
 	}
 	
 	protected boolean hasReachedClaimsLimit(boolean useTargetList) {
 		if (adminMode) return false;
 		
 		UUID playerUUID = useTargetList ? targetUUID : p.getUniqueId();
-		int horseCount = zh.getDM().getHorseCount(playerUUID);
+		int horseCount = zh.getDM().getAliveHorseCount(playerUUID);
 		int claimsLimit = zh.getCM().getClaimsLimit(playerUUID);
 		if (horseCount < claimsLimit || claimsLimit == -1) {
 			return false;
@@ -500,10 +506,6 @@ public abstract class AbstractCommand {
 		return isOwner(p.getUniqueId(), false, ignoreModes, hideConsole);
 	}
 	
-	protected boolean isOwner(UUID playerUUID, boolean hideConsole) {
-		return isOwner(playerUUID, false, false, hideConsole);
-	}
-	
 	protected boolean isOwner(UUID playerUUID, boolean considerFriendOwner, boolean ignoreModes, boolean hideConsole) {
 		if ((adminMode && !ignoreModes)
 				|| zh.getDM().isHorseOwnedBy(playerUUID, horse.getUniqueId())
@@ -719,7 +721,7 @@ public abstract class AbstractCommand {
 	}
 	
 	protected boolean ownsHorse(UUID playerUUID, boolean hideConsole) {
-		if (zh.getDM().getHorseCount(playerUUID) > 0) {
+		if (zh.getDM().getAliveHorseCount(playerUUID) > 0) {
 			return true;
 		}
 		else {
@@ -865,6 +867,17 @@ public abstract class AbstractCommand {
 		horseOptionArrayMessage += ChatColor.RESET;
 		final String message = horseOptionArrayMessage;
 		zh.getMM().sendMessage(s, new MessageConfig(index) {{ setSpaceCount(1); setValue(message); }}, true);
+	}
+	
+	protected void secureHorseID() {
+		secureHorseID(horseID);
+	}
+	
+	protected String secureHorseID(String horseID) {
+		if (horseID != null && horseID.equals(zh.getDM().getDeadHorseID().toString())) {
+			horseID = zh.getDM().getDefaultFavoriteHorseID().toString();
+		}
+		return horseID;
 	}
 
 }
