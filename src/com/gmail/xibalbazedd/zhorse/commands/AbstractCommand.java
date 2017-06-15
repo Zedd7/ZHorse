@@ -164,7 +164,6 @@ public abstract class AbstractCommand {
 			}
 			return false;
 		}
-		
 	}
 	
 	protected boolean applyArgumentToTarget() {
@@ -172,6 +171,7 @@ public abstract class AbstractCommand {
 		
 		targetMode = !argument.isEmpty();
 		targetName = argument;
+		argument = argument.replace(targetName, "");
 		targetUUID = null;
 		return analyseModes();
 	}
@@ -196,11 +196,15 @@ public abstract class AbstractCommand {
 	}
 	
 	protected boolean craftHorseName(boolean keepPreviousName) {
+		return craftHorseName(keepPreviousName, horse.getUniqueId());
+	}
+	
+	protected boolean craftHorseName(boolean keepPreviousName, UUID horseUUID) {
 		if (!argument.isEmpty()) {
 			return craftCustomHorseName();
 		}
 		else {
-			return craftPreviousHorseName(keepPreviousName);
+			return craftPreviousHorseName(keepPreviousName, horseUUID);
 		}
 	}
 
@@ -234,10 +238,10 @@ public abstract class AbstractCommand {
 		return false;
 	}
 	
-	private boolean craftPreviousHorseName(boolean keepPreviousName) {
+	private boolean craftPreviousHorseName(boolean keepPreviousName, UUID horseUUID) {
 		if (adminMode || !zh.getCM().isHorseNameRequired()) {
-			if (keepPreviousName && zh.getDM().isHorseRegistered(horse.getUniqueId())) {
-				horseName = zh.getDM().getHorseName(horse.getUniqueId());
+			if (keepPreviousName && zh.getDM().isHorseRegistered(horseUUID)) {
+				horseName = zh.getDM().getHorseName(horseUUID);
 			}
 			else {
 				if (zh.getCM().isRandomHorseNameEnabled()) {
@@ -733,6 +737,22 @@ public abstract class AbstractCommand {
 				else {
 					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.NO_HORSE_OWNED_OTHER) {{ setPlayerName(targetName); setValue(remainingClaimsMessage); }});
 				}
+			}
+			return false;
+		}
+	}
+	
+	protected boolean ownsDeadHorse(UUID playerUUID) {
+		if (zh.getDM().getDeadHorseCount(playerUUID) > 0) {
+			return true;
+		}
+		else {
+			String remainingDeathsMessage = getRemainingDeathsMessage(targetUUID);
+			if (samePlayer) {
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.NO_DEAD_HORSE_OWNED) {{ setValue(remainingDeathsMessage); }});
+			}
+			else {
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.NO_DEAD_HORSE_OWNED_OTHER) {{ setPlayerName(targetName); setValue(remainingDeathsMessage); }});
 			}
 			return false;
 		}

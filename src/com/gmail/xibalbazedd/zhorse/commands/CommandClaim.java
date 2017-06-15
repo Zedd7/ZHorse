@@ -49,17 +49,18 @@ public class CommandClaim extends AbstractCommand {
 			int horseID = zh.getDM().getNextHorseID(p.getUniqueId());
 			HorseRecord horseRecord = new HorseRecord(horse.getUniqueId().toString(), p.getUniqueId().toString(), horseID, horseName, lock, protect, share, horse.getLocation());
 			success &= zh.getDM().registerHorse(horseRecord);
-			if (success) {
+			if (success) {				
+				applyHorseName(p.getUniqueId());
+				horse.setCustomNameVisible(true);
+				horse.setOwner(zh.getServer().getOfflinePlayer(p.getUniqueId()));
+				horse.setTamed(true);
+				
 				HorseInventoryRecord horseInventoryRecord = new HorseInventoryRecord(horse);
 				HorseStatsRecord horseStatsRecord = new HorseStatsRecord(horse);
 				zh.getDM().registerHorseInventory(horseInventoryRecord);
 				zh.getDM().registerHorseStats(horseStatsRecord);
 				zh.getHM().trackHorse(horse);
 				
-				applyHorseName(p.getUniqueId());
-				horse.setCustomNameVisible(true);
-				horse.setOwner(zh.getServer().getOfflinePlayer(p.getUniqueId()));
-				horse.setTamed(true);
 				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_CLAIMED) {{ setHorseName(horseName); }});
 				zh.getEM().payCommand(p, command);
 			}

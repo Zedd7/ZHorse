@@ -310,7 +310,6 @@ public class CommandSpawn extends AbstractCommand {
 		checkAttributes(horse);
 		
 		horse.setOwner(p);
-		horse.setRemoveWhenFarAway(false);
 		horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(health);
 		horse.setHealth(health);
 		if (baby) {

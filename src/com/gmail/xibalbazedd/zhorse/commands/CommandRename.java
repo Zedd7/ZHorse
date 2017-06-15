@@ -1,5 +1,7 @@
 package com.gmail.xibalbazedd.zhorse.commands;
 
+import java.util.UUID;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AbstractHorse;
 
@@ -48,7 +50,8 @@ public class CommandRename extends AbstractCommand {
 	
 	private void execute() {
 		if (isOwner() && craftHorseName(false) && zh.getEM().canAffordCommand(p, command)) {
-			applyHorseName(targetUUID);
+			UUID ownerUUID = zh.getDM().getOwnerUUID(horse.getUniqueId());
+			applyHorseName(ownerUUID);
 			if (zh.getDM().isHorseForSale(horse.getUniqueId())) {
 				int price = zh.getDM().getSalePrice(horse.getUniqueId());
 				applyHorsePrice(price);
