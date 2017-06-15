@@ -135,7 +135,6 @@ public class EventManager implements Listener {
 					zh.getMM().sendPendingMessage(ownerUUID, new MessageConfig(LocaleEnum.HORSE_DIED) {{ setHorseName(horseName); }});
 				}
 				zh.getHM().untrackHorse(horse.getUniqueId());
-				zh.getDM().removeSale(horse.getUniqueId());
 				zh.getDM().registerHorseDeath(new HorseDeathRecord(horse.getUniqueId().toString()));
 			}
 		}

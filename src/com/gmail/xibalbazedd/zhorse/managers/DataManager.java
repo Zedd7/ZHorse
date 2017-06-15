@@ -127,7 +127,7 @@ public class DataManager {
 	}
 	
 	public Integer getHorseID(UUID ownerUUID, String horseName) {
-		String query = String.format("SELECT id FROM prefix_horse WHERE owner = \"%s\" AND name = \"%s\"", ownerUUID, horseName);
+		String query = String.format("SELECT h.id FROM prefix_horse h WHERE h.owner = \"%s\" AND h.name = \"%s\" AND h.uuid NOT IN (SELECT hd.uuid FROM prefix_horse_death hd)", ownerUUID, horseName);
 		return db.getIntegerResult(query);
 	}
 	
@@ -344,7 +344,7 @@ public class DataManager {
 	}
 	
 	public boolean isHorseRegistered(UUID ownerUUID, int horseID) {
-		String query = String.format("SELECT 1 FROM prefix_horse WHERE owner = \"%s\" AND id = %d", ownerUUID, horseID);
+		String query = String.format("SELECT 1 FROM prefix_horse h WHERE h.owner = \"%s\" AND h.id = %d AND h.uuid NOT IN (SELECT hd.uuid FROM prefix_horse_death hd)", ownerUUID, horseID);
 		return db.hasResult(query);
 	}
 	
@@ -420,22 +420,16 @@ public class DataManager {
 			int deadHorseCount = getDeadHorseCount(ownerUUID);
 			if (deadHorseCount >= maxDeadHorseCount) {
 				UUID oldestHorseDeathUUID = getOldestHorseDeathUUID(ownerUUID);
-				success &= removeHorseDeath(oldestHorseDeathUUID);
-				success &= removeHorse(oldestHorseDeathUUID);
-				success &= removeHorseInventory(oldestHorseDeathUUID);
-				success &= removeHorseStats(oldestHorseDeathUUID);
+				success &= removeHorse(oldestHorseDeathUUID, ownerUUID, false, false, false, false);
 			}
 			String horseUpdate = String.format("UPDATE prefix_horse SET id = %s WHERE uuid = \"%s\"", DEAD_HORSE_ID, horseUUID);
-			String horseDeathUpdate = String.format("INSERT INTO prefix_horse_death VALUES (\"%s\", \"%s\")",
-					horseDeathRecord.getUUID(), DATE_FORMAT.format(horseDeathRecord.getDate()));
+			String horseDeathUpdate = String.format("INSERT INTO prefix_horse_death VALUES (\"%s\", \"%s\")", horseDeathRecord.getUUID(), DATE_FORMAT.format(horseDeathRecord.getDate()));
 			success &= updateHorseIDMapping(ownerUUID, horseID);
 			success &= db.executeUpdate(horseUpdate);
 			success &= db.executeUpdate(horseDeathUpdate);
 		}
 		else {
-			success &= removeHorse(horseUUID);
-			success &= removeHorseInventory(horseUUID);
-			success &= removeHorseStats(horseUUID);
+			success &= removeHorse(horseUUID, ownerUUID, horseID, false, false, true, false);
 		}
 		return success;
 	}
@@ -517,8 +511,32 @@ public class DataManager {
 	}
 	
 	public boolean removeHorse(UUID horseUUID, UUID ownerUUID, int horseID) {
+		return removeHorse(horseUUID, ownerUUID, horseID, false, false, false, false);
+	}
+	
+	public boolean removeHorse(UUID horseUUID, UUID ownerUUID, boolean keepInventory, boolean keepStats, boolean keepDeath, boolean keepSale) {
+		int horseID = getHorseID(horseUUID);
+		return removeHorse(horseUUID, ownerUUID, horseID, keepInventory, keepStats, keepDeath, keepSale);
+	}
+	
+	public boolean removeHorse(UUID horseUUID, UUID ownerUUID, int horseID, boolean keepInventory, boolean keepStats, boolean keepDeath, boolean keepSale) {
+		boolean success = true;
 		String update = String.format("DELETE FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
-		return updateHorseIDMapping(ownerUUID, horseID) && db.executeUpdate(update);
+		if (!keepInventory) {
+			success &= removeHorseInventory(horseUUID);
+		}
+		if (!keepStats) {
+			success &= removeHorseStats(horseUUID);
+		}
+		if (!keepDeath) {
+			success &= removeHorseDeath(horseUUID);
+		}
+		if (!keepSale) {
+			success &= removeSale(horseUUID);
+		}
+		success &= updateHorseIDMapping(ownerUUID, horseID);
+		success &= db.executeUpdate(update);
+		return success;
 	}
 	
 	public boolean removeHorseDeath(UUID horseUUID) {

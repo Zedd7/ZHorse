@@ -65,7 +65,7 @@ public abstract class AbstractCommand {
 		adminMode = false;
 		idMode = false;
 		targetMode = false;
-		for (int i = 1; i < a.length; ++i) { // start at 1 to skip the command
+		for (int i = 1; i < a.length; ++i) { // Start at 1 to skip the command
 			boolean valid = true;
 			if (a[i].equalsIgnoreCase("-a")) {
 				valid = !adminMode;
@@ -73,21 +73,21 @@ public abstract class AbstractCommand {
 			}
 			else if (a[i].equalsIgnoreCase("-i")) {
 				valid = !idMode && i != a.length - 1 && !a[i + 1].startsWith("-");
-				if (valid) { // avoid to exit the loop
+				if (valid) { // Avoid to exit the loop
 					idMode = true;
 					horseID = a[i + 1];
-					i++; // skip the ID
+					i++; // Skip the ID
 				}
 			}
 			else if (a[i].equalsIgnoreCase("-p") || a[i].equalsIgnoreCase("-t")) {
 				valid = !targetMode && i != a.length - 1 && !a[i + 1].startsWith("-");
-				if (valid) { // avoid to exit the loop
+				if (valid) { // Avoid to exit the loop
 					targetMode = true;
 					targetName = a[i + 1];
-					i++; // skip the target
+					i++; // Skip the target
 				}
 			}
-			else { // add to argument if not a flag
+			else { // Add to argument if not a flag
 				if (!argument.isEmpty()) {
 					argument += " ";
 				}
@@ -109,7 +109,7 @@ public abstract class AbstractCommand {
 			targetName = s.getName();
 		}
 		else {
-			String fixedTargetName = zh.getDM().getPlayerName(targetName); // fix potential case errors
+			String fixedTargetName = zh.getDM().getPlayerName(targetName); // Fix potential case issues
 			if (fixedTargetName != null) {
 				targetName = fixedTargetName;
 				targetUUID = getPlayerUUID(targetName);
@@ -149,7 +149,7 @@ public abstract class AbstractCommand {
 		
 		idMode = true;
 		UUID ownerUUID = targetIsOwner ? targetUUID : p.getUniqueId();
-		horseName = zh.getDM().getHorseName(ownerUUID, argument); // fix potential case errors
+		horseName = zh.getDM().getHorseName(ownerUUID, argument); // Fix potential case issues
 		Integer horseIDInt = zh.getDM().getHorseID(ownerUUID, horseName);
 		if (horseIDInt != null) {
 			horseID = horseIDInt.toString();
@@ -867,17 +867,6 @@ public abstract class AbstractCommand {
 		horseOptionArrayMessage += ChatColor.RESET;
 		final String message = horseOptionArrayMessage;
 		zh.getMM().sendMessage(s, new MessageConfig(index) {{ setSpaceCount(1); setValue(message); }}, true);
-	}
-	
-	protected void secureHorseID() {
-		secureHorseID(horseID);
-	}
-	
-	protected String secureHorseID(String horseID) {
-		if (horseID != null && horseID.equals(zh.getDM().getDeadHorseID().toString())) {
-			horseID = zh.getDM().getDefaultFavoriteHorseID().toString();
-		}
-		return horseID;
 	}
 
 }

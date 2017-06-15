@@ -44,10 +44,6 @@ public class CommandClaim extends AbstractCommand {
 			boolean share = zh.getCM().shouldShareOnClaim();
 			boolean success = true;
 			if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
-				success &= zh.getDM().removeSale(horse.getUniqueId());
-				success &= zh.getDM().removeHorseDeath(horse.getUniqueId());
-				success &= zh.getDM().removeHorseInventory(horse.getUniqueId());
-				success &= zh.getDM().removeHorseStats(horse.getUniqueId());
 				success &= zh.getDM().removeHorse(horse.getUniqueId());
 			}
 			int horseID = zh.getDM().getNextHorseID(p.getUniqueId());

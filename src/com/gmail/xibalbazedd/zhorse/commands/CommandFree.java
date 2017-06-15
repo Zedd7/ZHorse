@@ -57,12 +57,7 @@ public class CommandFree extends AbstractCommand {
 	private void execute() {
 		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
 			zh.getHM().untrackHorse(horse.getUniqueId());
-			boolean success = zh.getDM().removeSale(horse.getUniqueId());
-			success &= zh.getDM().removeHorseDeath(horse.getUniqueId());
-			success &= zh.getDM().removeHorse(horse.getUniqueId(), targetUUID);
-			success &= zh.getDM().removeHorseInventory(horse.getUniqueId());
-			success &= zh.getDM().removeHorseStats(horse.getUniqueId());
-			if (success) {
+			if (zh.getDM().removeHorse(horse.getUniqueId(), targetUUID)) {
 				horse.setCustomName(null);
 				horse.setCustomNameVisible(false);
 				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_FREED) {{ setHorseName(horseName); }});
@@ -74,12 +69,7 @@ public class CommandFree extends AbstractCommand {
 	private void removeLostHorse() {
 		UUID horseUUID = zh.getDM().getHorseUUID(targetUUID, Integer.parseInt(horseID));
 		zh.getHM().untrackHorse(horseUUID);
-		boolean success = zh.getDM().removeSale(horseUUID);
-		success &= zh.getDM().removeHorseDeath(horseUUID);
-		success &= zh.getDM().removeHorse(horseUUID, targetUUID, Integer.parseInt(horseID));
-		success &= zh.getDM().removeHorseInventory(horseUUID);
-		success &= zh.getDM().removeHorseStats(horseUUID);
-		if (success) {
+		if (zh.getDM().removeHorse(horseUUID, targetUUID, Integer.parseInt(horseID))) {
 			if (samePlayer) {
 				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_CLEARED) {{ setHorseName(horseName); }});
 			}

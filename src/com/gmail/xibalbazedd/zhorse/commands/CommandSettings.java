@@ -79,7 +79,6 @@ public class CommandSettings extends AbstractCommand {
 			if (argument.split(" ").length >= 2) {
 				idMode = true;
 				horseID = argument.substring(argument.indexOf(" ") + 1);
-				secureHorseID();
 			}
 			if (idMode) {
 				if (isRegistered(targetUUID, horseID)) {
@@ -194,8 +193,8 @@ public class CommandSettings extends AbstractCommand {
 	private void swapIDs() {
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (argument.split(" ").length == 3) {
-				String horseID1 = secureHorseID(argument.split(" ")[1]);
-				String horseID2 = secureHorseID(argument.split(" ")[2]);
+				String horseID1 = argument.split(" ")[1];
+				String horseID2 = argument.split(" ")[2];
 				if (isRegistered(targetUUID, horseID1) && isRegistered(targetUUID, horseID2)) {
 					int favoriteHorseID = zh.getDM().getPlayerFavoriteHorseID(targetUUID);
 					if (favoriteHorseID == Integer.parseInt(horseID1)) {

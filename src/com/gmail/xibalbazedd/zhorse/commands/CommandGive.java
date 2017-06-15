@@ -58,11 +58,7 @@ public class CommandGive extends AbstractCommand {
 			boolean protect = zh.getCM().shouldProtectOnClaim();
 			boolean share = zh.getCM().shouldShareOnClaim();
 			HorseRecord horseRecord = new HorseRecord(horse.getUniqueId().toString(), targetUUID.toString(), horseID, horseName, lock, protect, share, horse.getLocation());
-			boolean success = zh.getDM().removeSale(horse.getUniqueId());
-			success &= zh.getDM().removeHorseDeath(horse.getUniqueId());
-			success &= zh.getDM().removeHorse(horse.getUniqueId(), p.getUniqueId());
-			success &= zh.getDM().registerHorse(horseRecord);
-			if (success) {
+			if (zh.getDM().removeHorse(horse.getUniqueId(), p.getUniqueId(), true, true, false, false) && zh.getDM().registerHorse(horseRecord)) {
 				applyHorseName(targetUUID);
 				horse.setOwner(zh.getServer().getOfflinePlayer(targetUUID));
 				
