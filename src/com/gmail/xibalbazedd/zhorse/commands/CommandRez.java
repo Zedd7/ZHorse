@@ -44,7 +44,7 @@ public class CommandRez extends AbstractCommand {
 					Block block = destination.getWorld().getHighestBlockAt(destination);
 					destination = new Location(destination.getWorld(), block.getX(), block.getY(), block.getZ());
 				}
-				horse = zh.getHM().spawnHorse(destination, inventoryRecord, statsRecord, horseUUID);
+				horse = zh.getHM().spawnHorse(destination, inventoryRecord, statsRecord, horseUUID, true);
 				if (horse != null) {
 					applyHorseName(targetUUID);
 					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_RESURRECTED) {{ setHorseName(horseName); }});

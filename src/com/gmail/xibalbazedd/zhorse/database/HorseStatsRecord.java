@@ -8,6 +8,7 @@ import org.bukkit.entity.Llama;
 
 public class HorseStatsRecord {
 	
+	/* DB data */
 	private String uuid;
 	private Integer age;
 	private Boolean canBreed;
@@ -30,6 +31,10 @@ public class HorseStatsRecord {
 	private String style;
 	private Integer ticksLived;
 	private String type;
+	
+	/* Transient data */
+	private Boolean isBaby;
+	private Boolean isAdult;
 
 	public HorseStatsRecord(
 		String uuid,
@@ -199,6 +204,22 @@ public class HorseStatsRecord {
 
 	public String getType() {
 		return type;
+	}
+	
+	public Boolean isAdult() {
+		return isAdult;
+	}
+	
+	public void setAdult(Boolean isAdult) {
+		this.isAdult = isAdult;
+	}
+	
+	public Boolean isBaby() {
+		return isBaby;
+	}
+	
+	public void setBaby(Boolean isBaby) {
+		this.isBaby = isBaby;
 	}
 
 }

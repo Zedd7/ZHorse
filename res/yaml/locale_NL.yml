@@ -239,7 +239,7 @@ Command usages:
   sell: "<gold>/zh sell<yellow> (prijs) (-i paardID) (-p spelerNaam) (-a)"
   settings: "<gold>/zh settings<yellow> option value (-p spelerNaam) (-a)"
   share: "<gold>/zh share<yellow> (-i paardID) (-p spelerNaam) (-a)"
-  spawn: "<gold>/zh spawn<yellow> (variant) (stijl) (kleur) ('tamed') ('baby') (levens):(snelheid%):(springkracht%) (kracht)"
+  spawn: "<gold>/zh spawn<yellow> (variant) (stijl) (kleur) ('tamed') ('adult'|'baby') (levens):(snelheid%):(springkracht%) (kracht)"
   tame: "<gold>/zh tame<yellow> (-i paardID) (-p spelerNaam) (-a)"
   tp: "<gold>/zh tp<yellow> (-i paardID) (-p spelerNaam) (-a)"
   

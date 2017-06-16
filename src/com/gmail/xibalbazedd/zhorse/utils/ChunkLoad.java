@@ -9,6 +9,7 @@ import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Entity;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
+import com.gmail.xibalbazedd.zhorse.managers.HorseManager;
 
 public class ChunkLoad {
 	
@@ -16,7 +17,7 @@ public class ChunkLoad {
 		for (Entity entity : chunk.getEntities()) {
 			if (entity instanceof AbstractHorse) {
 				AbstractHorse horse = (AbstractHorse) entity;
-				if (!horse.getMetadata("zhorse_duplicate").isEmpty()) {
+				if (!horse.getMetadata(HorseManager.DUPLICATE_METADATA).isEmpty()) {
 					horse.remove();
 				}
 				else if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {

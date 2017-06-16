@@ -237,7 +237,7 @@ Command usages:
   sell: "<gold>/zh sell<yellow> (price) (-i horseID) (-p playerName) (-a)"
   settings: "<gold>/zh settings<yellow> option value (-p playerName) (-a)"
   share: "<gold>/zh share<yellow> (-i horseID) (-p playerName) (-a)"
-  spawn: "<gold>/zh spawn<yellow> (variant) (style) (color) ('tamed') ('baby') (health):(speed%):(jump%) (strength)"
+  spawn: "<gold>/zh spawn<yellow> (variant) (style) (color) ('tamed') ('adult'|'baby') (health):(speed%):(jump%) (strength)"
   tame: "<gold>/zh tame<yellow> (-i horseID) (-p playerName) (-a)"
   tp: "<gold>/zh tp<yellow> (-i horseID) (-p playerName) (-a)"
 

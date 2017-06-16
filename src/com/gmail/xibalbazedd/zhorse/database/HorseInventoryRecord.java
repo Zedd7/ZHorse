@@ -29,6 +29,10 @@ public class HorseInventoryRecord {
 		}
 	}
 	
+	public HorseInventoryRecord() {
+		this(null, new ArrayList<>());
+	}
+	
 	public String getUUID() {
 		return uuid;
 	}

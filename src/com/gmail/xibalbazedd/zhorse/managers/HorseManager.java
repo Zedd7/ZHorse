@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Map.Entry;
 import java.util.UUID;
 
@@ -28,9 +29,12 @@ import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.database.HorseInventoryRecord;
 import com.gmail.xibalbazedd.zhorse.database.HorseStatsRecord;
 import com.gmail.xibalbazedd.zhorse.database.InventoryItemRecord;
+import com.gmail.xibalbazedd.zhorse.enums.HorseVariantEnum;
 import com.gmail.xibalbazedd.zhorse.utils.ChunkLoad;
 
 public class HorseManager {
+	
+	public static final String DUPLICATE_METADATA = "zhorse_duplicate";
 	
 	private ZHorse zh;
 	private Map<UUID, AbstractHorse> trackedHorses = new HashMap<>();
@@ -64,8 +68,8 @@ public class HorseManager {
 				else if (zh.getCM().shouldRespawnMissingHorse()) {
 					HorseInventoryRecord inventoryRecord = zh.getDM().getHorseInventoryRecord(horseUUID);
 					HorseStatsRecord statsRecord = zh.getDM().getHorseStatsRecord(horseUUID);
-					if (inventoryRecord != null && statsRecord != null) {
-						horse = spawnHorse(location, inventoryRecord, statsRecord, horseUUID);
+					if (inventoryRecord != null && statsRecord != null) { // Do not spawn if exact copy is impossible
+						horse = spawnHorse(location, inventoryRecord, statsRecord, horseUUID, true);
 					}
 				}
 			}
@@ -197,10 +201,11 @@ public class HorseManager {
 			if (copyHorse != null) {
 				UUID oldHorseUUID = sourceHorse.getUniqueId();
 				UUID newHorseUUID = copyHorse.getUniqueId();
+				UUID ownerUUID = zh.getDM().getOwnerUUID(oldHorseUUID);
 				zh.getDM().updateHorseUUID(oldHorseUUID, newHorseUUID);
 				zh.getDM().updateHorseLocation(newHorseUUID, destination, true);
 				HorseStatsRecord statsRecord = new HorseStatsRecord(sourceHorse);
-				assignStats(copyHorse, statsRecord);
+				assignStats(copyHorse, statsRecord, ownerUUID);
 				copyInventory(sourceHorse, copyHorse, statsRecord.isCarryingChest());
 				removeLeash(sourceHorse);
 				untrackHorse(sourceHorse.getUniqueId());
@@ -211,38 +216,37 @@ public class HorseManager {
 		}
 	}
 
-	private void assignStats(AbstractHorse horse, HorseStatsRecord statsRecord) {
-		UUID ownerUUID = zh.getDM().getOwnerUUID(horse.getUniqueId());
-		horse.setOwner(zh.getServer().getOfflinePlayer(ownerUUID));
-		
-		horse.setAge(statsRecord.getAge());
-		horse.setBreed(statsRecord.canBreed());
-		horse.setCanPickupItems(statsRecord.canPickupItems());
-		horse.setCustomName(statsRecord.getCustomName());
-		horse.setCustomNameVisible(statsRecord.isCustomNameVisible());
-		horse.setDomestication(statsRecord.getDomestication());
-		horse.setFireTicks(statsRecord.getFireTicks());
-		horse.setGlowing(statsRecord.isGlowing());
-		horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(statsRecord.getMaxHealth());
-		horse.setHealth(statsRecord.getHealth()); // Define max HEALTH before current HEALTH
-		horse.setJumpStrength(statsRecord.getJumpStrength());
-		horse.setNoDamageTicks(statsRecord.getNoDamageTicks());
-		horse.setRemainingAir(statsRecord.getRemainingAir());
-		horse.setTamed(statsRecord.isTamed());
-		horse.setTicksLived(statsRecord.getTicksLived());
-		horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(statsRecord.getSpeed());
-		
-		switch (statsRecord.getType()) {
-		case "HORSE":
-			((Horse) horse).setColor(Horse.Color.valueOf(statsRecord.getColor()));
-			((Horse) horse).setStyle(Horse.Style.valueOf(statsRecord.getStyle()));
-			break;
-		case "LLAMA":
-			((Llama) horse).setColor(Llama.Color.valueOf(statsRecord.getColor()));
-			((Llama) horse).setStrength(statsRecord.getStrength());
-		default:
-			break;
+	private void assignStats(AbstractHorse horse, HorseStatsRecord statsRecord, UUID ownerUUID) {		
+		if (statsRecord.getAge() != null) horse.setAge(statsRecord.getAge());
+		if (statsRecord.canBreed() != null) horse.setBreed(statsRecord.canBreed());
+		if (statsRecord.canPickupItems() != null) horse.setCanPickupItems(statsRecord.canPickupItems());
+		if (statsRecord.getCustomName() != null) horse.setCustomName(statsRecord.getCustomName());
+		if (statsRecord.isCustomNameVisible() != null) horse.setCustomNameVisible(statsRecord.isCustomNameVisible());
+		if (statsRecord.getDomestication() != null) horse.setDomestication(statsRecord.getDomestication());
+		if (statsRecord.getFireTicks() != null) horse.setFireTicks(statsRecord.getFireTicks());
+		if (statsRecord.isGlowing() != null) horse.setGlowing(statsRecord.isGlowing());
+		if (statsRecord.getMaxHealth() != null) horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(statsRecord.getMaxHealth());
+		if (statsRecord.getHealth() != null) horse.setHealth(statsRecord.getHealth()); // Define maxHealt before actual health
+		if (statsRecord.getJumpStrength() != null) horse.setJumpStrength(statsRecord.getJumpStrength());
+		if (statsRecord.getNoDamageTicks() != null) horse.setNoDamageTicks(statsRecord.getNoDamageTicks());
+		if (statsRecord.getRemainingAir() != null) horse.setRemainingAir(statsRecord.getRemainingAir());
+		if (statsRecord.isTamed() != null) horse.setTamed(statsRecord.isTamed());
+		if (statsRecord.getTicksLived() != null) horse.setTicksLived(statsRecord.getTicksLived());
+		if (statsRecord.getSpeed() != null) horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(statsRecord.getSpeed());		
+		if (statsRecord.getType() != null) {
+			if (statsRecord.getType().equals(EntityType.HORSE.name())) {
+				if (statsRecord.getColor() != null) ((Horse) horse).setColor(Horse.Color.valueOf(statsRecord.getColor()));
+				if (statsRecord.getStyle() != null) ((Horse) horse).setStyle(Horse.Style.valueOf(statsRecord.getStyle()));
+			}
+			else if (statsRecord.getType().equals(EntityType.LLAMA.name())) {
+				if (statsRecord.getColor() != null) ((Llama) horse).setColor(Llama.Color.valueOf(statsRecord.getColor()));
+				if (statsRecord.getStrength() != null) ((Llama) horse).setStrength(statsRecord.getStrength());
+			}
 		}
+		
+		if (statsRecord.isAdult() != null && statsRecord.isAdult()) horse.setAdult();
+		if (statsRecord.isBaby() != null && statsRecord.isBaby()) horse.setBaby();
+		if (ownerUUID != null) horse.setOwner(zh.getServer().getOfflinePlayer(ownerUUID));
 	}
 	
 	private void assignInventory(AbstractHorse horse, HorseInventoryRecord inventoryRecord, boolean isCarryingChest) {
@@ -275,27 +279,42 @@ public class HorseManager {
 	
 	public void removeHorse(AbstractHorse horse) {
 		boolean chunkWasLoaded = loadChunk(horse.getLocation());
-		horse.setMetadata("zhorse_duplicate", new FixedMetadataValue(zh, horse.getUniqueId()));
+		horse.setMetadata(DUPLICATE_METADATA, new FixedMetadataValue(zh, horse.getUniqueId()));
 		horse.remove(); // Entity::remove would fail if the chunk was not loaded
 		if (!chunkWasLoaded) {
 			unloadChunk(horse.getLocation());
 		}
 	}
 	
-	public AbstractHorse spawnHorse(Location location, HorseInventoryRecord inventoryRecord, HorseStatsRecord statsRecord, UUID oldHorseUUID) {
-		EntityType type = EntityType.valueOf(statsRecord.getType());
+	public AbstractHorse spawnHorse(Location location, HorseInventoryRecord inventoryRecord, HorseStatsRecord statsRecord, UUID oldHorseUUID, boolean claimedHorse) {
+		EntityType type;
+		if (statsRecord.getType() != null) {
+			type = EntityType.valueOf(statsRecord.getType());
+		}
+		else {
+			HorseVariantEnum[] variantArray = HorseVariantEnum.values();
+			type = variantArray[new Random().nextInt(variantArray.length)].getEntityType();
+		}
+		boolean isCarryingChest = statsRecord.isCarryingChest() != null ? statsRecord.isCarryingChest() : false;
+		
 		boolean chunkWasLoaded = loadChunk(location);
 		AbstractHorse horse = (AbstractHorse) location.getWorld().spawnEntity(location, type);
 		if (horse != null) {
-			zh.getDM().updateHorseUUID(oldHorseUUID, horse.getUniqueId());
-			assignStats(horse, statsRecord);
-			assignInventory(horse, inventoryRecord, statsRecord.isCarryingChest());
-			if (chunkWasLoaded) {
+			UUID ownerUUID = null;
+			if (claimedHorse) {
+				ownerUUID = zh.getDM().getOwnerUUID(oldHorseUUID);
+				zh.getDM().updateHorseUUID(oldHorseUUID, horse.getUniqueId());
+			}
+			assignStats(horse, statsRecord, ownerUUID);
+			assignInventory(horse, inventoryRecord, isCarryingChest);
+		}
+		if (chunkWasLoaded) {
+			if (horse != null && claimedHorse) {
 				trackHorse(horse);
 			}
-			else {
-				unloadChunk(location);
-			}
+		}
+		else {
+			unloadChunk(location);
 		}
 		return horse;
 	}
