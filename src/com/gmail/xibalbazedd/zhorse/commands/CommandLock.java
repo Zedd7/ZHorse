@@ -1,5 +1,7 @@
 package com.gmail.xibalbazedd.zhorse.commands;
 
+import java.util.UUID;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Entity;
@@ -25,12 +27,7 @@ public class CommandLock extends AbstractCommand {
 					}
 					else if (ownsHorse) {
 						horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId()).toString();
-						if (isRegistered(p.getUniqueId(), horseID)) {
-							horse = zh.getHM().getFavoriteHorse(p.getUniqueId());
-							if (isHorseLoaded(true)) {
-								execute();
-							}
-						}
+						execute(p.getUniqueId(), horseID);
 					}
 				}
 				else {
@@ -38,12 +35,16 @@ public class CommandLock extends AbstractCommand {
 				}
 			}
 			else {
-				if (isRegistered(targetUUID, horseID)) {
-					horse = zh.getHM().getHorse(targetUUID, Integer.parseInt(horseID));
-					if (isHorseLoaded(true)) {
-						execute();
-					}
-				}
+				execute(targetUUID, horseID);
+			}
+		}
+	}
+	
+	private void execute(UUID ownerUUID, String horseID) {
+		if (isRegistered(ownerUUID, horseID)) {
+			horse = zh.getHM().getHorse(ownerUUID, Integer.parseInt(horseID));
+			if (isHorseLoaded(true)) {
+				execute();
 			}
 		}
 	}

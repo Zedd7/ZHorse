@@ -1,5 +1,7 @@
 package com.gmail.xibalbazedd.zhorse.commands;
 
+import java.util.UUID;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -17,24 +19,23 @@ public class CommandHere extends AbstractCommand {
 			if (!idMode) {
 				if (!targetMode) {
 					horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId()).toString();
-					if (isRegistered(p.getUniqueId(), horseID)) {
-						horse = zh.getHM().getFavoriteHorse(p.getUniqueId());
-						if (isHorseLoaded(true)) {
-							execute();
-						}
-					}
+					execute(p.getUniqueId(), horseID);
 				}
 				else {
 					sendCommandUsage();
 				}
 			}
 			else {
-				if (isRegistered(targetUUID, horseID)) {
-					horse = zh.getHM().getHorse(targetUUID, Integer.parseInt(horseID));
-					if (isHorseLoaded(true)) {
-						execute();
-					}
-				}
+				execute(targetUUID, horseID);
+			}
+		}
+	}
+	
+	private void execute(UUID ownerUUID, String horseID) {
+		if (isRegistered(ownerUUID, horseID)) {
+			horse = zh.getHM().getHorse(ownerUUID, Integer.parseInt(horseID));
+			if (isHorseLoaded(true)) {
+				execute();
 			}
 		}
 	}

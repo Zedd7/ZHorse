@@ -1,5 +1,7 @@
 package com.gmail.xibalbazedd.zhorse.commands;
 
+import java.util.UUID;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AbstractHorse;
 
@@ -29,23 +31,22 @@ public class CommandGive extends AbstractCommand {
 						}
 						else if (ownsHorse) {
 							horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId()).toString();
-							if (isRegistered(p.getUniqueId(), horseID)) {
-								horse = zh.getHM().getFavoriteHorse(p.getUniqueId());
-								if (isHorseLoaded(false)) {
-									execute();
-								}
-							}
+							execute(p.getUniqueId(), horseID);
 						}
 					}
 					else {
-						if (isRegistered(p.getUniqueId(), horseID, true)) {
-							horse = zh.getHM().getHorse(p.getUniqueId(), Integer.parseInt(horseID));
-							if (isHorseLoaded(false)) {
-								execute();
-							}
-						}
+						execute(p.getUniqueId(), horseID);
 					}
 				}
+			}
+		}
+	}
+	
+	private void execute(UUID ownerUUID, String horseID) {
+		if (isRegistered(ownerUUID, horseID, true)) {
+			horse = zh.getHM().getHorse(ownerUUID, Integer.parseInt(horseID));
+			if (isHorseLoaded(false)) {
+				execute();
 			}
 		}
 	}

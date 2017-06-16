@@ -25,15 +25,7 @@ public class CommandFree extends AbstractCommand {
 					}
 					else if (ownsHorse) {
 						horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId()).toString();
-						if (isRegistered(p.getUniqueId(), horseID)) {
-							horse = zh.getHM().getFavoriteHorse(p.getUniqueId());
-							if (isHorseLoaded(true)) {
-								execute();
-							}
-							else {
-								removeLostHorse();
-							}
-						}
+						execute(p.getUniqueId(), horseID);
 					}
 				}
 				else {
@@ -41,15 +33,19 @@ public class CommandFree extends AbstractCommand {
 				}
 			}
 			else {
-				if (isRegistered(targetUUID, horseID)) {
-					horse = zh.getHM().getHorse(targetUUID, Integer.parseInt(horseID));
-					if (isHorseLoaded(true)) {
-						execute();
-					}
-					else {
-						removeLostHorse();
-					}
-				}
+				execute(targetUUID, horseID);
+			}
+		}
+	}
+	
+	private void execute(UUID ownerUUID, String horseID) {
+		if (isRegistered(ownerUUID, horseID)) {
+			horse = zh.getHM().getHorse(ownerUUID, Integer.parseInt(horseID));
+			if (isHorseLoaded(true)) {
+				execute();
+			}
+			else {
+				removeLostHorse();
 			}
 		}
 	}
