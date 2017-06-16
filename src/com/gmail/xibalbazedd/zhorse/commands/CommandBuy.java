@@ -4,7 +4,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AbstractHorse;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
-import com.gmail.xibalbazedd.zhorse.database.HorseRecord;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
 import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
 
@@ -47,8 +46,15 @@ public class CommandBuy extends AbstractCommand {
 						boolean lock = zh.getCM().shouldLockOnClaim();
 						boolean protect = zh.getCM().shouldProtectOnClaim();
 						boolean share = zh.getCM().shouldShareOnClaim();
-						HorseRecord horseRecord = new HorseRecord(horse.getUniqueId().toString(), p.getUniqueId().toString(), horseID, horseName, lock, protect, share, horse.getLocation());
-						if (zh.getDM().removeHorse(horse.getUniqueId(), targetUUID, true, true, false, false) && zh.getDM().registerHorse(horseRecord)) {
+						boolean success = true;
+						success &= zh.getDM().removeSale(horse.getUniqueId());
+						success &= zh.getDM().updateHorseOwner(horse.getUniqueId(), p.getUniqueId());
+						success &= zh.getDM().updateHorseID(horse.getUniqueId(), horseID);
+						success &= zh.getDM().updateHorseName(horse.getUniqueId(), horseName);
+						success &= zh.getDM().updateHorseLocked(horse.getUniqueId(), lock);
+						success &= zh.getDM().updateHorseProtected(horse.getUniqueId(), protect);
+						success &= zh.getDM().updateHorseShared(horse.getUniqueId(), share);
+						if (success) {
 							applyHorseName(p.getUniqueId());
 							horse.setOwner(zh.getServer().getOfflinePlayer(p.getUniqueId()));
 							zh.getEM().payPlayer(p, targetUUID, price);

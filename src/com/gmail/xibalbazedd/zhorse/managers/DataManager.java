@@ -420,7 +420,7 @@ public class DataManager {
 			int deadHorseCount = getDeadHorseCount(ownerUUID);
 			if (deadHorseCount >= maxDeadHorseCount) {
 				UUID oldestHorseDeathUUID = getOldestHorseDeathUUID(ownerUUID);
-				success &= removeHorse(oldestHorseDeathUUID, ownerUUID, false, false, false, false);
+				success &= removeHorse(oldestHorseDeathUUID, ownerUUID);
 			}
 			String horseUpdate = String.format("UPDATE prefix_horse SET id = %s WHERE uuid = \"%s\"", DEAD_HORSE_ID, horseUUID);
 			String horseDeathUpdate = String.format("INSERT INTO prefix_horse_death VALUES (\"%s\", \"%s\")", horseDeathRecord.getUUID(), DATE_FORMAT.format(horseDeathRecord.getDate()));
@@ -429,7 +429,7 @@ public class DataManager {
 			success &= db.executeUpdate(horseDeathUpdate);
 		}
 		else {
-			success &= removeHorse(horseUUID, ownerUUID, horseID, false, false, true, false);
+			success &= removeHorse(horseUUID, ownerUUID, horseID);
 		}
 		return success;
 	}
@@ -511,29 +511,12 @@ public class DataManager {
 	}
 	
 	public boolean removeHorse(UUID horseUUID, UUID ownerUUID, int horseID) {
-		return removeHorse(horseUUID, ownerUUID, horseID, false, false, false, false);
-	}
-	
-	public boolean removeHorse(UUID horseUUID, UUID ownerUUID, boolean keepInventory, boolean keepStats, boolean keepDeath, boolean keepSale) {
-		int horseID = getHorseID(horseUUID);
-		return removeHorse(horseUUID, ownerUUID, horseID, keepInventory, keepStats, keepDeath, keepSale);
-	}
-	
-	public boolean removeHorse(UUID horseUUID, UUID ownerUUID, int horseID, boolean keepInventory, boolean keepStats, boolean keepDeath, boolean keepSale) {
-		boolean success = true;
 		String update = String.format("DELETE FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
-		if (!keepInventory) {
-			success &= removeHorseInventory(horseUUID);
-		}
-		if (!keepStats) {
-			success &= removeHorseStats(horseUUID);
-		}
-		if (!keepDeath) {
-			success &= removeHorseDeath(horseUUID);
-		}
-		if (!keepSale) {
-			success &= removeSale(horseUUID);
-		}
+		boolean success = true;
+		success &= removeHorseInventory(horseUUID);
+		success &= removeHorseStats(horseUUID);
+		success &= removeHorseDeath(horseUUID);
+		success &= removeSale(horseUUID);
 		success &= updateHorseIDMapping(ownerUUID, horseID);
 		success &= db.executeUpdate(update);
 		return success;
@@ -601,6 +584,11 @@ public class DataManager {
 		return db.executeUpdate(update);
 	}
 	
+	public boolean updateHorseOwner(UUID horseUUID, UUID ownerUUID) {
+		String update = String.format("UPDATE prefix_horse SET owner = \"%s\" WHERE uuid = \"%s\"", ownerUUID, horseUUID);
+		return db.executeUpdate(update);
+	}
+	
 	public boolean updateHorseProtected(UUID horseUUID, boolean protected_) {
 		int protectedFlag = protected_ ? 1 : 0;
 		String update = String.format("UPDATE prefix_horse SET protected = %d WHERE uuid = \"%s\"", protectedFlag, horseUUID);
@@ -614,8 +602,22 @@ public class DataManager {
 	}
 	
 	public boolean updateHorseUUID(UUID oldHorseUUID, UUID newHorseUUID) {
-		String update = String.format("UPDATE prefix_horse SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
-		return db.executeUpdate(update);
+		HorseRecord horseRecord = getHorseRecord(oldHorseUUID);
+		UUID ownerUUID = UUID.fromString(horseRecord.getOwner());
+		int horseID = horseRecord.getId();
+		horseRecord.setUUID(newHorseUUID.toString());
+		String horseInventoryUpdate = String.format("UPDATE prefix_inventory_item SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
+		String horseStatsUpdate = String.format("UPDATE prefix_horse_stats SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
+		String horseDeathUpdate = String.format("UPDATE prefix_horse_death SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
+		String saleUpdate = String.format("UPDATE prefix_sale SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
+		boolean success = true;
+		success &= registerHorse(horseRecord);
+		success &= db.executeUpdate(horseInventoryUpdate);
+		success &= db.executeUpdate(horseStatsUpdate);
+		success &= db.executeUpdate(horseDeathUpdate);
+		success &= db.executeUpdate(saleUpdate);
+		success &= removeHorse(oldHorseUUID, ownerUUID, horseID);
+		return success;
 	}
 	
 	public boolean updateHorseInventory(HorseInventoryRecord horseInventoryRecord) {
@@ -625,26 +627,11 @@ public class DataManager {
 		return registerHorseInventory(horseInventoryRecord);
 	}
 	
-	public boolean updateHorseInventoryUUID(UUID oldHorseUUID, UUID newHorseUUID) {
-		String update = String.format("UPDATE prefix_inventory_item SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
-		return db.executeUpdate(update);
-	}
-	
 	public boolean updateHorseStats(HorseStatsRecord horseStatsRecord) {
 		if (isHorseStatsRegistered(UUID.fromString(horseStatsRecord.getUUID()))) {
 			removeHorseStats(UUID.fromString(horseStatsRecord.getUUID()));
 		}
 		return registerHorseStats(horseStatsRecord);
-	}
-	
-	public boolean updateHorseStatsUUID(UUID oldHorseUUID, UUID newHorseUUID) {
-		String update = String.format("UPDATE prefix_horse_stats SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
-		return db.executeUpdate(update);
-	}
-	
-	public boolean updateSaleUUID(UUID oldHorseUUID, UUID newHorseUUID) {
-		String update = String.format("UPDATE prefix_sale SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
-		return db.executeUpdate(update);
 	}
 	
 	public boolean updatePlayerDisplayExactStats(UUID playerUUID, boolean displayExactStats) {

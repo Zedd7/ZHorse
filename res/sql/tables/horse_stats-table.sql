@@ -23,5 +23,11 @@ CREATE TABLE IF NOT EXISTS prefix_horse_stats
 	ticksLived INT NOT NULL,
 	type VARCHAR(36) NOT NULL,
 	
-	PRIMARY KEY (uuid)
+	PRIMARY KEY (uuid),
+	
+	CONSTRAINT fk_horse_stats_horse
+		FOREIGN KEY (uuid)
+		REFERENCES prefix_horse (uuid)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
 );

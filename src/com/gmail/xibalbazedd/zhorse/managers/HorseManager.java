@@ -197,20 +197,15 @@ public class HorseManager {
 			if (copyHorse != null) {
 				UUID oldHorseUUID = sourceHorse.getUniqueId();
 				UUID newHorseUUID = copyHorse.getUniqueId();
-				String horseName = zh.getDM().getHorseName(oldHorseUUID); // call before updating horse uuid
-				String ownerName = zh.getDM().getOwnerName(oldHorseUUID);
 				zh.getDM().updateHorseUUID(oldHorseUUID, newHorseUUID);
 				zh.getDM().updateHorseLocation(newHorseUUID, destination, true);
-				zh.getDM().updateHorseInventoryUUID(oldHorseUUID, newHorseUUID);
-				zh.getDM().updateHorseStatsUUID(oldHorseUUID, newHorseUUID);
-				zh.getDM().updateSaleUUID(oldHorseUUID, newHorseUUID);
 				HorseStatsRecord statsRecord = new HorseStatsRecord(sourceHorse);
 				assignStats(copyHorse, statsRecord);
 				copyInventory(sourceHorse, copyHorse, statsRecord.isCarryingChest());
 				removeLeash(sourceHorse);
 				untrackHorse(sourceHorse.getUniqueId());
 				trackHorse(copyHorse);
-				removeHorse(sourceHorse, horseName, ownerName);
+				removeHorse(sourceHorse);
 			}
 			return copyHorse;
 		}
@@ -278,10 +273,10 @@ public class HorseManager {
 		}
 	}
 	
-	public void removeHorse(AbstractHorse horse, String horseName, String ownerName) {		
+	public void removeHorse(AbstractHorse horse) {
 		boolean chunkWasLoaded = loadChunk(horse.getLocation());
 		horse.setMetadata("zhorse_duplicate", new FixedMetadataValue(zh, horse.getUniqueId()));
-		horse.remove(); // Entity::remove fails when the chunk is not loaded
+		horse.remove(); // Entity::remove would fail if the chunk was not loaded
 		if (!chunkWasLoaded) {
 			unloadChunk(horse.getLocation());
 		}
@@ -293,9 +288,6 @@ public class HorseManager {
 		AbstractHorse horse = (AbstractHorse) location.getWorld().spawnEntity(location, type);
 		if (horse != null) {
 			zh.getDM().updateHorseUUID(oldHorseUUID, horse.getUniqueId());
-			zh.getDM().updateHorseInventoryUUID(oldHorseUUID, horse.getUniqueId());
-			zh.getDM().updateHorseStatsUUID(oldHorseUUID, horse.getUniqueId());
-			zh.getDM().updateSaleUUID(oldHorseUUID, horse.getUniqueId());
 			assignStats(horse, statsRecord);
 			assignInventory(horse, inventoryRecord, statsRecord.isCarryingChest());
 			if (chunkWasLoaded) {
