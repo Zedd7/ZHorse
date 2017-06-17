@@ -2,6 +2,7 @@ package com.gmail.xibalbazedd.zhorse.enums;
 
 public enum CommandAdminEnum {
 	
+	BURIAL("burial"),
 	CLEAR("clear"),
 	IMPORT("import");
 	

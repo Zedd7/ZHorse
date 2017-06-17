@@ -96,9 +96,9 @@ public class CommandList extends AbstractCommand {
 			}
 			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HEADER_FORMAT) {{ setValue(deadHorseListHeader); }}, true);
 			
-			for (HorseDeathRecord horseDeathRecord : horseDeathRecordList) {
-				String horseName = zh.getDM().getHorseName(UUID.fromString(horseDeathRecord.getUUID()));
-				String deathDate = MessageManager.DATE_FORMAT_VERBOSE.format(horseDeathRecord.getDate());
+			for (HorseDeathRecord deathRecord : horseDeathRecordList) {
+				String horseName = zh.getDM().getHorseName(UUID.fromString(deathRecord.getUUID()));
+				String deathDate = MessageManager.DATE_FORMAT_VERBOSE.format(deathRecord.getDate());
 				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.DEAD_HORSE_LIST_FORMAT) {{ setHorseName(horseName); setSpaceCount(1); setValue(deathDate); }}, true);
 			}
 		}

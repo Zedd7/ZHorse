@@ -36,6 +36,8 @@ Messages:
   databaseImportFailure: "<yellow>De <gold><value><yellow> gegevens konden niet worden geimporteert in je huidige database. Bekijk de logs voor details."
   databaseImportStarted: "<yellow>Importeren van <gold><value><yellow> data is begonnen..."
   databaseImportSuccess: "<yellow>De <gold><value><yellow> gegevens zijn succesvol geimporteert in je huidige database."
+  deadHorsesCleared: "<yellow>Alle jouw dode paarden zijn verwijderd uit de database."
+  deadHorsesClearedOther: "<yellow>Alle dode paarden van <gold><player><yellow> zijn verwijderd uit de database."
   favoriteAlreadySet: "<yellow>Je hebt <gold><horse><yellow> al gekozen als je favoriete paard."
   favoriteAlreadySetOther: "<gold><player><yellow> heeft <gold><horse><yellow> al gekozen als favoriete paard."
   favoriteEdited: "<gold><horse><yellow> is nu je favoriete paard."
@@ -106,6 +108,8 @@ Messages:
   listHorseStyle: "<yellow>Paard stijl: <value>"
   listHorseVariant: "<yellow>Variant: <value><yellow>"
   listLlamaColor: "<yellow>Lama kleur: <value>"
+  livingHorsesCleared: "<yellow>All jouw levende paarden zijn verwijderd uit de database."
+  livingHorsesClearedOther: "<yellow>Alle levende paarden van <gold><player><yellow> zijn verwijderd uit de database."
   missingArguments: "<yellow>Ongeldig aantal argumenten. Doe als volgt:"
   missingDatabase: "<yellow>Je moet een database opgeven. Gebruik één van de volgende : <value>"
   missingHorseId: "<yellow>Je moet een paard ID opgeven, typ <gold>/zh list<yellow> en kies een ID."
@@ -124,8 +128,6 @@ Messages:
   noHorseOwned: "<yellow>Je hebt geen paarden. <value>"
   noHorseOwnedOther: "<gold><player><yellow> heeft geen paarden. <amount>"
   notOnHorse: "<yellow>Je moet op een paard zijn om dit commando uit te voeren."
-  playerCleared: "<yellow>Al je paarden zijn verwijderd uit de database."
-  playerClearedOther: "<yellow>Alle paarden van <gold><player><yellow> zijn verwijderd uit de database."
   playerCommand: "<yellow>Je moet een speler zijn om dit commando uit te voeren."
   playerOffline: "<gold><player><yellow> moet online zijn om dit commando uit te voeren."
   pluginReloaded: "<gold><value><yellow> is succesvol herladen."
@@ -204,6 +206,7 @@ Command descriptions:
   tp: "<gold>/zh tp<gray>: <yellow>Teleporteer naar je paard."
 
 Admin command descriptions:
+  burial: "<gold>/zh admin burial<gray>: <yellow>Verwijder alle dode paarden van de database."
   clear: "<gold>/zh admin clear<gray>: <yellow>Verwijder een levend paard van de database."
   import: "<gold>/zh admin import<gray>: <yellow>Importeer externe gegevens in je huidige database."
 
@@ -244,6 +247,7 @@ Command usages:
   tp: "<gold>/zh tp<yellow> (-i paardID) (-p spelerNaam) (-a)"
   
 Admin command usages:
+  burial: "<gold>/zh admin burial<yellow> (-p) spelerNaam"
   clear: "<gold>/zh admin clear<yellow> (-p) spelerNaam (-i paardID)"
   import: "<gold>/zh admin import<yellow> database"
 

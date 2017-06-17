@@ -31,7 +31,7 @@ public class DataManager {
 	public static final String[] PATCH_ARRAY = {"1.6.6"};
 	
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-	private static final int DEAD_HORSE_ID = -1;
+	private static final int DEFAULT_DEAD_HORSE_ID = -1;
 	private static final int DEFAULT_FAVORITE_HORSE_ID = 1;
 	
 	private ZHorse zh;
@@ -88,8 +88,8 @@ public class DataManager {
 		db.executeUpdate(prefixedUpdate, hideExceptions);
 	}
 	
-	public Integer getDeadHorseID() {
-		return DEAD_HORSE_ID;
+	public Integer getDefaultDeadHorseID() {
+		return DEFAULT_DEAD_HORSE_ID;
 	}
 	
 	public Integer getDefaultFavoriteHorseID() {
@@ -422,7 +422,7 @@ public class DataManager {
 				UUID oldestHorseDeathUUID = getOldestHorseDeathUUID(ownerUUID);
 				success &= removeHorse(oldestHorseDeathUUID, ownerUUID);
 			}
-			String horseUpdate = String.format("UPDATE prefix_horse SET id = %s WHERE uuid = \"%s\"", DEAD_HORSE_ID, horseUUID);
+			String horseUpdate = String.format("UPDATE prefix_horse SET id = %s WHERE uuid = \"%s\"", DEFAULT_DEAD_HORSE_ID, horseUUID);
 			String horseDeathUpdate = String.format("INSERT INTO prefix_horse_death VALUES (\"%s\", \"%s\")", horseDeathRecord.getUUID(), DATE_FORMAT.format(horseDeathRecord.getDate()));
 			success &= updateHorseIDMapping(ownerUUID, horseID);
 			success &= db.executeUpdate(horseUpdate);
@@ -557,10 +557,10 @@ public class DataManager {
 		if (removedHorseID == favoriteHorseID) {
 			updatePlayerFavoriteHorseID(ownerUUID, DEFAULT_FAVORITE_HORSE_ID);
 		}
-		else if (removedHorseID < favoriteHorseID && removedHorseID != DEAD_HORSE_ID) {
+		else if (removedHorseID < favoriteHorseID && removedHorseID != DEFAULT_DEAD_HORSE_ID) {
 			updatePlayerFavoriteHorseID(ownerUUID, favoriteHorseID - 1);
 		}
-		String update = String.format("UPDATE prefix_horse SET id = id - 1 WHERE owner = \"%s\" AND id > %d AND %d <> %d", ownerUUID, removedHorseID, removedHorseID, DEAD_HORSE_ID);
+		String update = String.format("UPDATE prefix_horse SET id = id - 1 WHERE owner = \"%s\" AND id > %d AND %d <> %d", ownerUUID, removedHorseID, removedHorseID, DEFAULT_DEAD_HORSE_ID);
 		return db.executeUpdate(update);
 	}
 	

@@ -34,6 +34,8 @@ Messages:
   databaseImportFailure: "<yellow>The <gold><value><yellow> data could not be imported into your current database. See logs for details."
   databaseImportStarted: "<yellow>The <gold><value><yellow> data import has started..."
   databaseImportSuccess: "<yellow>The <gold><value><yellow> data have been successfully imported into your current database."
+  deadHorsesCleared: "<yellow>All your dead horses have been cleared from the database."
+  deadHorsesClearedOther: "<yellow>All <gold><player><yellow>'s dead horses have been cleared from the database."
   favoriteAlreadySet: "<yellow>You have already defined <gold><horse><yellow> as favorite horse."
   favoriteAlreadySetOther: "<gold><player><yellow> has already defined <gold><horse><yellow> as favorite horse."
   favoriteEdited: "<gold><horse><yellow> is now your favorite horse."
@@ -104,6 +106,8 @@ Messages:
   listHorseStyle: "<yellow>Horse style: <value>"
   listHorseVariant: "<yellow>Variant: <value><yellow>"
   listLlamaColor: "<yellow>Llama color: <value>"
+  livingHorsesCleared: "<yellow>All your living horses have been cleared from the database."
+  livingHorsesClearedOther: "<yellow>All <gold><player><yellow>'s living horses have been cleared from the database."
   missingArguments: "<yellow>Incorrect number or type of arguments. Do as follows :"
   missingDatabase: "<yellow>You must provide a database. Please use one of the followings : <value><yellow>."
   missingHorseId: "<yellow>You must provide a horse ID, please type <gold>/zh list<yellow> and choose an ID."
@@ -122,8 +126,6 @@ Messages:
   noHorseOwned: "<yellow>You don't own any horse. <value>"
   noHorseOwnedOther: "<gold><player><yellow> doesn't own any horse. <value>"
   notOnHorse: "<yellow>You must be on a horse to perform this command."
-  playerCleared: "<yellow>All your horses have been cleared from the database."
-  playerClearedOther: "<yellow>All <gold><player><yellow>'s horses have been cleared from the database."
   playerCommand: "<yellow>You must be a player to perform this command."
   playerOffline: "<gold><player><yellow> must be online in order to perform this command."
   pluginReloaded: "<gold><value><yellow> has been successfully reloaded."
@@ -202,6 +204,7 @@ Command descriptions:
   tp: "<gold>/zh tp<gray>: <yellow>Teleport you to the horse."
 
 Admin command descriptions:
+  burial: "<gold>/zh admin burial<gray>: <yellow>Clear all dead horses from the database."
   clear: "<gold>/zh admin clear<gray>: <yellow>Clear a living horse from the database."
   import: "<gold>/zh admin import<gray>: <yellow>Import external data in your current database."
 
@@ -242,6 +245,7 @@ Command usages:
   tp: "<gold>/zh tp<yellow> (-i horseID) (-p playerName) (-a)"
 
 Admin command usages:
+  burial: "<gold>/zh admin burial<yellow> (-p) playerName"
   clear: "<gold>/zh admin clear<yellow> (-p) playerName (-i horseID)"
   import: "<gold>/zh admin import<yellow> database"
 

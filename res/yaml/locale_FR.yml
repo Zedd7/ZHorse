@@ -34,6 +34,8 @@ Messages:
   databaseImportFailure: "<yellow>Les données <gold><value><yellow> n'ont pas pu être importées dans votre base de données actuelle. Plus de détails dans les logs."
   databaseImportStarted: "<yellow>L'importation des données <gold><value><yellow> a commencé..."
   databaseImportSuccess: "<yellow>Les données <gold><value><yellow> ont été importées avec succès dans votre base de données actuelle."
+  deadHorsesCleared: "<yellow>Tous vos chevaux morts ont été supprimés de la base de données."
+  deadHorsesClearedOther: "<yellow>Tous les chevaux morts de <gold><player><yellow> ont été supprimés de la base de données."
   favoriteAlreadySet: "<yellow>Vous avez déjà défini <gold><horse><yellow> en tant que cheval favori."
   favoriteAlreadySetOther: "<gold><player><yellow> a déjà défini <gold><horse><yellow> en tant que cheval favori."
   favoriteEdited: "<gold><horse><yellow> est désormais votre cheval favori."
@@ -96,6 +98,8 @@ Messages:
   invalidJumpArgument: "<yellow>La force de saut doit être comprise entre <gold><amount><yellow> et <gold><max><yellow>."
   invalidSpeedArgument: "<yellow>La vitesse doit être comprise entre <gold><amount><yellow> et <gold><max><yellow>."
   invalidStrengthArgument: "<yellow>La force du lama doit être comprise entre <gold><amount><yellow> et <gold><max><yellow>."
+  livingHorsesCleared: "<yellow>Tous vos chevaux vivants ont été supprimés de la base de données."
+  livingHorsesClearedOther: "<yellow>Tous les chevaux vivants de <gold><player><yellow> ont été supprimés de la base de données."
   languageAlreadyUsed: "<yellow>Vous utilisez déjà la langue <gold><lang><yellow>."
   languageAlreadyUsedOther: "<gold><player><yellow> utilise déjà la langue <gold><lang><yellow>."
   languageEdited: "<yellow>Vous utilisez maintenant la langue <gold><lang><yellow>."
@@ -122,8 +126,6 @@ Messages:
   noHorseOwned: "<yellow>Vous ne possédez aucun cheval. <value>"
   noHorseOwnedOther: "<gold><player><yellow> ne possède aucun cheval. <value>"
   notOnHorse: "<yellow>Vous devez être à cheval pour exécuter cette commande."
-  playerCleared: "<yellow>Tous vos chevaux ont été supprimés de la base de données."
-  playerClearedOther: "<yellow>Tous les chevaux de <gold><player><yellow> ont été supprimés de la base de données."
   playerCommand: "<yellow>Vous devez être un joueur pour exécuter cette commande."
   playerOffline: "<gold><player><yellow> doit être en ligne pour exécuter cette commande."
   pluginReloaded: "<gold><value><yellow> a été rechargé avec succès."
@@ -202,6 +204,7 @@ Command descriptions:
   tp: "<gold>/zh tp<gray>: <yellow>Vous téléporte au cheval."
 
 Admin command descriptions:
+  burial: "<gold>/zh admin burial<gray>: <yellow>Retire tous les chevaux morts de la base de données."
   clear: "<gold>/zh admin clear<gray>: <yellow>Retire un cheval vivant de la base de données."
   import: "<gold>/zh admin import<gray>: <yellow>Importe des données externes dans votre base de données actuelle."
 
@@ -242,6 +245,7 @@ Command usages:
   tp: "<gold>/zh tp<yellow> (-i chevalID) (-p nomJoueur) (-a)"
 
 Admin command usages:
+  burial: "<gold>/zh admin burial<yellow> (-p) nomJoueur"
   clear: "<gold>/zh admin clear<yellow> (-p) nomJoueur (-i chevalID)"
   import: "<gold>/zh admin import<yellow> baseDeDonnées"
 

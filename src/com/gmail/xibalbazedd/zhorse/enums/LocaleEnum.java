@@ -31,6 +31,8 @@ public enum LocaleEnum {
 	DATABASE_IMPORT_FAILURE("Messages.databaseImportFailure"),
 	DATABASE_IMPORT_STARTED("Messages.databaseImportStarted"),
 	DATABASE_IMPORT_SUCCESS("Messages.databaseImportSuccess"),
+	DEAD_HORSES_CLEARED("Messages.deadHorsesCleared"),
+	DEAD_HORSES_CLEARED_OTHER("Messages.deadHorsesClearedOther"),
 	FAVORITE_ALREADY_SET("Messages.favoriteAlreadySet"),
 	FAVORITE_ALREADY_SET_OTHER("Messages.favoriteAlreadySetOther"),
 	FAVORITE_EDITED("Messages.favoriteEdited"),
@@ -101,6 +103,8 @@ public enum LocaleEnum {
 	LIST_HORSE_STYLE("Messages.listHorseStyle"),
 	LIST_HORSE_VARIANT("Messages.listHorseVariant"),
 	LIST_LLAMA_COLOR("Messages.listLlamaColor"),
+	LIVING_HORSES_CLEARED("Messages.livingHorsesCleared"),
+	LIVING_HORSES_CLEARED_OTHER("Messages.livingHorsesClearedOther"),
 	MISSING_ARGUMENTS("Messages.missingArguments"),
 	MISSING_DATABASE("Messages.missingDatabase"),
 	MISSING_HORSE_ID("Messages.missingHorseId"),
@@ -119,8 +123,6 @@ public enum LocaleEnum {
 	NO_HORSE_OWNED("Messages.noHorseOwned"),
 	NO_HORSE_OWNED_OTHER("Messages.noHorseOwnedOther"),
 	NOT_ON_HORSE("Messages.notOnHorse"),
-	PLAYED_CLEARED("Messages.playerCleared"),
-	PLAYER_CLEARED_OTHER("Messages.playerClearedOther"),
 	PLAYER_COMMAND("Messages.playerCommand"),
 	PLAYER_OFFLINE("Messages.playerOffline"),
 	PLUGIN_RELOADED("Messages.pluginReloaded"),
@@ -199,6 +201,7 @@ public enum LocaleEnum {
 	TP_DESCRIPTION("Command descriptions.tp"),
 	
 	/* admin command descriptions */
+	ADMIN_BURIAL_DESCRIPTION("Admin command descriptions.burial"),
 	ADMIN_CLEAR_DESCRIPTION("Admin command descriptions.clear"),
 	ADMIN_IMPORT_DESCRIPTION("Admin command descriptions.import"),
 	
@@ -239,6 +242,7 @@ public enum LocaleEnum {
 	TP_USAGE("Command usages.tp"),
 	
 	/* admin command usages */
+	ADMIN_BURIAL_USAGE("Admin command usages.burial"),
 	ADMIN_CLEAR_USAGE("Admin command usages.clear"),
 	ADMIN_IMPORT_USAGE("Admin command usages.import"),
 	

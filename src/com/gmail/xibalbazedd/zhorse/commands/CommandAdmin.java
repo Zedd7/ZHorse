@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AbstractHorse;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
+import com.gmail.xibalbazedd.zhorse.database.HorseDeathRecord;
 import com.gmail.xibalbazedd.zhorse.database.MySQLImporter;
 import com.gmail.xibalbazedd.zhorse.database.SQLiteImporter;
 import com.gmail.xibalbazedd.zhorse.database.YAMLImporter;
@@ -46,7 +47,10 @@ public class CommandAdmin extends AbstractCommand {
 		if (zh.getEM().canAffordCommand(p, command)) {
 			if (!argument.isEmpty()) {
 				subCommand = argument.contains(" ") ? argument.substring(0, argument.indexOf(" ")) : argument;
-				if (subCommand.equalsIgnoreCase((CommandAdminEnum.CLEAR.getName()))) {
+				if (subCommand.equalsIgnoreCase((CommandAdminEnum.BURIAL.getName()))) {
+					burial();
+				}
+				else if (subCommand.equalsIgnoreCase((CommandAdminEnum.CLEAR.getName()))) {
 					clear();
 				}
 				else if (subCommand.equalsIgnoreCase(CommandAdminEnum.IMPORT.getName())) {
@@ -59,6 +63,46 @@ public class CommandAdmin extends AbstractCommand {
 			}
 			else {
 				sendCommandAdminDescriptionList();
+			}
+		}
+	}
+	
+	private void burial() {
+		fullCommand = command + KeyWordEnum.DOT.getValue() + CommandAdminEnum.BURIAL.getName();
+		if (hasPermission(s, fullCommand , true, false)) {
+			if (!idMode) {
+				if (argument.split(" ").length >= 2) {
+					targetMode = true;
+					String subArgument = argument.substring(argument.indexOf(" ") + 1);
+					targetName = subArgument;
+					targetUUID = getPlayerUUID(targetName);
+					samePlayer = playerCommand && p.getUniqueId().equals(targetUUID);
+				}
+				if (targetMode) {
+					if (isRegistered(targetUUID)) {
+						boolean success = true;
+						for (HorseDeathRecord deathRecord : zh.getDM().getHorseDeathRecordList(targetUUID)) {
+							UUID horseUUID = UUID.fromString(deathRecord.getUUID());
+							if (!zh.getDM().removeHorse(horseUUID, targetUUID)) success = false;
+						}
+						if (success) {
+							if (samePlayer) {
+								zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.DEAD_HORSES_CLEARED));
+							}
+							else {
+								zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.DEAD_HORSES_CLEARED_OTHER) {{ setPlayerName(targetName); }});
+							}
+							zh.getEM().payCommand(p, command);
+						}
+					}
+				}
+				else {
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.MISSING_TARGET));
+					sendCommandUsage(subCommand, true, true);
+				}
+			}
+			else {
+				sendCommandUsage(subCommand, true, false);
 			}
 		}
 	}
@@ -89,10 +133,10 @@ public class CommandAdmin extends AbstractCommand {
 						}
 						if (success) {
 							if (samePlayer) {
-								zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.PLAYED_CLEARED));
+								zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.LIVING_HORSES_CLEARED));
 							}
 							else {
-								zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.PLAYER_CLEARED_OTHER) {{ setPlayerName(targetName); }});
+								zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.LIVING_HORSES_CLEARED_OTHER) {{ setPlayerName(targetName); }});
 							}
 							zh.getEM().payCommand(p, command);
 						}
