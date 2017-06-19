@@ -45,8 +45,8 @@ public class CommandSettings extends AbstractCommand {
 
 	private void execute() {
 		if ((!targetMode || samePlayer || hasPermissionAdmin(false)) && zh.getEM().canAffordCommand(p, command)) {
-			if (!argument.isEmpty()) {
-				subCommand = argument.contains(" ") ? argument.split(" ")[0] : argument;
+			if (!args.isEmpty()) {
+				subCommand = args.get(0);
 				if (subCommand.equalsIgnoreCase((CommandSettingsEnum.FAVORITE.getName()))) {
 					fullCommand = command + KeyWordEnum.DOT.getValue() + CommandSettingsEnum.LANGUAGE.getName();
 					setFavorite();
@@ -76,9 +76,9 @@ public class CommandSettings extends AbstractCommand {
 	
 	private void setFavorite() {
 		if (hasPermission(s, fullCommand , true, false)) {
-			if (argument.split(" ").length >= 2) {
+			if (args.size() >= 2) {
 				idMode = true;
-				horseID = argument.substring(argument.indexOf(" ") + 1);
+				horseID = args.get(1);
 			}
 			if (idMode) {
 				if (isRegistered(targetUUID, horseID)) {
@@ -111,8 +111,8 @@ public class CommandSettings extends AbstractCommand {
 
 	private void setLanguage() {
 		if (hasPermission(s, fullCommand , true, false)) {
-			if (argument.split(" ").length >= 2) {
-				String language = argument.substring(argument.indexOf(" ") + 1).toUpperCase();
+			if (args.size() >= 2) {
+				String language = args.get(1).toUpperCase();
 				if (zh.getCM().isLanguageAvailable(language)) {
 					if (!zh.getDM().getPlayerLanguage(targetUUID).equals(language)) {
 						zh.getDM().updatePlayerLanguage(targetUUID, language);
@@ -146,8 +146,8 @@ public class CommandSettings extends AbstractCommand {
 	
 	private void setStatsDisplay() {
 		if (hasPermission(s, fullCommand , true, false)) {
-			if (argument.split(" ").length == 2) {
-				String displayMode = argument.substring(argument.indexOf(" ") + 1);
+			if (args.size() >= 2) {
+				String displayMode = args.get(1);
 				boolean validDisplayMode = false;
 				Boolean shouldDisplayExactStats = null;
 				if (displayMode.equalsIgnoreCase(EXACT_DISPLAY_MODE)) {
@@ -192,9 +192,9 @@ public class CommandSettings extends AbstractCommand {
 	
 	private void swapIDs() {
 		if (hasPermission(s, fullCommand , true, false)) {
-			if (argument.split(" ").length == 3) {
-				String horseID1 = argument.split(" ")[1];
-				String horseID2 = argument.split(" ")[2];
+			if (args.size() >= 3) {
+				String horseID1 = args.get(1);
+				String horseID2 = args.get(2);
 				if (isRegistered(targetUUID, horseID1) && isRegistered(targetUUID, horseID2)) {
 					int favoriteHorseID = zh.getDM().getPlayerFavoriteHorseID(targetUUID);
 					if (favoriteHorseID == Integer.parseInt(horseID1)) {

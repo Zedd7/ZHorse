@@ -32,8 +32,9 @@ public class CommandFriend extends AbstractCommand {
 	
 	private void execute() {
 		if (zh.getEM().canAffordCommand(p, command)) {
-			if (!argument.isEmpty()) {
-				subCommand = argument.contains(" ") ? argument.substring(0, argument.indexOf(" ")) : argument;
+			if (!args.isEmpty()) {
+				subCommand = args.get(0);
+				args.remove(0); // Remove sub-command to allow parsing of playerName
 				if (subCommand.equalsIgnoreCase(CommandFriendEnum.ADD.getName())) {
 					addFriend();
 				}
@@ -57,7 +58,6 @@ public class CommandFriend extends AbstractCommand {
 	private void addFriend() {
 		fullCommand = command + KeyWordEnum.DOT.getValue() + CommandFriendEnum.ADD.getName();
 		if (hasPermission(s, fullCommand , true, false)) {
-			argument = argument.split(" ").length >= 2 ? argument.substring(argument.indexOf(" ") + 1) : "";
 			if (applyArgumentToTarget()) {
 				if (targetMode) {
 					if (isRegistered(targetUUID)) {
@@ -84,7 +84,6 @@ public class CommandFriend extends AbstractCommand {
 	private void removeFriend() {
 		fullCommand = command + KeyWordEnum.DOT.getValue() + CommandFriendEnum.REMOVE.getName();
 		if (hasPermission(s, fullCommand , true, false)) {
-			argument = argument.split(" ").length >= 2 ? argument.substring(argument.indexOf(" ") + 1) : "";
 			if (applyArgumentToTarget()) {
 				if (targetMode) {
 					if (isPlayerDifferent()) {
@@ -111,7 +110,6 @@ public class CommandFriend extends AbstractCommand {
 	private void sendFriendList() {
 		fullCommand = command + KeyWordEnum.DOT.getValue() + CommandFriendEnum.LIST.getName();
 		if (hasPermission(s, fullCommand , true, false)) {
-			argument = argument.split(" ").length >= 2 ? argument.substring(argument.indexOf(" ") + 1) : "";
 			if (applyArgumentToTarget()) {
 				List<String> friendNameList = zh.getDM().getFriendNameList(targetUUID);
 				List<String> friendNameReverseList = zh.getDM().getFriendNameReverseList(targetUUID);

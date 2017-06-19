@@ -1,5 +1,6 @@
 package com.gmail.xibalbazedd.zhorse.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,7 +37,7 @@ public abstract class AbstractCommand {
 	protected AbstractHorse horse;
 	protected UUID targetUUID;
 	protected String[] a;
-	protected String argument;
+	protected List<String> args;
 	protected String command;
 	protected String horseID;
 	protected String horseName;
@@ -48,50 +49,46 @@ public abstract class AbstractCommand {
 	protected boolean adminMode = false;
 	protected boolean idMode = false;
 	protected boolean targetMode = false;
-	protected boolean samePlayer = false;
 	protected boolean targetIsOwner = true;
+	protected boolean parsingError = false;
+	protected boolean samePlayer = false;
 	
 	public AbstractCommand(ZHorse zh, CommandSender s, String[] a) {
 		this.zh = zh;
 		this.a = a;
 		this.s = s;
+		this.command = a[0].toLowerCase();
+		args = new ArrayList<>();
 		console = zh.getServer().getConsoleSender();
-		command = a[0].toLowerCase();
 		useVanillaStats = zh.getCM().shouldUseVanillaStats();
 	}
 	
 	protected boolean analyseArguments() {
-		argument = "";
-		adminMode = false;
-		idMode = false;
-		targetMode = false;
-		for (int i = 1; i < a.length; ++i) { // Start at 1 to skip the command
-			boolean valid = true;
+		boolean valid;
+		for (int i = 1; i < a.length; i++) { // Start at 1 to skip the command
+			valid = true;
 			if (a[i].equalsIgnoreCase("-a")) {
 				valid = !adminMode;
 				adminMode = true;
 			}
 			else if (a[i].equalsIgnoreCase("-i")) {
-				valid = !idMode && i != a.length - 1 && !a[i + 1].startsWith("-");
-				if (valid) { // Avoid to exit the loop
+				valid = !idMode && i != (a.length - 1) && !a[i + 1].startsWith("-");
+				if (valid) { // Stay in array bounds
 					idMode = true;
 					horseID = a[i + 1];
 					i++; // Skip the ID
 				}
 			}
 			else if (a[i].equalsIgnoreCase("-p") || a[i].equalsIgnoreCase("-t")) {
-				valid = !targetMode && i != a.length - 1 && !a[i + 1].startsWith("-");
-				if (valid) { // Avoid to exit the loop
+				valid = !targetMode && i != (a.length - 1) && !a[i + 1].startsWith("-");
+				if (valid) { // Stay in array bounds
 					targetMode = true;
 					targetName = a[i + 1];
-					i++; // Skip the target
+					i++; // Skip the player
 				}
 			}
 			else { // Add to argument if not a flag
-				if (!argument.isEmpty()) {
-					argument += " ";
-				}
-				argument += a[i];
+				args.add(a[i]);
 			}
 			if (!valid) {
 				sendCommandUsage();
@@ -119,7 +116,7 @@ public abstract class AbstractCommand {
 				return false;
 			}
 		}
-		adminMode = adminMode || (zh.getCM().isAutoAdminModeEnabled(command) && hasPermissionAdmin(true));
+		adminMode |= zh.getCM().isAutoAdminModeEnabled(command) && hasPermissionAdmin(true);
 		samePlayer = !targetMode || (playerCommand && p.getUniqueId().equals(targetUUID));
 		return true;
 	}
@@ -145,11 +142,11 @@ public abstract class AbstractCommand {
 	}
 	
 	protected boolean applyArgumentToHorseID() {
-		if (idMode || argument.isEmpty()) return true;
+		if (idMode || args.isEmpty()) return true;
 		
 		idMode = true;
 		UUID ownerUUID = targetIsOwner ? targetUUID : p.getUniqueId();
-		horseName = zh.getDM().getHorseName(ownerUUID, argument); // Fix potential case issues
+		horseName = zh.getDM().getHorseName(ownerUUID, String.join(" ", args)); // Fix potential case issues
 		Integer horseIDInt = zh.getDM().getHorseID(ownerUUID, horseName);
 		if (horseIDInt != null) {
 			horseID = horseIDInt.toString();
@@ -169,17 +166,18 @@ public abstract class AbstractCommand {
 	protected boolean applyArgumentToTarget() {
 		if (targetMode) return true;
 		
-		targetMode = !argument.isEmpty();
-		targetName = argument;
-		argument = argument.replace(targetName, "");
+		targetMode = !args.isEmpty();
+		targetName = String.join(" ", args);
+		args.remove(targetName);
 		targetUUID = null;
 		return analyseModes();
 	}
 	
 	protected void applyHorseName(UUID ownerUUID) {
 		String customHorseName;
-		if (MessageManager.isColorized(argument) && (adminMode || zh.getCM().isColorBypassEnabled(p.getUniqueId()))) {
-			customHorseName = MessageManager.applyColors(argument);
+		String rawHorseName = String.join(" ", args);
+		if (MessageManager.isColorized(rawHorseName) && (adminMode || zh.getCM().isColorBypassEnabled(p.getUniqueId()))) {
+			customHorseName = MessageManager.applyColors(rawHorseName);
 		}
 		else {
 			String groupColorCode = zh.getCM().getGroupColorCode(ownerUUID);
@@ -200,7 +198,7 @@ public abstract class AbstractCommand {
 	}
 	
 	protected boolean craftHorseName(boolean keepPreviousName, UUID horseUUID) {
-		if (!argument.isEmpty()) {
+		if (!args.isEmpty()) {
 			return craftCustomHorseName();
 		}
 		else {
@@ -210,8 +208,7 @@ public abstract class AbstractCommand {
 
 	private boolean craftCustomHorseName() {
 		if (adminMode || zh.getCM().isHorseNameAllowed()) {
-			zh.getMM();
-			horseName = MessageManager.removeColors(argument);
+			horseName = MessageManager.removeColors(String.join(" ", args));
 			int maximumLength = zh.getCM().getMaximumHorseNameLength();
 			int minimumLength = zh.getCM().getMinimumHorseNameLength();
 			int length = horseName.length();

@@ -45,8 +45,8 @@ public class CommandAdmin extends AbstractCommand {
 
 	private void execute() {
 		if (zh.getEM().canAffordCommand(p, command)) {
-			if (!argument.isEmpty()) {
-				subCommand = argument.contains(" ") ? argument.substring(0, argument.indexOf(" ")) : argument;
+			if (!args.isEmpty()) {
+				subCommand = args.get(0);
 				if (subCommand.equalsIgnoreCase((CommandAdminEnum.BURIAL.getName()))) {
 					burial();
 				}
@@ -71,10 +71,9 @@ public class CommandAdmin extends AbstractCommand {
 		fullCommand = command + KeyWordEnum.DOT.getValue() + CommandAdminEnum.BURIAL.getName();
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (!idMode) {
-				if (argument.split(" ").length >= 2) {
+				if (args.size() == 2) {
 					targetMode = true;
-					String subArgument = argument.substring(argument.indexOf(" ") + 1);
-					targetName = subArgument;
+					targetName = args.get(1);
 					targetUUID = getPlayerUUID(targetName);
 					samePlayer = playerCommand && p.getUniqueId().equals(targetUUID);
 				}
@@ -110,19 +109,15 @@ public class CommandAdmin extends AbstractCommand {
 	private void clear() {
 		fullCommand = command + KeyWordEnum.DOT.getValue() + CommandAdminEnum.CLEAR.getName();
 		if (hasPermission(s, fullCommand , true, false)) {
-			if (argument.split(" ").length >= 2) {
+			if (args.size() >= 2) {
 				targetMode = true;
-				String subArgument = argument.substring(argument.indexOf(" ") + 1);
-				if (subArgument.split(" ").length >= 2) {
-					idMode = true;
-					targetName = subArgument.substring(0, subArgument.indexOf(" "));
-					horseID = subArgument.substring(subArgument.indexOf(" ") + 1);
-				}
-				else {
-					targetName = subArgument;
-				}
+				targetName = args.get(1);
 				targetUUID = getPlayerUUID(targetName);
 				samePlayer = playerCommand && p.getUniqueId().equals(targetUUID);
+			}
+			if (args.size() >= 3) {
+				idMode = true;					
+				horseID = args.get(2);
 			}
 			if (targetMode) {
 				if (!idMode) {
@@ -176,8 +171,8 @@ public class CommandAdmin extends AbstractCommand {
 	private void importDB() {
 		fullCommand = command + KeyWordEnum.DOT.getValue() + CommandAdminEnum.IMPORT.getName().toLowerCase();
 		if (hasPermission(s, fullCommand , true, false)) {
-			if (argument.split(" ").length >= 2) {
-				String databaseName = argument.substring(argument.indexOf(" ") + 1);
+			if (args.size() >= 2) {
+				String databaseName = args.get(1);
 				boolean success = false;
 				if (databaseName.equalsIgnoreCase(DatabaseEnum.MYSQL.getName())) {
 					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.DATABASE_IMPORT_STARTED) {{ setValue(databaseName); }});

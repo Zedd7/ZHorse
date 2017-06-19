@@ -55,9 +55,8 @@ public class CommandSpawn extends AbstractCommand {
 
 	private boolean parseArguments() {
 		boolean valid = true;
-		if (!argument.isEmpty()) {
-			String[] argumentArray = argument.split(" ");
-			for (String argument : argumentArray) { // Check for each token if it is some type of attribute
+		if (!args.isEmpty()) {
+			for (String argument : args) { // Check for each token if it is some type of attribute
 				boolean parsed = false;
 				if (!parsed) parsed = parseVariant(argument);
 				if (!parsed) parsed = parseHorseStyle(argument);

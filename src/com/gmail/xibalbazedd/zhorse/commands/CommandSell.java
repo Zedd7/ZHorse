@@ -52,10 +52,10 @@ public class CommandSell extends AbstractCommand {
 		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
 			if (!zh.getDM().isHorseForSale(horse.getUniqueId())) {
 				try {
-					if (argument.isEmpty()  || argument.split(" ").length != 1) {
+					if (args.size() != 1) {
 						throw new NumberFormatException();
 					}
-					int price = Integer.parseInt(argument);
+					int price = Integer.parseInt(args.get(0));
 					if (price <= 0) {
 						throw new NumberFormatException();
 					}
@@ -71,7 +71,7 @@ public class CommandSell extends AbstractCommand {
 				}
 			}
 			else {
-				if (!argument.isEmpty()) {
+				if (!args.isEmpty()) {
 					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_ALREADY_ON_SALE) {{ setHorseName(horseName); }});
 				}
 				else {

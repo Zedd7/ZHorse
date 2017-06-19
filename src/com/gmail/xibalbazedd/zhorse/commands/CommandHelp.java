@@ -25,12 +25,12 @@ public class CommandHelp extends AbstractCommand {
 
 	private void execute() {
 		if (zh.getEM().canAffordCommand(p, command)) {
-			if (argument.isEmpty()) {
+			if (args.isEmpty()) {
 				sendCommandDescriptionList();
 				zh.getEM().payCommand(p, command);
 			}
 			else {
-				String command = argument.toLowerCase();
+				String command = args.get(0).toLowerCase();
 				if (CommandEnum.getCommandNameList().contains(command)) {
 					sendCommandUsage(command, false, true);
 					if (command.equals(CommandEnum.SPAWN.getName())) {

@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Location;
-import org.bukkit.World;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
 
@@ -62,8 +61,8 @@ public abstract class SQLDatabaseConnector {
 	}
 	
 	public PreparedStatement getPreparedStatement(String query) throws SQLException {
-		String prefixedQuery = applyTablePrefix(query);
 		reconnect();
+		String prefixedQuery = applyTablePrefix(query);
 		return connection.prepareStatement(prefixedQuery);
 	}
 	
@@ -84,167 +83,53 @@ public abstract class SQLDatabaseConnector {
 		return result;
 	}
 	
+	public boolean hasResult(String query) {
+		Boolean result = getResult(query, resultSet -> true);
+		return result != null && result;
+	}
+	
 	public Boolean getBooleanResult(String query) {
-		Boolean result = null;
-		try (PreparedStatement statement = getPreparedStatement(query)) {
-			ResultSet resultSet = statement.executeQuery();
-			if (resultSet.next()) {
-				result = resultSet.getInt(1) == 1;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return result;
+		return getResult(query, resultSet -> getBooleanResult(resultSet));
 	}
 	
 	public Integer getIntegerResult(String query) {
-		Integer result = null;
-		try (PreparedStatement statement = getPreparedStatement(query)) {
-			ResultSet resultSet = statement.executeQuery();
-			if (resultSet.next()) {
-				result = resultSet.getInt(1);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return result;
+		return getResult(query, resultSet -> getIntegerResult(resultSet));
 	}
 	
 	public Location getLocationResult(String query) {
-		Location location = null;
-		try (PreparedStatement statement = getPreparedStatement(query)) {
-			ResultSet resultSet = statement.executeQuery();
-			if (resultSet.next()) {
-				int x = resultSet.getInt("locationX");
-				int y = resultSet.getInt("locationY");
-				int z = resultSet.getInt("locationZ");
-				String worldName = resultSet.getString("locationWorld");
-				World world = zh.getServer().getWorld(worldName);
-				location = new Location(world, x, y, z);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return location;
+		return getResult(query, resultSet -> getLocationResult(resultSet));
 	}
 	
 	public List<String> getStringResultList(String query) {
-		List<String> resultList = new ArrayList<>();
-		try (PreparedStatement statement = getPreparedStatement(query)) {
-			ResultSet resultSet = statement.executeQuery();
-			while (resultSet.next()) {
-				resultList.add(getStringResult(resultSet));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return resultList;
+		return getResultList(query, resultSet -> getStringResult(resultSet));
 	}
 	
 	public String getStringResult(String query) {
-		String result = null;
-		try (PreparedStatement statement = getPreparedStatement(query)) {
-			ResultSet resultSet = statement.executeQuery();
-			if (resultSet.next()) {
-				result = getStringResult(resultSet);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
-	
-	public String getStringResult(ResultSet resultSet) throws SQLException {
-		return resultSet.getString(1);
-	}
-	
-	public boolean hasResult(String query) {
-		boolean hasResult = false;
-		try (PreparedStatement statement = getPreparedStatement(query)) {
-			ResultSet resultSet = statement.executeQuery();
-			hasResult = resultSet.next();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return hasResult;
+		return getResult(query, resultSet -> getStringResult(resultSet));
 	}
 	
 	public List<FriendRecord> getFriendRecordList(String query) {
-		List<FriendRecord> friendRecordList = new ArrayList<>();
-		try (PreparedStatement statement = getPreparedStatement(query)) {
-			ResultSet resultSet = statement.executeQuery();
-			while (resultSet.next()) {
-				friendRecordList.add(getFriendRecord(resultSet));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return friendRecordList;
+		return getResultList(query, resultSet -> getFriendRecord(resultSet));
 	}
 	
 	public FriendRecord getFriendRecord(String query) {
-		FriendRecord friendRecord = null;
-		try (PreparedStatement statement = getPreparedStatement(query)) {
-			ResultSet resultSet = statement.executeQuery();
-			if (resultSet.next()) {
-				friendRecord = getFriendRecord(resultSet);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return friendRecord;
+		return getResult(query, resultSet -> getFriendRecord(resultSet));
 	}
 	
 	public List<HorseRecord> getHorseRecordList(String query) {
-		List<HorseRecord> horseRecordList = new ArrayList<>();
-		try (PreparedStatement statement = getPreparedStatement(query)) {
-			ResultSet resultSet = statement.executeQuery();
-			while (resultSet.next()) {
-				horseRecordList.add(getHorseRecord(resultSet));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return horseRecordList;
+		return getResultList(query, resultSet -> getHorseRecord(resultSet));
 	}
 	
 	public HorseRecord getHorseRecord(String query) {
-		HorseRecord horseRecord = null;
-		try (PreparedStatement statement = getPreparedStatement(query)) {
-			ResultSet resultSet = statement.executeQuery();
-			if (resultSet.next()) {
-				horseRecord = getHorseRecord(resultSet);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return horseRecord;
+		return getResult(query, resultSet -> getHorseRecord(resultSet));
 	}
 	
 	public List<HorseDeathRecord> getHorseDeathRecordList(String query) {
-		List<HorseDeathRecord> horseDeathRecordList = new ArrayList<>();
-		try (PreparedStatement statement = getPreparedStatement(query)) {
-			ResultSet resultSet = statement.executeQuery();
-			while (resultSet.next()) {
-				horseDeathRecordList.add(getHorseDeathRecord(resultSet));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return horseDeathRecordList;
+		return getResultList(query, resultSet -> getHorseDeathRecord(resultSet));
 	}
 	
 	public HorseDeathRecord getHorseDeathRecord(String query) {
-		HorseDeathRecord horseDeathRecord = null;
-		try (PreparedStatement statement = getPreparedStatement(query)) {
-			ResultSet resultSet = statement.executeQuery();
-			if (resultSet.next()) {
-				horseDeathRecord = getHorseDeathRecord(resultSet);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return horseDeathRecord;
+		return getResult(query, resultSet -> getHorseDeathRecord(resultSet));
 	}
 	
 	public List<HorseInventoryRecord> getHorseInventoryRecordList(String query) {
@@ -287,107 +172,88 @@ public abstract class SQLDatabaseConnector {
 	}
 	
 	public List<HorseStatsRecord> getHorseStatsRecordList(String query) {
-		List<HorseStatsRecord> statsRecordList = new ArrayList<>();
-		try (PreparedStatement statement = getPreparedStatement(query)) {
-			ResultSet resultSet = statement.executeQuery();
-			while (resultSet.next()) {
-				statsRecordList.add(getHorseStatsRecord(resultSet));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return statsRecordList;
+		return getResultList(query, resultSet -> getHorseStatsRecord(resultSet));
 	}
 	
 	public HorseStatsRecord getHorseStatsRecord(String query) {
-		HorseStatsRecord statsRecord = null;
-		try (PreparedStatement statement = getPreparedStatement(query)) {
-			ResultSet resultSet = statement.executeQuery();
-			if (resultSet.next()) {
-				statsRecord = getHorseStatsRecord(resultSet);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return statsRecord;
+		return getResult(query, resultSet -> getHorseStatsRecord(resultSet));
 	}
 	
 	public List<PendingMessageRecord> getPendingMessageRecordList(String query) {
-		List<PendingMessageRecord> messageRecordList = new ArrayList<>();
-		try (PreparedStatement statement = getPreparedStatement(query)) {
-			ResultSet resultSet = statement.executeQuery();
-			while (resultSet.next()) {
-				messageRecordList.add(getPendingMessageRecord(resultSet));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return messageRecordList;
+		return getResultList(query, resultSet -> getPendingMessageRecord(resultSet));
 	}
 	
 	public PendingMessageRecord getPendingMessageRecord(String query) {
-		PendingMessageRecord messageRecord = null;
-		try (PreparedStatement statement = getPreparedStatement(query)) {
-			ResultSet resultSet = statement.executeQuery();
-			if (resultSet.next()) {
-				messageRecord = getPendingMessageRecord(resultSet);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return messageRecord;
+		return getResult(query, resultSet -> getPendingMessageRecord(resultSet));
 	}
 	
 	public List<PlayerRecord> getPlayerRecordList(String query) {
-		List<PlayerRecord> playerRecordList = new ArrayList<>();
-		try (PreparedStatement statement = getPreparedStatement(query)) {
-			ResultSet resultSet = statement.executeQuery();
-			while (resultSet.next()) {
-				playerRecordList.add(getPlayerRecord(resultSet));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return playerRecordList;
+		return getResultList(query, resultSet -> getPlayerRecord(resultSet));
 	}
 	
 	public PlayerRecord getPlayerRecord(String query) {
-		PlayerRecord playerRecord = null;
-		try (PreparedStatement statement = getPreparedStatement(query)) {
-			ResultSet resultSet = statement.executeQuery();
-			if (resultSet.next()) {
-				playerRecord = getPlayerRecord(resultSet);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return playerRecord;
+		return getResult(query, resultSet -> getPlayerRecord(resultSet));
 	}
 	
 	public List<SaleRecord> getSaleRecordList(String query) {
-		List<SaleRecord> saleRecordList = new ArrayList<>();
-		try (PreparedStatement statement = getPreparedStatement(query)) {
-			ResultSet resultSet = statement.executeQuery();
-			if (resultSet.next()) {
-				saleRecordList.add(getSaleRecord(resultSet));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return saleRecordList;
+		return getResultList(query, resultSet -> getSaleRecord(resultSet));
 	}
 	
 	public SaleRecord getSaleRecord(String query) {
-		SaleRecord saleRecord = null;
+		return getResult(query, resultSet -> getSaleRecord(resultSet));
+	}
+	
+	private <T> List<T> getResultList(String query, CheckedFunction<ResultSet, T> mapper) {
+		List<T> resultList = new ArrayList<>();
 		try (PreparedStatement statement = getPreparedStatement(query)) {
 			ResultSet resultSet = statement.executeQuery();
-			if (resultSet.next()) {
-				saleRecord = getSaleRecord(resultSet);
+			while (resultSet.next()) {
+				T result = mapper.apply(resultSet);
+				resultList.add(result);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return saleRecord;
+		return resultList;
+	}
+	
+	private <T> T getResult(String query, CheckedFunction<ResultSet, T> mapper) {
+		T result = null;
+		try (PreparedStatement statement = getPreparedStatement(query)) {
+			ResultSet resultSet = statement.executeQuery();
+			if (resultSet.next()) {
+				result = mapper.apply(resultSet);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	@FunctionalInterface
+	private interface CheckedFunction<T, R> {
+	   R apply(T t) throws SQLException;
+	}
+	
+	private Boolean getBooleanResult(ResultSet resultSet) throws SQLException {
+		return resultSet.getInt(1) == 1;
+	}
+	
+	private Integer getIntegerResult(ResultSet resultSet) throws SQLException {
+		return resultSet.getInt(1);
+	}
+	
+	private String getStringResult(ResultSet resultSet) throws SQLException {
+		return resultSet.getString(1);
+	}
+	
+	private Location getLocationResult(ResultSet resultSet) throws SQLException {
+		return new Location(
+			zh.getServer().getWorld(resultSet.getString("locationWorld")),
+			resultSet.getInt("locationX"),
+			resultSet.getInt("locationY"),
+			resultSet.getInt("locationZ")
+		);
 	}
 	
 	private FriendRecord getFriendRecord(ResultSet resultSet) throws SQLException {
@@ -478,39 +344,6 @@ public abstract class SQLDatabaseConnector {
 			resultSet.getString("uuid"),
 			resultSet.getInt("price")
 		);
-	}
-	
-	// TODO pass lambda fonction instead of type of class
-	// TODO use it
-	@Deprecated
-	@SuppressWarnings({ "unchecked", "unused" })
-	private <T> List<T> getResultList(String query, Class<T> type) {
-		List<T> resultList = new ArrayList<>();
-		try (PreparedStatement statement = getPreparedStatement(query)) {
-			ResultSet resultSet = statement.executeQuery();
-			while (resultSet.next()) {
-				T result = null;
-				if (type.equals(FriendRecord.class)) {
-					result = (T) getFriendRecord(resultSet);
-				}
-				else if (type.equals(HorseRecord.class)) {
-					result = (T) getHorseRecord(resultSet);
-				}
-				else if (type.equals(HorseStatsRecord.class)) {
-					result = (T) getHorseStatsRecord(resultSet);
-				}
-				else if (type.equals(PlayerRecord.class)) {
-					result = (T) getPlayerRecord(resultSet);
-				}
-				else if (type.equals(SaleRecord.class)) {
-					result = (T) getSaleRecord(resultSet);
-				}
-				resultList.add(result);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return resultList;
 	}
 	
 }
