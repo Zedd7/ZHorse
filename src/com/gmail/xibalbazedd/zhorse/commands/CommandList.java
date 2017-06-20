@@ -16,7 +16,7 @@ public class CommandList extends AbstractCommand {
 
 	public CommandList(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {
+		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled() && parseArgument(ArgumentEnum.PAGE_NUMBER)) {
 			if (!idMode) {
 				if (!targetMode || isRegistered(targetUUID)) {
 					execute();
@@ -30,7 +30,6 @@ public class CommandList extends AbstractCommand {
 
 	private void execute() {
 		if (zh.getEM().canAffordCommand(p, command)) {
-			parsePageNumber();
 			CompoundMessage compoundMessage = new CompoundMessage(true);
 			
 			List<String> aliveHorseNameList = zh.getDM().getAliveHorseNameList(targetUUID);

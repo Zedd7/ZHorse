@@ -28,7 +28,7 @@ Headers:
   commandWikiHeader: "<green>Wiki : <yellow>https://github.com/Xibalba/ZHorse/wiki/Commands"
   commandUsageHeader: "<green>Legende : <gold>/command <yellow>verplichtVeld (optioneelVeld)"
   commandUsageFormat: "<green>Gebruik : <value>"
-  pageNumberFormat: "<yellow>(page <gold><amount><yellow>/<gold><max><yellow>)"
+  pageNumberFormat: "<yellow>(p. <gold><amount><yellow>/<gold><max><yellow>)"
   horseOptionFormat: "<gold><value><yellow>"
   availableOptionFormat: "<gold><value><yellow>"
 
@@ -98,6 +98,7 @@ Messages:
   horseUntamed: "<yellow>Het paard is succesvol verwijderd."
   horseWithdrawnFromSale: "<gold><horse><yellow> is teruggetrokken van verkoop."
   idsSwapped: "<yellow>De twee paard ID's zijn verwisseld."
+  invalidPageNumber: "<gold><value><yellow> is geen geldig pagina nummer."
   invalidHealthArgument: "<yellow>Het aantal levens moet tussen <gold><amount><yellow> en <gold><max><yellow> zijn."
   invalidJumpArgument: "<yellow>De spring kracht moet tussen <gold><amount><yellow> en <gold><max><yellow> zijn."
   invalidSpeedArgument: "<yellow>De snelheid moet tussen <gold><amount><yellow> en <gold><max><yellow> zijn."

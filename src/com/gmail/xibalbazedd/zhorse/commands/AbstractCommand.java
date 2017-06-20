@@ -139,6 +139,8 @@ public abstract class AbstractCommand {
 					return parsePlayerName();
 				}
 				break;
+			case PAGE_NUMBER:
+				return parsePageNumber(false);
 			}
 		}
 		return false;
@@ -146,7 +148,7 @@ public abstract class AbstractCommand {
 	
 	protected enum ArgumentEnum {
 		
-		HORSE_ID, HORSE_NAME, PLAYER_NAME;
+		HORSE_ID, HORSE_NAME, PLAYER_NAME, PAGE_NUMBER;
 		
 	}
 	
@@ -182,14 +184,22 @@ public abstract class AbstractCommand {
 		return analyseModes();
 	}
 	
-	protected void parsePageNumber() {
-		/* Not used in parseArgument because is not affiliated with a flag */
+	protected boolean parsePageNumber(boolean hideConsole) {
 		if (!args.isEmpty()) {
 			try {
 				pageNumber = Integer.parseInt(args.get(0));
+				if (pageNumber < CompoundMessage.FIRST_PAGE_NUMBER) {
+					throw new NumberFormatException();
+				}
 				args.remove(0);
-			} catch (NumberFormatException e) {}
+			} catch (NumberFormatException e) {
+				if (!hideConsole) {
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.INVALID_PAGE_NUMBER) {{ setValue(args.get(0)); }});
+				}
+				return false;
+			}
 		}
+		return true;
 	}
 	
 	protected void applyHorseName(UUID ownerUUID) {

@@ -95,6 +95,7 @@ public enum LocaleEnum {
 	IDS_SWAPPED("Messages.idsSwapped"),
 	INVALID_HEALTH_ARGUMENT("Messages.invalidHealthArgument"),
 	INVALID_JUMP_ARGUMENT("Messages.invalidJumpArgument"),
+	INVALID_PAGE_NUMBER("Messages.invalidPageNumber"),
 	INVALID_SPEED_ARGUMENT("Messages.invalidSpeedArgument"),
 	INVALID_STRENGTH_ARGUMENT("Messages.invalidStrengthArgument"),
 	LANGUAGE_ALREADY_USED("Messages.languageAlreadyUsed"),

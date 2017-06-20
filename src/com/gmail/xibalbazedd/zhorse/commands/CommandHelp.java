@@ -25,8 +25,7 @@ public class CommandHelp extends AbstractCommand {
 
 	private void execute() {
 		if (zh.getEM().canAffordCommand(p, command)) {
-			parsePageNumber();
-			if (args.isEmpty()) {
+			if (parsePageNumber(true)) {
 				sendCommandDescriptionList();
 				zh.getEM().payCommand(p, command);
 			}

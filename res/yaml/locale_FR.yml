@@ -26,7 +26,7 @@ Headers:
   commandWikiHeader: "<green>Wiki : <yellow>https://github.com/Xibalba/ZHorse/wiki/Commands"
   commandUsageHeader: "<green>Légende : <gold>/commande <yellow>paramObligatoires (paramOptionels)"
   commandUsageFormat: "<green>Utilisation : <value>"
-  pageNumberFormat: "<yellow>(page <gold><amount><yellow>/<gold><max><yellow>)"
+  pageNumberFormat: "<yellow>(p. <gold><amount><yellow>/<gold><max><yellow>)"
   horseOptionFormat: "<gold><value><yellow>"
   availableOptionFormat: "<gold><value><yellow>"
 
@@ -96,6 +96,7 @@ Messages:
   horseUntamed: "<yellow>Ce cheval est revenu à la vie sauvage."
   horseWithdrawnFromSale: "<gold><horse><yellow> a été retiré de la vente."
   idsSwapped: "<yellow>Les deux IDs de cheval ont été échangés."
+  invalidPageNumber: "<gold><value><yellow> n'est pas un numéro de page valide."
   invalidHealthArgument: "<yellow>La vie doit être comprise entre <gold><amount><yellow> et <gold><max><yellow>."
   invalidJumpArgument: "<yellow>La force de saut doit être comprise entre <gold><amount><yellow> et <gold><max><yellow>."
   invalidSpeedArgument: "<yellow>La vitesse doit être comprise entre <gold><amount><yellow> et <gold><max><yellow>."
