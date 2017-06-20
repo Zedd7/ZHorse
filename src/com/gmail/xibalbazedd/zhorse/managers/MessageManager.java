@@ -1,8 +1,10 @@
 package com.gmail.xibalbazedd.zhorse.managers;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.UUID;
 
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -11,20 +13,25 @@ import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.database.PendingMessageRecord;
 import com.gmail.xibalbazedd.zhorse.enums.ColorEnum;
 import com.gmail.xibalbazedd.zhorse.enums.KeyWordEnum;
+import com.gmail.xibalbazedd.zhorse.utils.CompoundMessage;
 import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
 
 public class MessageManager {
 	
 	public static final SimpleDateFormat DATE_FORMAT_TIMESTAMP = new SimpleDateFormat("(HH:mm - dd/MM/yyyy)");
-	public static final SimpleDateFormat DATE_FORMAT_VERBOSE = new SimpleDateFormat("dd/MM/yyyy (HH:mm)");
+	public static final SimpleDateFormat DATE_FORMAT_SHORT = new SimpleDateFormat("dd/MM/yyyy");	
+	public static final int PAGE_LENGTH = 10;
+	public static final int LINE_LENGTH = 53;
 	
 	private ZHorse zh;
 	private boolean displayConsole;
 	
 	public MessageManager(ZHorse zh) {
 		this.zh = zh;
-		// displayConsole = !zh.getCM().isConsoleMuted(); TODO rétablir après ResourceManager
-		displayConsole = true;
+	}
+	
+	public void setDisplayConsole(boolean displayConsole) {
+		this.displayConsole = displayConsole;
 	}
 	
 	public void sendMessage(Player player, String message) {
@@ -80,6 +87,20 @@ public class MessageManager {
 		return message;
 	}
 	
+	public String getMessage(CompoundMessage compoundMessage, int pageNumber) {
+		String message = "";
+		String header = compoundMessage.getHeader(pageNumber);
+		if (header != null) {
+			message += header + '\n';
+		}
+		for (String line : compoundMessage.getPage(pageNumber)) {
+			if (line != null) {
+				message += line + '\n';
+			}
+		}
+		return message;
+	}
+	
 	private String getLanguage(CommandSender recipient) {
 		return recipient instanceof Player ? getLanguage(((Player) recipient).getUniqueId()) : zh.getCM().getDefaultLanguage();
 	}
@@ -102,22 +123,26 @@ public class MessageManager {
 	
 	private String populateFlags(String rawMessage, MessageConfig messageConfig) {
 		String message = rawMessage;
-		message = populateFlag(message, KeyWordEnum.AMOUNT_FLAG, messageConfig.getAmount());
-		message = populateFlag(message, KeyWordEnum.CURRENCY_SYMBOL_FLAG, messageConfig.getCurrencySymbol());
-		message = populateFlag(message, KeyWordEnum.HORSE_NAME_FLAG, messageConfig.getHorseName());
-		message = populateFlag(message, KeyWordEnum.HORSE_ID_FLAG, messageConfig.getHorseID());	
-		message = populateFlag(message, KeyWordEnum.LANGUAGE_FLAG, messageConfig.getLanguage());
-		message = populateFlag(message, KeyWordEnum.MAX_FLAG, messageConfig.getMax());
-		message = populateFlag(message, KeyWordEnum.PERMISSION_FLAG, messageConfig.getPermission());
-		message = populateFlag(message, KeyWordEnum.PLAYER_NAME_FLAG, messageConfig.getPlayerName());			
-		message = populateFlag(message, KeyWordEnum.VALUE_FLAG, messageConfig.getValue());		
+		message = populateFlag(message, KeyWordEnum.AMOUNT_FLAG, messageConfig.getAmountList());
+		message = populateFlag(message, KeyWordEnum.CURRENCY_SYMBOL_FLAG, messageConfig.getCurrencySymbolList());
+		message = populateFlag(message, KeyWordEnum.HORSE_NAME_FLAG, messageConfig.getHorseNameList());
+		message = populateFlag(message, KeyWordEnum.HORSE_ID_FLAG, messageConfig.getHorseIDList());
+		message = populateFlag(message, KeyWordEnum.LANGUAGE_FLAG, messageConfig.getLanguageList());
+		message = populateFlag(message, KeyWordEnum.MAX_FLAG, messageConfig.getMaxList());
+		message = populateFlag(message, KeyWordEnum.PERMISSION_FLAG, messageConfig.getPermissionList());
+		message = populateFlag(message, KeyWordEnum.PLAYER_NAME_FLAG, messageConfig.getPlayerNameList());
+		message = populateFlag(message, KeyWordEnum.VALUE_FLAG, messageConfig.getValueList());
 		
 		message = applyColors(message);
 		return message;
 	}
 	
-	private String populateFlag(String rawMessage, KeyWordEnum flag, String flagContent) {
-		return rawMessage.replace(flag.getValue(), flagContent);
+	private String populateFlag(String rawMessage, KeyWordEnum flag, List<String> flagContentList) {
+		String populatedMessage = rawMessage;
+		for (String flagContent : flagContentList) {
+			populatedMessage = populatedMessage.replaceFirst(flag.getValue(), flagContent);
+		}
+		return populatedMessage;
 	}
 	
 	public static String applyColors(String message, String colorCode) {
@@ -134,14 +159,18 @@ public class MessageManager {
 		return message;
 	}
 	
-	public static String removeColors(String rawMessage) {
-		String message = rawMessage;
+	public static String removeColorCodes(String coloredMessage) {
+		String rawMessage = coloredMessage;
 		for (ColorEnum color : ColorEnum.values()) {
 			for (String code : color.getCodeArray()) {
-				message = message.replaceAll("(?i)" + code, ""); // (?i) makes replaceAll case insensitive
+				rawMessage = rawMessage.replaceAll("(?i)" + code, ""); // (?i) makes replaceAll case insensitive
 			}
 		}
-		return message;
+		return rawMessage;
+	}
+	
+	public static String removeChatColors(String coloredMessage) {
+		return ChatColor.stripColor(coloredMessage);
 	}
 	
 	public static boolean isColor(String colorCode) {

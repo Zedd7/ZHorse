@@ -12,7 +12,7 @@ public class CommandHelp extends AbstractCommand {
 	public CommandHelp(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
 		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {
-			if (!idMode) { // On 2 lines to avoid calling sendCommandUsage if horse is lost
+			if (!idMode) {
 				if (!targetMode || (isRegistered(targetUUID) && isPlayerOnline(targetUUID, false))) {
 					execute();
 				}
@@ -25,6 +25,7 @@ public class CommandHelp extends AbstractCommand {
 
 	private void execute() {
 		if (zh.getEM().canAffordCommand(p, command)) {
+			parsePageNumber();
 			if (args.isEmpty()) {
 				sendCommandDescriptionList();
 				zh.getEM().payCommand(p, command);

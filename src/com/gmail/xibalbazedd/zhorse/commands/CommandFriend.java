@@ -58,7 +58,7 @@ public class CommandFriend extends AbstractCommand {
 	private void addFriend() {
 		fullCommand = command + KeyWordEnum.DOT.getValue() + CommandFriendEnum.ADD.getName();
 		if (hasPermission(s, fullCommand , true, false)) {
-			if (applyArgumentToTarget()) {
+			if (parsePlayerName()) {
 				if (targetMode) {
 					if (isRegistered(targetUUID)) {
 						if (isPlayerDifferent()) {
@@ -84,7 +84,7 @@ public class CommandFriend extends AbstractCommand {
 	private void removeFriend() {
 		fullCommand = command + KeyWordEnum.DOT.getValue() + CommandFriendEnum.REMOVE.getName();
 		if (hasPermission(s, fullCommand , true, false)) {
-			if (applyArgumentToTarget()) {
+			if (parsePlayerName()) {
 				if (targetMode) {
 					if (isPlayerDifferent()) {
 						if (isRegistered(targetUUID)) {
@@ -110,7 +110,7 @@ public class CommandFriend extends AbstractCommand {
 	private void sendFriendList() {
 		fullCommand = command + KeyWordEnum.DOT.getValue() + CommandFriendEnum.LIST.getName();
 		if (hasPermission(s, fullCommand , true, false)) {
-			if (applyArgumentToTarget()) {
+			if (parsePlayerName()) {
 				List<String> friendNameList = zh.getDM().getFriendNameList(targetUUID);
 				List<String> friendNameReverseList = zh.getDM().getFriendNameReverseList(targetUUID);
 				if (samePlayer) {

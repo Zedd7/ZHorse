@@ -2,6 +2,8 @@ package com.gmail.xibalbazedd.zhorse.utils;
 
 import java.math.RoundingMode;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
@@ -14,16 +16,15 @@ public class MessageConfig {
 	private int spaceCount = 0;
 	private boolean usePercentage = false;
 	
-	private Number amount;
-	private String currencySymbol;
-	private String horseName;
-	private String horseID;
-	private String language;
-	private Number max;
-	private String permission;
-	private String playerName;
-	
-	private String value;
+	private List<Number> amountList = new ArrayList<>();
+	private List<String> currencySymbolList = new ArrayList<>();
+	private List<String> horseNameList = new ArrayList<>();
+	private List<String> horseIDList = new ArrayList<>();
+	private List<String> languageList = new ArrayList<>();
+	private List<Number> maxList = new ArrayList<>();
+	private List<String> permissionList = new ArrayList<>();
+	private List<String> playerNameList = new ArrayList<>();	
+	private List<String> valueList = new ArrayList<>();
 	
 	public MessageConfig(LocaleEnum index) {
 		this.index = index;
@@ -61,32 +62,32 @@ public class MessageConfig {
 		this.usePercentage = usePercentage;
 	}
 
-	public String getAmount() {
-		return getFlagContent(amount);
+	public List<String> getAmountList() {
+		return getFlagContentList(amountList);
 	}
 
 	public void setAmount(Number amount) {
-		this.amount = amount;
+		amountList.add(amount);
 	}
 
-	public String getCurrencySymbol() {
-		return getFlagContent(currencySymbol);
+	public List<String> getCurrencySymbolList() {
+		return getFlagContentList(currencySymbolList);
 	}
 
 	public void setCurrencySymbol(String currencySymbol) {
-		this.currencySymbol = currencySymbol;
+		currencySymbolList.add(currencySymbol);
 	}
 
-	public String getHorseName() {
-		return getFlagContent(horseName);
+	public List<String> getHorseNameList() {
+		return getFlagContentList(horseNameList);
 	}
 
 	public void setHorseName(String horseName) {
-		this.horseName = horseName;
+		horseNameList.add(horseName);
 	}
 
-	public String getHorseID() {
-		return getFlagContent(horseID);
+	public List<String> getHorseIDList() {
+		return getFlagContentList(horseIDList);
 	}
 	
 	public void setHorseID(Integer horseID) {
@@ -94,68 +95,66 @@ public class MessageConfig {
 	}
 
 	public void setHorseID(String horseID) {
-		this.horseID = horseID;
+		horseIDList.add(horseID);
 	}
 
-	public String getLanguage() {
-		return getFlagContent(language);
+	public List<String> getLanguageList() {
+		return getFlagContentList(languageList);
 	}
 
 	public void setLanguage(String language) {
-		this.language = language;
+		languageList.add(language);
 	}
 
-	public String getMax() {
-		return getFlagContent(max);
+	public List<String> getMaxList() {
+		return getFlagContentList(maxList);
 	}
 
 	public void setMax(Number max) {
-		this.max = max;
+		maxList.add(max);
 	}
 	
-	public String getPermission() {
-		return getFlagContent(permission);
+	public List<String> getPermissionList() {
+		return getFlagContentList(permissionList);
 	}
 
 	public void setPermission(String permission) {
-		this.permission = permission;
+		permissionList.add(permission);
 	}
 
-	public String getPlayerName() {
-		return getFlagContent(playerName);
+	public List<String> getPlayerNameList() {
+		return getFlagContentList(playerNameList);
 	}
 
 	public void setPlayerName(String playerName) {
-		this.playerName = playerName;
+		playerNameList.add(playerName);
 	}
 
-	public String getValue() {
-		return getFlagContent(value);
+	public List<String> getValueList() {
+		return getFlagContentList(valueList);
 	}
 
 	public void setValue(String value) {
-		this.value = value;
+		valueList.add(value);
 	}
 	
-	private String getFlagContent(Object token) {
-		String flagContent = "";
-		if (token != null) {
+	private <T> List<String> getFlagContentList(List<T> tokenList) {
+		List<String> flagContentList = new ArrayList<>();
+		for (T token : tokenList) {
+			String flagContent;
 			if (token instanceof Number) {
 				NumberFormat numberFormatter = usePercentage ? NumberFormat.getPercentInstance(Locale.US) : NumberFormat.getNumberInstance(Locale.US);
 				numberFormatter.setMaximumFractionDigits(arithmeticPrecision);
 				numberFormatter.setMinimumFractionDigits(arithmeticPrecision);
 				numberFormatter.setRoundingMode(RoundingMode.HALF_UP);
-				/*if (token instanceof Double) {
-					String format = "%." + arithmeticPrecision + "f";
-					flagContent = String.format(Locale.US, format, token);
-				}*/
 				flagContent = numberFormatter.format(token);
 			}
 			else {
 				flagContent = token.toString();
 			}
+			flagContentList.add(flagContent);
 		}
-		return flagContent;
+		return flagContentList;
 	}
 
 }

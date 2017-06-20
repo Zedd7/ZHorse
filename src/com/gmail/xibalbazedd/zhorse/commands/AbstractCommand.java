@@ -24,6 +24,7 @@ import com.gmail.xibalbazedd.zhorse.enums.HorseVariantEnum;
 import com.gmail.xibalbazedd.zhorse.enums.KeyWordEnum;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
 import com.gmail.xibalbazedd.zhorse.managers.MessageManager;
+import com.gmail.xibalbazedd.zhorse.utils.CompoundMessage;
 import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
 
 import net.md_5.bungee.api.ChatColor;
@@ -42,6 +43,7 @@ public abstract class AbstractCommand {
 	protected String horseID;
 	protected String horseName;
 	protected String targetName;
+	protected int pageNumber;
 	protected boolean useExactStats;
 	protected boolean useVanillaStats;
 	protected boolean playerCommand;
@@ -58,6 +60,7 @@ public abstract class AbstractCommand {
 		this.a = a;
 		this.s = s;
 		this.command = a[0].toLowerCase();
+		this.pageNumber = 1;
 		args = new ArrayList<>();
 		console = zh.getServer().getConsoleSender();
 		useVanillaStats = zh.getCM().shouldUseVanillaStats();
@@ -121,27 +124,33 @@ public abstract class AbstractCommand {
 		return true;
 	}
 	
-	protected boolean applyArgument(boolean horseIDFirst) {
-		if (horseIDFirst) {
-			if (!idMode) {
-				return applyArgumentToHorseID();
-			}
-			else if (!targetMode) {
-				return applyArgumentToTarget();
+	protected boolean parseArgument(ArgumentEnum... argumentOrder) {
+		for (ArgumentEnum argumentType : argumentOrder) {
+			switch (argumentType) {
+			case HORSE_ID:
+				break;
+			case HORSE_NAME:
+				if (!idMode) {
+					return parseHorseName();
+				}
+				break;
+			case PLAYER_NAME:
+				if (!targetMode) {
+					return parsePlayerName();
+				}
+				break;
 			}
 		}
-		else {
-			if (!targetMode) {
-				return applyArgumentToTarget();
-			}
-			else if (!idMode) {
-				return applyArgumentToHorseID();
-			}
-		}
-		return true;
+		return false;
 	}
 	
-	protected boolean applyArgumentToHorseID() {
+	protected enum ArgumentEnum {
+		
+		HORSE_ID, HORSE_NAME, PLAYER_NAME;
+		
+	}
+	
+	protected boolean parseHorseName() {
 		if (idMode || args.isEmpty()) return true;
 		
 		idMode = true;
@@ -163,14 +172,24 @@ public abstract class AbstractCommand {
 		}
 	}
 	
-	protected boolean applyArgumentToTarget() {
+	protected boolean parsePlayerName() {
 		if (targetMode) return true;
 		
 		targetMode = !args.isEmpty();
-		targetName = String.join(" ", args);
+		targetName = !args.isEmpty() ? args.get(0) : "";
 		args.remove(targetName);
 		targetUUID = null;
 		return analyseModes();
+	}
+	
+	protected void parsePageNumber() {
+		/* Not used in parseArgument because is not affiliated with a flag */
+		if (!args.isEmpty()) {
+			try {
+				pageNumber = Integer.parseInt(args.get(0));
+				args.remove(0);
+			} catch (NumberFormatException e) {}
+		}
 	}
 	
 	protected void applyHorseName(UUID ownerUUID) {
@@ -208,7 +227,7 @@ public abstract class AbstractCommand {
 
 	private boolean craftCustomHorseName() {
 		if (adminMode || zh.getCM().isHorseNameAllowed()) {
-			horseName = MessageManager.removeColors(String.join(" ", args));
+			horseName = MessageManager.removeColorCodes(String.join(" ", args));
 			int maximumLength = zh.getCM().getMaximumHorseNameLength();
 			int minimumLength = zh.getCM().getMinimumHorseNameLength();
 			int length = horseName.length();
@@ -754,50 +773,21 @@ public abstract class AbstractCommand {
 			return false;
 		}
 	}
-	
-	protected void sendCommandDescription(String command, String permission, boolean subCommand) {
-		boolean displayCommand = hasPermission(targetUUID, permission, true, true); // Display commands that target can use
-		displayCommand &= samePlayer ? true : hasPermission(p.getUniqueId(), permission, true, true); // But hide command that player shouldn't see
-		if (displayCommand) {
-			LocaleEnum commandDescription;
-			if (!subCommand) {
-				commandDescription = LocaleEnum.valueOf(command.toUpperCase() + KeyWordEnum.SEPARATOR.getValue() + KeyWordEnum.DESCRIPTION.getValue());
-			}
-			else {
-				String commandLocaleIndex = this.command.toUpperCase()
-						+ KeyWordEnum.SEPARATOR.getValue()
-						+ command.toUpperCase()
-						+ KeyWordEnum.SEPARATOR.getValue()
-						+ KeyWordEnum.DESCRIPTION.getValue();
-				commandDescription = LocaleEnum.valueOf(commandLocaleIndex);
-				command = this.command;
-			}
-			if (zh.getEM().isCommandFree(p.getUniqueId(), command)) {
-				zh.getMM().sendMessage(s, new MessageConfig(commandDescription) {{ setSpaceCount(1); }}, true);
-			}
-			else {
-				String message = zh.getMM().getMessage(s, new MessageConfig(commandDescription) {{ setSpaceCount(1); }}, true);
-				
-				int cost = zh.getCM().getCommandCost(command);
-				LocaleEnum costColorCodeIndex = zh.getEM().canAffordCommand(p, command, true) ? LocaleEnum.AFFORDABLE_COLOR : LocaleEnum.UNAFFORDABLE_COLOR;
-				String costColorCode = zh.getMM().getMessage(s, new MessageConfig(costColorCodeIndex), true);
-				
-				String currencySymbol = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.CURRENCY_SYMBOL), true);
-				String costMessage = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.COMMAND_COST) {{ setAmount(cost); setCurrencySymbol(currencySymbol); }}, true);
-				
-				zh.getMM().sendMessage(s, message + costColorCode + costMessage);
-			}
-		}
-	}
 
-	protected void sendCommandDescriptionList() {
-		String header = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.COMMAND_LIST_HEADER), true);
-		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HEADER_FORMAT) {{ setValue(header); }}, true);
+	protected void sendCommandDescriptionList() {		
+		CompoundMessage compoundMessage = new CompoundMessage(true);
 		for (CommandEnum command : CommandEnum.values()) {
 			String commandName = command.getName();
 			String permission = commandName;
-			sendCommandDescription(commandName, permission, false);
+			String commandDescription = getCommandDescription(commandName, permission, false);
+			compoundMessage.addLine(commandDescription);
 		}
+		int maxPageNumber = compoundMessage.getPageCount();
+		String pageNumberMessage = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.PAGE_NUMBER_FORMAT) {{ setAmount(pageNumber); setMax(maxPageNumber); }}, true);
+		String header = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.COMMAND_LIST_HEADER) {{ setValue(pageNumberMessage); }}, true);
+		String headerMessage = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.HEADER_FORMAT) {{ setValue(header); }}, true);
+		compoundMessage.addHeader(headerMessage);
+		zh.getMM().sendMessage(s, zh.getMM().getMessage(compoundMessage, pageNumber));
 	}
 	
 	protected void sendCommandAdminDescriptionList() {
@@ -827,7 +817,45 @@ public abstract class AbstractCommand {
 	protected void sendSubCommandDescription(String subCommandName) {
 		String commandName = subCommandName;
 		String permission = this.command + KeyWordEnum.DOT.getValue() + subCommandName;
-		sendCommandDescription(commandName, permission, true);
+		String message = getCommandDescription(commandName, permission, true);
+		zh.getMM().sendMessage(s, message);
+	}
+	
+	protected String getCommandDescription(String command, String permission, boolean subCommand) {
+		String message = "";
+		boolean displayCommand = hasPermission(targetUUID, permission, true, true); // Display command if target player can use it
+		displayCommand &= samePlayer ? true : hasPermission(p.getUniqueId(), permission, true, true); // But hide it if command sender can't use it
+		if (displayCommand) {
+			LocaleEnum commandDescription;
+			if (!subCommand) {
+				commandDescription = LocaleEnum.valueOf(command.toUpperCase() + KeyWordEnum.SEPARATOR.getValue() + KeyWordEnum.DESCRIPTION.getValue());
+			}
+			else {
+				String commandLocaleIndex = this.command.toUpperCase()
+						+ KeyWordEnum.SEPARATOR.getValue()
+						+ command.toUpperCase()
+						+ KeyWordEnum.SEPARATOR.getValue()
+						+ KeyWordEnum.DESCRIPTION.getValue();
+				commandDescription = LocaleEnum.valueOf(commandLocaleIndex);
+				command = this.command;
+			}
+			if (zh.getEM().isCommandFree(p.getUniqueId(), command)) {
+				message = zh.getMM().getMessage(s, new MessageConfig(commandDescription) {{ setSpaceCount(1); }}, true);
+			}
+			else {
+				String rawMessage = zh.getMM().getMessage(s, new MessageConfig(commandDescription) {{ setSpaceCount(1); }}, true);
+				
+				int cost = zh.getCM().getCommandCost(command);
+				LocaleEnum costColorCodeIndex = zh.getEM().canAffordCommand(p, command, true) ? LocaleEnum.AFFORDABLE_COLOR : LocaleEnum.UNAFFORDABLE_COLOR;
+				String costColorCode = zh.getMM().getMessage(s, new MessageConfig(costColorCodeIndex), true);
+				
+				String currencySymbol = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.CURRENCY_SYMBOL), true);
+				String costMessage = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.COMMAND_COST) {{ setAmount(cost); setCurrencySymbol(currencySymbol); }}, true);
+				
+				message = rawMessage + costColorCode + costMessage;
+			}
+		}
+		return message;
 	}
 	
 	protected void sendCommandUsage() {
@@ -851,6 +879,7 @@ public abstract class AbstractCommand {
 				+ KeyWordEnum.USAGE.getValue();
 			commandUsage = LocaleEnum.valueOf(commandUsageIndex);
 		}			
+		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.COMMAND_WIKI_HEADER) {{ setSpaceCount(1); }}, true);
 		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.COMMAND_USAGE_HEADER) {{ setSpaceCount(1); }}, true);
 		String commandUsageMessage = zh.getMM().getMessage(s, new MessageConfig(commandUsage), true);
 		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.COMMAND_USAGE_FORMAT) {{ setSpaceCount(1); setValue(commandUsageMessage); }}, true);

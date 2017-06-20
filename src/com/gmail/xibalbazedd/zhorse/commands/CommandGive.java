@@ -14,7 +14,7 @@ public class CommandGive extends AbstractCommand {
 	public CommandGive(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
 		targetIsOwner = false;
-		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled() && applyArgument(false)) {
+		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled() && parseArgument(ArgumentEnum.PLAYER_NAME, ArgumentEnum.HORSE_NAME)) {
 			if (!targetMode) {
 				sendCommandUsage();
 			}
