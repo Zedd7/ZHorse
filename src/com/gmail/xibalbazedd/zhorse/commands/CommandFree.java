@@ -59,7 +59,7 @@ public class CommandFree extends AbstractCommand {
 				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_FREED) {{ setHorseName(horseName); }});
 				zh.getEM().payCommand(p, command);
 			}
-		}	
+		}
 	}
 	
 	private void removeLostHorse() {

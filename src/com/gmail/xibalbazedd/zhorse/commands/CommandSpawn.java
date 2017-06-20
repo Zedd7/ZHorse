@@ -226,7 +226,7 @@ public class CommandSpawn extends AbstractCommand {
 		Location location = p.getLocation();
 		HorseStatsRecord statsRecord = new HorseStatsRecord(
 				null, null, null, null, color, null, null, null, health, null, null, null, tamed, jumpStrength, health, null, null, speed, strength, style, null, type
-		) {{ setBaby(baby); }} ;
+		) {{ setAdult(adult); setBaby(baby); }} ;
 		HorseInventoryRecord inventoryRecord = new HorseInventoryRecord();
 		
 		zh.getHM().spawnHorse(location, inventoryRecord, statsRecord, null, false);
