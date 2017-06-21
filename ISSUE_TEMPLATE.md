@@ -27,13 +27,13 @@
 <!-- Bug report section. Delete it if you didn't check 'Bug report' above -->
 ## Bug report
 
-### What is the expected behaviour ?
+### What is the expected behavior ?
 
-Decription of expected behaviour goes here.
+Description of expected behavior goes here.
 
-### What is the actual behaviour ?
+### What is the actual behavior ?
 
-Description of the actual behaviour goes here.
+Description of the actual behavior goes here.
 
 ### How to reproduce the bug ?
 
