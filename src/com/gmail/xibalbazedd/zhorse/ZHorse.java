@@ -146,7 +146,7 @@ public class ZHorse extends JavaPlugin {
             
         });
 		
-		metrics.addCustomChart(new Metrics.SimpleBarChart("owners_to_players_ratio") {
+		metrics.addCustomChart(new Metrics.SimpleBarChart("owner_to_player_ratio_2") {
 
 			@Override
 			public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
@@ -160,7 +160,7 @@ public class ZHorse extends JavaPlugin {
 			
 		});
 		
-		metrics.addCustomChart(new Metrics.SimpleBarChart("total_horses_count") {
+		metrics.addCustomChart(new Metrics.SimpleBarChart("total_horse_count_2") {
 
 			@Override
 			public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
@@ -174,8 +174,11 @@ public class ZHorse extends JavaPlugin {
     }
     
     private String getOwnersRatioBinLabel(int ownersToPlayersRatio) {
-    	if (ownersToPlayersRatio < 5) {
-    		return "0% - 5%";
+    	if (ownersToPlayersRatio < 1) {
+    		return "0% - 1%";
+    	}
+    	else if (ownersToPlayersRatio < 5) {
+    		return "1% - 5%";
     	}
     	else if (ownersToPlayersRatio < 10) {
     		return "5% - 10%";
@@ -198,8 +201,11 @@ public class ZHorse extends JavaPlugin {
     }
     
     private String getTotalHorsesBinLabel(int totalHorsesCount) {
-    	if (totalHorsesCount < 5) {
-    		return "0 - 5";
+    	if (totalHorsesCount < 1) {
+    		return "0 - 1";
+    	}
+    	else if (totalHorsesCount < 5) {
+    		return "1 - 5";
     	}
     	else if (totalHorsesCount < 10) {
     		return "5 - 10";
