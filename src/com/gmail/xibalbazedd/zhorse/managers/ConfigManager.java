@@ -244,6 +244,10 @@ public class ConfigManager {
 		return config.getBoolean(KeyWordEnum.RESPAWN_MISSING_HORSE.getValue(), true);
 	}
 	
+	public boolean shouldRestoreInventory() {
+		return config.getBoolean(KeyWordEnum.RESTORE_INVENTORY.getValue(), true);
+	}
+	
 	public boolean shouldShareOnClaim() {
 		return config.getBoolean(KeyWordEnum.SHARE_ON_CLAIM.getValue(), false);
 	}

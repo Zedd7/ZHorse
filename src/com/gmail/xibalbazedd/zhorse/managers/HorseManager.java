@@ -167,7 +167,7 @@ public class HorseManager {
 		}
 	}
 	
-	public void updateHorse(AbstractHorse horse, boolean sync) {
+	public void updateHorse(AbstractHorse horse, boolean runSynchronously) {
 		UUID horseUUID = horse.getUniqueId();
 		Location horseLocation = horse.getLocation();
 		HorseInventoryRecord inventoryRecord = new HorseInventoryRecord(horse);
@@ -182,7 +182,7 @@ public class HorseManager {
 			}
 			
 		};
-		if (sync) {
+		if (runSynchronously) {
 			updateTask.run();
 		}
 		else {

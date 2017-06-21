@@ -564,6 +564,12 @@ public class DataManager {
 		return db.executeUpdate(update);
 	}
 	
+	public boolean updateHorseIsCarryingChest(UUID horseUUID, boolean isCarryingChest) {
+		int isCarryingChestFlag = isCarryingChest ? 1 : 0;
+		String update = String.format("UPDATE prefix_horse_stats SET isCarryingChest = %d WHERE uuid = \"%s\"", isCarryingChestFlag, horseUUID);
+		return db.executeUpdate(update);
+	}
+	
 	public boolean updateHorseLocation(UUID horseUUID, Location location, boolean checkForChanges) {
 		if (checkForChanges && !hasLocationChanged(horseUUID, location)) {
 			return true;

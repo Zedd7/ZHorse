@@ -17,6 +17,14 @@ public class HorseInventoryRecord {
 		this.itemRecordList = itemRecordList;
 	}
 	
+	public HorseInventoryRecord(String uuid) {
+		this(uuid, new ArrayList<>());
+	}
+	
+	public HorseInventoryRecord() {
+		this(null, new ArrayList<>());
+	}
+	
 	public HorseInventoryRecord(AbstractHorse horse) {
 		uuid = horse.getUniqueId().toString();
 		itemRecordList = new ArrayList<>();
@@ -27,10 +35,6 @@ public class HorseInventoryRecord {
 				itemRecordList.add(new InventoryItemRecord(uuid, slot, item));
 			}
 		}
-	}
-	
-	public HorseInventoryRecord() {
-		this(null, new ArrayList<>());
 	}
 	
 	public String getUUID() {

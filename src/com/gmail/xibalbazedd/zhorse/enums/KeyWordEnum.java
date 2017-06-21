@@ -49,6 +49,7 @@ public enum KeyWordEnum {
 	PROTECT_ON_CLAIM("Settings.protect-on-claim"),
 	RANDOM_NAMES("HorseNames.random-names"),
 	RESPAWN_MISSING_HORSE("Settings.respawn-missing-horse"),
+	RESTORE_INVENTORY("Settings.restore-inventory"),
 	REZ_STACK_SIZE("Settings.rez-stack-size"),
 	SETTINGS("Settings"),
 	SHARE_ON_CLAIM("Settings.share-on-claim"),

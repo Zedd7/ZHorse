@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AbstractHorse;
+import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LeashHitch;
 import org.bukkit.entity.Player;
@@ -45,6 +46,7 @@ import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.commands.CommandClaim;
 import com.gmail.xibalbazedd.zhorse.commands.CommandInfo;
 import com.gmail.xibalbazedd.zhorse.database.HorseDeathRecord;
+import com.gmail.xibalbazedd.zhorse.database.HorseInventoryRecord;
 import com.gmail.xibalbazedd.zhorse.database.HorseStatsRecord;
 import com.gmail.xibalbazedd.zhorse.enums.CommandEnum;
 import com.gmail.xibalbazedd.zhorse.enums.KeyWordEnum;
@@ -134,7 +136,18 @@ public class EventManager implements Listener {
 				else {
 					zh.getMM().sendPendingMessage(ownerUUID, new MessageConfig(LocaleEnum.HORSE_DIED) {{ setHorseName(horseName); }});
 				}
+				HorseInventoryRecord inventoryRecord;
+				if (zh.getCM().shouldRestoreInventory()) {
+					e.getDrops().clear();
+					inventoryRecord = new HorseInventoryRecord(horse);
+				}
+				else {
+					inventoryRecord = new HorseInventoryRecord(horse.getUniqueId().toString());
+				}
+				e.setDroppedExp(0);
 				zh.getHM().untrackHorse(horse.getUniqueId());
+				zh.getDM().updateHorseIsCarryingChest(horse.getUniqueId(), horse instanceof ChestedHorse ? ((ChestedHorse) horse).isCarryingChest() : false);
+				zh.getDM().updateHorseInventory(inventoryRecord); // Do not update stats to keep health and ticksLived above 0
 				zh.getDM().registerHorseDeath(new HorseDeathRecord(horse.getUniqueId().toString()));
 			}
 		}

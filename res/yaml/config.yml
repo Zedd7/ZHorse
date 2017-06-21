@@ -295,19 +295,24 @@ Settings:
   # Set to -1 for infinite range.
   tp-max-range: -1
 
-  # Set to true to hide all ZHorse messages in chat.
-  mute-console: false
-
   # Set to false to disable respawn of missing horses.
   # If a horse happens to be missing (possible bug) and its
   # stats and inventory are registered in the database (automatic),
   # a perfect copy of it will be spawned at its last seen location.
   respawn-missing-horse: true
 
+  # Set to false to prevent items from being stored on horse death.
+  # It will make them available for looting but they will not be
+  # restored in the horse's inventory when it gets resurrected.
+  restore-inventory: true
+
   # The number of dead horses kept in the database for each player.
   # Higher values allow players to resurrect more dead horses.
-  # Lower values (including 0) use less space in the database.
+  # Lower values (including 0, to disable) use less space in the database.
   rez-stack-size: 5
+
+  # Set to true to hide all ZHorse messages in chat.
+  mute-console: false
 
   # Set to true to switch to the teleportation method used in 1.4-.
   # This is only recommended for servers using plugins that are

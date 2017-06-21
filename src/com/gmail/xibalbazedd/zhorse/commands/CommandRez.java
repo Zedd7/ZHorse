@@ -3,6 +3,7 @@ package com.gmail.xibalbazedd.zhorse.commands;
 import java.util.UUID;
 
 import org.bukkit.Location;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 
@@ -47,6 +48,7 @@ public class CommandRez extends AbstractCommand {
 				horse = zh.getHM().spawnHorse(destination, inventoryRecord, statsRecord, horseUUID, true);
 				if (horse != null) {
 					applyHorseName(targetUUID);
+					horse.setHealth(horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
 					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_RESURRECTED) {{ setHorseName(horseName); }});
 					zh.getEM().payCommand(p, command);
 				}
