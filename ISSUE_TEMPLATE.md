@@ -27,9 +27,13 @@
 <!-- Bug report section. Delete it if you didn't check 'Bug report' above -->
 ## Bug report
 
+### What are you trying to do ?
+
+Description of the task to be done goes here.
+
 ### What is the expected behavior ?
 
-Description of expected behavior goes here.
+Description of the expected behavior goes here.
 
 ### What is the actual behavior ?
 
@@ -41,7 +45,7 @@ Description of the actual behavior goes here.
 2. Step 2
 3. ...
 
-### Console output (can be found in /logs folder)
+### Console output <!-- Find it in the /logs folder -->
 
 Link to console output, if any, goes here. Please use http://pastebin.com to paste long outputs !
 
