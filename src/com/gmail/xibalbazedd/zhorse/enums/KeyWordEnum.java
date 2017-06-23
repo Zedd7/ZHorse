@@ -22,6 +22,7 @@ public enum KeyWordEnum {
 	COLOR_SUFFIX(".color"),
 	COMMANDS("Commands"),
 	COMMANDS_PREFIX("Commands."),
+	COOLDOWN_SUFFIX(".cooldown"),
 	COST_SUFFIX(".cost"),
 	CROSSABLE_SUFFIX(".crossable"),
 	DATABASE("Databases.mysql-config.database"),

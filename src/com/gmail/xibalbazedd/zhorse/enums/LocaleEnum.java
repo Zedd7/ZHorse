@@ -30,6 +30,7 @@ public enum LocaleEnum {
 	/* messages */
 	CLAIMS_LIMIT_REACHED("Messages.claimsLimitReached"),
 	CLAIMS_LIMIT_REACHED_OTHER("Messages.claimsLimitReachedOther"),
+	COMMAND_COOLDOWN("Messages.commandCooldown"),
 	DATABASE_IMPORT_FAILURE("Messages.databaseImportFailure"),
 	DATABASE_IMPORT_STARTED("Messages.databaseImportStarted"),
 	DATABASE_IMPORT_SUCCESS("Messages.databaseImportSuccess"),
@@ -130,6 +131,7 @@ public enum LocaleEnum {
 	PLAYER_OFFLINE("Messages.playerOffline"),
 	PLUGIN_RELOADED("Messages.pluginReloaded"),
 	PLUGIN_RELOADED_WITH_ERRORS("Messages.pluginReloadedWithErrors"),
+	REMAINING_COOLDOWN("Messages.remainingCooldown"),
 	SAME_PLAYER("Messages.samePlayer"),
 	STATS_DISPLAY_MODE_ALREADY_USED("Messages.statsDisplayModeAlreadyUsed"),
 	STATS_DISPLAY_MODE_ALREADY_USED_OTHER("Messages.statsDisplayModeAlreadyUsedOther"),

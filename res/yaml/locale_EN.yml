@@ -31,6 +31,7 @@ Headers:
   availableOptionFormat: "<gold><value><yellow>"
 
 Messages:
+  commandCooldown: "<red> (<amount> s)"
   claimsLimitReached: "<yellow>Your claims limit has been reached."
   claimsLimitReachedOther: "<gold><player><yellow>'s claims limit has been reached."
   databaseImportFailure: "<yellow>The <gold><value><yellow> data could not be imported into your current database. See logs for details."
@@ -133,6 +134,7 @@ Messages:
   playerOffline: "<gold><player><yellow> must be online in order to perform this command."
   pluginReloaded: "<gold><value><yellow> has been successfully reloaded."
   pluginReloadedWithErrors: "<gold><value><yellow> has been reloaded with errors."
+  remainingCooldown: "<yellow>You must wait <gold><amount> s<yellow> for the cooldown of this command to expire."
   samePlayer: "<yellow>You can't target yourself."
   statsDisplayModeAlreadyUsed: "<yellow>You are already using the display mode <gold><value><yellow>."
   statsDisplayModeAlreadyUsedOther: "<gold><player><yellow> is already using the display mode <gold><value><yellow>."

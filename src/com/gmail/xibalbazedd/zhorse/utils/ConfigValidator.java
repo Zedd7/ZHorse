@@ -48,6 +48,9 @@ public class ConfigValidator extends YamlResourceValidator {
 			for (String command : cs.getKeys(false)) {
 				if (exactCommandList.contains(command)) {
 					validateOptionSet(KeyWordEnum.COMMANDS_PREFIX.getValue() + command + KeyWordEnum.AUTO_ADMIN_SUFFIX.getValue());
+					if (validateOptionSet(KeyWordEnum.COMMANDS_PREFIX.getValue() + command + KeyWordEnum.COOLDOWN_SUFFIX.getValue())) {
+						validatePositive(KeyWordEnum.COMMANDS_PREFIX.getValue() + command + KeyWordEnum.COOLDOWN_SUFFIX.getValue());
+					}
 					if (validateOptionSet(KeyWordEnum.COMMANDS_PREFIX.getValue() + command + KeyWordEnum.COST_SUFFIX.getValue())) {
 						validatePositive(KeyWordEnum.COMMANDS_PREFIX.getValue() + command + KeyWordEnum.COST_SUFFIX.getValue());
 					}

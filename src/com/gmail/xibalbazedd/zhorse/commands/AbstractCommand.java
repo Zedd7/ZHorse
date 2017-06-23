@@ -849,12 +849,8 @@ public abstract class AbstractCommand {
 				commandDescription = LocaleEnum.valueOf(commandLocaleIndex);
 				command = this.command;
 			}
-			if (zh.getEM().isCommandFree(p.getUniqueId(), command)) {
-				message = zh.getMM().getMessage(s, new MessageConfig(commandDescription) {{ setSpaceCount(1); }}, true);
-			}
-			else {
-				String rawMessage = zh.getMM().getMessage(s, new MessageConfig(commandDescription) {{ setSpaceCount(1); }}, true);
-				
+			message = zh.getMM().getMessage(s, new MessageConfig(commandDescription) {{ setSpaceCount(1); }}, true);
+			if (!zh.getEM().isCommandFree(p.getUniqueId(), command)) {
 				int cost = zh.getCM().getCommandCost(command);
 				LocaleEnum costColorCodeIndex = zh.getEM().canAffordCommand(p, command, true) ? LocaleEnum.AFFORDABLE_COLOR : LocaleEnum.UNAFFORDABLE_COLOR;
 				String costColorCode = zh.getMM().getMessage(s, new MessageConfig(costColorCodeIndex), true);
@@ -862,7 +858,12 @@ public abstract class AbstractCommand {
 				String currencySymbol = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.CURRENCY_SYMBOL), true);
 				String costMessage = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.COMMAND_COST) {{ setAmount(cost); setCurrencySymbol(currencySymbol); }}, true);
 				
-				message = rawMessage + costColorCode + costMessage;
+				message = message + costColorCode + costMessage;
+			}
+			long remainingCooldown = zh.getCmdM().getRemainingCooldown(s, command);
+			if (remainingCooldown > 0) {
+				String cooldownMessage = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.COMMAND_COOLDOWN) {{ setAmount(remainingCooldown); }}, true);
+				message = message + cooldownMessage;
 			}
 		}
 		return message;

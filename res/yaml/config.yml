@@ -4,76 +4,100 @@ Commands:
 
   # The list of ZHorse's commands. You can remove unused commands.
   # Set auto-admin to true to force admin mode for authorized users.
+  # The value of cooldown defines the delay between two executions in seconds.
   # The value of cost defines how much will be charged per use.
 
   admin:
     auto-admin: true
+    cooldown: 0
     cost: 0
   buy:
     auto-admin: false
+    cooldown: 0
     cost: 0
   claim:
     auto-admin: false
+    cooldown: 0
     cost: 0
   free:
     auto-admin: false
+    cooldown: 0
     cost: 0
   friend:
     auto-admin: false
+    cooldown: 0
     cost: 0
   give:
     auto-admin: false
+    cooldown: 0
     cost: 0
   heal:
     auto-admin: false
+    cooldown: 0
     cost: 0
   help:
     auto-admin: false
+    cooldown: 0
     cost: 0
   here:
     auto-admin: true
+    cooldown: 0
     cost: 0
   info:
     auto-admin: false
+    cooldown: 0
     cost: 0
   kill:
     auto-admin: false
+    cooldown: 0
     cost: 0
   list:
     auto-admin: false
+    cooldown: 0
     cost: 0
   lock:
     auto-admin: false
+    cooldown: 0
     cost: 0
   protect:
     auto-admin: false
+    cooldown: 0
     cost: 0
   rename:
     auto-admin: false
+    cooldown: 0
     cost: 0
   reload:
     auto-admin: true
+    cooldown: 0
     cost: 0
   rez:
     auto-admin: false
+    cooldown: 0
     cost: 0
   sell:
     auto-admin: false
+    cooldown: 0
     cost: 0
   settings:
     auto-admin: false
+    cooldown: 0
     cost: 0
   share:
     auto-admin: false
+    cooldown: 0
     cost: 0
   spawn:
     auto-admin: false
+    cooldown: 0
     cost: 0
   tame:
     auto-admin: false
+    cooldown: 0
     cost: 0
   tp:
     auto-admin: true
+    cooldown: 0
     cost: 0
 
 Databases:

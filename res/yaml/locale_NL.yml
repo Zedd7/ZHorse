@@ -33,6 +33,7 @@ Headers:
   availableOptionFormat: "<gold><value><yellow>"
 
 Messages:
+  commandCooldown: "<red> (<amount> s)"
   claimsLimitReached: "<yellow>Je hebt je claims-limiet berijkt."
   claimsLimitReachedOther: "<gold><player><yellow> heeft zijn claim-limiet bereikt."
   databaseImportFailure: "<yellow>De <gold><value><yellow> gegevens konden niet worden geimporteert in je huidige database. Bekijk de logs voor details."
@@ -135,6 +136,7 @@ Messages:
   playerOffline: "<gold><player><yellow> moet online zijn om dit commando uit te voeren."
   pluginReloaded: "<gold><value><yellow> is succesvol herladen."
   pluginReloadedWithErrors: "<gold><value><yellow> is herladen met fouten."
+  remainingCooldown: "<yellow>You must wait <gold><amount> s<yellow> for the cooldown of this command to expire."
   samePlayer: "<yellow>Je kan jezelf niet selecteren."
   statsDisplayModeAlreadyUsed: "<yellow>Je gebruikt al de stats weergavemodus <gold><value><yellow>."
   statsDisplayModeAlreadyUsedOther: "<gold><player><yellow> gebruikt al de stats weergavemodus <gold><value><yellow>."
