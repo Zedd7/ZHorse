@@ -55,6 +55,14 @@ public class ConfigManager {
 		return claimsLimit;
 	}
 	
+	public int getCommandCooldown(String command) {
+		int commandCooldown = 0;
+		if (command != null) {
+			commandCooldown = config.getInt(KeyWordEnum.COMMANDS_PREFIX.getValue() + command + KeyWordEnum.COOLDOWN_SUFFIX.getValue(), 0);
+		}
+		return Math.max(commandCooldown, 0);
+	}
+	
 	public int getCommandCost(String command) {
 		int commandCost = 0;
 		if (command != null) {

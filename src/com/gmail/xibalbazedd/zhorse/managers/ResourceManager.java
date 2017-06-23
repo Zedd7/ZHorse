@@ -34,7 +34,6 @@ public class ResourceManager {
 		this.zh = zh;
 		loadSQLResources();
 		loadYamlResources();
-		zh.getMM().setDisplayConsole(!zh.getCM().isConsoleMuted());
 	}
 	
 	public boolean validateResources() {

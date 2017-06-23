@@ -119,8 +119,10 @@ public class ZHorse extends JavaPlugin {
 		
 		boolean resourcesValid = resourceManager.validateResources();
 		
+		commandManager.loadCommandCooldowns();
 		dataManager.openDatabase();
 		horseManager.trackHorses();
+		messageManager.setDisplayConsole(!configManager.isConsoleMuted());
 		
 		return resourcesValid;
 	}

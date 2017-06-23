@@ -31,6 +31,7 @@ Headers:
   availableOptionFormat: "<gold><value><yellow>"
 
 Messages:
+  commandCooldown: "<red> (<amount> s)"
   claimsLimitReached: "<yellow>Votre limite de chevaux revendicables a été atteinte."
   claimsLimitReachedOther: "<yellow>La limite de chevaux revendicables par <gold><player><yellow> a été atteinte."
   databaseImportFailure: "<yellow>Les données <gold><value><yellow> n'ont pas pu être importées dans votre base de données actuelle. Plus de détails dans les logs."
@@ -133,6 +134,7 @@ Messages:
   playerOffline: "<gold><player><yellow> doit être en ligne pour exécuter cette commande."
   pluginReloaded: "<gold><value><yellow> a été rechargé avec succès."
   pluginReloadedWithErrors: "<gold><value><yellow> a été rechargé avec des erreurs."
+  remainingCooldown: "<yellow>Vous devez attendre <gold><amount> s<yellow> pour que le cooldown de cette commande expire."
   samePlayer: "<yellow>Vous ne pouvez pas vous sélectionner vous-même."
   statsDisplayModeAlreadyUsed: "<yellow>Vous utilisez déjà le mode d'affichage <gold><value><yellow>."
   statsDisplayModeAlreadyUsedOther: "<gold><player><yellow> utilise déjà le mode d'affichage <gold><value><yellow>."

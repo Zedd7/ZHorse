@@ -1,8 +1,15 @@
 package com.gmail.xibalbazedd.zhorse.managers;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
@@ -12,13 +19,23 @@ import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
 import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
 
 public class CommandManager implements CommandExecutor {
+	
 	private ZHorse zh;
+	private Map<String, Duration> commandCooldownMap = new HashMap<>();
+	private Map<UUID, Map<String, Instant>> commandHistoryMap = new HashMap<>();
 	
 	public CommandManager(ZHorse zh) {
 		this.zh = zh;
 		zh.getCommand(zh.getDescription().getName().toLowerCase()).setExecutor(this);
 	}
-
+	
+	public void loadCommandCooldowns() {
+		for (String command : CommandEnum.getCommandNameList()) {
+			int cooldown = zh.getCM().getCommandCooldown(command);
+			commandCooldownMap.put(command, Duration.ofSeconds(cooldown));
+		}
+	}
+	
 	@Override
 	public boolean onCommand(CommandSender s, Command c, String l, String[] a) {
 		if (a.length == 0) {
@@ -36,12 +53,19 @@ public class CommandManager implements CommandExecutor {
 			for (CommandEnum commandEnum : CommandEnum.values()) {
 				if (command.equals(commandEnum.getName())) {
 					commandValid = true;
-					try {
-						Class.forName(commandEnum.getClassPath()).getConstructor(ZHorse.class, CommandSender.class, String[].class).newInstance(new Object[] {zh, s, a});
-					} catch (Exception  e) {
-						e.printStackTrace();
+					long remainingCooldown = getRemainingCooldown(s, command);
+					if (remainingCooldown <= 0) {
+						updateCommandHistory(s, command);
+						try {
+							Class.forName(commandEnum.getClassPath()).getConstructor(ZHorse.class, CommandSender.class, String[].class).newInstance(new Object[] {zh, s, a});
+						} catch (Exception  e) {
+							e.printStackTrace();
+						}
+						break;
 					}
-					break;
+					else {
+						zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.REMAINING_COOLDOWN) {{ setAmount(remainingCooldown); }});
+					}
 				}
 			}
 			if (!commandValid) {
@@ -49,6 +73,28 @@ public class CommandManager implements CommandExecutor {
 			}
 		}
 		return true;
+	}
+	
+	public long getRemainingCooldown(CommandSender s, String command) {
+		if (!(s instanceof Player)) return 0;
+		UUID playerUUID = ((Player) s).getUniqueId();
+		if (!commandHistoryMap.containsKey(playerUUID)) {
+			commandHistoryMap.put(playerUUID, new HashMap<>());
+		}
+		if (!commandHistoryMap.get(playerUUID).containsKey(command)) {
+			commandHistoryMap.get(playerUUID).put(command, Instant.EPOCH);
+		}
+		Instant lastExecution = commandHistoryMap.get(playerUUID).get(command);
+		Instant currentInstant = Instant.now();
+		Duration elapsedTime = Duration.between(lastExecution, currentInstant);
+		Duration baseCooldown = commandCooldownMap.get(command);
+		long remainingCooldown = baseCooldown.getSeconds() - elapsedTime.getSeconds();
+		return remainingCooldown;
+	}
+
+	private void updateCommandHistory(CommandSender s, String command) {
+		if (!(s instanceof Player)) return;
+		commandHistoryMap.get(((Player) s).getUniqueId()).put(command, Instant.now());
 	}
 	
 }
