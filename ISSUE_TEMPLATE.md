@@ -1,30 +1,4 @@
-<!-- Specify the subject by filling the right box with an 'x' like this : [x] -->
-## Subject of this issue
-
-- [ ] Bug report
-- [ ] Feature request
-- [ ] Question
-
-
-## Environment specifications
-
-<!-- The OS of your server : Linux / Windows / Raspberry Pi.. -->
-- Operating system : 
-
-<!-- The major version of Java : 7 / 8 / 9 -->
-- Java version :
-
-<!-- The exact version of your server returned by the command /version -->
-- Server version :
-
-<!-- The exact version of ZHorse returned by the command /zh -->
-- ZHorse version :
-
-<!-- The type of ZHorse's database : SQLite (default, uses ZHorse.db file) / MySQL -->
-- Database : 
-
-
-<!-- Bug report section. Delete it if you didn't check 'Bug report' above -->
+<!-- Bug report section. Delete it if this is not the subject of this issue -->
 ## Bug report
 
 ### What are you trying to do ?
@@ -50,13 +24,31 @@ Description of the actual behavior goes here.
 Link to console output, if any, goes here. Please use http://pastebin.com to paste long outputs !
 
 
-<!-- Feature request section. Delete it if you didn't check 'Feature request' above -->
+<!-- Feature request section. Delete it if this is not the subject of this issue -->
 ## Feature request
 
 Description of the requested feature goes here.
 
 
-<!-- Question section. Delete it if you didn't check 'Question' above -->
+<!-- Question section. Delete it if this is not the subject of this issue -->
 ## Question
 
 Question goes here.
+
+
+## Environment specifications
+
+<!-- The OS of your server : Linux / Windows / Raspberry Pi.. -->
+- Operating system : 
+
+<!-- The major version of Java : 7 / 8 / 9 -->
+- Java version :
+
+<!-- The exact version of your server returned by the command /version -->
+- Server version :
+
+<!-- The exact version of ZHorse returned by the command /zh -->
+- ZHorse version :
+
+<!-- The type of ZHorse's database : SQLite (default, uses ZHorse.db file) / MySQL -->
+- Database : 
