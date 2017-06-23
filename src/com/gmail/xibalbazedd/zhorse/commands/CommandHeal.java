@@ -40,7 +40,6 @@ public class CommandHeal extends AbstractCommand {
 	}
 	
 	private void execute(UUID ownerUUID, String horseID) {
-		System.out.println(9);
 		if (isRegistered(ownerUUID, horseID)) {
 			horse = zh.getHM().getHorse(ownerUUID, Integer.parseInt(horseID));
 			if (isHorseLoaded(true)) {
