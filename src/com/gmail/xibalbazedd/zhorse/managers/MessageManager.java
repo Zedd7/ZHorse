@@ -3,6 +3,8 @@ package com.gmail.xibalbazedd.zhorse.managers;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -140,7 +142,9 @@ public class MessageManager {
 	private String populateFlag(String rawMessage, KeyWordEnum flag, List<String> flagContentList) {
 		String populatedMessage = rawMessage;
 		for (String flagContent : flagContentList) {
-			populatedMessage = populatedMessage.replaceFirst(flag.getValue(), flagContent);
+			String nonRegexFlagValue = Pattern.quote(flag.getValue());
+			String nonRegexFlagContent = Matcher.quoteReplacement(flagContent);
+			populatedMessage = populatedMessage.replaceFirst(nonRegexFlagValue, nonRegexFlagContent);
 		}
 		return populatedMessage;
 	}
