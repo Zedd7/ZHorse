@@ -55,7 +55,7 @@ Messages:
   friendRemoved: "<gold><player><yellow> is verwijderd uit je vriendenlijst."
   friendRemovedReverse: "<gold><player><yellow> heeft je verwijderd uit zijn vriendenlijst."
   horseAlreadyClaimed: "<yellow>Je hebt dit paard al geclaimt."
-  horseAlreadyOnSale: "<gold><horse><yellow> word al verkocht."
+  horseAlreadyForSale: "<gold><horse><yellow> word al verkocht."
   horseBelongsTo: "<yellow>Dit paard is eigendom van <gold><player><yellow>."
   horseBought: "<yellow>Je hebt <gold><horse><yellow> gekocht voor <gold><amount><currency><yellow>."
   horseClaimed: "<gold><horse><yellow> is succesvol geclaimd."

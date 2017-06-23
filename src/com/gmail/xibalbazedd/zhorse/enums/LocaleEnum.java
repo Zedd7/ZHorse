@@ -50,7 +50,7 @@ public enum LocaleEnum {
 	FRIEND_REMOVED("Messages.friendRemoved"),
 	FRIEND_REMOVED_REVERSE("Messages.friendRemovedReverse"),
 	HORSE_ALREADY_CLAIMED("Messages.horseAlreadyClaimed"),
-	HORSE_ALREADY_ON_SALE("Messages.horseAlreadyOnSale"),
+	HORSE_ALREADY_FOR_SALE("Messages.horseAlreadyForSale"),
 	HORSE_BELONGS_TO("Messages.horseBelongsTo"),
 	HORSE_BOUGHT("Messages.horseBought"),
 	HORSE_CLAIMED("Messages.horseClaimed"),
