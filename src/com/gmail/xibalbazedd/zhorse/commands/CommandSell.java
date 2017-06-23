@@ -72,7 +72,7 @@ public class CommandSell extends AbstractCommand {
 			}
 			else {
 				if (!args.isEmpty()) {
-					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_ALREADY_ON_SALE) {{ setHorseName(horseName); }});
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_ALREADY_FOR_SALE) {{ setHorseName(horseName); }});
 				}
 				else {
 					zh.getDM().removeSale(horse.getUniqueId());

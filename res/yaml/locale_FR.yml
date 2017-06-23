@@ -53,7 +53,7 @@ Messages:
   friendRemoved: "<gold><player><yellow> a été retiré de votre liste d'amis."
   friendRemovedReverse: "<gold><player><yellow> vous a retiré de sa liste d'amis."
   horseAlreadyClaimed: "<yellow>Vous avez déjà revendiqué ce cheval."
-  horseAlreadyOnSale: "<gold><horse><yellow> est déjà en vente."
+  horseAlreadyForSale: "<gold><horse><yellow> est déjà en vente."
   horseBelongsTo: "<yellow>Ce cheval appartient à <gold><player><yellow>."
   horseBought: "<yellow>Vous avez acheté <gold><horse><yellow> pour <gold><amount><currency><yellow>."
   horseClaimed: "<gold><horse><yellow> a été revendiqué avec succès."

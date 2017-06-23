@@ -53,7 +53,7 @@ Messages:
   friendRemoved: "<gold><player><yellow> has been removed from your friends list."
   friendRemovedReverse: "<gold><player><yellow> has removed you from his friends list."
   horseAlreadyClaimed: "<yellow>You have already claimed this horse."
-  horseAlreadyOnSale: "<gold><horse><yellow> is already for sale."
+  horseAlreadyForSale: "<gold><horse><yellow> is already for sale."
   horseBelongsTo: "<yellow>That horse belongs to <gold><player><yellow>."
   horseBought: "<yellow>You bought <gold><horse><yellow> for <gold><currency><amount><yellow>."
   horseClaimed: "<gold><horse><yellow> was successfully claimed."
