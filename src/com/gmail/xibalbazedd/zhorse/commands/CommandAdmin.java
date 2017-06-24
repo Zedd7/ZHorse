@@ -93,6 +93,7 @@ public class CommandAdmin extends AbstractCommand {
 							else {
 								zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.DEAD_HORSES_CLEARED_OTHER) {{ setPlayerName(targetName); }});
 							}
+							zh.getCmdM().updateCommandHistory(s, command);
 							zh.getEM().payCommand(p, command);
 						}
 					}
@@ -136,6 +137,7 @@ public class CommandAdmin extends AbstractCommand {
 							else {
 								zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.LIVING_HORSES_CLEARED_OTHER) {{ setPlayerName(targetName); }});
 							}
+							zh.getCmdM().updateCommandHistory(s, command);
 							zh.getEM().payCommand(p, command);
 						}
 					}
@@ -149,6 +151,7 @@ public class CommandAdmin extends AbstractCommand {
 						else {
 							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_CLEARED_OTHER) {{ setHorseName(horseName); setPlayerName(targetName); }});
 						}
+						zh.getCmdM().updateCommandHistory(s, command);
 						zh.getEM().payCommand(p, command);
 					}
 				}

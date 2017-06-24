@@ -57,6 +57,7 @@ public class CommandProtect extends AbstractCommand {
 				zh.getDM().updateHorseProtected(horse.getUniqueId(), false);
 				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_UNPROTECTED) {{ setHorseName(horseName); }});
 			}
+			zh.getCmdM().updateCommandHistory(s, command);
 			zh.getEM().payCommand(p, command);
 		}
 	}

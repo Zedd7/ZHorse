@@ -57,6 +57,7 @@ public class CommandFree extends AbstractCommand {
 				horse.setCustomName(null);
 				horse.setCustomNameVisible(false);
 				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_FREED) {{ setHorseName(horseName); }});
+				zh.getCmdM().updateCommandHistory(s, command);
 				zh.getEM().payCommand(p, command);
 			}
 		}
@@ -72,6 +73,7 @@ public class CommandFree extends AbstractCommand {
 			else {
 				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_CLEARED_OTHER) {{ setHorseName(horseName); setPlayerName(targetName); }});
 			}
+			zh.getCmdM().updateCommandHistory(s, command);
 			zh.getEM().payCommand(p, command);
 		}
 	}

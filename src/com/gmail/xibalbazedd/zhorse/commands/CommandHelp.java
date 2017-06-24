@@ -27,6 +27,7 @@ public class CommandHelp extends AbstractCommand {
 		if (zh.getEM().canAffordCommand(p, command)) {
 			if (parsePageNumber(true)) {
 				sendCommandDescriptionList();
+				zh.getCmdM().updateCommandHistory(s, command);
 				zh.getEM().payCommand(p, command);
 			}
 			else {
@@ -39,6 +40,7 @@ public class CommandHelp extends AbstractCommand {
 						sendHorseColorList();
 						sendLlamaColorList();
 					}
+					zh.getCmdM().updateCommandHistory(s, command);
 					zh.getEM().payCommand(p, command);
 				}
 				else {

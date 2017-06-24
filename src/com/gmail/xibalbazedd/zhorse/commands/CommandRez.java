@@ -50,6 +50,7 @@ public class CommandRez extends AbstractCommand {
 					applyHorseName(targetUUID);
 					horse.setHealth(horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
 					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_RESURRECTED) {{ setHorseName(horseName); }});
+					zh.getCmdM().updateCommandHistory(s, command);
 					zh.getEM().payCommand(p, command);
 				}
 			}

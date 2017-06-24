@@ -72,6 +72,7 @@ public class CommandInfo extends AbstractCommand {
 			displayStatus(zh, s, horseRecord);
 			displayPrice(zh, s, horse);
 			
+			zh.getCmdM().updateCommandHistory(s, command);
 			zh.getEM().payCommand(p, command);
 		}
 	}

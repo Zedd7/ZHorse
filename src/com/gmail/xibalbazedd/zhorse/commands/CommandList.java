@@ -51,6 +51,7 @@ public class CommandList extends AbstractCommand {
 			if (!message.isEmpty()) {
 				zh.getMM().sendMessage(s, message);
 			}
+			zh.getCmdM().updateCommandHistory(s, command);
 			zh.getEM().payCommand(p, command);
 		}
 	}

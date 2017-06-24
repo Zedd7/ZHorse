@@ -41,6 +41,7 @@ public class CommandReload extends AbstractCommand {
 				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.PLUGIN_RELOADED_WITH_ERRORS) {{ setValue(zh.getDescription().getFullName()); }});
 			}
 			if (playerCommand) {
+				zh.getCmdM().updateCommandHistory(s, command);
 				zh.getEM().payCommand(p, command);
 			}
 		}

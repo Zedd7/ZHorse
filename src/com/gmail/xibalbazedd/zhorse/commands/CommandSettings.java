@@ -90,6 +90,7 @@ public class CommandSettings extends AbstractCommand {
 						else {
 							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.FAVORITE_EDITED_OTHER) {{ setHorseName(horseName); setPlayerName(targetName); }});
 						}
+						zh.getCmdM().updateCommandHistory(s, command);
 						zh.getEM().payCommand(p, command);
 					}
 					else {
@@ -122,6 +123,7 @@ public class CommandSettings extends AbstractCommand {
 						else {
 							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.LANGUAGE_EDITED_OTHER) {{ setLanguage(language); setPlayerName(targetName); }});
 						}
+						zh.getCmdM().updateCommandHistory(s, command);
 						zh.getEM().payCommand(p, command);
 					}
 					else {
@@ -167,6 +169,7 @@ public class CommandSettings extends AbstractCommand {
 						else {
 							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STATS_DISPLAY_MODE_EDITED_OTHER) {{ setValue(displayMode); setPlayerName(targetName); }});
 						}
+						zh.getCmdM().updateCommandHistory(s, command);
 						zh.getEM().payCommand(p, command);
 					}
 					else {
@@ -208,6 +211,7 @@ public class CommandSettings extends AbstractCommand {
 					zh.getDM().updateHorseID(horseUUID1, Integer.parseInt(horseID2));
 					zh.getDM().updateHorseID(horseUUID2, Integer.parseInt(horseID1));
 					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.IDS_SWAPPED));
+					zh.getCmdM().updateCommandHistory(s, command);
 					zh.getEM().payCommand(p, command);
 				}
 			}

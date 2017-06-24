@@ -67,6 +67,7 @@ public class CommandBuy extends AbstractCommand {
 							zh.getMM().sendPendingMessage(targetUUID, new MessageConfig(LocaleEnum.HORSE_SOLD) {{
 								setAmount(price); setCurrencySymbol(sellerCurrencySymbol); setHorseName(previousHorseName); setPlayerName(p.getName());
 							}});
+							zh.getCmdM().updateCommandHistory(s, command);
 							zh.getEM().payCommand(p, command);
 						}
 					}

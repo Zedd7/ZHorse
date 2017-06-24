@@ -58,6 +58,7 @@ public class CommandRename extends AbstractCommand {
 			horse.setCustomNameVisible(true);
 			zh.getDM().updateHorseName(horse.getUniqueId(), horseName);
 			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_RENAMED) {{ setHorseName(horseName); }});
+			zh.getCmdM().updateCommandHistory(s, command);
 			zh.getEM().payCommand(p, command);
 		}
 	}
