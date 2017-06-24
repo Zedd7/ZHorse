@@ -44,11 +44,11 @@
             zh.sell: true
             zh.settings.*: true
             zh.share: true
-            zh.stable: true
+            zh.stable.*: true
             zh.tp: true
 
     zh.admin.*:
-        description: Grants access to all admin subcommands
+        description: Grants access to all admin sub-commands
         children:
             zh.admin: true
             zh.admin.burial: true
@@ -56,7 +56,7 @@
             zh.admin.import: true
 
     zh.friend.*:
-        description: Grants access to all friend subcommands
+        description: Grants access to all friend sub-commands
         children:
             zh.friend: true
             zh.friend.add: true
@@ -64,13 +64,21 @@
             zh.friend.remove: true
 
     zh.settings.*:
-        description: Grants access to all settings subcommands
+        description: Grants access to all settings sub-commands
         children:
             zh.settings: true
             zh.settings.favorite: true
             zh.settings.language: true
             zh.settings.stats: true
             zh.settings.swap: true
+
+    zh.stable.*:
+        description: Grants access to all stable sub-commands
+        children:
+            zh.stable: true
+            zh.stable.go: true
+            zh.stable.set: true
+            zh.stable.unset: true
 
     zh.*.admin:
         description: Grants admin access to all commands
