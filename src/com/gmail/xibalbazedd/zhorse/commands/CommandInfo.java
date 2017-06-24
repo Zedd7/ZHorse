@@ -9,6 +9,7 @@ import org.bukkit.entity.Llama;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.database.HorseRecord;
+import com.gmail.xibalbazedd.zhorse.database.HorseStableRecord;
 import com.gmail.xibalbazedd.zhorse.database.HorseStatsRecord;
 import com.gmail.xibalbazedd.zhorse.database.PlayerRecord;
 import com.gmail.xibalbazedd.zhorse.enums.HorseStatisticEnum;
@@ -58,6 +59,7 @@ public class CommandInfo extends AbstractCommand {
 	private void execute() {
 		if (zh.getEM().canAffordCommand(p, command)) {
 			HorseRecord horseRecord = zh.getDM().getHorseRecord(horse.getUniqueId());
+			HorseStableRecord stableRecord = zh.getDM().getHorseStableRecord(horse.getUniqueId());
 			HorseStatsRecord statsRecord = new HorseStatsRecord(horse);
 			PlayerRecord ownerRecord = zh.getDM().getPlayerRecord(UUID.fromString(horseRecord.getOwner()));
 			
@@ -69,6 +71,7 @@ public class CommandInfo extends AbstractCommand {
 			displayJumpStrength(zh, s, statsRecord, useExactStats, useVanillaStats);
 			displayChestSize(zh, s, horse, statsRecord);
 			displayLocation(zh, s, horseRecord);
+			displayStableLocation(zh, s, stableRecord);
 			displayStatus(zh, s, horseRecord);
 			displayPrice(zh, s, horse);
 			
@@ -141,6 +144,17 @@ public class CommandInfo extends AbstractCommand {
 			String world = horseRecord.getLocationWorld();
 			String location = String.format("%d/%d/%d : %s", x, y, z, world);
 			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.LOCATION) {{ setSpaceCount(1); setValue(location); }}, true);
+		}
+	}
+	
+	private void displayStableLocation(ZHorse zh, CommandSender s, HorseStableRecord stableRecord) {
+		if (stableRecord != null) {
+			int x = (int) Math.floor(stableRecord.getLocationX());
+			int y = (int) Math.floor(stableRecord.getLocationY());
+			int z = (int) Math.floor(stableRecord.getLocationZ());
+			String world = stableRecord.getLocationWorld();
+			String location = String.format("%d/%d/%d : %s", x, y, z, world);
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STABLE) {{ setSpaceCount(1); setValue(location); }}, true);
 		}
 	}
 	

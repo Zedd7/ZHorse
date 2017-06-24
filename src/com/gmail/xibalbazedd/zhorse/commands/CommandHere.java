@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
@@ -42,12 +41,8 @@ public class CommandHere extends AbstractCommand {
 	
 	private void execute() {
 		if (isOwner(true) && isWorldCrossable(p.getWorld()) && isNotOnHorse() && !isHorseMounted() && !isHorseLeashed() && isHorseInRangeHere() && zh.getEM().canAffordCommand(p, command)) {
-			Location destination = p.getLocation();
-			if (p.isFlying()) {
-				Block block = destination.getWorld().getHighestBlockAt(destination);
-				destination = new Location(destination.getWorld(), block.getX(), block.getY(), block.getZ());
-			}
-			horse = zh.getHM().teleportHorse(horse, destination);
+			Location playerLocation = getGroundedLocation(p.getLocation());
+			horse = zh.getHM().teleportHorse(horse, playerLocation);
 			if (horse != null) {
 				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_TELEPORTED) {{ setHorseName(horseName); }});
 				zh.getEM().payCommand(p, command);

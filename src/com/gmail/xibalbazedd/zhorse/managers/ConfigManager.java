@@ -144,6 +144,10 @@ public class ConfigManager {
 		return config.getInt(KeyWordEnum.HERE_MAX_RANGE.getValue(), -1);
 	}
 	
+	public int getMaximumRangeStable() {
+		return config.getInt(KeyWordEnum.STABLE_MAX_RANGE.getValue(), -1);
+	}
+	
 	public int getMaximumRangeTp() {
 		return config.getInt(KeyWordEnum.TP_MAX_RANGE.getValue(), -1);
 	}

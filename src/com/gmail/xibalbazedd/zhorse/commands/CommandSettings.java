@@ -1,5 +1,6 @@
 package com.gmail.xibalbazedd.zhorse.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,10 +16,6 @@ import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
 import net.md_5.bungee.api.ChatColor;
 
 public class CommandSettings extends AbstractCommand {
-	
-	private static final String EXACT_DISPLAY_MODE = "exact";
-	private static final String ROUNDED_DISPLAY_MODE = "rounded";
-	private static final String[] STATS_DISPLAY_MODE_ARRAY = {EXACT_DISPLAY_MODE, ROUNDED_DISPLAY_MODE};
 	
 	private String fullCommand;
 	private String subCommand;
@@ -85,10 +82,10 @@ public class CommandSettings extends AbstractCommand {
 					if (!zh.getDM().getPlayerFavoriteHorseID(targetUUID).toString().equals(horseID)) {
 						zh.getDM().updatePlayerFavoriteHorseID(targetUUID, Integer.parseInt(horseID));
 						if (samePlayer) {
-							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.FAVORITE_EDITED) {{ setHorseName(horseName); }});
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.FAVORITE_SET) {{ setHorseName(horseName); }});
 						}
 						else {
-							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.FAVORITE_EDITED_OTHER) {{ setHorseName(horseName); setPlayerName(targetName); }});
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.FAVORITE_SET_OTHER) {{ setHorseName(horseName); setPlayerName(targetName); }});
 						}
 						zh.getEM().payCommand(p, command);
 					}
@@ -117,10 +114,10 @@ public class CommandSettings extends AbstractCommand {
 					if (!zh.getDM().getPlayerLanguage(targetUUID).equals(language)) {
 						zh.getDM().updatePlayerLanguage(targetUUID, language);
 						if (samePlayer) {
-							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.LANGUAGE_EDITED) {{ setLanguage(language); }});
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.LANGUAGE_SET) {{ setLanguage(language); }});
 						}
 						else {
-							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.LANGUAGE_EDITED_OTHER) {{ setLanguage(language); setPlayerName(targetName); }});
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.LANGUAGE_SET_OTHER) {{ setLanguage(language); setPlayerName(targetName); }});
 						}
 						zh.getEM().payCommand(p, command);
 					}
@@ -150,11 +147,11 @@ public class CommandSettings extends AbstractCommand {
 				String displayMode = args.get(1);
 				boolean validDisplayMode = false;
 				Boolean shouldDisplayExactStats = null;
-				if (displayMode.equalsIgnoreCase(EXACT_DISPLAY_MODE)) {
+				if (displayMode.equalsIgnoreCase(StatsDisplayModeEnum.EXACT.getName())) {
 					validDisplayMode = true;
 					shouldDisplayExactStats = true;
 				}
-				else if (displayMode.equalsIgnoreCase(ROUNDED_DISPLAY_MODE)) {
+				else if (displayMode.equalsIgnoreCase(StatsDisplayModeEnum.ROUNDED.getName())) {
 					validDisplayMode = true;
 					shouldDisplayExactStats = false;
 				}
@@ -162,10 +159,10 @@ public class CommandSettings extends AbstractCommand {
 					if (shouldDisplayExactStats ^ zh.getDM().isPlayerDisplayingExactStats(targetUUID)) { // XOR
 						zh.getDM().updatePlayerDisplayExactStats(targetUUID, shouldDisplayExactStats);
 						if (samePlayer) {
-							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STATS_DISPLAY_MODE_EDITED) {{ setValue(displayMode); }});
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STATS_DISPLAY_MODE_SET) {{ setValue(displayMode); }});
 						}
 						else {
-							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STATS_DISPLAY_MODE_EDITED_OTHER) {{ setValue(displayMode); setPlayerName(targetName); }});
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STATS_DISPLAY_MODE_SET_OTHER) {{ setValue(displayMode); setPlayerName(targetName); }});
 						}
 						zh.getEM().payCommand(p, command);
 					}
@@ -224,36 +221,45 @@ public class CommandSettings extends AbstractCommand {
 	
 	private void displayAvailableLanguages(LocaleEnum index, String language) {
 		List<String> availableLanguages = zh.getCM().getAvailableLanguages();
-		String availableLanguagesMessage = "";
-		for (int i = 0; i < availableLanguages.size(); ++i) {
-			final String availableLanguage = availableLanguages.get(i);
-			availableLanguagesMessage += zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.AVAILABLE_OPTION_FORMAT) {{ setValue(availableLanguage); }}, true);
-			if (i < availableLanguages.size() - 1) {
-				availableLanguagesMessage += ", ";
-			}
+		List<String> availableLanguageMessageList = new ArrayList<>();
+		for (String availableLanguage : availableLanguages) {
+			String availableLanguageMessage = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.AVAILABLE_OPTION_FORMAT) {{ setValue(availableLanguage); }}, true);
+			availableLanguageMessageList.add(availableLanguageMessage);
 		}
-		availableLanguagesMessage += ChatColor.RESET;
-		final String message = availableLanguagesMessage;
+		String availableLanguagesMessage = String.join(", ", availableLanguageMessageList) + ChatColor.RESET;
 		if (language != null) {
-			zh.getMM().sendMessage(s, new MessageConfig(index) {{ setLanguage(language); setValue(message); }});
+			zh.getMM().sendMessage(s, new MessageConfig(index) {{ setLanguage(language); setValue(availableLanguagesMessage); }});
 		}
 		else {
-			zh.getMM().sendMessage(s, new MessageConfig(index) {{ setValue(message); }});
+			zh.getMM().sendMessage(s, new MessageConfig(index) {{ setValue(availableLanguagesMessage); }});
 		}
 	}
 	
 	private void displayAvailableStatsDisplayMode(LocaleEnum index) {
-		String availableStatsDisplayModesMessage = "";
-		for (int i = 0; i < STATS_DISPLAY_MODE_ARRAY.length; ++i) {
-			final String availableDisplayMode = STATS_DISPLAY_MODE_ARRAY[i];
-			availableStatsDisplayModesMessage += zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.AVAILABLE_OPTION_FORMAT) {{ setValue(availableDisplayMode); }}, true);
-			if (i < STATS_DISPLAY_MODE_ARRAY.length - 1) {
-				availableStatsDisplayModesMessage += ", ";
-			}
+		List<String> availableStatsDisplayModeMessageList = new ArrayList<>();
+		for (StatsDisplayModeEnum statsDisplayMode : StatsDisplayModeEnum.values()) {
+			String availableStatsDisplayModeMessage = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.AVAILABLE_OPTION_FORMAT) {{ setValue(statsDisplayMode.getName()); }}, true);
+			availableStatsDisplayModeMessageList.add(availableStatsDisplayModeMessage);
 		}
-		availableStatsDisplayModesMessage += ChatColor.RESET;
-		final String message = availableStatsDisplayModesMessage;
-		zh.getMM().sendMessage(s, new MessageConfig(index) {{ setValue(message); }});
+		String availableStatsDisplayModesMessage = String.join(", ", availableStatsDisplayModeMessageList) + ChatColor.RESET;
+		zh.getMM().sendMessage(s, new MessageConfig(index) {{ setValue(availableStatsDisplayModesMessage); }});
+	}
+	
+	private enum StatsDisplayModeEnum {
+		
+		EXACT("exact"),
+		ROUNDED("rounded");
+		
+		private String name;
+		
+		private StatsDisplayModeEnum(String name) {
+			this.name = name;
+		}
+		
+		private String getName() {
+			return name;
+		}
+		
 	}
 
 }

@@ -15,6 +15,7 @@ import com.gmail.xibalbazedd.zhorse.database.FriendRecord;
 import com.gmail.xibalbazedd.zhorse.database.HorseDeathRecord;
 import com.gmail.xibalbazedd.zhorse.database.HorseInventoryRecord;
 import com.gmail.xibalbazedd.zhorse.database.HorseRecord;
+import com.gmail.xibalbazedd.zhorse.database.HorseStableRecord;
 import com.gmail.xibalbazedd.zhorse.database.HorseStatsRecord;
 import com.gmail.xibalbazedd.zhorse.database.InventoryItemRecord;
 import com.gmail.xibalbazedd.zhorse.database.MySQLConnector;
@@ -27,7 +28,7 @@ import com.gmail.xibalbazedd.zhorse.enums.DatabaseEnum;
 
 public class DataManager {
 	
-	public static final String[] TABLE_ARRAY = {"player", "friend", "pending_message", "horse", "horse_death", "horse_stats", "inventory_item", "sale"};
+	public static final String[] TABLE_ARRAY = {"player", "friend", "pending_message", "horse", "horse_death", "horse_stable", "horse_stats", "inventory_item", "sale"};
 	public static final String[] PATCH_ARRAY = {"1.6.6"};
 	
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
@@ -180,6 +181,11 @@ public class DataManager {
 		return horseUUIDList;
 	}
 	
+	public Location getHorseStableLocation(UUID horseUUID) {
+		String query = String.format("SELECT locationWorld, locationX, locationY, locationZ FROM prefix_horse_stable WHERE uuid = \"%s\"", horseUUID);
+		return db.getLocationResult(query);
+	}
+	
 	public Integer getNextHorseID(UUID ownerUUID) {
 		String query = String.format("SELECT MAX(h.id) FROM prefix_horse h WHERE h.owner = \"%s\" AND h.uuid NOT IN (SELECT hd.uuid FROM prefix_horse_death hd)", ownerUUID);
 		Integer horseID = db.getIntegerResult(query);
@@ -282,6 +288,11 @@ public class DataManager {
 		return db.getHorseInventoryRecord(query, horseUUID);
 	}
 	
+	public HorseStableRecord getHorseStableRecord(UUID horseUUID) {
+		String query = String.format("SELECT * FROM prefix_horse_stable WHERE uuid = \"%s\"", horseUUID);
+		return db.getHorseStableRecord(query);
+	}
+	
 	public HorseStatsRecord getHorseStatsRecord(UUID horseUUID) {
 		String query = String.format("SELECT * FROM prefix_horse_stats WHERE uuid = \"%s\"", horseUUID);
 		return db.getHorseStatsRecord(query);
@@ -360,6 +371,11 @@ public class DataManager {
 	
 	public boolean isHorseDeathRegistered(UUID horseUUID) {
 		String query = String.format("SELECT 1 FROM prefix_horse_death WHERE uuid = \"%s\"", horseUUID);
+		return db.hasResult(query);
+	}
+	
+	public boolean isHorseStableRegistered(UUID horseUUID) {
+		String query = String.format("SELECT 1 FROM prefix_horse_stable WHERE uuid = \"%s\"", horseUUID);
 		return db.hasResult(query);
 	}
 	
@@ -447,6 +463,17 @@ public class DataManager {
 		return success;
 	}
 	
+	public boolean registerHorseStable(HorseStableRecord horseStableRecord) {
+		String update = String.format("INSERT INTO prefix_horse_stable VALUES (\"%s\", \"%s\", %d, %d, %d)",
+			horseStableRecord.getUUID(),
+			horseStableRecord.getLocationWorld(),
+			horseStableRecord.getLocationX(),
+			horseStableRecord.getLocationY(),
+			horseStableRecord.getLocationZ()
+		);
+		return db.executeUpdate(update);
+	}
+	
 	public boolean registerHorseStats(HorseStatsRecord horseStatsRecord) {
 		String color = horseStatsRecord.getColor();
 		String style = horseStatsRecord.getStyle();
@@ -514,9 +541,10 @@ public class DataManager {
 		String update = String.format("DELETE FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
 		boolean success = true;
 		if (horseID != null) success &= updateHorseIDMapping(ownerUUID, horseID);
-		success &= removeHorseInventory(horseUUID);
-		success &= removeHorseStats(horseUUID);
 		success &= removeHorseDeath(horseUUID);
+		success &= removeHorseInventory(horseUUID);
+		success &= removeHorseStable(horseUUID);
+		success &= removeHorseStats(horseUUID);
 		success &= removeSale(horseUUID);
 		success &= db.executeUpdate(update);
 		return success;
@@ -529,6 +557,11 @@ public class DataManager {
 	
 	public boolean removeHorseInventory(UUID horseUUID) {
 		String update = String.format("DELETE FROM prefix_inventory_item WHERE uuid = \"%s\"", horseUUID);
+		return db.executeUpdate(update);
+	}
+	
+	public boolean removeHorseStable(UUID horseUUID) {
+		String update = String.format("DELETE FROM prefix_horse_stable WHERE uuid = \"%s\"", horseUUID);
 		return db.executeUpdate(update);
 	}
 	
@@ -611,15 +644,17 @@ public class DataManager {
 		HorseRecord horseRecord = getHorseRecord(oldHorseUUID);
 		UUID ownerUUID = UUID.fromString(horseRecord.getOwner());
 		horseRecord.setUUID(newHorseUUID.toString());
-		String horseInventoryUpdate = String.format("UPDATE prefix_inventory_item SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
-		String horseStatsUpdate = String.format("UPDATE prefix_horse_stats SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
 		String horseDeathUpdate = String.format("UPDATE prefix_horse_death SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
+		String horseInventoryUpdate = String.format("UPDATE prefix_inventory_item SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
+		String horseStableUpdate = String.format("UPDATE prefix_horse_stable SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
+		String horseStatsUpdate = String.format("UPDATE prefix_horse_stats SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
 		String saleUpdate = String.format("UPDATE prefix_sale SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
 		boolean success = true;
 		success &= registerHorse(horseRecord);
-		success &= db.executeUpdate(horseInventoryUpdate);
-		success &= db.executeUpdate(horseStatsUpdate);
 		success &= db.executeUpdate(horseDeathUpdate);
+		success &= db.executeUpdate(horseInventoryUpdate);
+		success &= db.executeUpdate(horseStableUpdate);
+		success &= db.executeUpdate(horseStatsUpdate);
 		success &= db.executeUpdate(saleUpdate);
 		success &= removeHorse(oldHorseUUID, ownerUUID, null);
 		return success;

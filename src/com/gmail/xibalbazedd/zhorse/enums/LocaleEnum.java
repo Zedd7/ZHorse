@@ -26,6 +26,7 @@ public enum LocaleEnum {
 	PLUGIN_PREFIX("Headers.pluginPrefix"),
 	REMAINING_CLAIMS_FORMAT("Headers.remainingClaimsFormat"),
 	SETTINGS_COMMAND_LIST_HEADER("Headers.settingsCommandListHeader"),
+	STABLE_COMMAND_LIST_HEADER("Headers.stableCommandListHeader"),
 	
 	/* messages */
 	CLAIMS_LIMIT_REACHED("Messages.claimsLimitReached"),
@@ -38,8 +39,8 @@ public enum LocaleEnum {
 	DEAD_HORSES_CLEARED_OTHER("Messages.deadHorsesClearedOther"),
 	FAVORITE_ALREADY_SET("Messages.favoriteAlreadySet"),
 	FAVORITE_ALREADY_SET_OTHER("Messages.favoriteAlreadySetOther"),
-	FAVORITE_EDITED("Messages.favoriteEdited"),
-	FAVORITE_EDITED_OTHER("Messages.favoriteEditedOther"),
+	FAVORITE_SET("Messages.favoriteSet"),
+	FAVORITE_SET_OTHER("Messages.favoriteSetOther"),
 	FRIEND_ADDED("Messages.friendAdded"),
 	FRIEND_ADDED_REVERSE("Messages.friendAddedReverse"),
 	FRIEND_ALREADY_ADDED("Messages.friendAlreadyAdded"),
@@ -88,6 +89,7 @@ public enum LocaleEnum {
 	HORSE_SPAWNED("Messages.horseSpawned"),
 	HORSE_TAMED("Messages.horseTamed"),
 	HORSE_TELEPORTED("Messages.horseTeleported"),
+	HORSE_TELEPORTED_TO_STABLE("Messages.horseTeleportedToStable"),
 	HORSE_UNLOCKED("Messages.horseUnlocked"),
 	HORSE_UNPROTECTED("Messages.horseUnprotected"),
 	HORSE_UNSHARED("Messages.horseUnshared"),
@@ -101,8 +103,8 @@ public enum LocaleEnum {
 	INVALID_STRENGTH_ARGUMENT("Messages.invalidStrengthArgument"),
 	LANGUAGE_ALREADY_USED("Messages.languageAlreadyUsed"),
 	LANGUAGE_ALREADY_USED_OTHER("Messages.languageAlreadyUsedOther"),
-	LANGUAGE_EDITED("Messages.languageEdited"),
-	LANGUAGE_EDITED_OTHER("Messages.languageEditedOther"),
+	LANGUAGE_SET("Messages.languageSet"),
+	LANGUAGE_SET_OTHER("Messages.languageSetOther"),
 	LIST_HORSE_COLOR("Messages.listHorseColor"),
 	LIST_HORSE_STYLE("Messages.listHorseStyle"),
 	LIST_HORSE_VARIANT("Messages.listHorseVariant"),
@@ -133,10 +135,13 @@ public enum LocaleEnum {
 	PLUGIN_RELOADED_WITH_ERRORS("Messages.pluginReloadedWithErrors"),
 	REMAINING_COOLDOWN("Messages.remainingCooldown"),
 	SAME_PLAYER("Messages.samePlayer"),
+	STABLE_NOT_SET("Messages.stableNotSet"),
+	STABLE_SET("Messages.stableSet"),
+	STABLE_UNSET("Messages.stableUnset"),
 	STATS_DISPLAY_MODE_ALREADY_USED("Messages.statsDisplayModeAlreadyUsed"),
 	STATS_DISPLAY_MODE_ALREADY_USED_OTHER("Messages.statsDisplayModeAlreadyUsedOther"),
-	STATS_DISPLAY_MODE_EDITED("Messages.statsDisplayModeEdited"),
-	STATS_DISPLAY_MODE_EDITED_OTHER("Messages.statsDisplayModeEditedOther"),
+	STATS_DISPLAY_MODE_SET("Messages.statsDisplayModeSet"),
+	STATS_DISPLAY_MODE_SET_OTHER("Messages.statsDisplayModeSetOther"),
 	TELEPORTED_TO_HORSE("Messages.teleportedToHorse"),
 	UNKNOWN_ADMIN_COMMAND("Messages.unknownAdminCommand"),
 	UNKNOWN_COMMAND("Messages.unknownCommand"),
@@ -151,6 +156,7 @@ public enum LocaleEnum {
 	UNKNOWN_PLAYER("Messages.unknownPlayer"),
 	UNKNOWN_SETTINGS_COMMAND("Messages.unknownSettingsCommand"),
 	UNKNOWN_SPAWN_ARGUMENT("Messages.unknownSpawnArgument"),
+	UNKNOWN_STABLE_COMMAND("Messages.unknownStableCommand"),
 	UNKNOWN_STATS_DISPLAY_MODE("Messages.unknownStatsDisplayMode"),
 	WORLD_DISABLED("Messages.worldDisabled"),
 	WORLD_UNCROSSABLE("Messages.worldUncrossable"),
@@ -177,6 +183,7 @@ public enum LocaleEnum {
 	RESTRICTED("Horse informations.restricted"),
 	SHARED("Horse informations.shared"),
 	SPEED("Horse informations.speed"),
+	STABLE("Horse informations.stable"),
 	STATUS("Horse informations.status"),
 	STRENGTH("Horse informations.strength"),
 	
@@ -202,6 +209,7 @@ public enum LocaleEnum {
 	SETTINGS_DESCRIPTION("Command descriptions.settings"),
 	SHARE_DESCRIPTION("Command descriptions.share"),
 	SPAWN_DESCRIPTION("Command descriptions.spawn"),
+	STABLE_DESCRIPTION("Command descriptions.stable"),
 	TAME_DESCRIPTION("Command descriptions.tame"),
 	TP_DESCRIPTION("Command descriptions.tp"),
 	
@@ -220,6 +228,11 @@ public enum LocaleEnum {
 	SETTINGS_LANGUAGE_DESCRIPTION("Settings command descriptions.language"),
 	SETTINGS_STATS_DESCRIPTION("Settings command descriptions.stats"),
 	SETTINGS_SWAP_DESCRIPTION("Settings command descriptions.swap"),
+	
+	/* stable command descriptions */
+	STABLE_GO_DESCRIPTION("Stable command descriptions.go"),
+	STABLE_SET_DESCRIPTION("Stable command descriptions.set"),
+	STABLE_UNSET_DESCRIPTION("Stable command descriptions.unset"),
 	
 	/* command usages */
 	ADMIN_USAGE("Command usages.admin"),
@@ -243,6 +256,7 @@ public enum LocaleEnum {
 	SETTINGS_USAGE("Command usages.settings"),
 	SHARE_USAGE("Command usages.share"),
 	SPAWN_USAGE("Command usages.spawn"),
+	STABLE_USAGE("Command usages.stable"),
 	TAME_USAGE("Command usages.tame"),
 	TP_USAGE("Command usages.tp"),
 	
@@ -260,7 +274,12 @@ public enum LocaleEnum {
 	SETTINGS_FAVORITE_USAGE("Settings command usages.favorite"),
 	SETTINGS_LANGUAGE_USAGE("Settings command usages.language"),
 	SETTINGS_STATS_USAGE("Settings command usages.stats"),
-	SETTINGS_SWAP_USAGE("Settings command usages.swap");
+	SETTINGS_SWAP_USAGE("Settings command usages.swap"),
+	
+	/* stable command usages */
+	STABLE_GO_USAGE("Stable command usages.go"),
+	STABLE_SET_USAGE("Stable command usages.set"),
+	STABLE_UNSET_USAGE("Stable command usages.unset");
 	
 	private String index;
 	

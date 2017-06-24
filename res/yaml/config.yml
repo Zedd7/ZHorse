@@ -91,6 +91,10 @@ Commands:
     auto-admin: false
     cooldown: 0
     cost: 0
+  stable:
+    auto-admin: true
+    cooldown: 0
+    cost: 0
   tame:
     auto-admin: false
     cooldown: 0
@@ -314,6 +318,10 @@ Settings:
   # Prevent /zh here if horse is outside the maximum radius (in blocks).
   # Set to -1 for infinite range.
   here-max-range: -1
+
+  # Prevent /zh stable if horse is outside the maximum radius (in blocks).
+  # Set to -1 for infinite range.
+  stable-max-range: -1
 
   # Prevent /zh tp if horse is outside the maximum radius (in blocks).
   # Set to -1 for infinite range.
