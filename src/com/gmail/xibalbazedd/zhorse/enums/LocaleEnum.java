@@ -3,7 +3,6 @@ package com.gmail.xibalbazedd.zhorse.enums;
 public enum LocaleEnum {
 	
 	/* headers */
-	ADMIN_COMMAND_LIST_HEADER("Headers.adminCommandListHeader"),
 	ALIVE_HORSE_LIST_FORMAT("Headers.aliveHorseListFormat"),
 	ALIVE_HORSE_LIST_FORMAT_FAVORITE("Headers.aliveHorseListFormatFavorite"),	
 	ALIVE_HORSE_LIST_HEADER("Headers.aliveHorseListHeader"),
@@ -16,7 +15,6 @@ public enum LocaleEnum {
 	DEAD_HORSE_LIST_FORMAT("Headers.deadHorseListFormat"),	
 	DEAD_HORSE_LIST_HEADER("Headers.deadHorseListHeader"),
 	DEAD_HORSE_LIST_OTHER_HEADER("Headers.deadHorseListOtherHeader"),
-	FRIEND_COMMAND_LIST_HEADER("Headers.friendCommandListHeader"),
 	FRIEND_LIST_FORMAT("Headers.friendListFormat"),
 	HEADER_FORMAT("Headers.headerFormat"),
 	HORSE_INFO_HEADER("Headers.horseInfoHeader"),
@@ -25,8 +23,7 @@ public enum LocaleEnum {
 	PLUGIN_HEADER("Headers.pluginHeader"),
 	PLUGIN_PREFIX("Headers.pluginPrefix"),
 	REMAINING_CLAIMS_FORMAT("Headers.remainingClaimsFormat"),
-	SETTINGS_COMMAND_LIST_HEADER("Headers.settingsCommandListHeader"),
-	STABLE_COMMAND_LIST_HEADER("Headers.stableCommandListHeader"),
+	SUB_COMMAND_LIST_HEADER("Headers.subCommandListHeader"),
 	
 	/* messages */
 	CLAIMS_LIMIT_REACHED("Messages.claimsLimitReached"),
@@ -143,21 +140,18 @@ public enum LocaleEnum {
 	STATS_DISPLAY_MODE_SET("Messages.statsDisplayModeSet"),
 	STATS_DISPLAY_MODE_SET_OTHER("Messages.statsDisplayModeSetOther"),
 	TELEPORTED_TO_HORSE("Messages.teleportedToHorse"),
-	UNKNOWN_ADMIN_COMMAND("Messages.unknownAdminCommand"),
 	UNKNOWN_COMMAND("Messages.unknownCommand"),
 	UNKNOWN_DATABASE("Messages.unknownDatabase"),
 	UNKNOWN_FRIEND("Messages.unknownFriend"),
-	UNKNOWN_FRIEND_COMMAND("Messages.unknownFriendCommand"),
 	UNKNOWN_HORSE_ID("Messages.unknownHorseId"),
 	UNKNOWN_HORSE_ID_OTHER("Messages.unknownHorseIdOther"),
 	UNKNOWN_HORSE_NAME("Messages.unknownHorseName"),
 	UNKNOWN_HORSE_NAME_OTHER("Messages.unknownHorseNameOther"),
 	UNKNOWN_LANGUAGE("Messages.unknownLanguage"),
 	UNKNOWN_PLAYER("Messages.unknownPlayer"),
-	UNKNOWN_SETTINGS_COMMAND("Messages.unknownSettingsCommand"),
 	UNKNOWN_SPAWN_ARGUMENT("Messages.unknownSpawnArgument"),
-	UNKNOWN_STABLE_COMMAND("Messages.unknownStableCommand"),
 	UNKNOWN_STATS_DISPLAY_MODE("Messages.unknownStatsDisplayMode"),
+	UNKNOWN_SUB_COMMAND("Messages.unknownSubCommand"),
 	WORLD_DISABLED("Messages.worldDisabled"),
 	WORLD_UNCROSSABLE("Messages.worldUncrossable"),
 	

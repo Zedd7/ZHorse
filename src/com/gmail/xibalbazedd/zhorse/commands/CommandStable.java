@@ -9,7 +9,7 @@ import org.bukkit.entity.AbstractHorse;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.database.HorseStableRecord;
-import com.gmail.xibalbazedd.zhorse.enums.CommandStableEnum;
+import com.gmail.xibalbazedd.zhorse.enums.StableSubCommandEnum;
 import com.gmail.xibalbazedd.zhorse.enums.KeyWordEnum;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
 import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
@@ -59,28 +59,30 @@ public class CommandStable extends AbstractCommand {
 		if (zh.getEM().canAffordCommand(p, command)) {
 			if (!args.isEmpty()) {
 				subCommand = args.get(0);
-				if (subCommand.equalsIgnoreCase(CommandStableEnum.GO.getName())) {
+				if (subCommand.equalsIgnoreCase(StableSubCommandEnum.GO.name())) {
+					fullCommand = command + KeyWordEnum.DOT.getValue() + StableSubCommandEnum.GO.name().toLowerCase();
 					teleportToStable();
 				}
-				else if (subCommand.equalsIgnoreCase(CommandStableEnum.SET.getName())) {
+				else if (subCommand.equalsIgnoreCase(StableSubCommandEnum.SET.name())) {
+					fullCommand = command + KeyWordEnum.DOT.getValue() + StableSubCommandEnum.SET.name().toLowerCase();
 					setStableLocation();
 				}
-				else if (subCommand.equalsIgnoreCase(CommandStableEnum.UNSET.getName())) {
+				else if (subCommand.equalsIgnoreCase(StableSubCommandEnum.UNSET.name())) {
+					fullCommand = command + KeyWordEnum.DOT.getValue() + StableSubCommandEnum.UNSET.name().toLowerCase();
 					unsetStableLocation();
 				}
 				else {
-					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_STABLE_COMMAND) {{ setValue(subCommand); }});
-					sendCommandStableDescriptionList();
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_SUB_COMMAND) {{ setValue(subCommand); setValue(command); }});
+					sendSubCommandDescriptionList(StableSubCommandEnum.class);
 				}
 			}
 			else {
-				sendCommandStableDescriptionList();
+				sendSubCommandDescriptionList(StableSubCommandEnum.class);
 			}
 		}
 	}
 
 	private void teleportToStable() {
-		fullCommand = command + KeyWordEnum.DOT.getValue() + CommandStableEnum.GO.getName();
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (isOwner(true) && isWorldCrossable(p.getWorld()) && isWorldCrossable(horse.getWorld()) && !isHorseMounted() && !isHorseLeashed()) {
 				if (zh.getDM().isHorseStableRegistered(horse.getUniqueId())) {
@@ -104,7 +106,6 @@ public class CommandStable extends AbstractCommand {
 	}
 
 	private void setStableLocation() {
-		fullCommand = command + KeyWordEnum.DOT.getValue() + CommandStableEnum.SET.getName();
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (isOwner(true)) {
 				if (zh.getDM().isHorseStableRegistered(horse.getUniqueId())) {
@@ -120,7 +121,6 @@ public class CommandStable extends AbstractCommand {
 	}
 
 	private void unsetStableLocation() {
-		fullCommand = command + KeyWordEnum.DOT.getValue() + CommandStableEnum.UNSET.getName();
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (isOwner(true)) {
 				if (zh.getDM().isHorseStableRegistered(horse.getUniqueId())) {

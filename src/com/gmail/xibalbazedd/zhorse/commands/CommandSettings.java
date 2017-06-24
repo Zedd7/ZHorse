@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AbstractHorse;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
-import com.gmail.xibalbazedd.zhorse.enums.CommandSettingsEnum;
+import com.gmail.xibalbazedd.zhorse.enums.SettingsSubCommandEnum;
 import com.gmail.xibalbazedd.zhorse.enums.KeyWordEnum;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
 import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
@@ -44,29 +44,29 @@ public class CommandSettings extends AbstractCommand {
 		if ((!targetMode || samePlayer || hasPermissionAdmin(false)) && zh.getEM().canAffordCommand(p, command)) {
 			if (!args.isEmpty()) {
 				subCommand = args.get(0);
-				if (subCommand.equalsIgnoreCase((CommandSettingsEnum.FAVORITE.getName()))) {
-					fullCommand = command + KeyWordEnum.DOT.getValue() + CommandSettingsEnum.LANGUAGE.getName();
+				if (subCommand.equalsIgnoreCase(SettingsSubCommandEnum.FAVORITE.name())) {
+					fullCommand = command + KeyWordEnum.DOT.getValue() + SettingsSubCommandEnum.LANGUAGE.name().toLowerCase();
 					setFavorite();
 				}
-				else if (subCommand.equalsIgnoreCase(CommandSettingsEnum.LANGUAGE.getName())) {
-					fullCommand = command + KeyWordEnum.DOT.getValue() + CommandSettingsEnum.FAVORITE.getName().toLowerCase();
+				else if (subCommand.equalsIgnoreCase(SettingsSubCommandEnum.LANGUAGE.name())) {
+					fullCommand = command + KeyWordEnum.DOT.getValue() + SettingsSubCommandEnum.FAVORITE.name().toLowerCase();
 					setLanguage();
 				}
-				else if (subCommand.equalsIgnoreCase((CommandSettingsEnum.STATS.getName()))) {
-					fullCommand = command + KeyWordEnum.DOT.getValue() + CommandSettingsEnum.STATS.getName();
+				else if (subCommand.equalsIgnoreCase(SettingsSubCommandEnum.STATS.name())) {
+					fullCommand = command + KeyWordEnum.DOT.getValue() + SettingsSubCommandEnum.STATS.name().toLowerCase();
 					setStatsDisplay();
 				}
-				else if (subCommand.equalsIgnoreCase((CommandSettingsEnum.SWAP.getName()))) {
-					fullCommand = command + KeyWordEnum.DOT.getValue() + CommandSettingsEnum.SWAP.getName();
+				else if (subCommand.equalsIgnoreCase(SettingsSubCommandEnum.SWAP.name())) {
+					fullCommand = command + KeyWordEnum.DOT.getValue() + SettingsSubCommandEnum.SWAP.name().toLowerCase();
 					swapIDs();
 				}
 				else {
-					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_SETTINGS_COMMAND) {{ setValue(subCommand); }});
-					sendCommandSettingsDescriptionList();
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_SUB_COMMAND) {{ setValue(subCommand); setValue(command); }});
+					sendSubCommandDescriptionList(SettingsSubCommandEnum.class);
 				}
 			}
 			else {
-				sendCommandSettingsDescriptionList();
+				sendSubCommandDescriptionList(SettingsSubCommandEnum.class);
 			}
 		}
 	}

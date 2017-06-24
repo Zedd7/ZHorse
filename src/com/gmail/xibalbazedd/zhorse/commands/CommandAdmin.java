@@ -11,7 +11,7 @@ import com.gmail.xibalbazedd.zhorse.database.HorseDeathRecord;
 import com.gmail.xibalbazedd.zhorse.database.MySQLImporter;
 import com.gmail.xibalbazedd.zhorse.database.SQLiteImporter;
 import com.gmail.xibalbazedd.zhorse.database.YAMLImporter;
-import com.gmail.xibalbazedd.zhorse.enums.CommandAdminEnum;
+import com.gmail.xibalbazedd.zhorse.enums.AdminSubCommandEnum;
 import com.gmail.xibalbazedd.zhorse.enums.DatabaseEnum;
 import com.gmail.xibalbazedd.zhorse.enums.KeyWordEnum;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
@@ -48,28 +48,30 @@ public class CommandAdmin extends AbstractCommand {
 		if (zh.getEM().canAffordCommand(p, command)) {
 			if (!args.isEmpty()) {
 				subCommand = args.get(0);
-				if (subCommand.equalsIgnoreCase((CommandAdminEnum.BURIAL.getName()))) {
+				if (subCommand.equalsIgnoreCase(AdminSubCommandEnum.BURIAL.name())) {
+					fullCommand = command + KeyWordEnum.DOT.getValue() + AdminSubCommandEnum.BURIAL.name().toLowerCase();
 					burial();
 				}
-				else if (subCommand.equalsIgnoreCase((CommandAdminEnum.CLEAR.getName()))) {
+				else if (subCommand.equalsIgnoreCase(AdminSubCommandEnum.CLEAR.name())) {
+					fullCommand = command + KeyWordEnum.DOT.getValue() + AdminSubCommandEnum.CLEAR.name().toLowerCase();
 					clear();
 				}
-				else if (subCommand.equalsIgnoreCase(CommandAdminEnum.IMPORT.getName())) {
+				else if (subCommand.equalsIgnoreCase(AdminSubCommandEnum.IMPORT.name())) {
+					fullCommand = command + KeyWordEnum.DOT.getValue() + AdminSubCommandEnum.IMPORT.name().toLowerCase();
 					importDB();
 				}
 				else {
-					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_ADMIN_COMMAND) {{ setValue(subCommand); }});
-					sendCommandAdminDescriptionList();
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_SUB_COMMAND) {{ setValue(subCommand); setValue(command); }});
+					sendSubCommandDescriptionList(AdminSubCommandEnum.class);
 				}
 			}
 			else {
-				sendCommandAdminDescriptionList();
+				sendSubCommandDescriptionList(AdminSubCommandEnum.class);
 			}
 		}
 	}
 	
 	private void burial() {
-		fullCommand = command + KeyWordEnum.DOT.getValue() + CommandAdminEnum.BURIAL.getName();
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (!idMode) {
 				if (args.size() == 2) {
@@ -109,7 +111,6 @@ public class CommandAdmin extends AbstractCommand {
 	}
 
 	private void clear() {
-		fullCommand = command + KeyWordEnum.DOT.getValue() + CommandAdminEnum.CLEAR.getName();
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (args.size() >= 2) {
 				targetMode = true;
@@ -172,7 +173,6 @@ public class CommandAdmin extends AbstractCommand {
 	}
 	
 	private void importDB() {
-		fullCommand = command + KeyWordEnum.DOT.getValue() + CommandAdminEnum.IMPORT.getName().toLowerCase();
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (args.size() >= 2) {
 				String databaseName = args.get(1);

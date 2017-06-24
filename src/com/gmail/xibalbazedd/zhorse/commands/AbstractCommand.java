@@ -16,11 +16,7 @@ import org.bukkit.entity.Player;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.database.PlayerRecord;
-import com.gmail.xibalbazedd.zhorse.enums.CommandAdminEnum;
 import com.gmail.xibalbazedd.zhorse.enums.CommandEnum;
-import com.gmail.xibalbazedd.zhorse.enums.CommandFriendEnum;
-import com.gmail.xibalbazedd.zhorse.enums.CommandSettingsEnum;
-import com.gmail.xibalbazedd.zhorse.enums.CommandStableEnum;
 import com.gmail.xibalbazedd.zhorse.enums.HorseStatisticEnum;
 import com.gmail.xibalbazedd.zhorse.enums.HorseVariantEnum;
 import com.gmail.xibalbazedd.zhorse.enums.KeyWordEnum;
@@ -806,7 +802,7 @@ public abstract class AbstractCommand {
 	protected void sendCommandDescriptionList() {		
 		CompoundMessage compoundMessage = new CompoundMessage(true);
 		for (CommandEnum command : CommandEnum.values()) {
-			String commandName = command.getName();
+			String commandName = command.name().toLowerCase();
 			String permission = commandName;
 			String commandDescription = getCommandDescription(commandName, permission, false);
 			compoundMessage.addLine(commandDescription);
@@ -819,42 +815,17 @@ public abstract class AbstractCommand {
 		zh.getMM().sendMessage(s, zh.getMM().getMessage(compoundMessage, pageNumber));
 	}
 	
-	protected void sendCommandAdminDescriptionList() { // TODO refactor
-		String header = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.ADMIN_COMMAND_LIST_HEADER), true);
+	protected <T extends Enum<T>> void sendSubCommandDescriptionList(Class<T> enumType) {
+		String header = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.SUB_COMMAND_LIST_HEADER) {{ setValue(command); }}, true);
 		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HEADER_FORMAT) {{ setValue(header); }}, true);
-		for (CommandAdminEnum command : CommandAdminEnum.values()) {
-			sendSubCommandDescription(command.getName());
-		}
-	}
-	
-	protected void sendCommandFriendDescriptionList() { // TODO refactor
-		String header = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.FRIEND_COMMAND_LIST_HEADER), true);
-		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HEADER_FORMAT) {{ setValue(header); }}, true);
-		for (CommandFriendEnum command : CommandFriendEnum.values()) {
-			sendSubCommandDescription(command.getName());
-		}
-	}
-	
-	protected void sendCommandSettingsDescriptionList() { // TODO refactor
-		String header = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.SETTINGS_COMMAND_LIST_HEADER), true);
-		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HEADER_FORMAT) {{ setValue(header); }}, true);
-		for (CommandSettingsEnum command : CommandSettingsEnum.values()) {
-			sendSubCommandDescription(command.getName());
-		}
-	}
-	
-	protected void sendCommandStableDescriptionList() { // TODO refactor
-		String header = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.STABLE_COMMAND_LIST_HEADER), true);
-		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HEADER_FORMAT) {{ setValue(header); }}, true);
-		for (CommandStableEnum command : CommandStableEnum.values()) {
-			sendSubCommandDescription(command.getName());
+		for (T command : enumType.getEnumConstants()) {
+			sendSubCommandDescription(command.name().toLowerCase());
 		}
 	}
 	
 	protected void sendSubCommandDescription(String subCommandName) {
-		String commandName = subCommandName;
 		String permission = this.command + KeyWordEnum.DOT.getValue() + subCommandName;
-		String message = getCommandDescription(commandName, permission, true);
+		String message = getCommandDescription(subCommandName, permission, true);
 		zh.getMM().sendMessage(s, message);
 	}
 	

@@ -33,7 +33,7 @@ public class CommandHelp extends AbstractCommand {
 				String command = args.get(0).toLowerCase();
 				if (CommandEnum.getCommandNameList().contains(command)) {
 					sendCommandUsage(command, false, true);
-					if (command.equals(CommandEnum.SPAWN.getName())) {
+					if (command.equalsIgnoreCase(CommandEnum.SPAWN.name())) {
 						sendAbstractHorseVariantList();
 						sendHorseStyleList();
 						sendHorseColorList();
