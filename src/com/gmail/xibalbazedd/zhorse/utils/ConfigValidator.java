@@ -198,6 +198,9 @@ public class ConfigValidator extends YamlResourceValidator {
 			if (validateOptionSet(KeyWordEnum.HERE_MAX_RANGE.getValue())) {
 				validatePositiveOrMinus1(KeyWordEnum.HERE_MAX_RANGE.getValue());
 			}
+			if (validateOptionSet(KeyWordEnum.STABLE_MAX_RANGE.getValue())) {
+				validatePositiveOrMinus1(KeyWordEnum.STABLE_MAX_RANGE.getValue());
+			}
 			if (validateOptionSet(KeyWordEnum.TP_MAX_RANGE.getValue())) {
 				validatePositiveOrMinus1(KeyWordEnum.TP_MAX_RANGE.getValue());
 			}

@@ -26,6 +26,7 @@ public enum CommandEnum {
 	SETTINGS("settings", "com.gmail.xibalbazedd.zhorse.commands.CommandSettings"),
 	SHARE("share", "com.gmail.xibalbazedd.zhorse.commands.CommandShare"),
 	SPAWN("spawn", "com.gmail.xibalbazedd.zhorse.commands.CommandSpawn"),
+	STABLE("stable", "com.gmail.xibalbazedd.zhorse.commands.CommandStable"),
 	TAME("tame", "com.gmail.xibalbazedd.zhorse.commands.CommandTame"),
 	TP("tp", "com.gmail.xibalbazedd.zhorse.commands.CommandTp");
 	

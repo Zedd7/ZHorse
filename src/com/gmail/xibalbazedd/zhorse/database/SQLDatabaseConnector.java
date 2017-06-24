@@ -171,6 +171,14 @@ public abstract class SQLDatabaseConnector {
 		return inventoryRecord;
 	}
 	
+	public List<HorseStableRecord> getHorseStableRecordList(String query) {
+		return getResultList(query, resultSet -> getHorseStableRecord(resultSet));
+	}
+	
+	public HorseStableRecord getHorseStableRecord(String query) {
+		return getResult(query, resultSet -> getHorseStableRecord(resultSet));
+	}
+	
 	public List<HorseStatsRecord> getHorseStatsRecordList(String query) {
 		return getResultList(query, resultSet -> getHorseStatsRecord(resultSet));
 	}
@@ -283,6 +291,16 @@ public abstract class SQLDatabaseConnector {
 		return new HorseDeathRecord(
 			resultSet.getString("uuid"),
 			new Date(resultSet.getTimestamp("date").getTime())
+		);
+	}
+	
+	private HorseStableRecord getHorseStableRecord(ResultSet resultSet) throws SQLException {
+		return new HorseStableRecord(
+			resultSet.getString("uuid"),
+			resultSet.getString("locationWorld"),
+			resultSet.getInt("locationX"),
+			resultSet.getInt("locationY"),
+			resultSet.getInt("locationZ")
 		);
 	}
 	

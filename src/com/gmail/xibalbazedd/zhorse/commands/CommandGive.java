@@ -52,6 +52,7 @@ public class CommandGive extends AbstractCommand {
 	
 	private void execute() {
 		if (!hasReachedClaimsLimit(true) && isOwner() && isPlayerDifferent() && zh.getEM().canAffordCommand(p, command)) {
+			int previousHorseID = zh.getDM().getHorseID(horse.getUniqueId());
 			int horseID = zh.getDM().getNextHorseID(targetUUID);
 			horseName = zh.getDM().getHorseName(horse.getUniqueId());
 			boolean lock = zh.getCM().shouldLockOnClaim();
@@ -65,6 +66,7 @@ public class CommandGive extends AbstractCommand {
 			success &= zh.getDM().updateHorseLocked(horse.getUniqueId(), lock);
 			success &= zh.getDM().updateHorseProtected(horse.getUniqueId(), protect);
 			success &= zh.getDM().updateHorseShared(horse.getUniqueId(), share);
+			success &= zh.getDM().updateHorseIDMapping(p.getUniqueId(), previousHorseID);
 			if (success) {
 				applyHorseName(targetUUID);
 				horse.setOwner(zh.getServer().getOfflinePlayer(targetUUID));

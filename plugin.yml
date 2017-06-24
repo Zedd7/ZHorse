@@ -1,6 +1,6 @@
  main: com.gmail.xibalbazedd.zhorse.ZHorse
  name: ZHorse
- version: 1.6.8 snapshot 2
+ version: 1.6.8 snapshot 3
  depend: [Vault]
  description: This plugin provides an enhanced management of horses
  author: Z3dd7
@@ -44,6 +44,7 @@
             zh.sell: true
             zh.settings.*: true
             zh.share: true
+            zh.stable: true
             zh.tp: true
 
     zh.admin.*:
@@ -95,6 +96,7 @@
             zh.settings.admin: true
             zh.share.admin: true
             zh.spawn.admin: true
+            zh.stable.admin: true
             zh.tame.admin: true
             zh.tp.admin: true
 
@@ -122,5 +124,6 @@
             zh.settings.free: true
             zh.share.free: true
             zh.spawn.free: true
+            zh.stable.free: true
             zh.tame.free: true
             zh.tp.free: true

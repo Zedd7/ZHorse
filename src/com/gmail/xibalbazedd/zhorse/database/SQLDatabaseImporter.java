@@ -15,6 +15,7 @@ public abstract class SQLDatabaseImporter {
 		success &= importPendingMessages(zh, db);
 		success &= importHorses(zh, db);
 		success &= importHorseDeaths(zh, db);
+		success &= importHorseStables(zh, db);
 		success &= importHorseStats(zh, db);
 		success &= importHorseInventories(zh, db);
 		success &= importSales(zh, db);
@@ -83,6 +84,19 @@ public abstract class SQLDatabaseImporter {
 			UUID horseUUID = UUID.fromString(horseDeathRecord.getUUID());
 			if (zh.getDM().isHorseRegistered(horseUUID) && !zh.getDM().isHorseDeathRegistered(horseUUID)) {
 				success = zh.getDM().registerHorseDeath(horseDeathRecord) && success;
+			}
+		}
+		return success;
+	}
+	
+	private static boolean importHorseStables(ZHorse zh, SQLDatabaseConnector db) {
+		boolean success = true;
+		String query = "SELECT * FROM prefix_horse_stable";
+		List<HorseStableRecord> horseStableRecordList = db.getHorseStableRecordList(query);
+		for (HorseStableRecord horseStableRecord : horseStableRecordList) {
+			UUID horseUUID = UUID.fromString(horseStableRecord.getUUID());
+			if (zh.getDM().isHorseRegistered(horseUUID) && !zh.getDM().isHorseStableRegistered(horseUUID)) {
+				success = zh.getDM().registerHorseStable(horseStableRecord) && success;
 			}
 		}
 		return success;

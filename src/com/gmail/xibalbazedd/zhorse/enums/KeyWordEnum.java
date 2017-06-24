@@ -54,6 +54,7 @@ public enum KeyWordEnum {
 	REZ_STACK_SIZE("Settings.rez-stack-size"),
 	SETTINGS("Settings"),
 	SHARE_ON_CLAIM("Settings.share-on-claim"),
+	STABLE_MAX_RANGE("Settings.stable-max-range"),
 	TABLE_PREFIX("Databases.mysql-config.table-prefix"),
 	TP_MAX_RANGE("Settings.tp-max-range"),
 	TYPE("Databases.type"),

@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Entity;
@@ -19,6 +20,7 @@ import com.gmail.xibalbazedd.zhorse.enums.CommandAdminEnum;
 import com.gmail.xibalbazedd.zhorse.enums.CommandEnum;
 import com.gmail.xibalbazedd.zhorse.enums.CommandFriendEnum;
 import com.gmail.xibalbazedd.zhorse.enums.CommandSettingsEnum;
+import com.gmail.xibalbazedd.zhorse.enums.CommandStableEnum;
 import com.gmail.xibalbazedd.zhorse.enums.HorseStatisticEnum;
 import com.gmail.xibalbazedd.zhorse.enums.HorseVariantEnum;
 import com.gmail.xibalbazedd.zhorse.enums.KeyWordEnum;
@@ -143,7 +145,7 @@ public abstract class AbstractCommand {
 				return parsePageNumber(false);
 			}
 		}
-		return false;
+		return true;
 	}
 	
 	protected enum ArgumentEnum {
@@ -285,6 +287,18 @@ public abstract class AbstractCommand {
 		}
 	}
 	
+	protected Location getGroundedLocation(Location baseLocation) {
+		Location groundedLocation = baseLocation;
+		if (p.isInsideVehicle()) {
+			groundedLocation = p.getVehicle().getLocation();
+		}
+		else if (p.isFlying()) {
+			Block ground = groundedLocation.getWorld().getHighestBlockAt(groundedLocation);
+			groundedLocation = new Location(groundedLocation.getWorld(), ground.getX(), ground.getY(), ground.getZ());
+		}
+		return groundedLocation;
+	}
+	
 	protected UUID getPlayerUUID(String playerName) {
 		if (zh.getDM().isPlayerRegistered(playerName)) {
 			return zh.getDM().getPlayerUUID(playerName);
@@ -420,23 +434,31 @@ public abstract class AbstractCommand {
 	
 	protected boolean isHorseInRangeHere() {
 		int maxRadius = zh.getCM().getMaximumRangeHere();
-		return isHorseInRange(maxRadius);
+		Location playerLocation = p.getLocation();
+		Location horseLocation = horse.getLocation();
+		return isHorseInRange(maxRadius, horseLocation, playerLocation);
+	}
+	
+	protected boolean isHorseInRangeStable(Location stableLocation) {
+		int maxRadius = zh.getCM().getMaximumRangeStable();
+		Location horseLocation = horse.getLocation();
+		return isHorseInRange(maxRadius, horseLocation, stableLocation);
 	}
 	
 	protected boolean isHorseInRangeTp() {
 		int maxRadius = zh.getCM().getMaximumRangeTp();
-		return isHorseInRange(maxRadius);
-	}
-	
-	protected boolean isHorseInRange(int maxRadius) {
-		if (adminMode) return true;
-		
 		Location playerLocation = p.getLocation();
 		Location horseLocation = horse.getLocation();
-		int xDistance = Math.abs(Math.abs(playerLocation.getBlockX()) - Math.abs(horseLocation.getBlockX()));
-		int zDistance = Math.abs(Math.abs(playerLocation.getBlockZ()) - Math.abs(horseLocation.getBlockZ()));
+		return isHorseInRange(maxRadius, playerLocation, horseLocation);
+	}
+	
+	protected boolean isHorseInRange(int maxRadius, Location start, Location destination) {
+		if (adminMode) return true;
+		
+		int xDistance = Math.abs(Math.abs(start.getBlockX()) - Math.abs(destination.getBlockX()));
+		int zDistance = Math.abs(Math.abs(start.getBlockZ()) - Math.abs(destination.getBlockZ()));
 		double distance = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(zDistance, 2));
-		if (distance <= maxRadius || maxRadius == -1 || !playerLocation.getWorld().equals(horseLocation.getWorld())) {
+		if (distance <= maxRadius || maxRadius == -1 || !start.getWorld().equals(destination.getWorld())) {
 			return true;
 		}
 		else {
@@ -637,20 +659,17 @@ public abstract class AbstractCommand {
 		}
 		else {
 			if (horseID == null) {
-				if (samePlayer || isOwner) {
-					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_HORSE_NAME) {{ setHorseName(horseName); }});
-				}
-				else {
-					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_HORSE_NAME_OTHER) {{ setHorseName(horseName); setPlayerName(targetName); }});
-				}
+				if (samePlayer || isOwner) zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_HORSE_NAME) {{ setHorseName(horseName); }});
+				else zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_HORSE_NAME_OTHER) {{ setHorseName(horseName); setPlayerName(targetName); }});
+			}
+			else if (horseID.equals(Integer.toString(zh.getDM().getDefaultFavoriteHorseID()))) {
+				String remainingClaimsMessage = getRemainingClaimsMessage(targetUUID);
+				if (samePlayer || isOwner) zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.NO_HORSE_OWNED) {{ setValue(remainingClaimsMessage); }});
+				else zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.NO_HORSE_OWNED_OTHER) {{ setPlayerName(targetName); setValue(remainingClaimsMessage); }});
 			}
 			else {
-				if (samePlayer || isOwner) {
-					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_HORSE_ID) {{ setHorseID(horseID); }});
-				}
-				else {
-					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_HORSE_ID_OTHER) {{ setHorseID(horseID); setPlayerName(targetName); }});
-				}
+				if (samePlayer || isOwner) zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_HORSE_ID) {{ setHorseID(horseID); }});
+				else zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_HORSE_ID_OTHER) {{ setHorseID(horseID); setPlayerName(targetName); }});
 			}
 		}
 		return false;
@@ -800,7 +819,7 @@ public abstract class AbstractCommand {
 		zh.getMM().sendMessage(s, zh.getMM().getMessage(compoundMessage, pageNumber));
 	}
 	
-	protected void sendCommandAdminDescriptionList() {
+	protected void sendCommandAdminDescriptionList() { // TODO refactor
 		String header = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.ADMIN_COMMAND_LIST_HEADER), true);
 		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HEADER_FORMAT) {{ setValue(header); }}, true);
 		for (CommandAdminEnum command : CommandAdminEnum.values()) {
@@ -808,7 +827,7 @@ public abstract class AbstractCommand {
 		}
 	}
 	
-	protected void sendCommandFriendDescriptionList() {
+	protected void sendCommandFriendDescriptionList() { // TODO refactor
 		String header = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.FRIEND_COMMAND_LIST_HEADER), true);
 		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HEADER_FORMAT) {{ setValue(header); }}, true);
 		for (CommandFriendEnum command : CommandFriendEnum.values()) {
@@ -816,10 +835,18 @@ public abstract class AbstractCommand {
 		}
 	}
 	
-	protected void sendCommandSettingsDescriptionList() {
+	protected void sendCommandSettingsDescriptionList() { // TODO refactor
 		String header = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.SETTINGS_COMMAND_LIST_HEADER), true);
 		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HEADER_FORMAT) {{ setValue(header); }}, true);
 		for (CommandSettingsEnum command : CommandSettingsEnum.values()) {
+			sendSubCommandDescription(command.getName());
+		}
+	}
+	
+	protected void sendCommandStableDescriptionList() { // TODO refactor
+		String header = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.STABLE_COMMAND_LIST_HEADER), true);
+		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HEADER_FORMAT) {{ setValue(header); }}, true);
+		for (CommandStableEnum command : CommandStableEnum.values()) {
 			sendSubCommandDescription(command.getName());
 		}
 	}
