@@ -61,6 +61,7 @@ public class CommandShare extends AbstractCommand {
 				zh.getDM().updateHorseShared(horse.getUniqueId(), false);
 				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_UNSHARED) {{ setHorseName(horseName); }});
 			}
+			zh.getCmdM().updateCommandHistory(s, command);
 			zh.getEM().payCommand(p, command);
 		}
 	}

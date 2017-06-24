@@ -45,6 +45,7 @@ public class CommandSpawn extends AbstractCommand {
 			if (parseArguments()) {
 				spawnHorse();
 				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_SPAWNED));
+				zh.getCmdM().updateCommandHistory(s, command);
 				zh.getEM().payCommand(p, command);
 			}
 			else {

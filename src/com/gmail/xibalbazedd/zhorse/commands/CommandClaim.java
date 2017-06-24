@@ -62,6 +62,7 @@ public class CommandClaim extends AbstractCommand {
 				zh.getHM().trackHorse(horse);
 				
 				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_CLAIMED) {{ setHorseName(horseName); }});
+				zh.getCmdM().updateCommandHistory(s, command);
 				zh.getEM().payCommand(p, command);
 			}
 		}

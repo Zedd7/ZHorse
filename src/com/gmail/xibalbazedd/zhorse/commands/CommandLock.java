@@ -75,6 +75,7 @@ public class CommandLock extends AbstractCommand {
 				zh.getDM().updateHorseLocked(horse.getUniqueId(), false);
 				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_UNLOCKED) {{ setHorseName(horseName); }});
 			}
+			zh.getCmdM().updateCommandHistory(s, command);
 			zh.getEM().payCommand(p, command);
 		}
 	}

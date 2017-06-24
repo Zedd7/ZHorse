@@ -53,6 +53,7 @@ public class CommandKill extends AbstractCommand {
 			if (!samePlayer) {
 				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_DIED) {{ setHorseName(horseName); }});
 			}
+			zh.getCmdM().updateCommandHistory(s, command);
 			zh.getEM().payCommand(p, command);
 		}
 	}

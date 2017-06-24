@@ -64,6 +64,7 @@ public class CommandSell extends AbstractCommand {
 						applyHorsePrice(price);
 						String sellerCurrencySymbol = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.CURRENCY_SYMBOL), true);
 						zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_PUT_UP_FOR_SALE) {{ setAmount(price); setCurrencySymbol(sellerCurrencySymbol); setHorseName(horseName); }});
+						zh.getCmdM().updateCommandHistory(s, command);
 						zh.getEM().payCommand(p, command);
 					}
 				} catch (NumberFormatException e) {
@@ -79,6 +80,7 @@ public class CommandSell extends AbstractCommand {
 					horseName = zh.getDM().getHorseName(horse.getUniqueId());
 					applyHorseName(targetUUID);
 					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_WITHDRAWN_FROM_SALE) {{ setHorseName(horseName); }});
+					zh.getCmdM().updateCommandHistory(s, command);
 					zh.getEM().payCommand(p, command);
 				}
 			}

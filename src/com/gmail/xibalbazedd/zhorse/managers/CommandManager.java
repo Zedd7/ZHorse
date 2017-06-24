@@ -55,7 +55,6 @@ public class CommandManager implements CommandExecutor {
 					commandValid = true;
 					long remainingCooldown = getRemainingCooldown(s, command);
 					if (remainingCooldown <= 0) {
-						updateCommandHistory(s, command);
 						try {
 							Class.forName(commandEnum.getClassPath()).getConstructor(ZHorse.class, CommandSender.class, String[].class).newInstance(new Object[] {zh, s, a});
 						} catch (Exception  e) {
@@ -92,7 +91,7 @@ public class CommandManager implements CommandExecutor {
 		return remainingCooldown;
 	}
 
-	private void updateCommandHistory(CommandSender s, String command) {
+	public void updateCommandHistory(CommandSender s, String command) {
 		if (!(s instanceof Player)) return;
 		commandHistoryMap.get(((Player) s).getUniqueId()).put(command, Instant.now());
 	}
