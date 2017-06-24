@@ -43,7 +43,7 @@ public class CommandManager implements CommandExecutor {
 			String pluginNameAndVersion = String.format("%s %s", pluginDescription.getName(), pluginDescription.getVersion());
 			String author = pluginDescription.getAuthors().get(0);
 			String pluginHeader = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.PLUGIN_HEADER) {{ setPlayerName(author); setValue(pluginNameAndVersion); }}, true);			
-			LocaleEnum helpDescription = LocaleEnum.valueOf(CommandEnum.HELP.getName().toUpperCase() + KeyWordEnum.SEPARATOR.getValue() + KeyWordEnum.DESCRIPTION.getValue());
+			LocaleEnum helpDescription = LocaleEnum.valueOf(CommandEnum.HELP.name().toUpperCase() + KeyWordEnum.SEPARATOR.getValue() + KeyWordEnum.DESCRIPTION.getValue());
 			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HEADER_FORMAT) {{ setValue(pluginHeader); }}, true);
 			zh.getMM().sendMessage(s, new MessageConfig(helpDescription) {{ setSpaceCount(1); }}, true);
 		}
@@ -51,7 +51,7 @@ public class CommandManager implements CommandExecutor {
 			String command = a[0].toLowerCase();
 			boolean commandValid = false;
 			for (CommandEnum commandEnum : CommandEnum.values()) {
-				if (command.equals(commandEnum.getName())) {
+				if (command.equalsIgnoreCase(commandEnum.name())) {
 					commandValid = true;
 					long remainingCooldown = getRemainingCooldown(s, command);
 					if (remainingCooldown <= 0) {

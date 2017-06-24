@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.database.FriendRecord;
-import com.gmail.xibalbazedd.zhorse.enums.CommandFriendEnum;
+import com.gmail.xibalbazedd.zhorse.enums.FriendSubCommandEnum;
 import com.gmail.xibalbazedd.zhorse.enums.KeyWordEnum;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
 import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
@@ -35,28 +35,30 @@ public class CommandFriend extends AbstractCommand {
 			if (!args.isEmpty()) {
 				subCommand = args.get(0);
 				args.remove(0); // Remove sub-command to allow parsing of playerName
-				if (subCommand.equalsIgnoreCase(CommandFriendEnum.ADD.getName())) {
+				if (subCommand.equalsIgnoreCase(FriendSubCommandEnum.ADD.name())) {
+					fullCommand = command + KeyWordEnum.DOT.getValue() + FriendSubCommandEnum.ADD.name().toLowerCase();
 					addFriend();
 				}
-				else if (subCommand.equalsIgnoreCase(CommandFriendEnum.LIST.getName())) {
+				else if (subCommand.equalsIgnoreCase(FriendSubCommandEnum.LIST.name())) {
+					fullCommand = command + KeyWordEnum.DOT.getValue() + FriendSubCommandEnum.LIST.name().toLowerCase();
 					sendFriendList();
 				}
-				else if (subCommand.equalsIgnoreCase(CommandFriendEnum.REMOVE.getName())) {
+				else if (subCommand.equalsIgnoreCase(FriendSubCommandEnum.REMOVE.name())) {
+					fullCommand = command + KeyWordEnum.DOT.getValue() + FriendSubCommandEnum.REMOVE.name().toLowerCase();
 					removeFriend();
 				}
 				else {
-					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_FRIEND_COMMAND) {{ setValue(subCommand); }});
-					sendCommandFriendDescriptionList();
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_SUB_COMMAND) {{ setValue(subCommand); setValue(command); }});
+					sendSubCommandDescriptionList(FriendSubCommandEnum.class);
 				}
 			}
 			else {
-				sendCommandFriendDescriptionList();
+				sendSubCommandDescriptionList(FriendSubCommandEnum.class);
 			}
 		}
 	}
 	
 	private void addFriend() {
-		fullCommand = command + KeyWordEnum.DOT.getValue() + CommandFriendEnum.ADD.getName();
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (parsePlayerName()) {
 				if (targetMode) {
@@ -83,7 +85,6 @@ public class CommandFriend extends AbstractCommand {
 	}
 	
 	private void removeFriend() {
-		fullCommand = command + KeyWordEnum.DOT.getValue() + CommandFriendEnum.REMOVE.getName();
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (parsePlayerName()) {
 				if (targetMode) {
@@ -110,7 +111,6 @@ public class CommandFriend extends AbstractCommand {
 	}
 
 	private void sendFriendList() {
-		fullCommand = command + KeyWordEnum.DOT.getValue() + CommandFriendEnum.LIST.getName();
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (parsePlayerName()) {
 				List<String> friendNameList = zh.getDM().getFriendNameList(targetUUID);
