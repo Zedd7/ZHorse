@@ -163,6 +163,11 @@ public class DataManager {
 		return wrongCaseHorseName;
 	}
 	
+	public String getHorseType(UUID horseUUID) {
+		String query = String.format("SELECT type FROM prefix_horse_stats WHERE uuid = \"%s\"", horseUUID);
+		return db.getStringResult(query);
+	}
+	
 	public UUID getHorseUUID(UUID ownerUUID, int horseID) {
 		String query = String.format("SELECT uuid FROM prefix_horse WHERE owner = \"%s\" AND id = %d", ownerUUID, horseID);
 		return UUID.fromString(db.getStringResult(query));
@@ -337,6 +342,11 @@ public class DataManager {
 	public boolean isHorseLocked(UUID horseUUID) {
 		String query = String.format("SELECT locked FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
 		return db.getBooleanResult(query);
+	}
+	
+	public boolean isHorseOfType(UUID horseUUID, String type) {
+		String query = String.format("SELECT 1 FROM prefix_horse h WHERE h.uuid IN (SELECT hs.uuid FROM prefix_horse_stats hs WHERE hs.uuid = \"%s\" AND type = \"%s\")", horseUUID, type);
+		return db.hasResult(query);
 	}
 	
 	public boolean isHorseOwnedBy(UUID ownerUUID, UUID horseUUID) {

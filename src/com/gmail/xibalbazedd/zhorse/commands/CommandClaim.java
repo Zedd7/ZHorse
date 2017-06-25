@@ -14,7 +14,7 @@ public class CommandClaim extends AbstractCommand {
 	
 	public CommandClaim(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {
+		if (isPlayer() && parseArguments() && hasPermission() && isWorldEnabled()) {
 			if (!idMode) {
 				if (!targetMode) {
 					if (isOnHorse(false)) {

@@ -15,11 +15,11 @@ Headers:
   friendListFormat: "<gold><player><yellow>"
   aliveHorseListHeader: "<gold>Your living horses <value> <value>"
   aliveHorseListOtherHeader: "<gold><player>'s living horses <value> <value>"
-  aliveHorseListFormat: "<yellow><id><gold> - <yellow><horse><value>"
-  aliveHorseListFormatFavorite: "<yellow><id><gold> - <yellow><horse><value> <gold>(<yellow>favorite<gold>)"
+  aliveHorseListFormat: "<yellow><id><gold> - <yellow><horse><value><value>"
+  aliveHorseListFormatFavorite: "<yellow><id><gold> - <yellow><horse><value><value> <gold>(<yellow>favorite<gold>)"
   deadHorseListHeader: "<gold>Your dead horses <value> <value>"
   deadHorseListOtherHeader: "<gold><player>'s dead horses <value> <value>"
-  deadHorseListFormat: "<yellow>X<gold> - <yellow><horse><green> <gold>(<yellow><value><gold>)"
+  deadHorseListFormat: "<yellow>X<gold> - <yellow><horse><value> <gold>(<yellow><value><gold>)"
   remainingClaimsFormat: "<yellow>(<gold><amount><yellow>/<gold><max><yellow>)"
   commandWikiHeader: "<green>Wiki: <yellow>https://github.com/Xibalba/ZHorse/wiki/Commands"
   commandUsageHeader: "<green>Legend: <gold>/command <yellow>mandatoryParams (optionalParams)"
@@ -155,6 +155,7 @@ Messages:
   unknownSpawnArgument: "<gold><value><yellow> is not a valid argument for /zh spawn."
   unknownStatsDisplayMode: "<yellow>This is not a supported display mode. Please use one the following: <value>"
   unknownSubCommand: "<gold><value><yellow> is not a /zh <value> sub-command."
+  unknownVariant: "<gold><value><yellow> is not a horse variant. Please use one the following: <value>"
   worldDisabled: "<gold>ZHorse<yellow> is disabled on this world."
   worldUncrossable: "<yellow>Teleportation between your world and <gold><horse><yellow>'s world is blocked."
 
@@ -183,6 +184,13 @@ Horse informations:
   stable: "<yellow>Stable: <gold><value>"
   status: "<yellow>Status: <gold><value>"
   strength: "<yellow>Chest size: <gold><amount>"
+  variant: "<yellow>Variant: <gold><value>"
+  variantHorse: "<yellow><<gold>H<yellow>>"
+  variantDonkey: "<yellow><<gold>D<yellow>>"
+  variantMule: "<yellow><<gold>M<yellow>>"
+  variantLlama: "<yellow><<gold>L<yellow>>"
+  variantSkeleton: "<yellow><<gold>S<yellow>>"
+  variantZombie: "<yellow><<gold>Z<yellow>>"
 
 Command descriptions:
   admin: "<gold>/zh admin<gray>: <yellow>Manage ZHorse files."
@@ -243,7 +251,7 @@ Command usages:
   here: "<gold>/zh here<yellow> (-i horseID) (-p playerName) (-a)"
   info: "<gold>/zh info<yellow> (-i horseID) (-p playerName) (-a)"
   kill: "<gold>/zh kill<yellow> (-i horseID) (-p playerName) (-a)"
-  list: "<gold>/zh list<yellow> (#page) (-p playerName) (-a)"
+  list: "<gold>/zh list<yellow> (#page) (-p playerName) (-v variant) (-a)"
   lock: "<gold>/zh lock<yellow> (-i horseID) (-p playerName) (-a)"
   protect: "<gold>/zh protect<yellow> (-i horseID) (-p playerName) (-a)"
   reload: "<gold>/zh reload<yellow> (-a)"
@@ -252,14 +260,14 @@ Command usages:
   sell: "<gold>/zh sell<yellow> (price) (-i horseID) (-p playerName) (-a)"
   settings: "<gold>/zh settings<yellow> sub-command value"
   share: "<gold>/zh share<yellow> (-i horseID) (-p playerName) (-a)"
-  spawn: "<gold>/zh spawn<yellow> (variant) (style) (color) ('tamed') ('adult' | 'baby') (health):(speed%):(jump%) (strength)"
+  spawn: "<gold>/zh spawn<yellow> ((-v) variant) (style) (color) ('tamed') ('adult' | 'baby') (health):(speed%):(jump%) (strength)"
   stable: "<gold>/zh stable<yellow> sub-command"
   tame: "<gold>/zh tame<yellow> (-i horseID) (-p playerName) (-a)"
   tp: "<gold>/zh tp<yellow> (-i horseID) (-p playerName) (-a)"
 
 Admin command usages:
-  burial: "<gold>/zh admin burial<yellow> (-p) playerName (-a)"
-  clear: "<gold>/zh admin clear<yellow> (-p) playerName (-i horseID) (-a)"
+  burial: "<gold>/zh admin burial<yellow> (-p) playerName (-v variant) (-a)"
+  clear: "<gold>/zh admin clear<yellow> (-p) playerName (-i horseID | -v variant) (-a)"
   import: "<gold>/zh admin import<yellow> database (-a)"
 
 Friend command usages:

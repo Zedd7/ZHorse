@@ -1,5 +1,6 @@
 package com.gmail.xibalbazedd.zhorse.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,20 +27,22 @@ public class CommandAdmin extends AbstractCommand {
 
 	public CommandAdmin(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {			
-			if (!idMode) {
-				if (isOnHorse(true)) { // select horse w/ or w/o target
-					horse = (AbstractHorse) p.getVehicle();
-					if (isOwner(targetUUID, false, true, true)) {
-						idMode = true;
-						Integer horseIDInt = zh.getDM().getHorseID(horse.getUniqueId());
-						horseID = horseIDInt != null ? horseIDInt.toString() : null;
+		if (isPlayer() && parseArguments() && hasPermission() && isWorldEnabled()) {
+			if (!variantMode || isRegistered(horseVariant)) {
+				if (!idMode) {
+					if (isOnHorse(true)) { // Select horse w/ or w/o target
+						horse = (AbstractHorse) p.getVehicle();
+						if (isOwner(targetUUID, false, true, true)) {
+							idMode = true;
+							Integer horseIDInt = zh.getDM().getHorseID(horse.getUniqueId());
+							horseID = horseIDInt != null ? horseIDInt.toString() : null;
+						}
 					}
+					execute();
 				}
-				execute();
-			}
-			else if (isRegistered(targetUUID, horseID)) {
-				execute();
+				else if (isRegistered(targetUUID, horseID)) {
+					execute();
+				}
 			}
 		}
 	}
@@ -86,7 +89,9 @@ public class CommandAdmin extends AbstractCommand {
 						List<HorseDeathRecord> horseDeathRecordList = zh.getDM().getHorseDeathRecordList(targetUUID);
 						for (HorseDeathRecord deathRecord : horseDeathRecordList) {
 							UUID horseUUID = UUID.fromString(deathRecord.getUUID());
-							if (!zh.getDM().removeHorse(horseUUID, targetUUID, null)) success = false;
+							if (!variantMode || zh.getDM().isHorseOfType(horseUUID, variant)) {
+								if (!zh.getDM().removeHorse(horseUUID, targetUUID, null)) success = false;
+							}
 						}
 						if (success) {
 							if (samePlayer) {
@@ -128,8 +133,18 @@ public class CommandAdmin extends AbstractCommand {
 					if (isRegistered(targetUUID)) {
 						boolean success = true;
 						int aliveHorseCount = zh.getDM().getAliveHorseCount(targetUUID);
+						List<Integer> toBeUnmappedHorseIDList = new ArrayList<>();
 						for (int horseID = 1; horseID <= aliveHorseCount; horseID++) {
-							if (!clearLivingHorse(targetUUID, horseID, false)) success = false;
+							UUID horseUUID = zh.getDM().getHorseUUID(targetUUID, horseID);
+							if (!variantMode || zh.getDM().isHorseOfType(horseUUID, variant)) {
+								if (!clearLivingHorse(targetUUID, horseID, false)) success = false;
+								if (variantMode) {
+									toBeUnmappedHorseIDList.add(horseID);
+								}
+							}
+						}
+						for (int horseID : toBeUnmappedHorseIDList) {
+							zh.getDM().updateHorseIDMapping(targetUUID, horseID);
 						}
 						if (success) {
 							if (samePlayer) {

@@ -43,5 +43,14 @@ public enum HorseVariantEnum {
 		}
 		return allCodeArray;
 	}
+	
+	public static HorseVariantEnum from(EntityType entityType) {
+		for (HorseVariantEnum horseVariantEnum : values()) {
+			if (horseVariantEnum.getEntityType().equals(entityType)) {
+				return horseVariantEnum;
+			}
+		}
+		return null;
+	}
 
 }

@@ -152,6 +152,7 @@ public enum LocaleEnum {
 	UNKNOWN_SPAWN_ARGUMENT("Messages.unknownSpawnArgument"),
 	UNKNOWN_STATS_DISPLAY_MODE("Messages.unknownStatsDisplayMode"),
 	UNKNOWN_SUB_COMMAND("Messages.unknownSubCommand"),
+	UNKNOWN_VARIANT("Messages.unknownVariant"),
 	WORLD_DISABLED("Messages.worldDisabled"),
 	WORLD_UNCROSSABLE("Messages.worldUncrossable"),
 	
@@ -180,6 +181,13 @@ public enum LocaleEnum {
 	STABLE("Horse informations.stable"),
 	STATUS("Horse informations.status"),
 	STRENGTH("Horse informations.strength"),
+	VARIANT("Horse informations.variant"),
+	VARIANT_HORSE("Horse informations.variantHorse"),
+	VARIANT_DONKEY("Horse informations.variantDonkey"),
+	VARIANT_MULE("Horse informations.variantMule"),
+	VARIANT_LLAMA("Horse informations.variantLlama"),
+	VARIANT_SKELETON("Horse informations.variantSkeleton"),
+	VARIANT_ZOMBIE("Horse informations.variantZombie"),
 	
 	/* command descriptions */
 	ADMIN_DESCRIPTION("Command descriptions.admin"),

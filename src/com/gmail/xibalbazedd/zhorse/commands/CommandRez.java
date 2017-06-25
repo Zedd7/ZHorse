@@ -17,7 +17,7 @@ public class CommandRez extends AbstractCommand {
 
 	public CommandRez(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {
+		if (isPlayer() && parseArguments() && hasPermission() && isWorldEnabled()) {
 			if (!idMode) {
 				if (!targetMode || isRegistered(targetUUID)) {
 					execute();

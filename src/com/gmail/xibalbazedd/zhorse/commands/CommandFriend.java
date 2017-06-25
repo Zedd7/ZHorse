@@ -20,7 +20,7 @@ public class CommandFriend extends AbstractCommand {
 
 	public CommandFriend(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {
+		if (isPlayer() && parseArguments() && hasPermission() && isWorldEnabled()) {
 			if (!idMode) {
 				execute();
 			}
@@ -60,92 +60,86 @@ public class CommandFriend extends AbstractCommand {
 	
 	private void addFriend() {
 		if (hasPermission(s, fullCommand , true, false)) {
-			if (parsePlayerName()) {
-				if (targetMode) {
-					if (isRegistered(targetUUID)) {
-						if (isPlayerDifferent()) {
-							if (!zh.getDM().isFriendOf(p.getUniqueId(), targetUUID)) {
-								zh.getDM().registerFriend(new FriendRecord(p.getUniqueId().toString(), targetUUID.toString()));
-								zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.FRIEND_ADDED) {{ setPlayerName(targetName); }});
-								zh.getMM().sendPendingMessage(targetUUID, new MessageConfig(LocaleEnum.FRIEND_ADDED_REVERSE) {{ setPlayerName(p.getName()); }});
-								zh.getCmdM().updateCommandHistory(s, command);
-								zh.getEM().payCommand(p, command);
-							}
-							else {
-								zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.FRIEND_ALREADY_ADDED) {{ setPlayerName(targetName); }});
-							}
+			parsePlayerName();
+			if (targetMode) {
+				if (isRegistered(targetUUID)) {
+					if (isPlayerDifferent()) {
+						if (!zh.getDM().isFriendOf(p.getUniqueId(), targetUUID)) {
+							zh.getDM().registerFriend(new FriendRecord(p.getUniqueId().toString(), targetUUID.toString()));
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.FRIEND_ADDED) {{ setPlayerName(targetName); }});
+							zh.getMM().sendPendingMessage(targetUUID, new MessageConfig(LocaleEnum.FRIEND_ADDED_REVERSE) {{ setPlayerName(p.getName()); }});
+							zh.getEM().payCommand(p, command);
+						}
+						else {
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.FRIEND_ALREADY_ADDED) {{ setPlayerName(targetName); }});
 						}
 					}
 				}
-				else {
-					sendCommandUsage(subCommand, true, false);
-				}
+			}
+			else {
+				sendCommandUsage(subCommand, true, false);
 			}
 		}
 	}
 	
 	private void removeFriend() {
 		if (hasPermission(s, fullCommand , true, false)) {
-			if (parsePlayerName()) {
-				if (targetMode) {
+			parsePlayerName();
+			if (targetMode) {
+				if (isRegistered(targetUUID)) {
 					if (isPlayerDifferent()) {
-						if (isRegistered(targetUUID)) {
-							if (zh.getDM().isFriendOf(p.getUniqueId(), targetUUID)) {
-								zh.getDM().removeFriend(p.getUniqueId(), targetUUID);
-								zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.FRIEND_REMOVED) {{ setPlayerName(targetName); }});
-								zh.getMM().sendPendingMessage(targetUUID, new MessageConfig(LocaleEnum.FRIEND_REMOVED_REVERSE) {{ setPlayerName(p.getName()); }});
-								zh.getCmdM().updateCommandHistory(s, command);
-								zh.getEM().payCommand(p, command);
-							}
-							else {
-								zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_FRIEND) {{ setPlayerName(targetName); }});
-							}
+						if (zh.getDM().isFriendOf(p.getUniqueId(), targetUUID)) {
+							zh.getDM().removeFriend(p.getUniqueId(), targetUUID);
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.FRIEND_REMOVED) {{ setPlayerName(targetName); }});
+							zh.getMM().sendPendingMessage(targetUUID, new MessageConfig(LocaleEnum.FRIEND_REMOVED_REVERSE) {{ setPlayerName(p.getName()); }});
+							zh.getEM().payCommand(p, command);
+						}
+						else {
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_FRIEND) {{ setPlayerName(targetName); }});
 						}
 					}
 				}
-				else {
-					sendCommandUsage(subCommand, true, false);
-				}
+			}
+			else {
+				sendCommandUsage(subCommand, true, false);
 			}
 		}
 	}
 
 	private void sendFriendList() {
 		if (hasPermission(s, fullCommand , true, false)) {
-			if (parsePlayerName()) {
-				List<String> friendNameList = zh.getDM().getFriendNameList(targetUUID);
-				List<String> friendNameReverseList = zh.getDM().getFriendNameReverseList(targetUUID);
-				if (samePlayer) {
-					if (friendNameList.size() > 0) {
-						displayFriendNames(LocaleEnum.FRIEND_LIST, friendNameList);
-					}
-					else {
-						zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.NO_FRIEND));
-					}
-					if (friendNameReverseList.size() > 0) {
-						displayFriendNames(LocaleEnum.FRIEND_LIST_REVERSE, friendNameReverseList);
-					}
-					else {
-						zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.NO_FRIEND_REVERSE));
-					}
+			parsePlayerName();
+			List<String> friendNameList = zh.getDM().getFriendNameList(targetUUID);
+			List<String> friendNameReverseList = zh.getDM().getFriendNameReverseList(targetUUID);
+			if (samePlayer) {
+				if (friendNameList.size() > 0) {
+					displayFriendNames(LocaleEnum.FRIEND_LIST, friendNameList);
 				}
 				else {
-					if (friendNameList.size() > 0) {
-						displayFriendNames(LocaleEnum.FRIEND_LIST_OTHER, friendNameList);
-					}
-					else {
-						zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.NO_FRIEND_OTHER) {{ setPlayerName(targetName); }});
-					}
-					if (friendNameReverseList.size() > 0) {
-						displayFriendNames(LocaleEnum.FRIEND_LIST_REVERSE_OTHER, friendNameReverseList);
-					}
-					else {
-						zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.NO_FRIEND_REVERSE_OTHER) {{ setPlayerName(targetName); }});
-					}
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.NO_FRIEND));
 				}
-				zh.getCmdM().updateCommandHistory(s, command);
-				zh.getEM().payCommand(p, command);
+				if (friendNameReverseList.size() > 0) {
+					displayFriendNames(LocaleEnum.FRIEND_LIST_REVERSE, friendNameReverseList);
+				}
+				else {
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.NO_FRIEND_REVERSE));
+				}
 			}
+			else {
+				if (friendNameList.size() > 0) {
+					displayFriendNames(LocaleEnum.FRIEND_LIST_OTHER, friendNameList);
+				}
+				else {
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.NO_FRIEND_OTHER) {{ setPlayerName(targetName); }});
+				}
+				if (friendNameReverseList.size() > 0) {
+					displayFriendNames(LocaleEnum.FRIEND_LIST_REVERSE_OTHER, friendNameReverseList);
+				}
+				else {
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.NO_FRIEND_REVERSE_OTHER) {{ setPlayerName(targetName); }});
+				}
+			}
+			zh.getEM().payCommand(p, command);
 		}
 	}
 	

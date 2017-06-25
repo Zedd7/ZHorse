@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.ChestedHorse;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Llama;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
@@ -13,6 +14,7 @@ import com.gmail.xibalbazedd.zhorse.database.HorseStableRecord;
 import com.gmail.xibalbazedd.zhorse.database.HorseStatsRecord;
 import com.gmail.xibalbazedd.zhorse.database.PlayerRecord;
 import com.gmail.xibalbazedd.zhorse.enums.HorseStatisticEnum;
+import com.gmail.xibalbazedd.zhorse.enums.HorseVariantEnum;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
 import com.gmail.xibalbazedd.zhorse.utils.MessageConfig;
 
@@ -22,7 +24,7 @@ public class CommandInfo extends AbstractCommand {
 
 	public CommandInfo(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled() && parseArgument(ArgumentEnum.HORSE_NAME, ArgumentEnum.PLAYER_NAME)) {
+		if (isPlayer() && parseArguments() && hasPermission() && isWorldEnabled() && parseArgument(ArgumentEnum.HORSE_NAME, ArgumentEnum.PLAYER_NAME)) {
 			if (!idMode) {
 				if (!targetMode) {
 					boolean ownsHorse = ownsHorse(targetUUID, true);
@@ -66,6 +68,7 @@ public class CommandInfo extends AbstractCommand {
 			displayInfoHeader(zh, s);
 			displayHorseID(zh, s, horseRecord);
 			displayNames(zh, s, horseRecord, ownerRecord);
+			displayVariant(zh, s, horse, statsRecord);
 			displayHealth(zh, s, statsRecord);
 			displaySpeed(zh, s, statsRecord, useExactStats, useVanillaStats);
 			displayJumpStrength(zh, s, statsRecord, useExactStats, useVanillaStats);
@@ -97,6 +100,13 @@ public class CommandInfo extends AbstractCommand {
 		String horseName = horseRecord.getName();
 		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.OWNER) {{ setPlayerName(ownerName); setSpaceCount(1); }}, true);
 		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.NAME) {{ setHorseName(horseName); setSpaceCount(1); }}, true);
+	}
+	
+	public static void displayVariant(ZHorse zh, CommandSender s, AbstractHorse horse, HorseStatsRecord statsRecord) {
+		EntityType horseType = EntityType.valueOf(statsRecord.getType());
+		HorseVariantEnum horseVariant = HorseVariantEnum.from(horseType);
+		String variant = horseVariant.name().substring(0, 1).toUpperCase() + horseVariant.name().substring(1).toLowerCase();
+		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.VARIANT) {{ setValue(variant); setSpaceCount(1); }}, true);
 	}
 	
 	public static void displayHealth(ZHorse zh, CommandSender s, HorseStatsRecord statsRecord) {

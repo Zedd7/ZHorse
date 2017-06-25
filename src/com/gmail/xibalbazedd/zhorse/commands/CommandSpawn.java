@@ -17,7 +17,6 @@ public class CommandSpawn extends AbstractCommand {
 	
 	private static final String DOUBLE_SEPARATOR = ":";
 	
-	private String type = null;
 	private String style = null;
 	private String color = null;
 	private Boolean tamed = null;	
@@ -30,8 +29,8 @@ public class CommandSpawn extends AbstractCommand {
 
 	public CommandSpawn(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {
-			if (!(idMode || targetMode)) {
+		if (isPlayer() && parseArguments() && hasPermission() && isWorldEnabled()) {
+			if (!idMode && !targetMode && (!variantMode || isRegistered(horseVariant))) {
 				execute();
 			}
 			else {
@@ -42,7 +41,7 @@ public class CommandSpawn extends AbstractCommand {
 
 	private void execute() {
 		if (zh.getEM().canAffordCommand(p, command)) {
-			if (parseArguments()) {
+			if (parseSpawnArguments()) {
 				spawnHorse();
 				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_SPAWNED));
 				zh.getCmdM().updateCommandHistory(s, command);
@@ -54,7 +53,7 @@ public class CommandSpawn extends AbstractCommand {
 		}
 	}
 
-	private boolean parseArguments() {
+	private boolean parseSpawnArguments() {
 		boolean valid = true;
 		if (!args.isEmpty()) {
 			for (String argument : args) { // Check for each token if it is some type of attribute
@@ -77,11 +76,11 @@ public class CommandSpawn extends AbstractCommand {
 	}
 
 	private boolean parseVariant(String argument) {
-		for (HorseVariantEnum horseVariant : HorseVariantEnum.values()) {
-			for (String horseVariantCode : horseVariant.getCodeArray()) {
-				if (argument.equalsIgnoreCase(horseVariantCode)) {
-					if (type == null) {
-						type = horseVariant.getEntityType().name();
+		if (horseVariant == null) {
+			for (HorseVariantEnum horseVariantEnum : HorseVariantEnum.values()) {
+				for (String horseVariantCode : horseVariantEnum.getCodeArray()) {
+					if (argument.equalsIgnoreCase(horseVariantCode)) {
+						horseVariant = horseVariantEnum;
 						return true;
 					}
 				}
@@ -91,21 +90,21 @@ public class CommandSpawn extends AbstractCommand {
 	}
 	
 	private boolean parseHorseStyle(String argument) {
-		for (Horse.Style horseStyle : Horse.Style.values()) {
-			if (argument.equalsIgnoreCase(horseStyle.name())) {
-				if (style == null) {
+		if (style == null) {
+			for (Horse.Style horseStyle : Horse.Style.values()) {
+				if (argument.equalsIgnoreCase(horseStyle.name())) {
 					style = horseStyle.name();
 					return true;
+					}
 				}
-			}
 		}
 		return false;
 	}
 	
 	private boolean parseColor(String argument) {
-		for (Horse.Color horseColor : Horse.Color.values()) { // Llama.Color taken into account because it is a subset of Horse.Color
-			if (argument.equalsIgnoreCase(horseColor.name())) {
-				if (color == null) {
+		if (color == null) {
+			for (Horse.Color horseColor : Horse.Color.values()) { // Llama.Color taken into account because it is a subset of Horse.Color
+				if (argument.equalsIgnoreCase(horseColor.name())) {
 					color = horseColor.name();
 					return true;
 				}
@@ -115,8 +114,8 @@ public class CommandSpawn extends AbstractCommand {
 	}
 	
 	private boolean parseAdult(String argument) {
-		if (argument.equalsIgnoreCase(HorseFlagEnum.ADULT.toString())) {
-			if (adult == null) {
+		if (adult == null) {
+			if (argument.equalsIgnoreCase(HorseFlagEnum.ADULT.toString())) {
 				adult = true;
 				return true;
 			}
@@ -125,8 +124,8 @@ public class CommandSpawn extends AbstractCommand {
 	}
 	
 	private boolean parseBaby(String argument) {
-		if (argument.equalsIgnoreCase(HorseFlagEnum.BABY.toString())) {
-			if (baby == null) {
+		if (baby == null) {
+			if (argument.equalsIgnoreCase(HorseFlagEnum.BABY.toString())) {
 				baby = true;
 				return true;
 			}
@@ -135,8 +134,8 @@ public class CommandSpawn extends AbstractCommand {
 	}
 
 	private boolean parseTamed(String argument) {
-		if (argument.equalsIgnoreCase(HorseFlagEnum.TAMED.toString())) {
-			if (tamed == null) {
+		if (tamed == null) {
+			if (argument.equalsIgnoreCase(HorseFlagEnum.TAMED.toString())) {
 				tamed = true;
 				return true;
 			}
@@ -145,8 +144,8 @@ public class CommandSpawn extends AbstractCommand {
 	}
 	
 	private boolean parseStats(String argument) {
-		if (StringUtils.countMatches(argument, DOUBLE_SEPARATOR) == 2) {
-			if (health == null && jumpStrength == null && speed == null) {
+		if (health == null && jumpStrength == null && speed == null) {
+			if (StringUtils.countMatches(argument, DOUBLE_SEPARATOR) == 2) {
 				Double[] stats = buildStats(argument);
 				if (stats != null) {
 					Double healthStat = stats[0];
@@ -225,8 +224,9 @@ public class CommandSpawn extends AbstractCommand {
 
 	private void spawnHorse() {
 		Location location = p.getLocation();
+		variant = horseVariant != null ? horseVariant.getEntityType().name() : null;
 		HorseStatsRecord statsRecord = new HorseStatsRecord(
-				null, null, null, null, color, null, null, null, health, null, null, null, tamed, jumpStrength, health, null, null, speed, strength, style, null, type
+				null, null, null, null, color, null, null, null, health, null, null, null, tamed, jumpStrength, health, null, null, speed, strength, style, null, variant
 		) {{ setAdult(adult); setBaby(baby); }} ;
 		HorseInventoryRecord inventoryRecord = new HorseInventoryRecord();
 		

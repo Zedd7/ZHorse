@@ -11,7 +11,7 @@ public class CommandReload extends AbstractCommand {
 	public CommandReload(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
 		if (isPlayer(true)) {
-			if (analyseArguments() && hasPermission() && isWorldEnabled()) {
+			if (parseArguments() && hasPermission() && isWorldEnabled()) {
 				if (!idMode && !targetMode) {
 					execute();
 				}
@@ -21,7 +21,7 @@ public class CommandReload extends AbstractCommand {
 			}
 		}
 		else {
-			if (analyseArguments()) {
+			if (parseArguments()) {
 				if (!idMode && !targetMode) {
 					execute();
 				}

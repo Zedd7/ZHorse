@@ -15,11 +15,11 @@ Headers:
   friendListFormat: "<gold><player><yellow>"
   aliveHorseListHeader: "<gold>Vos chevaux vivants <value> <value>"
   aliveHorseListOtherHeader: "<gold>Chevaux vivants de <player> <value> <value>"
-  aliveHorseListFormat: "<yellow><id><gold> - <yellow><horse><value>"
-  aliveHorseListFormatFavorite: "<yellow><id><gold> - <yellow><horse><value> <gold>(<yellow>favori<gold>)"
+  aliveHorseListFormat: "<yellow><id><gold> - <yellow><horse><value><value>"
+  aliveHorseListFormatFavorite: "<yellow><id><gold> - <yellow><horse><value><value> <gold>(<yellow>favori<gold>)"
   deadHorseListHeader: "<gold>Vos chevaux morts <value> <value>"
   deadHorseListOtherHeader: "<gold>Chevaux morts de <player> <value> <value>"
-  deadHorseListFormat: "<yellow>X<gold> - <yellow><horse><green> <gold>(<yellow><value><gold>)"
+  deadHorseListFormat: "<yellow>X<gold> - <yellow><horse><value> <gold>(<yellow><value><gold>)"
   remainingClaimsFormat: "<yellow>(<gold><amount><yellow>/<gold><max><yellow>)"
   commandWikiHeader: "<green>Wiki : <yellow>https://github.com/Xibalba/ZHorse/wiki/Commands"
   commandUsageHeader: "<green>Légende : <gold>/commande <yellow>paramObligatoires (paramOptionels)"
@@ -155,6 +155,7 @@ Messages:
   unknownSpawnArgument: "<gold><value><yellow> n'est pas un argument valide pour /zh spawn."
   unknownStatsDisplayMode: "<yellow>Ceci n'est pas un mode d'affichage supporté. Veuillez utiliser l'un des suivants : <value>"
   unknownSubCommand: "<gold><value><yellow> n'est pas une sous-commande de /zh <value>."
+  unknownVariant: "<gold><value><yellow> n'est pas une variante de cheval. Veuillez utiliser l'une des suivantes : <value>"
   worldDisabled: "<gold>ZHorse<yellow> est désactivé sur ce monde."
   worldUncrossable: "<yellow>La téléportation entre votre monde et celui de <gold><horse><yellow> est bloquée."
 
@@ -183,6 +184,13 @@ Horse informations:
   stable: "<yellow>Écurie: <gold><value>"
   status: "<yellow>Statut : <gold><value>"
   strength: "<yellow>Taille du coffre : <gold><amount>"
+  variant: "<yellow>Variante: <gold><value>"
+  variantHorse: "<yellow><<gold>H<yellow>>"
+  variantDonkey: "<yellow><<gold>D<yellow>>"
+  variantMule: "<yellow><<gold>M<yellow>>"
+  variantLlama: "<yellow><<gold>L<yellow>>"
+  variantSkeleton: "<yellow><<gold>S<yellow>>"
+  variantZombie: "<yellow><<gold>Z<yellow>>"
 
 Command descriptions:
   admin: "<gold>/zh admin<gray>: <yellow>Gère les fichiers de ZHorse."
@@ -243,7 +251,7 @@ Command usages:
   here: "<gold>/zh here<yellow> (-i chevalID) (-p nomJoueur) (-a)"
   info: "<gold>/zh info<yellow> (-i chevalID) (-p nomJoueur) (-a)"
   kill: "<gold>/zh kill<yellow> (-i chevalID) (-p nomJoueur) (-a)"
-  list: "<gold>/zh list<yellow> (#page) (-p nomJoueur) (-a)"
+  list: "<gold>/zh list<yellow> (#page) (-p nomJoueur) (-v variante) (-a)"
   lock: "<gold>/zh lock<yellow> (-i chevalID) (-p nomJoueur) (-a)"
   protect: "<gold>/zh protect<yellow> (-i chevalID) (-p nomJoueur) (-a)"
   reload: "<gold>/zh reload<yellow> (-a)"
@@ -252,14 +260,14 @@ Command usages:
   sell: "<gold>/zh sell<yellow> (prix) (-i chevalID) (-p nomJoueur) (-a)"
   settings: "<gold>/zh settings<yellow> sous-commande valeur"
   share: "<gold>/zh share<yellow> (-i chevalID) (-p nomJoueur) (-a)"
-  spawn: "<gold>/zh spawn<yellow> (variante) (style) (couleur) ('tamed') ('adult' | 'baby') (vie):(vitesse%):(saut%) (force)"
+  spawn: "<gold>/zh spawn<yellow> ((-v) variante) (style) (couleur) ('tamed') ('adult' | 'baby') (vie):(vitesse%):(saut%) (force)"
   stable: "<gold>/zh stable<yellow> sous-commande"
   tame: "<gold>/zh tame<yellow> (-i chevalID) (-p nomJoueur) (-a)"
   tp: "<gold>/zh tp<yellow> (-i chevalID) (-p nomJoueur) (-a)"
 
 Admin command usages:
-  burial: "<gold>/zh admin burial<yellow> (-p) nomJoueur (-a)"
-  clear: "<gold>/zh admin clear<yellow> (-p) nomJoueur (-i chevalID) (-a)"
+  burial: "<gold>/zh admin burial<yellow> (-p) nomJoueur (-v variante) (-a)"
+  clear: "<gold>/zh admin clear<yellow> (-p) nomJoueur (-i chevalID | -v variante) (-a)"
   import: "<gold>/zh admin import<yellow> baseDeDonnées (-a)"
 
 Friend command usages:
