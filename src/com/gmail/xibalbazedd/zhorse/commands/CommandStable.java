@@ -91,6 +91,7 @@ public class CommandStable extends AbstractCommand {
 						horse = zh.getHM().teleportHorse(horse, stableLocation);
 						if (horse != null) {
 							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_TELEPORTED_TO_STABLE) {{ setHorseName(horseName); }});
+							zh.getCmdM().updateCommandHistory(s, command);
 							zh.getEM().payCommand(p, command);
 						}
 						else {
@@ -115,6 +116,7 @@ public class CommandStable extends AbstractCommand {
 				HorseStableRecord stableRecord = new HorseStableRecord(horse.getUniqueId().toString(), playerLocation);
 				zh.getDM().registerHorseStable(stableRecord);
 				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STABLE_SET) {{ setHorseName(horseName); }});
+				zh.getCmdM().updateCommandHistory(s, command);
 				zh.getEM().payCommand(p, command);
 			}
 		}
@@ -126,6 +128,7 @@ public class CommandStable extends AbstractCommand {
 				if (zh.getDM().isHorseStableRegistered(horse.getUniqueId())) {
 					zh.getDM().removeHorseStable(horse.getUniqueId());
 					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STABLE_UNSET) {{ setHorseName(horseName); }});
+					zh.getCmdM().updateCommandHistory(s, command);
 					zh.getEM().payCommand(p, command);
 				}
 				else {

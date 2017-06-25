@@ -216,6 +216,8 @@ public class CommandAdmin extends AbstractCommand {
 				else {
 					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.DATABASE_IMPORT_FAILURE) {{ setValue(databaseName); }});
 				}
+				zh.getCmdM().updateCommandHistory(s, command);
+				zh.getEM().payCommand(p, command);
 			}
 			else {
 				displayAvailableDatabases(LocaleEnum.MISSING_DATABASE);
