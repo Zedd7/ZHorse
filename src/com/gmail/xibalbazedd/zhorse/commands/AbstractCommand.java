@@ -32,15 +32,17 @@ public abstract class AbstractCommand {
 	protected ZHorse zh;
 	protected CommandSender s;
 	protected CommandSender console;
+	protected String[] a;
 	protected Player p;
 	protected AbstractHorse horse;
-	protected UUID targetUUID;
-	protected String[] a;
 	protected List<String> args;
 	protected String command;
 	protected String horseID;
 	protected String horseName;
 	protected String targetName;
+	protected UUID targetUUID;
+	protected String variant;
+	protected HorseVariantEnum horseVariant;
 	protected int pageNumber;
 	protected boolean useExactStats;
 	protected boolean useVanillaStats;
@@ -49,6 +51,7 @@ public abstract class AbstractCommand {
 	protected boolean adminMode = false;
 	protected boolean idMode = false;
 	protected boolean targetMode = false;
+	protected boolean variantMode = false;
 	protected boolean targetIsOwner = true;
 	protected boolean parsingError = false;
 	protected boolean samePlayer = false;
@@ -58,13 +61,13 @@ public abstract class AbstractCommand {
 		this.a = a;
 		this.s = s;
 		this.command = a[0].toLowerCase();
-		this.pageNumber = 1;
+		this.pageNumber = CompoundMessage.FIRST_PAGE_NUMBER;
 		args = new ArrayList<>();
 		console = zh.getServer().getConsoleSender();
 		useVanillaStats = zh.getCM().shouldUseVanillaStats();
 	}
 	
-	protected boolean analyseArguments() {
+	protected boolean parseArguments() {
 		boolean valid;
 		for (int i = 1; i < a.length; i++) { // Start at 1 to skip the command
 			valid = true;
@@ -88,6 +91,14 @@ public abstract class AbstractCommand {
 					i++; // Skip the player
 				}
 			}
+			else if (a[i].equalsIgnoreCase("-v")) {
+				valid = !variantMode && i != (a.length - 1) && !a[i + 1].startsWith("-");
+				if (valid) { // Stay in array bounds
+					variantMode = true;
+					variant = a[i + 1];
+					i++; // Skip the variant
+				}
+			}
 			else { // Add to argument if not a flag
 				args.add(a[i]);
 			}
@@ -96,32 +107,48 @@ public abstract class AbstractCommand {
 				return false;
 			}
 		}
-		return analyseModes();
+		analyseModes();
+		return true;
 	}
 	
-	protected boolean analyseModes() {
-		if (!targetMode) {
-			if (playerCommand) {
-				targetUUID = p.getUniqueId();
-			}
-			targetName = s.getName();
-		}
-		else {
+	protected void analyseModes() {
+		analyseIDMode();
+		analyseTargetMode();
+		analyseVariantMode();
+	}
+	
+	private void analyseIDMode() {}
+	
+	protected void analyseTargetMode() {
+		if (targetMode) {
 			String fixedTargetName = zh.getDM().getPlayerName(targetName); // Fix potential case issues
 			if (fixedTargetName != null) {
 				targetName = fixedTargetName;
 				targetUUID = getPlayerUUID(targetName);
 			}
-			if (targetName == null || targetUUID == null) {
-				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_PLAYER) {{ setPlayerName(targetName); }});
-				return false;
+		}
+		else {
+			if (playerCommand) {
+				targetUUID = p.getUniqueId();
 			}
+			targetName = s.getName();
 		}
 		adminMode |= zh.getCM().isAutoAdminModeEnabled(command) && hasPermissionAdmin(true);
 		samePlayer = !targetMode || (playerCommand && p.getUniqueId().equals(targetUUID));
-		return true;
 	}
 	
+	protected void analyseVariantMode() {
+		if (variantMode) {
+			for (HorseVariantEnum horseVariantEnum : HorseVariantEnum.values()) {
+				for (String horseVariantCode : horseVariantEnum.getCodeArray()) {
+					if (variant.equalsIgnoreCase(horseVariantCode)) {
+						horseVariant = horseVariantEnum;
+					}
+				}
+			}
+		}
+	}
+
 	protected boolean parseArgument(ArgumentEnum... argumentOrder) {
 		for (ArgumentEnum argumentType : argumentOrder) {
 			switch (argumentType) {
@@ -129,12 +156,14 @@ public abstract class AbstractCommand {
 				break;
 			case HORSE_NAME:
 				if (!idMode) {
-					return parseHorseName();
+					parseHorseName();
+					return true;
 				}
 				break;
 			case PLAYER_NAME:
 				if (!targetMode) {
-					return parsePlayerName();
+					parsePlayerName();
+					return true;
 				}
 				break;
 			case PAGE_NUMBER:
@@ -147,11 +176,11 @@ public abstract class AbstractCommand {
 	protected enum ArgumentEnum {
 		
 		HORSE_ID, HORSE_NAME, PLAYER_NAME, PAGE_NUMBER;
-		
+	
 	}
 	
-	protected boolean parseHorseName() {
-		if (idMode || args.isEmpty()) return true;
+	protected void parseHorseName() {
+		if (idMode || args.isEmpty()) return;
 		
 		idMode = true;
 		UUID ownerUUID = targetIsOwner ? targetUUID : p.getUniqueId();
@@ -159,27 +188,18 @@ public abstract class AbstractCommand {
 		Integer horseIDInt = zh.getDM().getHorseID(ownerUUID, horseName);
 		if (horseIDInt != null) {
 			horseID = horseIDInt.toString();
-			return true;
-		}
-		else {
-			if (samePlayer || !targetIsOwner) {
-				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_HORSE_NAME) {{ setHorseName(horseName); }});
-			}
-			else {
-				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_HORSE_NAME_OTHER) {{ setHorseName(horseName); setPlayerName(targetName); }});
-			}
-			return false;
+			analyseIDMode();
 		}
 	}
 	
-	protected boolean parsePlayerName() {
-		if (targetMode) return true;
+	protected void parsePlayerName() {
+		if (targetMode) return;
 		
-		targetMode = !args.isEmpty();
-		targetName = !args.isEmpty() ? args.get(0) : "";
-		args.remove(targetName);
 		targetUUID = null;
-		return analyseModes();
+		targetMode = !args.isEmpty();
+		targetName = targetMode ? args.get(0) : "";
+		args.remove(targetName);
+		analyseTargetMode();
 	}
 	
 	protected boolean parsePageNumber(boolean hideConsole) {
@@ -637,11 +657,7 @@ public abstract class AbstractCommand {
 	}
 	
 	protected boolean isRegistered(UUID targetUUID, String horseID) {
-		return isRegistered(targetUUID, horseID, false);
-	}
-	
-	protected boolean isRegistered(UUID targetUUID, String horseID, boolean isOwner) {
-		if (horseID != null) {
+		if (horseID != null && targetUUID != null) {
 			try {
 				if (zh.getDM().isHorseRegistered(targetUUID, Integer.parseInt(horseID))) {
 					horseName = zh.getDM().getHorseName(targetUUID, Integer.parseInt(horseID));
@@ -655,20 +671,32 @@ public abstract class AbstractCommand {
 		}
 		else {
 			if (horseID == null) {
-				if (samePlayer || isOwner) zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_HORSE_NAME) {{ setHorseName(horseName); }});
+				if (samePlayer || !targetIsOwner) zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_HORSE_NAME) {{ setHorseName(horseName); }});
 				else zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_HORSE_NAME_OTHER) {{ setHorseName(horseName); setPlayerName(targetName); }});
 			}
 			else if (horseID.equals(Integer.toString(zh.getDM().getDefaultFavoriteHorseID()))) {
 				String remainingClaimsMessage = getRemainingClaimsMessage(targetUUID);
-				if (samePlayer || isOwner) zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.NO_HORSE_OWNED) {{ setValue(remainingClaimsMessage); }});
+				if (samePlayer || !targetIsOwner) zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.NO_HORSE_OWNED) {{ setValue(remainingClaimsMessage); }});
 				else zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.NO_HORSE_OWNED_OTHER) {{ setPlayerName(targetName); setValue(remainingClaimsMessage); }});
 			}
 			else {
-				if (samePlayer || isOwner) zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_HORSE_ID) {{ setHorseID(horseID); }});
+				if (samePlayer || !targetIsOwner) zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_HORSE_ID) {{ setHorseID(horseID); }});
 				else zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_HORSE_ID_OTHER) {{ setHorseID(horseID); setPlayerName(targetName); }});
 			}
 		}
 		return false;
+	}
+	
+	protected boolean isRegistered(HorseVariantEnum horseVariant) {
+		if (horseVariant != null) {
+			variant = horseVariant.getEntityType().name();
+			return true;
+		}
+		else {
+			String horseOptionsMessage = getHorseOptionList(HorseVariantEnum.getAllCodeArray(), LocaleEnum.LIST_HORSE_VARIANT);
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_VARIANT) {{ setValue(variant); setValue(horseOptionsMessage); }});
+			return false;
+		}
 	}
 	
 	protected boolean isStatHealthValid(double health) {
@@ -911,17 +939,19 @@ public abstract class AbstractCommand {
 	}
 	
 	protected <T> void sendHorseOptionList(T[] horseOptionArray, LocaleEnum index) {
-		String horseOptionArrayMessage = "";
-		for (int i = 0; i < horseOptionArray.length; i++) {
-			final String horseOption = horseOptionArray[i].toString().toLowerCase();
-			horseOptionArrayMessage += zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.HORSE_OPTION_FORMAT) {{ setValue(horseOption); }}, true);
-			if (i < horseOptionArray.length - 1) {
-				horseOptionArrayMessage += ", ";
-			}
+		String horseOptionsMessage = getHorseOptionList(horseOptionArray, index);
+		zh.getMM().sendMessage(s, new MessageConfig(index) {{ setSpaceCount(1); setValue(horseOptionsMessage); }}, true);
+	}
+	
+	protected <T> String getHorseOptionList(T[] horseOptionArray, LocaleEnum index) {
+		List<String> horseOptionMessageList = new ArrayList<>();
+		for (T t : horseOptionArray) {
+			String horseOption = t.toString().toLowerCase();
+			String horseOptionMessage = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.HORSE_OPTION_FORMAT) {{ setValue(horseOption); }}, true);
+			horseOptionMessageList.add(horseOptionMessage);
 		}
-		horseOptionArrayMessage += ChatColor.RESET;
-		final String message = horseOptionArrayMessage;
-		zh.getMM().sendMessage(s, new MessageConfig(index) {{ setSpaceCount(1); setValue(message); }}, true);
+		String horseOptionsMessage = String.join(", ", horseOptionMessageList) + ChatColor.RESET;
+		return horseOptionsMessage;
 	}
 
 }

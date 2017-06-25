@@ -21,6 +21,14 @@ public class CompoundMessage {
 		addPage();
 	}
 	
+	public void addHeader(String header) {
+		addHeader(header, FIRST_PAGE_NUMBER);
+	}
+	
+	public void addHeader(String header, int startPageNumber) {
+		headerMap.put(startPageNumber, header);
+	}
+	
 	public void addPage() {
 		pageList.add(new ArrayList<>());
 	}
@@ -36,21 +44,6 @@ public class CompoundMessage {
 		}
 	}
 	
-	public int getPageCount() {
-		return pageList.size();
-	}
-	
-	public int getRemainingLines() {
-		return pageLength - pageList.get(pageList.size() - 1).size();
-	}
-	
-	public List<String> getPage(int pageNumber) {
-		if (pageNumber >= FIRST_PAGE_NUMBER && pageNumber <= pageList.size()) {
-			return pageList.get(pageNumber - 1);
-		}
-		return new ArrayList<>();
-	}
-	
 	public String getHeader(int pageNumber) {
 		int closestStartPageNumber = FIRST_PAGE_NUMBER;
 		for (int startPageNumber : headerMap.keySet()) { // Iterating over an ordered key set
@@ -64,12 +57,35 @@ public class CompoundMessage {
 		return headerMap.get(closestStartPageNumber);
 	}
 	
-	public void addHeader(String header) {
-		addHeader(header, FIRST_PAGE_NUMBER);
+	public List<String> getPage(int pageNumber) {
+		if (pageNumber >= FIRST_PAGE_NUMBER && pageNumber <= pageList.size()) {
+			return pageList.get(pageNumber - 1);
+		}
+		return new ArrayList<>();
 	}
 	
-	public void addHeader(String header, int startPageNumber) {
-		headerMap.put(startPageNumber, header);
+	public int getPageCount() {
+		return pageList.size();
+	}
+	
+	public int getPageLength() {
+		return pageLength;
+	}
+	
+	public int getLineLength() {
+		return lineLength;
+	}
+	
+	public int getRemainingLines() {
+		return pageLength - pageList.get(pageList.size() - 1).size();
+	}
+	
+	public boolean isPageEmpty() {
+		return getRemainingLines() == pageLength;
+	}
+	
+	public boolean isPageFull() {
+		return getRemainingLines() == 0;
 	}
 
 }

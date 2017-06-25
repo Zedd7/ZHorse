@@ -17,11 +17,11 @@ Headers:
   friendListFormat: "<gold><player><yellow>"
   aliveHorseListHeader: "<gold>Je levende paarden <value> <value>"
   aliveHorseListOtherHeader: "<gold><player>'s levende paarden <value> <value>"
-  aliveHorseListFormat: "<yellow><id><gold> - <yellow><horse><value>"
-  aliveHorseListFormatFavorite: "<yellow><id><gold> - <yellow><horse><value> <gold>(<yellow>favoriet<gold>)"
+  aliveHorseListFormat: "<yellow><id><gold> - <yellow><horse><value><value>"
+  aliveHorseListFormatFavorite: "<yellow><id><gold> - <yellow><horse><value><value> <gold>(<yellow>favoriet<gold>)"
   deadHorseListHeader: "<gold>Je overleden paarden <value> <value>"
   deadHorseListOtherHeader: "<gold><player>'s overleden paarden <value> <value>"
-  deadHorseListFormat: "<yellow>X<gold> - <yellow><horse><green> <gold>(<yellow><value><gold>)"
+  deadHorseListFormat: "<yellow>X<gold> - <yellow><horse><value> <gold>(<yellow><value><gold>)"
   remainingClaimsFormat: "<yellow>(<gold><amount><yellow>/<gold><max><yellow>)"
   commandWikiHeader: "<green>Wiki : <yellow>https://github.com/Xibalba/ZHorse/wiki/Commands"
   commandUsageHeader: "<green>Legende : <gold>/command <yellow>verplichtVeld (optioneelVeld)"
@@ -157,6 +157,7 @@ Messages:
   unknownSpawnArgument: "<gold><value><yellow> is geen geldig argument voor /zh spawn."
   unknownStatsDisplayMode: "<yellow>Deze weergavemodus word niet ondersteund. Gebruik één van de volgende : <value>"
   unknownSubCommand: "<gold><value><yellow> is geen /zh <value> sub-commando."
+  unknownVariant: "<gold><value><yellow> is not a horse variant. Please use one the following : <value>"
   worldDisabled: "<gold>ZHorse<yellow> is uitgeschakeld in deze wereld."
   worldUncrossable: "<yellow>Teleportatie tussen jouw wereld en <gold><horse><yellow>'s wereld is geblokkeerd."
 
@@ -185,6 +186,13 @@ Horse informations:
   stable: "<yellow>Stable: <gold><value>"
   status: "<yellow>Status : <gold><value>"
   strength: "<yellow>Opslagruimte : <gold><amount>"
+  variant: "<yellow>Variant: <gold><value>"
+  variantHorse: "<yellow><<gold>H<yellow>>"
+  variantDonkey: "<yellow><<gold>D<yellow>>"
+  variantMule: "<yellow><<gold>M<yellow>>"
+  variantLlama: "<yellow><<gold>L<yellow>>"
+  variantSkeleton: "<yellow><<gold>S<yellow>>"
+  variantZombie: "<yellow><<gold>Z<yellow>>"
 
 Command descriptions:
   admin: "<gold>/zh admin<gray>: <yellow>Beheer ZHorse bestanden."
@@ -245,7 +253,7 @@ Command usages:
   here: "<gold>/zh here<yellow> (-i paardID) (-p spelerNaam) (-a)"
   info: "<gold>/zh info<yellow> (-i paardID) (-p spelerNaam) (-a)"
   kill: "<gold>/zh kill<yellow> (-i paardID) (-p spelerNaam) (-a)"
-  list: "<gold>/zh list<yellow> (#pagina) (-p spelerNaam) (-a)"
+  list: "<gold>/zh list<yellow> (#pagina) (-p spelerNaam) (-v variant) (-a)"
   lock: "<gold>/zh lock<yellow> (-i paardID) (-p spelerNaam) (-a)"
   protect: "<gold>/zh protect<yellow> (-i paardID) (-p spelerNaam) (-a)"
   reload: "<gold>/zh reload<yellow> (-a)"
@@ -254,14 +262,14 @@ Command usages:
   sell: "<gold>/zh sell<yellow> (prijs) (-i paardID) (-p spelerNaam) (-a)"
   settings: "<gold>/zh settings<yellow> sub-commando value"
   share: "<gold>/zh share<yellow> (-i paardID) (-p spelerNaam) (-a)"
-  spawn: "<gold>/zh spawn<yellow> (variant) (stijl) (kleur) ('tamed') ('adult' | 'baby') (levens):(snelheid%):(springkracht%) (kracht)"
+  spawn: "<gold>/zh spawn<yellow> ((-v) variant) (stijl) (kleur) ('tamed') ('adult' | 'baby') (levens):(snelheid%):(springkracht%) (kracht)"
   stable: "<gold>/zh stable<yellow> sub-commando"
   tame: "<gold>/zh tame<yellow> (-i paardID) (-p spelerNaam) (-a)"
   tp: "<gold>/zh tp<yellow> (-i paardID) (-p spelerNaam) (-a)"
   
 Admin command usages:
-  burial: "<gold>/zh admin burial<yellow> (-p) spelerNaam (-a)"
-  clear: "<gold>/zh admin clear<yellow> (-p) spelerNaam (-i paardID) (-a)"
+  burial: "<gold>/zh admin burial<yellow> (-p) spelerNaam (-v variant) (-a)"
+  clear: "<gold>/zh admin clear<yellow> (-p) spelerNaam (-i paardID | -v variant) (-a)"
   import: "<gold>/zh admin import<yellow> database (-a)"
 
 Friend command usages:

@@ -22,7 +22,7 @@ public class CommandSettings extends AbstractCommand {
 
 	public CommandSettings(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {			
+		if (isPlayer() && parseArguments() && hasPermission() && isWorldEnabled()) {			
 			if (!idMode) {
 				if (isOnHorse(true)) { // select the horse w/ or w/o target
 					horse = (AbstractHorse) p.getVehicle();
@@ -220,9 +220,9 @@ public class CommandSettings extends AbstractCommand {
 	}
 	
 	private void displayAvailableLanguages(LocaleEnum index, String language) {
-		List<String> availableLanguages = zh.getCM().getAvailableLanguages();
+		List<String> availableLanguageList = zh.getCM().getAvailableLanguages();
 		List<String> availableLanguageMessageList = new ArrayList<>();
-		for (String availableLanguage : availableLanguages) {
+		for (String availableLanguage : availableLanguageList) {
 			String availableLanguageMessage = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.AVAILABLE_OPTION_FORMAT) {{ setValue(availableLanguage); }}, true);
 			availableLanguageMessageList.add(availableLanguageMessage);
 		}

@@ -14,7 +14,7 @@ public class CommandSell extends AbstractCommand {
 
 	public CommandSell(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (isPlayer() && analyseArguments() && hasPermission() && isWorldEnabled()) {
+		if (isPlayer() && parseArguments() && hasPermission() && isWorldEnabled()) {
 			if (!idMode) {
 				if (!targetMode) {
 					boolean ownsHorse = ownsHorse(targetUUID, true);
