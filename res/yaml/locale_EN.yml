@@ -235,7 +235,7 @@ Settings command descriptions:
   swap: "<gold>/zh settings swap<gray>: <yellow>Swap two horse IDs."
 
 Stable command descriptions:
-  go: "<gold>/zh stable go<gray>: <yellow>Bring back the horse to its stable."
+  go: "<gold>/zh stable go<gray>: <yellow>Teleport the horse to its stable."
   set: "<gold>/zh stable set<gray>: <yellow>Define the horse's stable location."
   unset: "<gold>/zh stable unset<gray>: <yellow>Unset the horse's stable location."
 

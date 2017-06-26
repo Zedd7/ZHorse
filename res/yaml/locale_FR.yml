@@ -235,7 +235,7 @@ Settings command descriptions:
   swap: "<gold>/zh settings swap<gray>: <yellow>Echange deux IDs de chevaux."
 
 Stable command descriptions:
-  go: "<gold>/zh stable go<gray>: <yellow>Ramène le cheval à son écurie."
+  go: "<gold>/zh stable go<gray>: <yellow>Téléporte le cheval à son écurie."
   set: "<gold>/zh stable set<gray>: <yellow>Défini l'emplacement de l'étable du cheval."
   unset: "<gold>/zh stable unset<gray>: <yellow>Supprime l'emplacement de l'étable du cheval."
 
