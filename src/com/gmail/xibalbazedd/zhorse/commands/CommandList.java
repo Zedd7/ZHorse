@@ -8,6 +8,7 @@ import org.bukkit.entity.EntityType;
 
 import com.gmail.xibalbazedd.zhorse.ZHorse;
 import com.gmail.xibalbazedd.zhorse.database.HorseDeathRecord;
+import com.gmail.xibalbazedd.zhorse.database.HorseRecord;
 import com.gmail.xibalbazedd.zhorse.enums.HorseVariantEnum;
 import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
 import com.gmail.xibalbazedd.zhorse.managers.MessageManager;
@@ -40,13 +41,13 @@ public class CommandList extends AbstractCommand {
 		if (zh.getEM().canAffordCommand(p, command)) {
 			CompoundMessage compoundMessage = new CompoundMessage(true);
 			
-			List<String> aliveHorseNameList = zh.getDM().getAliveHorseNameList(targetUUID);
+			List<HorseRecord> aliveHorseList = zh.getDM().getHorseRecordList(targetUUID, false);
 			String remainingClaimsMessage = getRemainingClaimsMessage(targetUUID);
-			buildAliveHorseNameList(compoundMessage, aliveHorseNameList, remainingClaimsMessage);
+			buildAliveHorseList(compoundMessage, aliveHorseList, remainingClaimsMessage);
 			
-			List<HorseDeathRecord> horseDeathRecordList = zh.getDM().getHorseDeathRecordList(targetUUID);
+			List<HorseDeathRecord> deathHorseList = zh.getDM().getHorseDeathRecordList(targetUUID);
 			String remainingDeathsMessage = getRemainingDeathsMessage(targetUUID);
-			buildDeadHorseNameList(compoundMessage, horseDeathRecordList, remainingDeathsMessage);
+			buildDeadHorseList(compoundMessage, deathHorseList, remainingDeathsMessage);
 			
 			int maxPageNumber = compoundMessage.getPageCount();
 			String pageNumberMessage = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.PAGE_NUMBER_FORMAT) {{ setAmount(pageNumber); setMax(maxPageNumber); }}, true);
@@ -62,28 +63,30 @@ public class CommandList extends AbstractCommand {
 		}
 	}
 
-	private void buildAliveHorseNameList(CompoundMessage compoundMessage, List<String> aliveHorseNameList, String remainingClaimsMessage) {
-		if (!aliveHorseNameList.isEmpty()) {
-			String favorite = zh.getDM().getPlayerFavoriteHorseID(targetUUID).toString();
-			for (int horseIDInt = 1; horseIDInt <= aliveHorseNameList.size(); ++horseIDInt) {
-				UUID horseUUID = zh.getDM().getHorseUUID(targetUUID, horseIDInt);
+	private void buildAliveHorseList(CompoundMessage compoundMessage, List<HorseRecord> aliveHorseList, String remainingClaimsMessage) {
+		if (!aliveHorseList.isEmpty()) {
+			int expectedHorseID = zh.getDM().getDefaultFavoriteHorseID();
+			int favoriteHorseID = zh.getDM().getPlayerFavoriteHorseID(targetUUID);
+			for (HorseRecord horseRecord : aliveHorseList) {
+				UUID horseUUID = UUID.fromString(horseRecord.getUUID());
 				if (!variantMode || zh.getDM().isHorseOfType(horseUUID, variant)) {
 					livingHorseListed = true;
-					String horseID = Integer.toString(horseIDInt); // Order assured by DataManager
-					String horseName = aliveHorseNameList.get(horseIDInt - 1);
+					int horseID = validateHorseID(horseUUID, horseRecord.getId(), expectedHorseID); // Order assured by DataManager
+					String horseName = horseRecord.getName();
 					String variantMessage = buildVariantMessage(horseUUID);
-					String statusMessage = buildStatusMessage(horseUUID);
+					String statusMessage = buildStatusMessage(horseRecord);
 					String message;
-					if (horseID.equals(favorite)) {
+					if (horseID == favoriteHorseID) {
 						message = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.ALIVE_HORSE_LIST_FORMAT_FAVORITE) {{
-							setHorseName(horseName); setHorseID(horseID); setSpaceCount(1); setValue(variantMessage); setValue(statusMessage);
+							setHorseName(horseName); setHorseID(Integer.toString(horseID)); setSpaceCount(1); setValue(variantMessage); setValue(statusMessage);
 						}}, true);
 					}
 					else {
 						message = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.ALIVE_HORSE_LIST_FORMAT) {{
-							setHorseName(horseName); setHorseID(horseID); setSpaceCount(1); setValue(variantMessage); setValue(statusMessage);
+							setHorseName(horseName); setHorseID(Integer.toString(horseID)); setSpaceCount(1); setValue(variantMessage); setValue(statusMessage);
 						}}, true);
 					}
+					if (horseID == expectedHorseID) expectedHorseID++;
 					compoundMessage.addLine(message);
 				}
 			}
@@ -98,6 +101,18 @@ public class CommandList extends AbstractCommand {
 		}
 	}
 	
+	private int validateHorseID(UUID horseUUID, int horseID, int expectedHorseID) {
+		if (horseID < expectedHorseID) {
+			horseID = zh.getDM().getNextHorseID(targetUUID);
+			zh.getDM().updateHorseID(horseUUID, horseID);
+		}
+		else if (horseID > expectedHorseID) {
+			horseID--;
+			zh.getDM().updateHorseID(horseUUID, horseID);
+		}
+		return horseID;
+	}
+
 	private String buildVariantMessage(UUID horseUUID) {
 		String variantMessage = "";
 		EntityType horseType = EntityType.valueOf(zh.getDM().getHorseType(horseUUID));
@@ -125,26 +140,26 @@ public class CommandList extends AbstractCommand {
 		return variantMessage;
 	}
 
-	private String buildStatusMessage(UUID horseUUID) {
+	private String buildStatusMessage(HorseRecord horseRecord) {
 		String statusMessage = "";
-		if (zh.getDM().isHorseLocked(horseUUID)) {
+		if (horseRecord.isLocked()) {
 			statusMessage += zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.LOCKED) {{ setSpaceCount(1); }}, true);
 		}
-		else if (zh.getDM().isHorseShared(horseUUID)) {
+		else if (horseRecord.isShared()) {
 			statusMessage += zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.SHARED) {{ setSpaceCount(1); }}, true);
 		}
 		else {
 			statusMessage += zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.RESTRICTED) {{ setSpaceCount(1); }}, true);
 		}
-		if (zh.getDM().isHorseProtected(horseUUID)) {
+		if (horseRecord.isProtected()) {
 			statusMessage += zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.PROTECTED) {{ setSpaceCount(1); }}, true);
 		}
 		return statusMessage;
 	}
 
-	private void buildDeadHorseNameList(CompoundMessage compoundMessage, List<HorseDeathRecord> horseDeathRecordList, String remainingDeathsMessage) {
-		if (!horseDeathRecordList.isEmpty()) {
-			for (HorseDeathRecord deathRecord : horseDeathRecordList) {
+	private void buildDeadHorseList(CompoundMessage compoundMessage, List<HorseDeathRecord> deathHorseList, String remainingDeathsMessage) {
+		if (!deathHorseList.isEmpty()) {
+			for (HorseDeathRecord deathRecord : deathHorseList) {
 				UUID horseUUID = UUID.fromString(deathRecord.getUUID());
 				if (!variantMode || zh.getDM().isHorseOfType(horseUUID, variant)) {
 					deadHorseListed = true;
@@ -172,7 +187,7 @@ public class CommandList extends AbstractCommand {
 	}
 
 	private void buildAliveHorseListHeader(CompoundMessage compoundMessage, int startingPageNumber, String remainingClaimsMessage, String pageNumberMessage) {
-		if (livingHorseListed || !deadHorseListed) {
+		if (livingHorseListed) {
 			String aliveHorseListHeader;
 			if (samePlayer) {
 				aliveHorseListHeader = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.ALIVE_HORSE_LIST_HEADER) {{
