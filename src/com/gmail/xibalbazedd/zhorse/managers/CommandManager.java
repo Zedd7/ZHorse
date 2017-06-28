@@ -93,7 +93,10 @@ public class CommandManager implements CommandExecutor {
 
 	public void updateCommandHistory(CommandSender s, String command) {
 		if (!(s instanceof Player)) return;
-		commandHistoryMap.get(((Player) s).getUniqueId()).put(command, Instant.now());
+		UUID playerUUID = ((Player) s).getUniqueId();
+		if (commandHistoryMap.containsKey(playerUUID)) {
+			commandHistoryMap.get(playerUUID).put(command, Instant.now());
+		}
 	}
 	
 }

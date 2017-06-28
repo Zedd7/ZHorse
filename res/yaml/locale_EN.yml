@@ -107,7 +107,7 @@ Messages:
   languageSetOther: "<gold><player><yellow> is now using the language <gold><lang><yellow>."
   listHorseColor: "<yellow>Horse color: <value>"
   listHorseStyle: "<yellow>Horse style: <value>"
-  listHorseVariant: "<yellow>Variant: <value><yellow>"
+  listHorseVariant: "<yellow>Variant: <value>"
   listLlamaColor: "<yellow>Llama color: <value>"
   livingHorsesCleared: "<yellow>All your living horses have been cleared from the database."
   livingHorsesClearedOther: "<yellow>All <gold><player><yellow>'s living horses have been cleared from the database."

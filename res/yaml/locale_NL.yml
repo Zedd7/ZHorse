@@ -109,7 +109,7 @@ Messages:
   languageSetOther: "<gold><player><yellow> gebruikt nu <gold><lang><yellow> als taal."
   listHorseColor: "<yellow>Paard kleur: <value>"
   listHorseStyle: "<yellow>Paard stijl: <value>"
-  listHorseVariant: "<yellow>Variant: <value><yellow>"
+  listHorseVariant: "<yellow>Variant: <value>"
   listLlamaColor: "<yellow>Lama kleur: <value>"
   livingHorsesCleared: "<yellow>Al je levende paarden zijn gewist uit de database."
   livingHorsesClearedOther: "<yellow>Al <gold><player><yellow>'s levende paarden zijn gewist uit de database."
