@@ -14,7 +14,7 @@ public class CommandSell extends AbstractCommand {
 
 	public CommandSell(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (isPlayer() && parseArguments() && hasPermission() && isWorldEnabled()) {
+		if (isPlayer() && zh.getEM().canAffordCommand(p, command) && parseArguments() && hasPermission() && isCooldownElapsed() && isWorldEnabled()) {
 			if (!idMode) {
 				if (!targetMode) {
 					boolean ownsHorse = ownsHorse(targetUUID, true);
@@ -49,7 +49,7 @@ public class CommandSell extends AbstractCommand {
 	}
 
 	private void execute() {
-		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
+		if (isOwner()) {
 			if (!zh.getDM().isHorseForSale(horse.getUniqueId())) {
 				try {
 					if (args.size() != 1) {

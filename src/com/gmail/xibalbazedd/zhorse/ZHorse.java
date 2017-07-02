@@ -155,7 +155,21 @@ public class ZHorse extends JavaPlugin {
 				int totalOwnersCount = dataManager.getTotalOwnersCount();
 				int totalPlayersCount = dataManager.getTotalPlayersCount();
 				int ownersToPlayersRatio = (int) ((totalOwnersCount / (double) totalPlayersCount) * 100);
-				String binLabel = getOwnersRatioBinLabel(ownersToPlayersRatio);
+				String binLabel = getRatioBinLabel(ownersToPlayersRatio);
+				valueMap.put(binLabel, 1);
+				return valueMap;
+			}
+			
+		});
+		
+		metrics.addCustomChart(new Metrics.SimpleBarChart("horse_to_owner_ratio") {
+
+			@Override
+			public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
+				int totalHorsesCount = dataManager.getTotalHorsesCount();
+				int totalOwnersCount = dataManager.getTotalOwnersCount();
+				int horsesToOwnersRatio = (int) ((totalHorsesCount / (double) totalOwnersCount) * 100);
+				String binLabel = getRatioBinLabel(horsesToOwnersRatio);
 				valueMap.put(binLabel, 1);
 				return valueMap;
 			}
@@ -167,7 +181,7 @@ public class ZHorse extends JavaPlugin {
 			@Override
 			public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
 				int totalHorsesCount = dataManager.getTotalHorsesCount();
-				String binLabel = getTotalHorsesBinLabel(totalHorsesCount);
+				String binLabel = getCountBinLabel(totalHorsesCount);
 				valueMap.put(binLabel, 1);
 				return valueMap;
 			}
@@ -175,7 +189,7 @@ public class ZHorse extends JavaPlugin {
 		});
     }
     
-    private String getOwnersRatioBinLabel(int ownersToPlayersRatio) {
+    private String getRatioBinLabel(int ownersToPlayersRatio) {
     	if (ownersToPlayersRatio < 1) {
     		return "0% - 1%";
     	}
@@ -202,7 +216,7 @@ public class ZHorse extends JavaPlugin {
     	}
     }
     
-    private String getTotalHorsesBinLabel(int totalHorsesCount) {
+    private String getCountBinLabel(int totalHorsesCount) {
     	if (totalHorsesCount < 1) {
     		return "0 - 1";
     	}

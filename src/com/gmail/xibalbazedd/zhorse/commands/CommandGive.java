@@ -14,7 +14,8 @@ public class CommandGive extends AbstractCommand {
 	public CommandGive(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
 		targetIsOwner = false;
-		if (isPlayer() && parseArguments() && hasPermission() && isWorldEnabled() && parseArgument(ArgumentEnum.PLAYER_NAME, ArgumentEnum.HORSE_NAME)) {
+		if (isPlayer() && zh.getEM().canAffordCommand(p, command) && parseArguments() && hasPermission() && isCooldownElapsed() && isWorldEnabled()
+				&& parseArgument(ArgumentEnum.PLAYER_NAME, ArgumentEnum.HORSE_NAME)) {
 			if (!targetMode) {
 				sendCommandUsage();
 			}
@@ -51,7 +52,7 @@ public class CommandGive extends AbstractCommand {
 	}
 	
 	private void execute() {
-		if (!hasReachedClaimsLimit(true) && isOwner() && isPlayerDifferent() && zh.getEM().canAffordCommand(p, command)) {
+		if (!hasReachedClaimsLimit(true) && isOwner() && isPlayerDifferent()) {
 			int previousHorseID = zh.getDM().getHorseID(horse.getUniqueId());
 			int horseID = zh.getDM().getNextHorseID(targetUUID);
 			horseName = zh.getDM().getHorseName(horse.getUniqueId());

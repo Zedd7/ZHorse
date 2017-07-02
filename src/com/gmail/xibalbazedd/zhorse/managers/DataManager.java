@@ -168,6 +168,16 @@ public class DataManager {
 		return UUID.fromString(db.getStringResult(query));
 	}
 	
+	public List<UUID> getHorseUUIDList(UUID ownerUUID) {
+		String query = String.format("SELECT uuid FROM prefix_horse WHERE owner = \"%s\"", ownerUUID);
+		List<String> stringUUIDList = db.getStringResultList(query);
+		List<UUID> horseUUIDList = new ArrayList<>();
+		for (String stringUUID : stringUUIDList) {
+			horseUUIDList.add(UUID.fromString(stringUUID));
+		}
+		return horseUUIDList;
+	}
+	
 	public List<UUID> getHorseUUIDList(Chunk chunk) {
 		Location NWCorner = chunk.getBlock(0, 0, 0).getLocation();
 		Location SECorner = chunk.getBlock(15, 0, 15).getLocation();

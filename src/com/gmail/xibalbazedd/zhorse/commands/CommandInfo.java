@@ -24,7 +24,8 @@ public class CommandInfo extends AbstractCommand {
 
 	public CommandInfo(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (isPlayer() && parseArguments() && hasPermission() && isWorldEnabled() && parseArgument(ArgumentEnum.HORSE_NAME, ArgumentEnum.PLAYER_NAME)) {
+		if (isPlayer() && zh.getEM().canAffordCommand(p, command) && parseArguments() && hasPermission() && isCooldownElapsed() && isWorldEnabled()
+				&& parseArgument(ArgumentEnum.HORSE_NAME, ArgumentEnum.PLAYER_NAME)) {
 			if (!idMode) {
 				if (!targetMode) {
 					boolean ownsHorse = ownsHorse(targetUUID, true);
@@ -59,28 +60,26 @@ public class CommandInfo extends AbstractCommand {
 	}
 
 	private void execute() {
-		if (zh.getEM().canAffordCommand(p, command)) {
-			HorseRecord horseRecord = zh.getDM().getHorseRecord(horse.getUniqueId());
-			HorseStableRecord stableRecord = zh.getDM().getHorseStableRecord(horse.getUniqueId());
-			HorseStatsRecord statsRecord = new HorseStatsRecord(horse);
-			PlayerRecord ownerRecord = zh.getDM().getPlayerRecord(UUID.fromString(horseRecord.getOwner()));
+		HorseRecord horseRecord = zh.getDM().getHorseRecord(horse.getUniqueId());
+		HorseStableRecord stableRecord = zh.getDM().getHorseStableRecord(horse.getUniqueId());
+		HorseStatsRecord statsRecord = new HorseStatsRecord(horse);
+		PlayerRecord ownerRecord = zh.getDM().getPlayerRecord(UUID.fromString(horseRecord.getOwner()));
+		
+		displayInfoHeader(zh, s);
+		displayHorseID(zh, s, horseRecord);
+		displayNames(zh, s, horseRecord, ownerRecord);
+		displayVariant(zh, s, horse, statsRecord);
+		displayHealth(zh, s, statsRecord);
+		displaySpeed(zh, s, statsRecord, useExactStats, useVanillaStats);
+		displayJumpStrength(zh, s, statsRecord, useExactStats, useVanillaStats);
+		displayChestSize(zh, s, horse, statsRecord);
+		displayLocation(zh, s, horseRecord);
+		displayStableLocation(zh, s, stableRecord);
+		displayStatus(zh, s, horseRecord);
+		displayPrice(zh, s, horse);
 			
-			displayInfoHeader(zh, s);
-			displayHorseID(zh, s, horseRecord);
-			displayNames(zh, s, horseRecord, ownerRecord);
-			displayVariant(zh, s, horse, statsRecord);
-			displayHealth(zh, s, statsRecord);
-			displaySpeed(zh, s, statsRecord, useExactStats, useVanillaStats);
-			displayJumpStrength(zh, s, statsRecord, useExactStats, useVanillaStats);
-			displayChestSize(zh, s, horse, statsRecord);
-			displayLocation(zh, s, horseRecord);
-			displayStableLocation(zh, s, stableRecord);
-			displayStatus(zh, s, horseRecord);
-			displayPrice(zh, s, horse);
-			
-			zh.getCmdM().updateCommandHistory(s, command);
-			zh.getEM().payCommand(p, command);
-		}
+		zh.getCmdM().updateCommandHistory(s, command);
+		zh.getEM().payCommand(p, command);
 	}
 	
 	public static void displayInfoHeader(ZHorse zh, CommandSender s) {

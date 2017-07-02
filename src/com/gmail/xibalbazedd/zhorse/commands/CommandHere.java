@@ -14,7 +14,8 @@ public class CommandHere extends AbstractCommand {
 
 	public CommandHere(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (isPlayer() && parseArguments() && hasPermission() && isWorldEnabled() && parseArgument(ArgumentEnum.HORSE_NAME, ArgumentEnum.PLAYER_NAME)) {
+		if (isPlayer() && zh.getEM().canAffordCommand(p, command) && parseArguments() && hasPermission() && isCooldownElapsed() && isWorldEnabled()
+				&& parseArgument(ArgumentEnum.HORSE_NAME, ArgumentEnum.PLAYER_NAME)) {
 			if (!idMode) {
 				if (!targetMode) {
 					horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId()).toString();
@@ -40,7 +41,7 @@ public class CommandHere extends AbstractCommand {
 	}
 	
 	private void execute() {
-		if (isOwner(true) && isWorldCrossable(p.getWorld()) && isNotOnHorse() && !isHorseMounted() && !isHorseLeashed() && isHorseInRangeHere() && zh.getEM().canAffordCommand(p, command)) {
+		if (isOwner(true) && isWorldCrossable(p.getWorld()) && isNotOnHorse() && !isHorseMounted() && !isHorseLeashed() && isHorseInRangeHere()) {
 			Location playerLocation = getGroundedLocation(p.getLocation());
 			horse = zh.getHM().teleportHorse(horse, playerLocation);
 			if (horse != null) {

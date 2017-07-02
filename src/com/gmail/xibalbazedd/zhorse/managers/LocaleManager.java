@@ -12,7 +12,7 @@ import com.gmail.xibalbazedd.zhorse.enums.LocaleEnum;
 
 public class LocaleManager {
 	
-	public static final String[] PROVIDED_LANGUAGES = {"EN", "FR", "NL"};
+	public static final String[] PROVIDED_LANGUAGES = {"EN", "FR", "DE", "NL"};
 		
 	private ZHorse zh;
 	private Map<String, FileConfiguration> locales;	

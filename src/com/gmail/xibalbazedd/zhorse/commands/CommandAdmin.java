@@ -1,6 +1,5 @@
 package com.gmail.xibalbazedd.zhorse.commands;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,7 +26,7 @@ public class CommandAdmin extends AbstractCommand {
 
 	public CommandAdmin(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (isPlayer() && parseArguments() && hasPermission() && isWorldEnabled()) {
+		if (isPlayer() && zh.getEM().canAffordCommand(p, command) && parseArguments() && hasPermission() && isCooldownElapsed() && isWorldEnabled()) {
 			if (!variantMode || isRegistered(horseVariant)) {
 				if (!idMode) {
 					if (isOnHorse(true)) { // Select horse w/ or w/o target
@@ -48,29 +47,27 @@ public class CommandAdmin extends AbstractCommand {
 	}
 
 	private void execute() {
-		if (zh.getEM().canAffordCommand(p, command)) {
-			if (!args.isEmpty()) {
-				subCommand = args.get(0);
-				if (subCommand.equalsIgnoreCase(AdminSubCommandEnum.BURIAL.name())) {
-					fullCommand = command + KeyWordEnum.DOT.getValue() + AdminSubCommandEnum.BURIAL.name().toLowerCase();
-					burial();
-				}
-				else if (subCommand.equalsIgnoreCase(AdminSubCommandEnum.CLEAR.name())) {
-					fullCommand = command + KeyWordEnum.DOT.getValue() + AdminSubCommandEnum.CLEAR.name().toLowerCase();
-					clear();
-				}
-				else if (subCommand.equalsIgnoreCase(AdminSubCommandEnum.IMPORT.name())) {
-					fullCommand = command + KeyWordEnum.DOT.getValue() + AdminSubCommandEnum.IMPORT.name().toLowerCase();
-					importDB();
-				}
-				else {
-					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_SUB_COMMAND) {{ setValue(subCommand); setValue(command); }});
-					sendSubCommandDescriptionList(AdminSubCommandEnum.class);
-				}
+		if (!args.isEmpty()) {
+			subCommand = args.get(0);
+			if (subCommand.equalsIgnoreCase(AdminSubCommandEnum.BURIAL.name())) {
+				fullCommand = command + KeyWordEnum.DOT.getValue() + AdminSubCommandEnum.BURIAL.name().toLowerCase();
+				burial();
+			}
+			else if (subCommand.equalsIgnoreCase(AdminSubCommandEnum.CLEAR.name())) {
+				fullCommand = command + KeyWordEnum.DOT.getValue() + AdminSubCommandEnum.CLEAR.name().toLowerCase();
+				clear();
+			}
+			else if (subCommand.equalsIgnoreCase(AdminSubCommandEnum.IMPORT.name())) {
+				fullCommand = command + KeyWordEnum.DOT.getValue() + AdminSubCommandEnum.IMPORT.name().toLowerCase();
+				importDB();
 			}
 			else {
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_SUB_COMMAND) {{ setValue(subCommand); setValue(command); }});
 				sendSubCommandDescriptionList(AdminSubCommandEnum.class);
 			}
+		}
+		else {
+			sendSubCommandDescriptionList(AdminSubCommandEnum.class);
 		}
 	}
 	
@@ -132,19 +129,11 @@ public class CommandAdmin extends AbstractCommand {
 				if (!idMode) {
 					if (isRegistered(targetUUID)) {
 						boolean success = true;
-						int aliveHorseCount = zh.getDM().getAliveHorseCount(targetUUID);
-						List<Integer> toBeUnmappedHorseIDList = new ArrayList<>();
-						for (int horseID = 1; horseID <= aliveHorseCount; horseID++) {
-							UUID horseUUID = zh.getDM().getHorseUUID(targetUUID, horseID);
+						for (UUID horseUUID : zh.getDM().getHorseUUIDList(targetUUID)) {
 							if (!variantMode || zh.getDM().isHorseOfType(horseUUID, variant)) {
-								if (!clearLivingHorse(targetUUID, horseID, false)) success = false;
-								if (variantMode) {
-									toBeUnmappedHorseIDList.add(horseID);
-								}
+								int horseID = zh.getDM().getHorseID(horseUUID);
+								if (!clearLivingHorse(targetUUID, horseID, variantMode)) success = false;
 							}
-						}
-						for (int horseID : toBeUnmappedHorseIDList) {
-							zh.getDM().updateHorseIDMapping(targetUUID, horseID);
 						}
 						if (success) {
 							if (samePlayer) {

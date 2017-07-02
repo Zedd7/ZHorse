@@ -204,15 +204,20 @@ public class ConfigValidator extends YamlResourceValidator {
 			if (validateOptionSet(KeyWordEnum.TP_MAX_RANGE.getValue())) {
 				validatePositiveOrMinus1(KeyWordEnum.TP_MAX_RANGE.getValue());
 			}
-			validateOptionSet(KeyWordEnum.MUTE_CONSOLE.getValue());
 			validateOptionSet(KeyWordEnum.RESPAWN_MISSING_HORSE.getValue());
 			validateOptionSet(KeyWordEnum.RESTORE_INVENTORY.getValue());
 			if (validateOptionSet(KeyWordEnum.REZ_STACK_SIZE.getValue())) {
 				validatePositive(KeyWordEnum.REZ_STACK_SIZE.getValue());
 			}
-			validateOptionSet(KeyWordEnum.USE_OLD_TELEPORT_METHOD.getValue());
 			validateOptionSet(KeyWordEnum.USE_EXACT_STATS.getValue());
 			validateOptionSet(KeyWordEnum.USE_VANILLA_STATS.getValue());
+			validateOptionSet(KeyWordEnum.USE_OLD_TELEPORT_METHOD.getValue());
+			validateOptionSet(KeyWordEnum.USE_DEFAULT_STABLE.getValue());
+			validateOptionSet(KeyWordEnum.DEFAULT_STABLE_LOCATION_WORLD.getValue());
+			validateOptionSet(KeyWordEnum.DEFAULT_STABLE_LOCATION_X.getValue());
+			validateOptionSet(KeyWordEnum.DEFAULT_STABLE_LOCATION_Y.getValue());
+			validateOptionSet(KeyWordEnum.DEFAULT_STABLE_LOCATION_Z.getValue());
+			validateOptionSet(KeyWordEnum.MUTE_CONSOLE.getValue());
 			if (lockOnClaim && shareOnClaim) {
 				invalidate(String.format("The values of %s and %s cannot be both true !", KeyWordEnum.LOCK_ON_CLAIM.getValue(), KeyWordEnum.SHARE_ON_CLAIM.getValue()), true);
 			}

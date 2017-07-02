@@ -15,7 +15,8 @@ public class CommandLock extends AbstractCommand {
 
 	public CommandLock(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (isPlayer() && parseArguments() && hasPermission() && isWorldEnabled() && parseArgument(ArgumentEnum.HORSE_NAME, ArgumentEnum.PLAYER_NAME)) {
+		if (isPlayer() && zh.getEM().canAffordCommand(p, command) && parseArguments() && hasPermission() && isCooldownElapsed() && isWorldEnabled()
+				&& parseArgument(ArgumentEnum.HORSE_NAME, ArgumentEnum.PLAYER_NAME)) {
 			if (!idMode) {
 				if (!targetMode) {
 					boolean ownsHorse = ownsHorse(targetUUID, true);
@@ -50,7 +51,7 @@ public class CommandLock extends AbstractCommand {
 	}
 
 	private void execute() {
-		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
+		if (isOwner()) {
 			if (!zh.getDM().isHorseLocked(horse.getUniqueId())) {
 				if (zh.getDM().isHorseShared(horse.getUniqueId())) {
 					zh.getDM().updateHorseShared(horse.getUniqueId(), false);

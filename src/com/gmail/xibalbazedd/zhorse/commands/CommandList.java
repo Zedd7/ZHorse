@@ -25,7 +25,7 @@ public class CommandList extends AbstractCommand {
 
 	public CommandList(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (isPlayer() && parseArguments() && hasPermission() && isWorldEnabled() && parseArgument(ArgumentEnum.PAGE_NUMBER)) {
+		if (isPlayer() && zh.getEM().canAffordCommand(p, command) && parseArguments() && hasPermission() && isCooldownElapsed() && isWorldEnabled() && parseArgument(ArgumentEnum.PAGE_NUMBER)) {
 			if (!idMode) {
 				if ((!targetMode || isRegistered(targetUUID)) && (!variantMode || isRegistered(horseVariant))) {
 					execute();
@@ -38,29 +38,27 @@ public class CommandList extends AbstractCommand {
 	}
 
 	private void execute() {
-		if (zh.getEM().canAffordCommand(p, command)) {
-			CompoundMessage compoundMessage = new CompoundMessage(true);
+		CompoundMessage compoundMessage = new CompoundMessage(true);
 			
-			List<HorseRecord> aliveHorseList = zh.getDM().getHorseRecordList(targetUUID, false);
-			String remainingClaimsMessage = getRemainingClaimsMessage(targetUUID);
-			buildAliveHorseList(compoundMessage, aliveHorseList, remainingClaimsMessage);
+		List<HorseRecord> aliveHorseList = zh.getDM().getHorseRecordList(targetUUID, false);
+		String remainingClaimsMessage = getRemainingClaimsMessage(targetUUID);
+		buildAliveHorseList(compoundMessage, aliveHorseList, remainingClaimsMessage);
 			
-			List<HorseDeathRecord> deathHorseList = zh.getDM().getHorseDeathRecordList(targetUUID);
-			String remainingDeathsMessage = getRemainingDeathsMessage(targetUUID);
-			buildDeadHorseList(compoundMessage, deathHorseList, remainingDeathsMessage);
+		List<HorseDeathRecord> deathHorseList = zh.getDM().getHorseDeathRecordList(targetUUID);
+		String remainingDeathsMessage = getRemainingDeathsMessage(targetUUID);
+		buildDeadHorseList(compoundMessage, deathHorseList, remainingDeathsMessage);
 			
-			int maxPageNumber = compoundMessage.getPageCount();
-			String pageNumberMessage = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.PAGE_NUMBER_FORMAT) {{ setAmount(pageNumber); setMax(maxPageNumber); }}, true);
-			buildAliveHorseListHeader(compoundMessage, livingHorseListStartingPageNumber, remainingClaimsMessage, pageNumberMessage);
-			buildDeadHorseListHeader(compoundMessage, deadHorseListStartingPageNumber, remainingDeathsMessage, pageNumberMessage);
+		int maxPageNumber = compoundMessage.getPageCount();
+		String pageNumberMessage = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.PAGE_NUMBER_FORMAT) {{ setAmount(pageNumber); setMax(maxPageNumber); }}, true);
+		buildAliveHorseListHeader(compoundMessage, livingHorseListStartingPageNumber, remainingClaimsMessage, pageNumberMessage);
+		buildDeadHorseListHeader(compoundMessage, deadHorseListStartingPageNumber, remainingDeathsMessage, pageNumberMessage);
 			
-			String message = zh.getMM().getMessage(compoundMessage, pageNumber);
-			if (!message.isEmpty()) {
-				zh.getMM().sendMessage(s, message);
-			}
-			zh.getCmdM().updateCommandHistory(s, command);
-			zh.getEM().payCommand(p, command);
+		String message = zh.getMM().getMessage(compoundMessage, pageNumber);
+		if (!message.isEmpty()) {
+			zh.getMM().sendMessage(s, message);
 		}
+		zh.getCmdM().updateCommandHistory(s, command);
+		zh.getEM().payCommand(p, command);
 	}
 
 	private void buildAliveHorseList(CompoundMessage compoundMessage, List<HorseRecord> aliveHorseList, String remainingClaimsMessage) {

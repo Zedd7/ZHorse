@@ -22,7 +22,7 @@ public class CommandSettings extends AbstractCommand {
 
 	public CommandSettings(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (isPlayer() && parseArguments() && hasPermission() && isWorldEnabled()) {			
+		if (isPlayer() && zh.getEM().canAffordCommand(p, command) && parseArguments() && hasPermission() && isCooldownElapsed() && isWorldEnabled()) {			
 			if (!idMode) {
 				if (isOnHorse(true)) { // select the horse w/ or w/o target
 					horse = (AbstractHorse) p.getVehicle();
@@ -41,7 +41,7 @@ public class CommandSettings extends AbstractCommand {
 	}
 
 	private void execute() {
-		if ((!targetMode || samePlayer || hasPermissionAdmin(false)) && zh.getEM().canAffordCommand(p, command)) {
+		if ((!targetMode || samePlayer || hasPermissionAdmin(false))) {
 			if (!args.isEmpty()) {
 				subCommand = args.get(0);
 				if (subCommand.equalsIgnoreCase(SettingsSubCommandEnum.FAVORITE.name())) {

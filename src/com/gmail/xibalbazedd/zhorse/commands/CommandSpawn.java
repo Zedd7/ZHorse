@@ -29,7 +29,7 @@ public class CommandSpawn extends AbstractCommand {
 
 	public CommandSpawn(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (isPlayer() && parseArguments() && hasPermission() && isWorldEnabled()) {
+		if (isPlayer() && zh.getEM().canAffordCommand(p, command) && parseArguments() && hasPermission() && isCooldownElapsed() && isWorldEnabled()) {
 			if (!idMode && !targetMode && (!variantMode || isRegistered(horseVariant))) {
 				execute();
 			}
@@ -40,16 +40,14 @@ public class CommandSpawn extends AbstractCommand {
 	}
 
 	private void execute() {
-		if (zh.getEM().canAffordCommand(p, command)) {
-			if (parseSpawnArguments()) {
-				spawnHorse();
-				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_SPAWNED));
-				zh.getCmdM().updateCommandHistory(s, command);
-				zh.getEM().payCommand(p, command);
-			}
-			else {
-				sendCommandUsage();
-			}
+		if (parseSpawnArguments()) {
+			spawnHorse();
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_SPAWNED));
+			zh.getCmdM().updateCommandHistory(s, command);
+			zh.getEM().payCommand(p, command);
+		}
+		else {
+			sendCommandUsage();
 		}
 	}
 
@@ -223,7 +221,7 @@ public class CommandSpawn extends AbstractCommand {
 	}
 
 	private void spawnHorse() {
-		Location location = p.getLocation();
+		Location location = getGroundedLocation(p.getLocation());
 		variant = horseVariant != null ? horseVariant.getEntityType().name() : null;
 		HorseStatsRecord statsRecord = new HorseStatsRecord(
 				null, null, null, null, color, null, null, null, health, null, null, null, tamed, jumpStrength, health, null, null, speed, strength, style, null, variant

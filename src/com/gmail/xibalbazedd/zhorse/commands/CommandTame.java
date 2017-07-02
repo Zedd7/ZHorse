@@ -13,7 +13,8 @@ public class CommandTame extends AbstractCommand {
 
 	public CommandTame(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (isPlayer() && parseArguments() && hasPermission() && isWorldEnabled() && parseArgument(ArgumentEnum.HORSE_NAME, ArgumentEnum.PLAYER_NAME)) {
+		if (isPlayer() && zh.getEM().canAffordCommand(p, command) && parseArguments() && hasPermission() && isCooldownElapsed() && isWorldEnabled()
+				&& parseArgument(ArgumentEnum.HORSE_NAME, ArgumentEnum.PLAYER_NAME)) {
 			if (!idMode) {
 				if (!targetMode) {
 					boolean ownsHorse = ownsHorse(targetUUID, true);
@@ -48,7 +49,7 @@ public class CommandTame extends AbstractCommand {
 	}
 
 	private void execute() {
-		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
+		if (isOwner()) {
 			boolean tamed = horse.isTamed();
 			if (!tamed) {
 				horse.setTamed(true);

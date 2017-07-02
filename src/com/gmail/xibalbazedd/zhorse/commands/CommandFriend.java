@@ -20,7 +20,7 @@ public class CommandFriend extends AbstractCommand {
 
 	public CommandFriend(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (isPlayer() && parseArguments() && hasPermission() && isWorldEnabled()) {
+		if (isPlayer() && zh.getEM().canAffordCommand(p, command) && parseArguments() && hasPermission() && isCooldownElapsed() && isWorldEnabled()) {
 			if (!idMode) {
 				execute();
 			}
@@ -31,30 +31,28 @@ public class CommandFriend extends AbstractCommand {
 	}
 	
 	private void execute() {
-		if (zh.getEM().canAffordCommand(p, command)) {
-			if (!args.isEmpty()) {
-				subCommand = args.get(0);
-				args.remove(0); // Remove sub-command to allow parsing of playerName
-				if (subCommand.equalsIgnoreCase(FriendSubCommandEnum.ADD.name())) {
-					fullCommand = command + KeyWordEnum.DOT.getValue() + FriendSubCommandEnum.ADD.name().toLowerCase();
-					addFriend();
-				}
-				else if (subCommand.equalsIgnoreCase(FriendSubCommandEnum.LIST.name())) {
-					fullCommand = command + KeyWordEnum.DOT.getValue() + FriendSubCommandEnum.LIST.name().toLowerCase();
-					sendFriendList();
-				}
-				else if (subCommand.equalsIgnoreCase(FriendSubCommandEnum.REMOVE.name())) {
-					fullCommand = command + KeyWordEnum.DOT.getValue() + FriendSubCommandEnum.REMOVE.name().toLowerCase();
-					removeFriend();
-				}
-				else {
-					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_SUB_COMMAND) {{ setValue(subCommand); setValue(command); }});
-					sendSubCommandDescriptionList(FriendSubCommandEnum.class);
-				}
+		if (!args.isEmpty()) {
+			subCommand = args.get(0);
+			args.remove(0); // Remove sub-command to allow parsing of playerName
+			if (subCommand.equalsIgnoreCase(FriendSubCommandEnum.ADD.name())) {
+				fullCommand = command + KeyWordEnum.DOT.getValue() + FriendSubCommandEnum.ADD.name().toLowerCase();
+				addFriend();
+			}
+			else if (subCommand.equalsIgnoreCase(FriendSubCommandEnum.LIST.name())) {
+				fullCommand = command + KeyWordEnum.DOT.getValue() + FriendSubCommandEnum.LIST.name().toLowerCase();
+				sendFriendList();
+			}
+			else if (subCommand.equalsIgnoreCase(FriendSubCommandEnum.REMOVE.name())) {
+				fullCommand = command + KeyWordEnum.DOT.getValue() + FriendSubCommandEnum.REMOVE.name().toLowerCase();
+				removeFriend();
 			}
 			else {
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_SUB_COMMAND) {{ setValue(subCommand); setValue(command); }});
 				sendSubCommandDescriptionList(FriendSubCommandEnum.class);
 			}
+		}
+		else {
+			sendSubCommandDescriptionList(FriendSubCommandEnum.class);
 		}
 	}
 	

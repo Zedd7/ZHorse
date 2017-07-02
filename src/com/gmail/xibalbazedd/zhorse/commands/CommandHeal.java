@@ -14,7 +14,8 @@ public class CommandHeal extends AbstractCommand {
 
 	public CommandHeal(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (isPlayer() && parseArguments() && hasPermission() && isWorldEnabled() && parseArgument(ArgumentEnum.HORSE_NAME, ArgumentEnum.PLAYER_NAME)) {
+		if (isPlayer() && zh.getEM().canAffordCommand(p, command) && parseArguments() && hasPermission() && isCooldownElapsed() && isWorldEnabled()
+				&& parseArgument(ArgumentEnum.HORSE_NAME, ArgumentEnum.PLAYER_NAME)) {
 			if (!idMode) {
 				if (!targetMode) {
 					boolean ownsHorse = ownsHorse(targetUUID, true);
@@ -49,7 +50,7 @@ public class CommandHeal extends AbstractCommand {
 	}
 
 	private void execute() {
-		if (isOwner(true) && zh.getEM().canAffordCommand(p, command)) {
+		if (isOwner(true)) {
 			horse.setHealth(horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
 			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_HEALED) {{ setHorseName(horseName); }});
 			zh.getCmdM().updateCommandHistory(s, command);

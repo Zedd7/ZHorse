@@ -53,18 +53,12 @@ public class CommandManager implements CommandExecutor {
 			for (CommandEnum commandEnum : CommandEnum.values()) {
 				if (command.equalsIgnoreCase(commandEnum.name())) {
 					commandValid = true;
-					long remainingCooldown = getRemainingCooldown(s, command);
-					if (remainingCooldown <= 0) {
-						try {
-							Class.forName(commandEnum.getClassPath()).getConstructor(ZHorse.class, CommandSender.class, String[].class).newInstance(new Object[] {zh, s, a});
-						} catch (Exception  e) {
-							e.printStackTrace();
-						}
-						break;
+					try {
+						Class.forName(commandEnum.getClassPath()).getConstructor(ZHorse.class, CommandSender.class, String[].class).newInstance(new Object[] {zh, s, a});
+					} catch (Exception  e) {
+						e.printStackTrace();
 					}
-					else {
-						zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.REMAINING_COOLDOWN) {{ setAmount(remainingCooldown); }});
-					}
+					break;
 				}
 			}
 			if (!commandValid) {
@@ -76,6 +70,7 @@ public class CommandManager implements CommandExecutor {
 	
 	public long getRemainingCooldown(CommandSender s, String command) {
 		if (!(s instanceof Player)) return 0;
+		
 		UUID playerUUID = ((Player) s).getUniqueId();
 		if (!commandHistoryMap.containsKey(playerUUID)) {
 			commandHistoryMap.put(playerUUID, new HashMap<>());
@@ -93,10 +88,12 @@ public class CommandManager implements CommandExecutor {
 
 	public void updateCommandHistory(CommandSender s, String command) {
 		if (!(s instanceof Player)) return;
+		
 		UUID playerUUID = ((Player) s).getUniqueId();
-		if (commandHistoryMap.containsKey(playerUUID)) {
-			commandHistoryMap.get(playerUUID).put(command, Instant.now());
+		if (!commandHistoryMap.containsKey(playerUUID)) {
+			commandHistoryMap.put(playerUUID, new HashMap<>());
 		}
+		commandHistoryMap.get(playerUUID).put(command, Instant.now());
 	}
 	
 }

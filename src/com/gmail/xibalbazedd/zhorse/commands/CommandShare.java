@@ -13,7 +13,8 @@ public class CommandShare extends AbstractCommand {
 
 	public CommandShare(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (isPlayer() && parseArguments() && hasPermission() && isWorldEnabled() && parseArgument(ArgumentEnum.HORSE_NAME, ArgumentEnum.PLAYER_NAME)) {
+		if (isPlayer() && zh.getEM().canAffordCommand(p, command) && parseArguments() && hasPermission() && isCooldownElapsed() && isWorldEnabled()
+				&& parseArgument(ArgumentEnum.HORSE_NAME, ArgumentEnum.PLAYER_NAME)) {
 			if (!idMode) {
 				if (!targetMode) {
 					boolean ownsHorse = ownsHorse(targetUUID, true);
@@ -48,7 +49,7 @@ public class CommandShare extends AbstractCommand {
 	}
 
 	private void execute() {
-		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
+		if (isOwner()) {
 			if (!zh.getDM().isHorseShared(horse.getUniqueId())) {
 				if (zh.getDM().isHorseLocked(horse.getUniqueId())) {
 					zh.getDM().updateHorseLocked(horse.getUniqueId(), false);

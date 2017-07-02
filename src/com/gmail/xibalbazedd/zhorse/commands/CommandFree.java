@@ -13,7 +13,8 @@ public class CommandFree extends AbstractCommand {
 
 	public CommandFree(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (isPlayer() && parseArguments() && hasPermission() && isWorldEnabled() && parseArgument(ArgumentEnum.HORSE_NAME, ArgumentEnum.PLAYER_NAME)) {
+		if (isPlayer() && zh.getEM().canAffordCommand(p, command) && parseArguments() && hasPermission() && isCooldownElapsed() && isWorldEnabled()
+				&& parseArgument(ArgumentEnum.HORSE_NAME, ArgumentEnum.PLAYER_NAME)) {
 			if (!idMode) {
 				if (!targetMode) {
 					boolean ownsHorse = ownsHorse(targetUUID, true);
@@ -51,7 +52,7 @@ public class CommandFree extends AbstractCommand {
 	}
 
 	private void execute() {
-		if (isOwner() && zh.getEM().canAffordCommand(p, command)) {
+		if (isOwner()) {
 			zh.getHM().untrackHorse(horse.getUniqueId());
 			if (zh.getDM().removeHorse(horse.getUniqueId(), targetUUID)) {
 				horse.setCustomName(null);

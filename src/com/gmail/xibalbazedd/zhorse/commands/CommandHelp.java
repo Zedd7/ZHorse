@@ -11,7 +11,7 @@ public class CommandHelp extends AbstractCommand {
 
 	public CommandHelp(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (isPlayer() && parseArguments() && hasPermission() && isWorldEnabled()) {
+		if (isPlayer() && zh.getEM().canAffordCommand(p, command) && parseArguments() && hasPermission() && isCooldownElapsed() && isWorldEnabled()) {
 			if (!idMode) {
 				if (!targetMode || (isRegistered(targetUUID) && isPlayerOnline(targetUUID, false))) {
 					execute();
@@ -24,28 +24,26 @@ public class CommandHelp extends AbstractCommand {
 	}
 
 	private void execute() {
-		if (zh.getEM().canAffordCommand(p, command)) {
-			if (parsePageNumber(true)) {
-				sendCommandDescriptionList();
+		if (parsePageNumber(true)) {
+			sendCommandDescriptionList();
+			zh.getCmdM().updateCommandHistory(s, command);
+			zh.getEM().payCommand(p, command);
+		}
+		else {
+			String command = args.get(0).toLowerCase();
+			if (CommandEnum.getCommandNameList().contains(command)) {
+				sendCommandUsage(command, false, true);
+				if (command.equalsIgnoreCase(CommandEnum.SPAWN.name())) {
+					sendAbstractHorseVariantList();
+					sendHorseStyleList();
+					sendHorseColorList();
+					sendLlamaColorList();
+				}
 				zh.getCmdM().updateCommandHistory(s, command);
 				zh.getEM().payCommand(p, command);
 			}
 			else {
-				String command = args.get(0).toLowerCase();
-				if (CommandEnum.getCommandNameList().contains(command)) {
-					sendCommandUsage(command, false, true);
-					if (command.equalsIgnoreCase(CommandEnum.SPAWN.name())) {
-						sendAbstractHorseVariantList();
-						sendHorseStyleList();
-						sendHorseColorList();
-						sendLlamaColorList();
-					}
-					zh.getCmdM().updateCommandHistory(s, command);
-					zh.getEM().payCommand(p, command);
-				}
-				else {
-					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_COMMAND) {{ setValue(command); }});
-				}
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_COMMAND) {{ setValue(command); }});
 			}
 		}
 	}

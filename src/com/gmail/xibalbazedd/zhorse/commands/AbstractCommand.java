@@ -308,10 +308,11 @@ public abstract class AbstractCommand {
 		if (p.isInsideVehicle()) {
 			groundedLocation = p.getVehicle().getLocation();
 		}
-		else if (p.isFlying()) {
+		if (p.isFlying()) {
 			Block ground = groundedLocation.getWorld().getHighestBlockAt(groundedLocation);
-			groundedLocation = new Location(groundedLocation.getWorld(), ground.getX(), ground.getY(), ground.getZ());
+			groundedLocation.setY(ground.getY());
 		}
+		groundedLocation.setY(Math.ceil(groundedLocation.getY()));
 		return groundedLocation;
 	}
 	
@@ -446,6 +447,19 @@ public abstract class AbstractCommand {
 			}
 		}
 		return false;
+	}
+	
+	protected boolean isCooldownElapsed() {
+		if (adminMode) return true;
+		
+		long remainingCooldown = zh.getCmdM().getRemainingCooldown(s, command);
+		if (remainingCooldown <= 0) {
+			return true;
+		}
+		else {
+			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.REMAINING_COOLDOWN) {{ setAmount(remainingCooldown); }});
+			return false;
+		}
 	}
 	
 	protected boolean isHorseInRangeHere() {

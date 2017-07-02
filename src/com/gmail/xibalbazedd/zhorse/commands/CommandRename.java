@@ -13,7 +13,7 @@ public class CommandRename extends AbstractCommand {
 
 	public CommandRename(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (isPlayer() && parseArguments() && hasPermission() && isWorldEnabled()) {
+		if (isPlayer() && zh.getEM().canAffordCommand(p, command) && parseArguments() && hasPermission() && isCooldownElapsed() && isWorldEnabled()) {
 			if (!idMode) {
 				if (!targetMode) {
 					boolean ownsHorse = ownsHorse(targetUUID, true);
@@ -48,7 +48,7 @@ public class CommandRename extends AbstractCommand {
 	}
 	
 	private void execute() {
-		if (isOwner() && craftHorseName(false) && zh.getEM().canAffordCommand(p, command)) {
+		if (isOwner() && craftHorseName(false)) {
 			UUID ownerUUID = zh.getDM().getOwnerUUID(horse.getUniqueId());
 			applyHorseName(ownerUUID);
 			if (zh.getDM().isHorseForSale(horse.getUniqueId())) {

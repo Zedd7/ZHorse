@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -119,6 +120,15 @@ public class ConfigManager {
 	
 	public String getDefaultLanguage() {
 		return config.getString(KeyWordEnum.DEFAULT_LANGUAGE.getValue(), null);
+	}
+	
+	public Location getDefaultStableLocation() {
+		String worldName = config.getString(KeyWordEnum.DEFAULT_STABLE_LOCATION_WORLD.getValue(), zh.getServer().getWorlds().get(0).getName());
+		World world = zh.getServer().getWorld(worldName);
+		int x = config.getInt(KeyWordEnum.DEFAULT_STABLE_LOCATION_X.getValue(), 0);
+		int y = config.getInt(KeyWordEnum.DEFAULT_STABLE_LOCATION_Y.getValue(), 0);
+		int z = config.getInt(KeyWordEnum.DEFAULT_STABLE_LOCATION_Z.getValue(), 0);
+		return new Location(world, x, y, z);
 	}
 	
 	public String getGroupColorCode(UUID playerUUID) {
@@ -264,16 +274,20 @@ public class ConfigManager {
 		return config.getBoolean(KeyWordEnum.SHARE_ON_CLAIM.getValue(), false);
 	}
 	
-	public boolean shouldUseOldTeleportMethod() {
-		return config.getBoolean(KeyWordEnum.USE_OLD_TELEPORT_METHOD.getValue(), false);
-	}
-	
 	public boolean shouldUseExactStats() {
 		return config.getBoolean(KeyWordEnum.USE_EXACT_STATS.getValue(), false);
 	}
 	
 	public boolean shouldUseVanillaStats() {
 		return config.getBoolean(KeyWordEnum.USE_VANILLA_STATS.getValue(), true);
+	}
+	
+	public boolean shouldUseOldTeleportMethod() {
+		return config.getBoolean(KeyWordEnum.USE_OLD_TELEPORT_METHOD.getValue(), false);
+	}
+	
+	public boolean shouldUseDefaultStable() {
+		return config.getBoolean(KeyWordEnum.USE_DEFAULT_STABLE.getValue(), false);
 	}
 	
 	private String getExactGroupName(String groupName) {

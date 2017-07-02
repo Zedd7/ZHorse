@@ -11,7 +11,7 @@ public class CommandBuy extends AbstractCommand {
 
 	public CommandBuy(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (isPlayer() && parseArguments() && hasPermission() && isWorldEnabled()) {
+		if (isPlayer() && zh.getEM().canAffordCommand(p, command) && parseArguments() && hasPermission() && isCooldownElapsed() && isWorldEnabled()) {
 			if (!idMode) {
 				if (!targetMode) {
 					if (isOnHorse(false)) {
@@ -39,7 +39,7 @@ public class CommandBuy extends AbstractCommand {
 		if (zh.getDM().isHorseForSale(horse.getUniqueId())) {
 			targetUUID = zh.getDM().getOwnerUUID(horse.getUniqueId());
 			if (!p.getUniqueId().equals(targetUUID)) {
-				if (!hasReachedClaimsLimit(false) && craftHorseName(true) && zh.getEM().canAffordCommand(p, command)) {
+				if (!hasReachedClaimsLimit(false) && craftHorseName(true)) {
 					int price = zh.getDM().getSalePrice(horse.getUniqueId());
 					if (zh.getEM().canAffordPayment(p, price)) {
 						int horseID = zh.getDM().getNextHorseID(p.getUniqueId());

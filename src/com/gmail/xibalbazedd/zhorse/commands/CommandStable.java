@@ -21,7 +21,7 @@ public class CommandStable extends AbstractCommand {
 
 	public CommandStable(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (isPlayer() && parseArguments() && hasPermission() && isWorldEnabled()) {
+		if (isPlayer() && zh.getEM().canAffordCommand(p, command) && parseArguments() && hasPermission() && isCooldownElapsed() && isWorldEnabled()) {
 			if (!idMode) {
 				if (!targetMode) {
 					boolean ownsHorse = ownsHorse(targetUUID, true);
@@ -56,51 +56,53 @@ public class CommandStable extends AbstractCommand {
 	}
 	
 	private void execute() {
-		if (zh.getEM().canAffordCommand(p, command)) {
-			if (!args.isEmpty()) {
-				subCommand = args.get(0);
-				if (subCommand.equalsIgnoreCase(StableSubCommandEnum.GO.name())) {
-					fullCommand = command + KeyWordEnum.DOT.getValue() + StableSubCommandEnum.GO.name().toLowerCase();
-					teleportToStable();
-				}
-				else if (subCommand.equalsIgnoreCase(StableSubCommandEnum.SET.name())) {
-					fullCommand = command + KeyWordEnum.DOT.getValue() + StableSubCommandEnum.SET.name().toLowerCase();
-					setStableLocation();
-				}
-				else if (subCommand.equalsIgnoreCase(StableSubCommandEnum.UNSET.name())) {
-					fullCommand = command + KeyWordEnum.DOT.getValue() + StableSubCommandEnum.UNSET.name().toLowerCase();
-					unsetStableLocation();
-				}
-				else {
-					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_SUB_COMMAND) {{ setValue(subCommand); setValue(command); }});
-					sendSubCommandDescriptionList(StableSubCommandEnum.class);
-				}
+		if (!args.isEmpty()) {
+			subCommand = args.get(0);
+			if (subCommand.equalsIgnoreCase(StableSubCommandEnum.GO.name())) {
+				fullCommand = command + KeyWordEnum.DOT.getValue() + StableSubCommandEnum.GO.name().toLowerCase();
+				teleportToStable();
+			}
+			else if (subCommand.equalsIgnoreCase(StableSubCommandEnum.SET.name())) {
+				fullCommand = command + KeyWordEnum.DOT.getValue() + StableSubCommandEnum.SET.name().toLowerCase();
+				setStableLocation();
+			}
+			else if (subCommand.equalsIgnoreCase(StableSubCommandEnum.UNSET.name())) {
+				fullCommand = command + KeyWordEnum.DOT.getValue() + StableSubCommandEnum.UNSET.name().toLowerCase();
+				unsetStableLocation();
 			}
 			else {
+				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_SUB_COMMAND) {{ setValue(subCommand); setValue(command); }});
 				sendSubCommandDescriptionList(StableSubCommandEnum.class);
 			}
+		}
+		else {
+			sendSubCommandDescriptionList(StableSubCommandEnum.class);
 		}
 	}
 
 	private void teleportToStable() {
 		if (hasPermission(s, fullCommand , true, false)) {
-			if (isOwner(true) && isWorldCrossable(p.getWorld()) && isWorldCrossable(horse.getWorld()) && !isHorseMounted() && !isHorseLeashed()) {
+			if (isOwner(true) && !isHorseMounted() && !isHorseLeashed()) {
+				Location stableLocation = null;
 				if (zh.getDM().isHorseStableRegistered(horse.getUniqueId())) {
-					Location stableLocation = zh.getDM().getHorseStableLocation(horse.getUniqueId());
-					if (isHorseInRangeStable(stableLocation)) {
-						horse = zh.getHM().teleportHorse(horse, stableLocation);
-						if (horse != null) {
-							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_TELEPORTED_TO_STABLE) {{ setHorseName(horseName); }});
-							zh.getCmdM().updateCommandHistory(s, command);
-							zh.getEM().payCommand(p, command);
-						}
-						else {
-							zh.getMM().sendMessage(s, ChatColor.RED + "It seems that horses cannot spawn here, please report this to the developer. (https://github.com/Xibalba/ZHorse/issues/new)");
-						}
-					}
+					stableLocation = zh.getDM().getHorseStableLocation(horse.getUniqueId());
+				}
+				else if (zh.getCM().shouldUseDefaultStable()) {
+					stableLocation = zh.getCM().getDefaultStableLocation();
 				}
 				else {
 					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STABLE_NOT_SET) {{ setHorseName(horseName); }});
+				}
+				if (stableLocation != null && isWorldCrossable(stableLocation.getWorld()) && isHorseInRangeStable(stableLocation)) {
+					horse = zh.getHM().teleportHorse(horse, stableLocation);
+					if (horse != null) {
+						zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_TELEPORTED_TO_STABLE) {{ setHorseName(horseName); }});
+						zh.getCmdM().updateCommandHistory(s, command);
+						zh.getEM().payCommand(p, command);
+					}	
+					else {
+						zh.getMM().sendMessage(s, ChatColor.RED + "It seems that horses cannot spawn here, please report this to the developer. (https://github.com/Xibalba/ZHorse/issues/new)");
+					}
 				}
 			}
 		}

@@ -17,7 +17,7 @@ public class CommandRez extends AbstractCommand {
 
 	public CommandRez(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (isPlayer() && parseArguments() && hasPermission() && isWorldEnabled()) {
+		if (isPlayer() && zh.getEM().canAffordCommand(p, command) && parseArguments() && hasPermission() && isCooldownElapsed() && isWorldEnabled()) {
 			if (!idMode) {
 				if (!targetMode || isRegistered(targetUUID)) {
 					execute();
@@ -30,7 +30,7 @@ public class CommandRez extends AbstractCommand {
 	}
 	
 	private void execute() {
-		if (ownsDeadHorse(targetUUID) && !hasReachedClaimsLimit(true) && zh.getEM().canAffordCommand(p, command)) {
+		if (ownsDeadHorse(targetUUID) && !hasReachedClaimsLimit(true)) {
 			UUID horseUUID = zh.getDM().getNewestHorseDeathUUID(targetUUID);
 			int horseID = zh.getDM().getNextHorseID(targetUUID);
 			boolean success = true;
