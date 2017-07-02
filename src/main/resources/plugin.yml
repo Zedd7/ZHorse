@@ -1,0 +1,138 @@
+name: ${name}
+version: ${version}
+depend: [Vault]
+description: ${description}
+website: ${url}
+author: ${author}
+main: ${main-class}
+
+commands:
+  zhorse:
+    description: Main ZHorse command
+    usage: /<command> [arguments]
+    aliases: [zh]
+
+permissions:
+  zh.*:
+    description: Grants full access to ZHorse
+    children:
+      zh.*.admin: true
+      zh.*.free: true
+      zh.admin.*: true
+      zh.reload: true
+      zh.spawn: true
+      zh.tame: true
+      zh.use: true
+
+  zh.use:
+    description: Grants access to all player commands
+    children:
+      zh.buy: true
+      zh.claim: true
+      zh.free: true
+      zh.friend.*: true
+      zh.give: true
+      zh.heal: true
+      zh.help: true
+      zh.here: true
+      zh.info: true
+      zh.kill: true
+      zh.list: true
+      zh.lock: true
+      zh.protect: true
+      zh.rename: true
+      zh.rez: true
+      zh.sell: true
+      zh.settings.*: true
+      zh.share: true
+      zh.stable.*: true
+      zh.tp: true
+
+  zh.admin.*:
+    description: Grants access to all admin sub-commands
+    children:
+      zh.admin: true
+      zh.admin.burial: true
+      zh.admin.clear: true
+      zh.admin.import: true
+
+  zh.friend.*:
+    description: Grants access to all friend sub-commands
+    children:
+      zh.friend: true
+      zh.friend.add: true
+      zh.friend.list: true
+      zh.friend.remove: true
+
+  zh.settings.*:
+    description: Grants access to all settings sub-commands
+    children:
+      zh.settings: true
+      zh.settings.favorite: true
+      zh.settings.language: true
+      zh.settings.stats: true
+      zh.settings.swap: true
+
+  zh.stable.*:
+    description: Grants access to all stable sub-commands
+    children:
+      zh.stable: true
+      zh.stable.go: true
+      zh.stable.set: true
+      zh.stable.unset: true
+
+  zh.*.admin:
+    description: Grants admin access to all commands
+    children:
+      zh.admin.admin: true
+      zh.buy.admin: true
+      zh.claim.admin: true
+      zh.free.admin: true
+      zh.friend.admin: true
+      zh.give.admin: true
+      zh.heal.admin: true
+      zh.help.admin: true
+      zh.here.admin: true
+      zh.info.admin: true
+      zh.kill.admin: true
+      zh.list.admin: true
+      zh.lock.admin: true
+      zh.protect.admin: true
+      zh.reload.admin: true
+      zh.rename.admin: true
+      zh.rez.admin: true
+      zh.sell.admin: true
+      zh.settings.admin: true
+      zh.share.admin: true
+      zh.spawn.admin: true
+      zh.stable.admin: true
+      zh.tame.admin: true
+      zh.tp.admin: true
+
+  zh.*.free:
+    description: Grants free access to all commands
+    children:
+      zh.admin.free: true
+      zh.buy.free: true
+      zh.claim.free: true
+      zh.free.free: true
+      zh.friend.free: true
+      zh.give.free: true
+      zh.heal.free: true
+      zh.help.free: true
+      zh.here.free: true
+      zh.info.free: true
+      zh.kill.free: true
+      zh.list.free: true
+      zh.lock.free: true
+      zh.protect.free: true
+      zh.reload.free: true
+      zh.rename.free: true
+      zh.rez.free: true
+      zh.sell.free: true
+      zh.settings.free: true
+      zh.share.free: true
+      zh.spawn.free: true
+      zh.stable.free: true
+      zh.tame.free: true
+      zh.tp.free: true
