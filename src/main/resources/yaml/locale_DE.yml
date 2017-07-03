@@ -274,7 +274,7 @@ Admin command usages:
 
 Friend command usages:
   add: "<gold>/zh friend add<yellow> (-p) playerName (-a)"
-  list: "<gold>/zh friend list<yellow> (-p) playerName (-a)"
+  list: "<gold>/zh friend list<yellow> (-p playerName) (-a)"
   remove: "<gold>/zh friend remove<yellow> (-p) playerName (-a)"
 
 Settings command usages:

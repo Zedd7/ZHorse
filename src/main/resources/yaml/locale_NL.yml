@@ -274,7 +274,7 @@ Admin command usages:
 
 Friend command usages:
   add: "<gold>/zh friend add<yellow> (-p) spelerNaam (-a)"
-  list: "<gold>/zh friend list<yellow> (-p) spelerNaam (-a)"
+  list: "<gold>/zh friend list<yellow> (-p spelerNaam) (-a)"
   remove: "<gold>/zh friend remove<yellow> (-p) spelerNaam (-a)"
 
 Settings command usages:
