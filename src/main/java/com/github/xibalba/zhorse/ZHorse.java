@@ -162,20 +162,6 @@ public class ZHorse extends JavaPlugin {
 			
 		});
 		
-		metrics.addCustomChart(new Metrics.SimpleBarChart("horse_to_owner_ratio") {
-
-			@Override
-			public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
-				int totalHorsesCount = dataManager.getTotalHorsesCount();
-				int totalOwnersCount = dataManager.getTotalOwnersCount();
-				int horsesToOwnersRatio = (int) ((totalHorsesCount / (double) totalOwnersCount) * 100);
-				String binLabel = getRatioBinLabel(horsesToOwnersRatio);
-				valueMap.put(binLabel, 1);
-				return valueMap;
-			}
-			
-		});
-		
 		metrics.addCustomChart(new Metrics.SimpleBarChart("total_horse_count_2") {
 
 			@Override
@@ -187,6 +173,21 @@ public class ZHorse extends JavaPlugin {
 			}
 			
 		});
+		
+		metrics.addCustomChart(new Metrics.SimpleBarChart("horse_per_owner_average") {
+
+			@Override
+			public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
+				int totalHorsesCount = dataManager.getTotalHorsesCount();
+				int totalOwnersCount = dataManager.getTotalOwnersCount();
+				int horsesPerOwnersAverage = totalHorsesCount / totalOwnersCount;
+				String binLabel = getCountBinLabel(horsesPerOwnersAverage);
+				valueMap.put(binLabel, 1);
+				return valueMap;
+			}
+			
+		});
+	
     }
     
     private String getRatioBinLabel(int ownersToPlayersRatio) {

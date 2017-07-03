@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.xibalba</groupId>
     <artifactId>ZHorse</artifactId>
-    <version>1.6.8 snapshot 6</version>
+    <version>1.6.8</version>
     <packaging>jar</packaging>
 
     <name>ZHorse</name>
@@ -82,15 +82,15 @@
             	</configuration>
             </plugin>
             <plugin>
-            	<groupId>org.apache.maven.plugins</groupId>
-            	<artifactId>maven-jar-plugin</artifactId>
-            	<configuration>
-            		<archive>
-            			<manifestEntries>
-            				<Built-By></Built-By>
-            			</manifestEntries>
-            		</archive>
-            	</configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+            	    <archive>
+            		    <manifestEntries>
+            			    <Built-By></Built-By>
+            		    </manifestEntries>
+            	    </archive>
+                </configuration>
             </plugin>
         </plugins>
     </build>
