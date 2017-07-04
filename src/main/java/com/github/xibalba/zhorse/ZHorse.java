@@ -180,7 +180,7 @@ public class ZHorse extends JavaPlugin {
 			public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
 				int totalHorsesCount = dataManager.getTotalHorsesCount();
 				int totalOwnersCount = dataManager.getTotalOwnersCount();
-				int horsesPerOwnersAverage = totalHorsesCount / totalOwnersCount;
+				int horsesPerOwnersAverage = totalOwnersCount != 0 ? totalHorsesCount / totalOwnersCount : 0;
 				String binLabel = getCountBinLabel(horsesPerOwnersAverage);
 				valueMap.put(binLabel, 1);
 				return valueMap;
