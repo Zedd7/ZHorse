@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AbstractHorse;
+import org.bukkit.entity.ChestedHorse;
 
 import com.github.xibalba.zhorse.ZHorse;
 import com.github.xibalba.zhorse.enums.LocaleEnum;
@@ -50,6 +51,7 @@ public class CommandKill extends AbstractCommand {
 
 	private void execute() {
 		if (isOwner(true)) {
+			zh.getDM().updateHorseIsCarryingChest(horse.getUniqueId(), horse instanceof ChestedHorse ? ((ChestedHorse) horse).isCarryingChest() : false);
 			horse.setHealth(0);
 			if (!samePlayer) {
 				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_DIED) {{ setHorseName(horseName); }});
