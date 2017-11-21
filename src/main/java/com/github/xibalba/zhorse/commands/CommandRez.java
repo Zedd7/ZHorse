@@ -31,7 +31,7 @@ public class CommandRez extends AbstractCommand {
 	
 	private void execute() {
 		if (ownsDeadHorse(targetUUID) && !hasReachedClaimsLimit(true)) {
-			UUID horseUUID = zh.getDM().getNewestHorseDeathUUID(targetUUID);
+			UUID horseUUID = zh.getDM().getLatestHorseDeathUUID(targetUUID);
 			int horseID = zh.getDM().getNextHorseID(targetUUID);
 			boolean success = true;
 			HorseInventoryRecord inventoryRecord = zh.getDM().getHorseInventoryRecord(horseUUID);
@@ -48,6 +48,7 @@ public class CommandRez extends AbstractCommand {
 				horse = zh.getHM().spawnHorse(destination, inventoryRecord, statsRecord, horseUUID, true);
 				if (horse != null) {
 					applyHorseName(targetUUID);
+					zh.getDM().updateHorseName(horse.getUniqueId(), horseName);
 					horse.setHealth(horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
 					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_RESURRECTED) {{ setHorseName(horseName); }});
 					zh.getCmdM().updateCommandHistory(s, command);

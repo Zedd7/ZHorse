@@ -205,7 +205,7 @@ public class DataManager {
 		return horseID + 1;
 	}
 	
-	public UUID getNewestHorseDeathUUID(UUID ownerUUID) {
+	public UUID getLatestHorseDeathUUID(UUID ownerUUID) {
 		String query = String.format(
 				"SELECT hd1.uuid FROM prefix_horse_death hd1 WHERE hd1.date = (SELECT MAX(hd2.date) FROM prefix_horse_death hd2 WHERE hd2.uuid IN (SELECT h.uuid FROM prefix_horse h WHERE h.owner = \"%s\"))",
 				ownerUUID);
