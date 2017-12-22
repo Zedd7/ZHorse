@@ -19,76 +19,80 @@ import com.github.xibalba.zhorse.utils.CompoundMessage;
 import com.github.xibalba.zhorse.utils.MessageConfig;
 
 public class MessageManager {
-	
+
 	public static final SimpleDateFormat DATE_FORMAT_TIMESTAMP = new SimpleDateFormat("(HH:mm - dd/MM/yyyy)");
-	public static final SimpleDateFormat DATE_FORMAT_SHORT = new SimpleDateFormat("dd/MM/yyyy");	
+	public static final SimpleDateFormat DATE_FORMAT_SHORT = new SimpleDateFormat("dd/MM/yyyy");
 	public static final int PAGE_LENGTH = 10;
 	public static final int LINE_LENGTH = 53;
-	
+
 	private ZHorse zh;
 	private boolean displayConsole;
-	
+
 	public MessageManager(ZHorse zh) {
 		this.zh = zh;
 	}
-	
+
 	public void setDisplayConsole(boolean displayConsole) {
 		this.displayConsole = displayConsole;
 	}
-	
+
 	public void sendMessage(Player player, String message) {
 		sendMessage((CommandSender) player, message);
 	}
-	
+
 	public void sendMessage(CommandSender recipient, String message) {
-		if (displayConsole) {
+		if (displayConsole && !isEmpty(message)) {
 			recipient.sendMessage(message);
 		}
 	}
-	
+
 	public void sendMessage(Player recipient, MessageConfig messageConfig) {
 		sendMessage(recipient, messageConfig, false);
 	}
-	
+
 	public void sendMessage(Player recipient, MessageConfig messageConfig, boolean hidePrefix) {
 		sendMessage((CommandSender) recipient, messageConfig, hidePrefix);
 	}
-	
+
 	public void sendMessage(CommandSender recipient, MessageConfig messageConfig) {
 		sendMessage(recipient, messageConfig, false);
 	}
-	
+
 	public void sendMessage(CommandSender recipient, MessageConfig messageConfig, boolean hidePrefix) {
 		if (displayConsole) {
 			String message = getMessage(recipient, messageConfig, hidePrefix);
-			recipient.sendMessage(message);
+			if (!isEmpty(message)) {
+				recipient.sendMessage(message);
+			}
 		}
 	}
-	
+
 	public void sendPendingMessage(UUID recipientUUID, MessageConfig messageConfig) {
 		String language = getLanguage(recipientUUID);
 		String message = getMessage(language, messageConfig, false);
 		OfflinePlayer recipient = zh.getServer().getOfflinePlayer(recipientUUID);
 		if (recipient.isOnline()) {
-			((Player) recipient).sendMessage(message);
+			if (!isEmpty(message)) {
+				((Player) recipient).sendMessage(message);
+			}
 		}
 		else {
 			PendingMessageRecord messageRecord = new PendingMessageRecord(recipientUUID.toString(), message);
 			zh.getDM().registerPendingMessage(messageRecord);
 		}
 	}
-	
+
 	public String getMessage(CommandSender recipient, MessageConfig messageConfig, boolean hidePrefix) {
 		String language = getLanguage(recipient);
 		return getMessage(language, messageConfig, hidePrefix);
 	}
-	
+
 	public String getMessage(String language, MessageConfig messageConfig, boolean hidePrefix) {
 		String rawMessage = craftSpaces(messageConfig.getSpaceCount()) + getRawMessage(messageConfig, language, hidePrefix);
 		String message = populateFlags(rawMessage, messageConfig);
 		return message;
 	}
-	
+
 	public String getMessage(CompoundMessage compoundMessage, int pageNumber) {
 		String message = "";
 		String header = compoundMessage.getHeader(pageNumber);
@@ -102,19 +106,23 @@ public class MessageManager {
 		}
 		return message;
 	}
-	
+
 	private String getLanguage(CommandSender recipient) {
 		return recipient instanceof Player ? getLanguage(((Player) recipient).getUniqueId()) : zh.getCM().getDefaultLanguage();
 	}
-	
+
 	private String getLanguage(UUID recipientUUID) {
 		return zh.getDM().getPlayerLanguage(recipientUUID);
 	}
-	
+
 	private String getRawMessage(MessageConfig messageConfig, String language, boolean hidePrefix) {
 		return zh.getLM().getMessage(messageConfig.getIndex(), language, hidePrefix);
 	}
-	
+
+	private boolean isEmpty(String message) {
+		return message.trim().length() == 0;
+	}
+
 	private String craftSpaces(int spaceCount) {
 		String spaces = "";
 		while (spaces.length() < spaceCount) {
@@ -122,7 +130,7 @@ public class MessageManager {
 		}
 		return spaces;
 	}
-	
+
 	private String populateFlags(String rawMessage, MessageConfig messageConfig) {
 		String message = rawMessage;
 		message = populateFlag(message, KeyWordEnum.AMOUNT_FLAG, messageConfig.getAmountList());
@@ -134,11 +142,11 @@ public class MessageManager {
 		message = populateFlag(message, KeyWordEnum.PERMISSION_FLAG, messageConfig.getPermissionList());
 		message = populateFlag(message, KeyWordEnum.PLAYER_NAME_FLAG, messageConfig.getPlayerNameList());
 		message = populateFlag(message, KeyWordEnum.VALUE_FLAG, messageConfig.getValueList());
-		
+
 		message = applyColors(message);
 		return message;
 	}
-	
+
 	private String populateFlag(String rawMessage, KeyWordEnum flag, List<String> flagContentList) {
 		String populatedMessage = rawMessage;
 		for (String flagContent : flagContentList) {
@@ -148,11 +156,11 @@ public class MessageManager {
 		}
 		return populatedMessage;
 	}
-	
+
 	public static String applyColors(String message, String colorCode) {
 		return applyColors(colorCode + message);
 	}
-	
+
 	public static String applyColors(String rawMessage) {
 		String message = rawMessage;
 		for (ColorEnum color : ColorEnum.values()) {
@@ -162,7 +170,7 @@ public class MessageManager {
 		}
 		return message;
 	}
-	
+
 	public static String removeColorCodes(String coloredMessage) {
 		String rawMessage = coloredMessage;
 		for (ColorEnum color : ColorEnum.values()) {
@@ -172,15 +180,15 @@ public class MessageManager {
 		}
 		return rawMessage;
 	}
-	
+
 	public static String removeChatColors(String coloredMessage) {
 		return ChatColor.stripColor(coloredMessage);
 	}
-	
+
 	public static boolean isColor(String colorCode) {
 		return !colorCode.equals(applyColors((colorCode)));
 	}
-	
+
 	public static boolean isColorized(String message) {
 		return !(message.isEmpty() || message.equals(applyColors((message))));
 	}
