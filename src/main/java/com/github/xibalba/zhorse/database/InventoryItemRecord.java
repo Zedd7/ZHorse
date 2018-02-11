@@ -1,59 +1,50 @@
 package com.github.xibalba.zhorse.database;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 public class InventoryItemRecord {
-	
-	private static final String KEY_VALUE_SEPARATOR = "->";
-	private static final String ENTRY_SEPARATOR = "§";
-	
+
+	private static final String SERIAL_KEY = "item";
+
 	private String uuid;
 	private Integer slot;
-	private Map<String, Object> serial;
+	private String serial;
 
-	public InventoryItemRecord(String uuid, Integer slot, String data) {
+	public InventoryItemRecord(String uuid, Integer slot, String serial) {
 		this.uuid = uuid;
 		this.slot = slot;
-		
-		serial = new HashMap<>();
-		for (String entry : data.split(ENTRY_SEPARATOR)) {
-			String key = entry.split(KEY_VALUE_SEPARATOR)[0];
-			Object value = entry.split(KEY_VALUE_SEPARATOR)[1];
-			serial.put(key, value);
-		}
+		this.serial = serial;
 	}
-	
+
 	public InventoryItemRecord(String uuid, Integer slot, ItemStack item) {
 		this.uuid = uuid;
 		this.slot = slot;
-		this.serial = item.serialize();
+
+		YamlConfiguration serialConfig = new YamlConfiguration();
+		serialConfig.set(SERIAL_KEY, item);
+		serial = serialConfig.saveToString();
 	}
 
 	public String getUUID() {
 		return uuid;
 	}
-	
+
 	public Integer getSlot() {
 		return slot;
 	}
-	
-	public String getData() {
-		String data = "";
-		for (String key : serial.keySet()) {
-			data += key + KEY_VALUE_SEPARATOR + serial.get(key) + ENTRY_SEPARATOR;
-		}
-		return data;
-	}
-	
-	public Map<String, Object> getSerial() {
+
+	public String getSerial() {
 		return serial;
 	}
-	
+
 	public ItemStack getItem() {
-		return ItemStack.deserialize(serial);
+		YamlConfiguration serialConfig = new YamlConfiguration();
+		try {
+			serialConfig.loadFromString(serial);
+		} catch (InvalidConfigurationException e) {}
+		return (ItemStack) serialConfig.get(SERIAL_KEY);
 	}
 
 }

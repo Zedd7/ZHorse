@@ -8,23 +8,23 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class HorseInventoryRecord {
-	
+
 	private String uuid;
 	private List<InventoryItemRecord> itemRecordList;
-	
+
 	public HorseInventoryRecord(String uuid, List<InventoryItemRecord> itemRecordList) {
 		this.uuid = uuid;
 		this.itemRecordList = itemRecordList;
 	}
-	
+
 	public HorseInventoryRecord(String uuid) {
 		this(uuid, new ArrayList<>());
 	}
-	
+
 	public HorseInventoryRecord() {
 		this(null, new ArrayList<>());
 	}
-	
+
 	public HorseInventoryRecord(AbstractHorse horse) {
 		uuid = horse.getUniqueId().toString();
 		itemRecordList = new ArrayList<>();
@@ -36,11 +36,11 @@ public class HorseInventoryRecord {
 			}
 		}
 	}
-	
+
 	public String getUUID() {
 		return uuid;
 	}
-	
+
 	public List<InventoryItemRecord> getItemRecordList() {
 		return itemRecordList;
 	}
