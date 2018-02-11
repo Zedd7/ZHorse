@@ -17,7 +17,6 @@ import com.github.xibalba.zhorse.database.HorseInventoryRecord;
 import com.github.xibalba.zhorse.database.HorseRecord;
 import com.github.xibalba.zhorse.database.HorseStableRecord;
 import com.github.xibalba.zhorse.database.HorseStatsRecord;
-import com.github.xibalba.zhorse.database.InventoryItemRecord;
 import com.github.xibalba.zhorse.database.MySQLConnector;
 import com.github.xibalba.zhorse.database.PendingMessageRecord;
 import com.github.xibalba.zhorse.database.PlayerRecord;
@@ -28,7 +27,7 @@ import com.github.xibalba.zhorse.enums.DatabaseEnum;
 
 public class DataManager {
 
-	public static final String[] TABLE_ARRAY = {"player", "friend", "pending_message", "horse", "horse_death", "horse_stable", "horse_stats", "inventory_item", "sale"};
+	public static final String[] TABLE_ARRAY = {"player", "friend", "pending_message", "horse", "horse_death", "horse_inventory", "horse_stable", "horse_stats", "sale"};
 	public static final String[] PATCH_ARRAY = {"1.6.6"};
 
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
@@ -305,8 +304,8 @@ public class DataManager {
 	}
 
 	public HorseInventoryRecord getHorseInventoryRecord(UUID horseUUID) {
-		String query = String.format("SELECT * FROM prefix_inventory_item WHERE uuid = \"%s\"", horseUUID);
-		return db.getHorseInventoryRecord(query, horseUUID);
+		String query = String.format("SELECT * FROM prefix_horse_inventory WHERE uuid = \"%s\"", horseUUID);
+		return db.getHorseInventoryRecord(query);
 	}
 
 	public HorseStableRecord getHorseStableRecord(UUID horseUUID) {
@@ -391,7 +390,7 @@ public class DataManager {
 	}
 
 	public boolean isHorseInventoryRegistered(UUID horseUUID) {
-		String query = String.format("SELECT 1 FROM prefix_inventory_item WHERE uuid = \"%s\"", horseUUID);
+		String query = String.format("SELECT 1 FROM prefix_horse_inventory WHERE uuid = \"%s\"", horseUUID);
 		return db.hasResult(query);
 	}
 
@@ -477,16 +476,11 @@ public class DataManager {
 	}
 
 	public boolean registerHorseInventory(HorseInventoryRecord horseInventoryRecord) {
-		boolean success = true;
-		for (InventoryItemRecord itemRecord : horseInventoryRecord.getItemRecordList()) {
-			String update = String.format("INSERT INTO prefix_inventory_item VALUES (\"%s\", %d, \"%s\")",
-					itemRecord.getUUID(),
-					itemRecord.getSlot(),
-					itemRecord.getSerial()
-			);
-			success &= db.executeUpdate(update);
-		}
-		return success;
+		String update = String.format("INSERT INTO prefix_horse_inventory VALUES (\"%s\", \"%s\")",
+			horseInventoryRecord.getUUID(),
+			horseInventoryRecord.getSerial()
+		);
+		return db.executeUpdate(update);
 	}
 
 	public boolean registerHorseStable(HorseStableRecord horseStableRecord) {
@@ -582,7 +576,7 @@ public class DataManager {
 	}
 
 	public boolean removeHorseInventory(UUID horseUUID) {
-		String update = String.format("DELETE FROM prefix_inventory_item WHERE uuid = \"%s\"", horseUUID);
+		String update = String.format("DELETE FROM prefix_horse_inventory WHERE uuid = \"%s\"", horseUUID);
 		return db.executeUpdate(update);
 	}
 
@@ -671,7 +665,7 @@ public class DataManager {
 		UUID ownerUUID = UUID.fromString(horseRecord.getOwner());
 		horseRecord.setUUID(newHorseUUID.toString());
 		String horseDeathUpdate = String.format("UPDATE prefix_horse_death SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
-		String horseInventoryUpdate = String.format("UPDATE prefix_inventory_item SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
+		String horseInventoryUpdate = String.format("UPDATE prefix_horse_inventory SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
 		String horseStableUpdate = String.format("UPDATE prefix_horse_stable SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
 		String horseStatsUpdate = String.format("UPDATE prefix_horse_stats SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
 		String saleUpdate = String.format("UPDATE prefix_sale SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);

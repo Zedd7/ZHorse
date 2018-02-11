@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -28,25 +28,24 @@ import org.bukkit.metadata.FixedMetadataValue;
 import com.github.xibalba.zhorse.ZHorse;
 import com.github.xibalba.zhorse.database.HorseInventoryRecord;
 import com.github.xibalba.zhorse.database.HorseStatsRecord;
-import com.github.xibalba.zhorse.database.InventoryItemRecord;
 import com.github.xibalba.zhorse.enums.HorseVariantEnum;
 import com.github.xibalba.zhorse.utils.ChunkLoad;
 
 public class HorseManager {
-	
+
 	public static final String DUPLICATE_METADATA = "zhorse_duplicate";
-	
+
 	private ZHorse zh;
 	private Map<UUID, AbstractHorse> trackedHorses = new HashMap<>();
-	
+
 	public HorseManager(ZHorse zh) {
 		this.zh = zh;
 	}
-	
+
 	public AbstractHorse getFavoriteHorse(UUID playerUUID) {
 		return getHorse(playerUUID, zh.getDM().getPlayerFavoriteHorseID(playerUUID));
 	}
-	
+
 	public AbstractHorse getHorse(UUID playerUUID, Integer horseID) {
 		AbstractHorse horse = null;
 		if (playerUUID != null && horseID != null) {
@@ -76,7 +75,7 @@ public class HorseManager {
 		}
 		return horse;
 	}
-	
+
 	private AbstractHorse getHorseFromLocation(UUID horseUUID, Location location) {
 		AbstractHorse horse = null;
 		if (location != null) {
@@ -88,7 +87,7 @@ public class HorseManager {
 		}
 		return horse;
 	}
-	
+
 	private List<Chunk> getChunksInRegion(Location center, int chunkRange, boolean includeCentralChunk) {
 		World world = center.getWorld();
 		Location NWCorner = new Location(world, center.getX() - 16 * chunkRange, 0, center.getZ() - 16 * chunkRange);
@@ -114,7 +113,7 @@ public class HorseManager {
 		}
 		return null;
 	}
-	
+
 	private AbstractHorse getHorseInRegion(UUID horseUUID, List<Chunk> region) {
 		AbstractHorse horse = null;
 		for (Chunk chunk : region) {
@@ -129,22 +128,22 @@ public class HorseManager {
 	public AbstractHorse getTrackedHorse(UUID horseUUID) {
 		return trackedHorses.get(horseUUID);
 	}
-	
+
 	public Map<UUID, AbstractHorse> getTrackedHorses() {
 		return trackedHorses;
 	}
-	
+
 	public boolean isHorseTracked(UUID horseUUID) {
 		return trackedHorses.containsKey(horseUUID);
 	}
-	
+
 	public synchronized void trackHorse(AbstractHorse horse) {
 		UUID horseUUID = horse.getUniqueId();
 		if (!isHorseTracked(horseUUID)) {
 			trackedHorses.put(horseUUID, horse);
 		}
 	}
-	
+
 	public void trackHorses() {
 		for (World world : zh.getServer().getWorlds()) {
 			for (Chunk chunk : world.getLoadedChunks()) {
@@ -152,11 +151,11 @@ public class HorseManager {
 			}
 		}
 	}
-	
+
 	public synchronized void untrackHorse(UUID horseUUID) {
 		trackedHorses.remove(horseUUID);
 	}
-	
+
 	public synchronized void untrackHorses() {
 		Iterator<Entry<UUID, AbstractHorse>> itr = trackedHorses.entrySet().iterator();
 		while (itr.hasNext()) {
@@ -166,12 +165,12 @@ public class HorseManager {
 			itr.remove();
 		}
 	}
-	
+
 	public void updateHorse(AbstractHorse horse, boolean runSynchronously) {
 		UUID horseUUID = horse.getUniqueId();
 		Location horseLocation = horse.getLocation();
 		HorseInventoryRecord inventoryRecord = new HorseInventoryRecord(horse);
-		HorseStatsRecord statsRecord = new HorseStatsRecord(horse);		
+		HorseStatsRecord statsRecord = new HorseStatsRecord(horse);
 		Runnable updateTask = new Runnable() {
 
 			@Override
@@ -180,7 +179,7 @@ public class HorseManager {
 				zh.getDM().updateHorseInventory(inventoryRecord);
 				zh.getDM().updateHorseStats(statsRecord);
 			}
-			
+
 		};
 		if (runSynchronously) {
 			updateTask.run();
@@ -189,7 +188,7 @@ public class HorseManager {
 			Bukkit.getScheduler().runTaskAsynchronously(zh, updateTask);
 		}
 	}
-	
+
 	public AbstractHorse teleportHorse(AbstractHorse sourceHorse, Location destination) {
 		if (zh.getCM().shouldUseOldTeleportMethod()) {
 			sourceHorse.teleport(destination);
@@ -216,7 +215,7 @@ public class HorseManager {
 		}
 	}
 
-	private void assignStats(AbstractHorse horse, HorseStatsRecord statsRecord, UUID ownerUUID) {		
+	private void assignStats(AbstractHorse horse, HorseStatsRecord statsRecord, UUID ownerUUID) {
 		if (statsRecord.getAge() != null) horse.setAge(statsRecord.getAge());
 		if (statsRecord.canBreed() != null) horse.setBreed(statsRecord.canBreed());
 		if (statsRecord.canPickupItems() != null) horse.setCanPickupItems(statsRecord.canPickupItems());
@@ -232,7 +231,7 @@ public class HorseManager {
 		if (statsRecord.getRemainingAir() != null) horse.setRemainingAir(statsRecord.getRemainingAir());
 		if (statsRecord.isTamed() != null) horse.setTamed(statsRecord.isTamed());
 		if (statsRecord.getTicksLived() != null) horse.setTicksLived(statsRecord.getTicksLived());
-		if (statsRecord.getSpeed() != null) horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(statsRecord.getSpeed());		
+		if (statsRecord.getSpeed() != null) horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(statsRecord.getSpeed());
 		if (statsRecord.getType() != null) {
 			if (statsRecord.getType().equals(EntityType.HORSE.name())) {
 				if (statsRecord.getColor() != null) ((Horse) horse).setColor(Horse.Color.valueOf(statsRecord.getColor()));
@@ -243,28 +242,26 @@ public class HorseManager {
 				if (statsRecord.getStrength() != null) ((Llama) horse).setStrength(statsRecord.getStrength());
 			}
 		}
-		
+
 		if (statsRecord.isAdult() != null && statsRecord.isAdult()) horse.setAdult();
 		if (statsRecord.isBaby() != null && statsRecord.isBaby()) horse.setBaby();
 		if (ownerUUID != null) horse.setOwner(zh.getServer().getOfflinePlayer(ownerUUID));
 	}
-	
+
 	private void assignInventory(AbstractHorse horse, HorseInventoryRecord inventoryRecord, boolean isCarryingChest) {
 		if (horse instanceof ChestedHorse) {
 			((ChestedHorse) horse).setCarryingChest(isCarryingChest);
 		}
-		for (InventoryItemRecord itemRecord : inventoryRecord.getItemRecordList()) {
-			horse.getInventory().setItem(itemRecord.getSlot(), itemRecord.getItem());
-		}
+		horse.getInventory().setContents(inventoryRecord.getItems());
 	}
-	
+
 	private void copyInventory(AbstractHorse sourceHorse, AbstractHorse copyHorse, boolean isCarryingChest) {
 		if (copyHorse instanceof ChestedHorse) {
 			((ChestedHorse) copyHorse).setCarryingChest(isCarryingChest);
 		}
 		copyHorse.getInventory().setContents(sourceHorse.getInventory().getContents());
 	}
-	
+
 	private void removeLeash(AbstractHorse horse) {
 		if (horse.isLeashed()) {
 			Entity leashHolder = horse.getLeashHolder();
@@ -276,7 +273,7 @@ public class HorseManager {
 			horse.getWorld().dropItem(horse.getLocation(), leash);
 		}
 	}
-	
+
 	public void removeHorse(AbstractHorse horse) {
 		boolean chunkWasLoaded = loadChunk(horse.getLocation());
 		horse.setMetadata(DUPLICATE_METADATA, new FixedMetadataValue(zh, horse.getUniqueId()));
@@ -285,7 +282,7 @@ public class HorseManager {
 			unloadChunk(horse.getLocation());
 		}
 	}
-	
+
 	public AbstractHorse spawnHorse(Location location, HorseInventoryRecord inventoryRecord, HorseStatsRecord statsRecord, UUID oldHorseUUID, boolean claimedHorse) {
 		EntityType type;
 		if (statsRecord.getType() != null) {
@@ -296,7 +293,7 @@ public class HorseManager {
 			type = variantArray[new Random().nextInt(variantArray.length)].getEntityType();
 		}
 		boolean isCarryingChest = statsRecord.isCarryingChest() != null ? statsRecord.isCarryingChest() : false;
-		
+
 		boolean chunkWasLoaded = loadChunk(location);
 		AbstractHorse horse = (AbstractHorse) location.getWorld().spawnEntity(location, type);
 		if (horse != null) {
@@ -318,7 +315,7 @@ public class HorseManager {
 		}
 		return horse;
 	}
-	
+
 	private boolean loadChunk(Location location) {
 		boolean chunkWasLoaded = true;
 		int chunkXCoordinate = toChunkCoordinate(location.getBlockX());
@@ -329,13 +326,13 @@ public class HorseManager {
 		}
 		return chunkWasLoaded;
 	}
-	
+
 	private void unloadChunk(Location location) {
 		int chunkXCoordinate = toChunkCoordinate(location.getBlockX());
 		int chunkZCoordinate = toChunkCoordinate(location.getBlockZ());
 		location.getWorld().unloadChunk(chunkXCoordinate, chunkZCoordinate);
 	}
-	
+
 	private int toChunkCoordinate(int coordinate) {
 		if (coordinate >= 0) {
 			return coordinate / 16;

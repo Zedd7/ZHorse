@@ -7,7 +7,7 @@ import java.util.UUID;
 import com.github.xibalba.zhorse.ZHorse;
 
 public abstract class SQLDatabaseImporter {
-	
+
 	protected static boolean fullImport(ZHorse zh, SQLDatabaseConnector db) {
 		boolean success = true;
 		success &= importPlayers(zh, db);
@@ -21,7 +21,7 @@ public abstract class SQLDatabaseImporter {
 		success &= importSales(zh, db);
 		return success;
 	}
-	
+
 	private static boolean importPlayers(ZHorse zh, SQLDatabaseConnector db) {
 		boolean success = true;
 		String query = "SELECT * FROM prefix_player";
@@ -34,7 +34,7 @@ public abstract class SQLDatabaseImporter {
 		}
 		return success;
 	}
-	
+
 	private static boolean importFriends(ZHorse zh, SQLDatabaseConnector db) {
 		boolean success = true;
 		String query = "SELECT * FROM prefix_friend";
@@ -48,7 +48,7 @@ public abstract class SQLDatabaseImporter {
 		}
 		return success;
 	}
-	
+
 	private static boolean importPendingMessages(ZHorse zh, SQLDatabaseConnector db) {
 		boolean success = true;
 		String query = "SELECT * FROM prefix_pending_message";
@@ -62,7 +62,7 @@ public abstract class SQLDatabaseImporter {
 		}
 		return success;
 	}
-	
+
 	private static boolean importHorses(ZHorse zh, SQLDatabaseConnector db) {
 		boolean success = true;
 		String query = "SELECT * FROM prefix_horse";
@@ -75,7 +75,7 @@ public abstract class SQLDatabaseImporter {
 		}
 		return success;
 	}
-	
+
 	private static boolean importHorseDeaths(ZHorse zh, SQLDatabaseConnector db) {
 		boolean success = true;
 		String query = "SELECT * FROM prefix_horse_death";
@@ -88,7 +88,7 @@ public abstract class SQLDatabaseImporter {
 		}
 		return success;
 	}
-	
+
 	private static boolean importHorseStables(ZHorse zh, SQLDatabaseConnector db) {
 		boolean success = true;
 		String query = "SELECT * FROM prefix_horse_stable";
@@ -101,7 +101,7 @@ public abstract class SQLDatabaseImporter {
 		}
 		return success;
 	}
-	
+
 	private static boolean importHorseStats(ZHorse zh, SQLDatabaseConnector db) {
 		boolean success = true;
 		String query = "SELECT * FROM prefix_horse_stats";
@@ -114,10 +114,10 @@ public abstract class SQLDatabaseImporter {
 		}
 		return success;
 	}
-	
+
 	private static boolean importHorseInventories(ZHorse zh, SQLDatabaseConnector db) {
 		boolean success = true;
-		String query = "SELECT * FROM prefix_inventory_item";
+		String query = "SELECT * FROM prefix_horse_inventory";
 		List<HorseInventoryRecord> horseInventoryRecordList = db.getHorseInventoryRecordList(query);
 		for (HorseInventoryRecord horseInventoryRecord : horseInventoryRecordList) {
 			UUID horseUUID = UUID.fromString(horseInventoryRecord.getUUID());
@@ -127,7 +127,7 @@ public abstract class SQLDatabaseImporter {
 		}
 		return success;
 	}
-	
+
 	private static boolean importSales(ZHorse zh, SQLDatabaseConnector db) {
 		boolean success = true;
 		String query = "SELECT * FROM prefix_sale";

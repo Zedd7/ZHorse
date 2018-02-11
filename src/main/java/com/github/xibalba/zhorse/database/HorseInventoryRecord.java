@@ -1,48 +1,71 @@
 package com.github.xibalba.zhorse.database;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import com.github.xibalba.zhorse.enums.KeyWordEnum;
+
 public class HorseInventoryRecord {
 
-	private String uuid;
-	private List<InventoryItemRecord> itemRecordList;
+	private static final String SIZE_KEY = "size";
+	private static final String ITEMS_KEY = "items";
 
-	public HorseInventoryRecord(String uuid, List<InventoryItemRecord> itemRecordList) {
+	private String uuid;
+	private String serial;
+
+	public HorseInventoryRecord(String uuid, String serial) {
 		this.uuid = uuid;
-		this.itemRecordList = itemRecordList;
+		this.serial = serial;
 	}
 
 	public HorseInventoryRecord(String uuid) {
-		this(uuid, new ArrayList<>());
+		this(uuid, null);
 	}
 
 	public HorseInventoryRecord() {
-		this(null, new ArrayList<>());
+		this(null, null);
 	}
 
 	public HorseInventoryRecord(AbstractHorse horse) {
 		uuid = horse.getUniqueId().toString();
-		itemRecordList = new ArrayList<>();
+
+		YamlConfiguration serialConfig = new YamlConfiguration();
 		Inventory horseInventory = horse.getInventory();
+		serialConfig.set(SIZE_KEY, horseInventory.getSize());
 		for (int slot = 0; slot < horseInventory.getSize(); slot++) {
 			ItemStack item = horseInventory.getItem(slot);
 			if (item != null) {
-				itemRecordList.add(new InventoryItemRecord(uuid, slot, item));
+				serialConfig.set(ITEMS_KEY + KeyWordEnum.DOT.getValue() + Integer.toString(slot), item);
 			}
 		}
+		serial = serialConfig.saveToString();
 	}
 
 	public String getUUID() {
 		return uuid;
 	}
 
-	public List<InventoryItemRecord> getItemRecordList() {
-		return itemRecordList;
+	public String getSerial() {
+		return serial;
+	}
+
+	public ItemStack[] getItems() {
+		try {
+			YamlConfiguration serialConfig = new YamlConfiguration();
+			serialConfig.loadFromString(serial);
+			int inventorySize = serialConfig.getInt(SIZE_KEY);
+			ItemStack[] items = new ItemStack[inventorySize];
+			for (int slot = 0; slot < inventorySize; slot++) {
+				ItemStack item = serialConfig.getItemStack(ITEMS_KEY + KeyWordEnum.DOT.getValue() + Integer.toString(slot), null);
+				items[slot] = item;
+			}
+			return items;
+		} catch (InvalidConfigurationException e) {
+			return null;
+		}
 	}
 
 }

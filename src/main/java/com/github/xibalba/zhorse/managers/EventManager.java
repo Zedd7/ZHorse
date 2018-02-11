@@ -57,35 +57,35 @@ import com.github.xibalba.zhorse.utils.MessageConfig;
 import com.github.xibalba.zhorse.utils.PlayerJoin;
 
 public class EventManager implements Listener {
-		
+
 	private ZHorse zh;
 
 	public EventManager(ZHorse zh) {
 		this.zh = zh;
 		zh.getServer().getPluginManager().registerEvents(this, zh);
 	}
-	
+
 	public void unregisterEvents() {
 		HandlerList.unregisterAll(this);
 	}
-	
+
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onChunkLoad(ChunkLoadEvent e) {
 		new ChunkLoad(zh, e.getChunk());
 	}
-	
+
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onChunkUnload(ChunkUnloadEvent e) {
 		new ChunkUnload(zh, e.getChunk());
 	}
-	
+
 	@EventHandler
 	public void onEntityDamage(EntityDamageEvent e) {
 		if (e.getEntity() instanceof AbstractHorse) {
 			AbstractHorse horse = (AbstractHorse) e.getEntity();
 			if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
 				if (zh.getDM().isHorseProtected(horse.getUniqueId())) {
-					DamageCause damageCause = e.getCause();					
+					DamageCause damageCause = e.getCause();
 					if (!(damageCause.equals(DamageCause.ENTITY_ATTACK) // If not already handled by onEntityDamageByEntity
 							|| damageCause.equals(DamageCause.ENTITY_EXPLOSION)
 							|| damageCause.equals(DamageCause.ENTITY_SWEEP_ATTACK)
@@ -102,7 +102,7 @@ public class EventManager implements Listener {
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
 		if (e.getEntity() instanceof AbstractHorse) {
@@ -127,7 +127,7 @@ public class EventManager implements Listener {
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onEntityDeath(EntityDeathEvent e) {
 		if (e.getEntity() instanceof AbstractHorse) {
@@ -153,12 +153,13 @@ public class EventManager implements Listener {
 				e.setDroppedExp(0);
 				zh.getHM().untrackHorse(horse.getUniqueId());
 				/* isCarryingChest carried on before horse death as the chest is forcibly removed at the start of the event since Spigot 1.12 */
-				zh.getDM().updateHorseInventory(inventoryRecord); // Do not update stats to keep health and ticksLived above 0
+				/* Do not update stats to keep health and ticksLived above 0 */
+				zh.getDM().updateHorseInventory(inventoryRecord);
 				zh.getDM().registerHorseDeath(new HorseDeathRecord(horse.getUniqueId().toString()));
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onEntityTame(EntityTameEvent e) {
 		if (e.getOwner() instanceof Player && e.getEntity() instanceof AbstractHorse) {
@@ -172,7 +173,7 @@ public class EventManager implements Listener {
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onEntityPortal(EntityPortalEvent e) {
 		if (e.getEntity() instanceof AbstractHorse) {
@@ -186,7 +187,7 @@ public class EventManager implements Listener {
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onEntityTeleport(EntityTeleportEvent e) {
 		if (e.getEntity() instanceof AbstractHorse) {
@@ -199,10 +200,10 @@ public class EventManager implements Listener {
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onHangingBreak(HangingBreakEvent e) {
-		RemoveCause removeCause = e.getCause();		
+		RemoveCause removeCause = e.getCause();
 		if (!removeCause.equals(RemoveCause.ENTITY)) { // If not already handled by onHangingBreakByEntity
 			if (e.getEntity() instanceof LeashHitch) {
 				LeashHitch leashHitch = (LeashHitch) e.getEntity();
@@ -238,25 +239,25 @@ public class EventManager implements Listener {
 				}
 			}
 		}
-	}	
-	
+	}
+
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent e) {
 		if (e.getWhoClicked() instanceof Player && e.getInventory().getHolder() instanceof AbstractHorse) {
 			e.setCancelled(!isPlayerAllowedToInteract((Player) e.getWhoClicked(), (AbstractHorse) e.getInventory().getHolder(), true));
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent e) {
 		if (e.getRightClicked() instanceof AbstractHorse) {
 			AbstractHorse horse = (AbstractHorse) e.getRightClicked();
 			Player p = e.getPlayer();
-			
+
 			if (zh.getDM().isHorseForSale(horse.getUniqueId()) && !zh.getDM().isHorseOwnedBy(p.getUniqueId(), horse.getUniqueId())) {
 				displayHorseStats(horse, p);
 			}
-			
+
 			if (horse instanceof SkeletonHorse || horse instanceof ZombieHorse) {
 				if (!horse.isLeashed() && zh.getCM().isLeashOnUndeadHorseAllowed()) {
 					HandEnum holdingHand = getHoldingHand(p, new ItemStack(Material.LEASH));
@@ -271,7 +272,7 @@ public class EventManager implements Listener {
 					}
 				}
 			}
-			
+
 			if (!horse.isAdult() && horse.getPassengers().isEmpty() && zh.getCM().isFoalRidingAllowed()) {
 				if (!p.isSneaking() // Allow to give food, open inventory, put on leash or place chest
 						&& !(horse.isLeashed() && horse.getLeashHolder().equals(p))
@@ -297,21 +298,21 @@ public class EventManager implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		new PlayerJoin(zh, e.getPlayer());
 	}
-	
+
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerKick(PlayerKickEvent e) {
 		if (e.getPlayer().getVehicle() != null) {
 			e.getPlayer().getVehicle().eject();
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerQuit(PlayerQuitEvent e) {
 		if (e.getPlayer().getVehicle() != null) {
 			e.getPlayer().getVehicle().eject();
 		}
 	}
-	
+
 	@EventHandler
 	public void onPlayerLeashEntity(PlayerLeashEntityEvent e) {
 		if (e.getLeashHolder() instanceof Player && e.getEntity() instanceof AbstractHorse) {
@@ -325,14 +326,14 @@ public class EventManager implements Listener {
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onPlayerUnleashEntity(PlayerUnleashEntityEvent e) {
 		if (e.getEntity() instanceof AbstractHorse) {
 			e.setCancelled(!isPlayerAllowedToInteract(e.getPlayer(), (AbstractHorse) e.getEntity(), false));
 		}
 	}
-	
+
 	@EventHandler
 	public void onVehicleEnter(VehicleEnterEvent e) {
 		if (e.getEntered() instanceof Player && e.getVehicle() instanceof AbstractHorse) {
@@ -341,7 +342,7 @@ public class EventManager implements Listener {
 			cancelEvent(e, p, cancel, true);
 		}
 	}
-	
+
 	private void cancelEvent(Cancellable e, Player p, boolean cancel, boolean restoreLocation) {
 		Location savedLocation = p.getLocation();
 		e.setCancelled(cancel);
@@ -349,7 +350,7 @@ public class EventManager implements Listener {
 			p.teleport(savedLocation);
 		}
 	}
-	
+
 	private void consumeItem(Player p, HandEnum holdingHand) {
 		if (p.getGameMode() != GameMode.CREATIVE) {
 			ItemStack item = getItem(p, holdingHand);
@@ -365,7 +366,7 @@ public class EventManager implements Listener {
 			}
 		}
 	}
-	
+
 	private void displayHorseStats(AbstractHorse horse, Player p) {
 		HorseStatsRecord statsRecord = new HorseStatsRecord(horse);
 		boolean useExactStats = zh.getCM().shouldUseExactStats();
@@ -377,7 +378,7 @@ public class EventManager implements Listener {
 		CommandInfo.displayChestSize(zh, (CommandSender) p, horse, statsRecord);
 		CommandInfo.displayPrice(zh, (CommandSender) p, horse);
 	}
-	
+
 	private HandEnum getHoldingHand(Player p, ItemStack item) {
 		ItemStack mainHandItem = p.getInventory().getItemInMainHand();
 		ItemStack offHandItem = p.getInventory().getItemInOffHand();
@@ -389,7 +390,7 @@ public class EventManager implements Listener {
 		}
 		return HandEnum.NONE;
 	}
-	
+
 	private ItemStack getItem(Player p, HandEnum holdingHand) {
 		ItemStack item = null;
 		switch (holdingHand) {
@@ -404,7 +405,7 @@ public class EventManager implements Listener {
 		}
 		return item;
 	}
-	
+
 	private boolean isPlayerAllowedToAttack(Player p, AbstractHorse horse) {
 		if (zh.getCM().isProtectionEnabled(CustomAttackType.PLAYER.getCode())) {
 			boolean isOwner = zh.getDM().isHorseOwnedBy(p.getUniqueId(), horse.getUniqueId());
@@ -419,7 +420,7 @@ public class EventManager implements Listener {
 		}
 		return true;
 	}
-	
+
 	private boolean isPlayerAllowedToInteract(Player p, AbstractHorse horse, boolean mustBeShared) {
 		if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
 			boolean isOwner = zh.getDM().isHorseOwnedBy(p.getUniqueId(), horse.getUniqueId());
@@ -435,40 +436,40 @@ public class EventManager implements Listener {
 		}
 		return true;
 	}
-	
+
 	private void updateInventory(Player p) {
 		new BukkitRunnable() {
-			
+
 			@Override
 			public void run() {
 				p.updateInventory();
 			}
-			
+
 		}.runTaskLater(zh, 0);
 	}
-	
+
 	public enum HandEnum {
-		
+
 		MAIN,
 		OFF,
 		NONE;
-		
+
 	}
-	
+
 	public enum CustomAttackType {
-		
+
 		OWNER("OWNER_ATTACK"),
 		PLAYER("PLAYER_ATTACK");
-	
+
 		String code;
-	
+
 		private CustomAttackType(String code) {
 			this.code = code;
 		}
-		
+
 		public String getCode() {
 			return code;
 		}
-		
+
 	}
 }
