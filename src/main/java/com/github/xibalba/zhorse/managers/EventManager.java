@@ -254,10 +254,12 @@ public class EventManager implements Listener {
 			AbstractHorse horse = (AbstractHorse) e.getRightClicked();
 			Player p = e.getPlayer();
 
+			/* Manages stats display of horses for sale */
 			if (zh.getDM().isHorseForSale(horse.getUniqueId()) && !zh.getDM().isHorseOwnedBy(p.getUniqueId(), horse.getUniqueId())) {
 				displayHorseStats(horse, p);
 			}
 
+			/* Manages leashing of undead horses */
 			if (horse instanceof SkeletonHorse || horse instanceof ZombieHorse) {
 				if (!horse.isLeashed() && zh.getCM().isLeashOnUndeadHorseAllowed()) {
 					HandEnum holdingHand = getHoldingHand(p, new ItemStack(Material.LEASH));
@@ -267,17 +269,29 @@ public class EventManager implements Listener {
 						zh.getServer().getPluginManager().callEvent(event);
 						if (!event.isCancelled()) {
 							consumeItem(p, holdingHand);
-							horse.setLeashHolder(p);
+							horse.setLeashHolder(p); // Does not work on untamed undead horses
 						}
 					}
 				}
 			}
 
-			if (!horse.isAdult() && horse.getPassengers().isEmpty() && zh.getCM().isFoalRidingAllowed()) {
-				if (!p.isSneaking() // Allow to give food, open inventory, put on leash or place chest
+			/* Manages riding of foals and untamed undead horses */
+			boolean matchUseCase = false;
+			boolean interactionAllowed = true;
+			if (!horse.isAdult()) {
+				matchUseCase = true;
+				interactionAllowed &= zh.getCM().isFoalRidingAllowed();
+			}
+			if ((horse instanceof SkeletonHorse || horse instanceof ZombieHorse) && !horse.isTamed()) {
+				matchUseCase = true;
+				interactionAllowed &= zh.getCM().isTamingOfUndeadHorseAllowed();
+			}
+			if (matchUseCase && interactionAllowed && horse.getPassengers().isEmpty()) {
+				if (!p.isSneaking() // Allows to give food, open inventory, put on leash or place chest
 						&& !(horse.isLeashed() && horse.getLeashHolder().equals(p))
 						&& getHoldingHand(p, new ItemStack(Material.LEASH)).equals(HandEnum.NONE)
 						&& getHoldingHand(p, new ItemStack(Material.SADDLE)).equals(HandEnum.NONE)
+						&& getHoldingHand(p, new ItemStack(Material.CARPET)).equals(HandEnum.NONE)
 						&& getHoldingHand(p, new ItemStack(Material.IRON_BARDING)).equals(HandEnum.NONE)
 						&& getHoldingHand(p, new ItemStack(Material.GOLD_BARDING)).equals(HandEnum.NONE)
 						&& getHoldingHand(p, new ItemStack(Material.DIAMOND_BARDING)).equals(HandEnum.NONE)

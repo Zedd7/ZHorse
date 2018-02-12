@@ -295,8 +295,11 @@ Settings:
   # Set to false to block foal riding and claiming.
   allow-foal-riding: true
 
-  # Set to false to block leashes on undead horses. (tamed only !)
+  # Set to false to block leashes on (tamed adult) undead horses.
   allow-leash-on-undead-horse: true
+
+  # Set to false to block players from taming undead horses.
+  allow-taming-of-undead-horse: true
 
   # Set to true to block /zh here on leashed horses.
   block-leashed-teleport: false

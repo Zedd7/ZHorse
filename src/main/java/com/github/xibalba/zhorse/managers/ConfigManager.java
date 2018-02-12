@@ -17,18 +17,18 @@ import com.github.xibalba.zhorse.enums.DatabaseEnum;
 import com.github.xibalba.zhorse.enums.KeyWordEnum;
 
 public class ConfigManager {
-	
+
 	private ZHorse zh;
 	private FileConfiguration config;
-	
+
 	public ConfigManager(ZHorse zh) {
 		this.zh = zh;
 	}
-	
+
 	public FileConfiguration getConfig() {
 		return config;
 	}
-	
+
 	public void setConfig(FileConfiguration config) {
 		this.config = config;
 	}
@@ -41,7 +41,7 @@ public class ConfigManager {
 		}
 		return availableLanguages;
 	}
-	
+
 	public int getClaimsLimit(UUID playerUUID) {
 		int claimsLimit = 0;
 		if (playerUUID != null) {
@@ -55,7 +55,7 @@ public class ConfigManager {
 		}
 		return claimsLimit;
 	}
-	
+
 	public int getCommandCooldown(String command) {
 		int commandCooldown = 0;
 		if (command != null) {
@@ -63,7 +63,7 @@ public class ConfigManager {
 		}
 		return Math.max(commandCooldown, 0);
 	}
-	
+
 	public int getCommandCost(String command) {
 		int commandCost = 0;
 		if (command != null) {
@@ -71,31 +71,31 @@ public class ConfigManager {
 		}
 		return Math.max(commandCost, 0);
 	}
-	
+
 	public String getDatabaseFileName() {
 		return config.getString(KeyWordEnum.FILE_NAME.getValue());
 	}
-	
+
 	public String getDatabaseHost() {
 		return config.getString(KeyWordEnum.HOST.getValue());
 	}
-	
+
 	public String getDatabaseName() {
 		return config.getString(KeyWordEnum.DATABASE.getValue());
 	}
-	
+
 	public String getDatabasePassword() {
 		return config.getString(KeyWordEnum.PASSWORD.getValue());
 	}
-	
+
 	public int getDatabasePort() {
 		return config.getInt(KeyWordEnum.PORT.getValue(), 0);
 	}
-	
+
 	public String getDatabaseTablePrefix() {
 		return config.getString(KeyWordEnum.TABLE_PREFIX.getValue());
 	}
-	
+
 	public DatabaseEnum getDatabaseType() {
 		String databaseType = config.getString(KeyWordEnum.TYPE.getValue());
 		if (databaseType.equalsIgnoreCase(DatabaseEnum.MYSQL.getName())) {
@@ -109,19 +109,19 @@ public class ConfigManager {
 		}
 		return null;
 	}
-	
+
 	public String getDatabaseUser() {
 		return config.getString(KeyWordEnum.USER.getValue());
 	}
-	
+
 	public String getDefaultHorseName() {
 		return config.getString(KeyWordEnum.DEFAULT_NAME.getValue(), "NoDefaultHorseNameSet");
 	}
-	
+
 	public String getDefaultLanguage() {
 		return config.getString(KeyWordEnum.DEFAULT_LANGUAGE.getValue(), null);
 	}
-	
+
 	public Location getDefaultStableLocation() {
 		String worldName = config.getString(KeyWordEnum.DEFAULT_STABLE_LOCATION_WORLD.getValue(), zh.getServer().getWorlds().get(0).getName());
 		World world = zh.getServer().getWorld(worldName);
@@ -130,7 +130,7 @@ public class ConfigManager {
 		int z = config.getInt(KeyWordEnum.DEFAULT_STABLE_LOCATION_Z.getValue(), 0);
 		return new Location(world, x, y, z);
 	}
-	
+
 	public String getGroupColorCode(UUID playerUUID) {
 		String colorCode = "<WHITE>";
 		if (playerUUID != null) {
@@ -141,27 +141,27 @@ public class ConfigManager {
 		}
 		return colorCode;
 	}
-	
+
 	public int getMaximumHorseNameLength() {
 		return config.getInt(KeyWordEnum.MAXIMUM_LENGTH.getValue(), 0);
 	}
-	
+
 	public int getMinimumHorseNameLength() {
 		return Math.max(config.getInt(KeyWordEnum.MINIMUM_LENGTH.getValue(), 0), 0);
 	}
-	
+
 	public int getMaximumRangeHere() {
 		return config.getInt(KeyWordEnum.HERE_MAX_RANGE.getValue(), -1);
 	}
-	
+
 	public int getMaximumRangeStable() {
 		return config.getInt(KeyWordEnum.STABLE_MAX_RANGE.getValue(), -1);
 	}
-	
+
 	public int getMaximumRangeTp() {
 		return config.getInt(KeyWordEnum.TP_MAX_RANGE.getValue(), -1);
 	}
-	
+
 	public String getRandomHorseName() {
 		String randomHorseName = null;
 		Random random = new Random();
@@ -171,15 +171,15 @@ public class ConfigManager {
 		}
 		return randomHorseName;
 	}
-	
+
 	public int getRezStackMaxSize() {
 		return config.getInt(KeyWordEnum.REZ_STACK_SIZE.getValue(), 0);
 	}
-	
+
 	public boolean isAutoAdminModeEnabled(String command) {
 		return command != null && config.getBoolean(KeyWordEnum.COMMANDS_PREFIX.getValue() + command + KeyWordEnum.AUTO_ADMIN_SUFFIX.getValue(), false);
 	}
-	
+
 	public boolean isColorBypassEnabled(UUID playerUUID) {
 		if (playerUUID != null) {
 			String groupName = getGroupName(playerUUID);
@@ -189,19 +189,19 @@ public class ConfigManager {
 		}
 		return false;
 	}
-	
+
 	public boolean isConsoleMuted() {
 		return config.getBoolean(KeyWordEnum.MUTE_CONSOLE.getValue(), false);
 	}
-	
+
 	public boolean isFoalRidingAllowed() {
 		return config.getBoolean(KeyWordEnum.ALLOW_FOAL_RIDING.getValue(), true);
 	}
-	
+
 	public boolean isHorseNameAllowed() {
 		return getMaximumHorseNameLength() != 0;
 	}
-	
+
 	public boolean isHorseNameBanned(String horseName) {
 		if (horseName != null) {
 			List<String> bannedNameList = config.getStringList(KeyWordEnum.BANNED_NAMES.getValue());
@@ -213,83 +213,87 @@ public class ConfigManager {
 		}
 		return false;
 	}
-	
+
 	public boolean isHorseNameRequired() {
 		return getMinimumHorseNameLength() > 0;
 	}
-	
+
 	public boolean isLanguageAvailable(String language) {
 		return language != null && getAvailableLanguages().contains(language);
 	}
-	
+
 	public boolean isLeashOnUndeadHorseAllowed() {
 		return config.getBoolean(KeyWordEnum.ALLOW_LEASH_ON_UNDEAD_HORSE.getValue(), true);
 	}
-	
+
 	public boolean isProtectionEnabled(String protection) {
 		return protection != null && config.getBoolean(KeyWordEnum.PROTECTIONS_PREFIX.getValue() + protection + KeyWordEnum.ENABLED_SUFFIX.getValue(), false);
 	}
-	
+
 	public boolean isRandomHorseNameEnabled() {
 		return config.getBoolean(KeyWordEnum.GIVE_RANDOM_NAMES.getValue(), false);
 	}
-	
+
+	public boolean isTamingOfUndeadHorseAllowed() {
+		return config.getBoolean(KeyWordEnum.ALLOW_TAMING_OF_UNDEAD_HORSE.getValue(), true);
+	}
+
 	public boolean isWorldCrossable(World world) {
 		return world != null && config.getBoolean(KeyWordEnum.WORLDS_PREFIX.getValue() + world.getName() + KeyWordEnum.CROSSABLE_SUFFIX.getValue(), false);
 	}
-	
+
 	public boolean isWorldEnabled(World world) {
 		return world != null && config.getBoolean(KeyWordEnum.WORLDS_PREFIX.getValue() + world.getName() + KeyWordEnum.ENABLED_SUFFIX.getValue(), false);
 	}
-	
+
 	public boolean shouldBlockLeashedTeleport() {
 		return config.getBoolean(KeyWordEnum.BLOCK_LEASHED_TELEPORT.getValue(), false);
 	}
-	
+
 	public boolean shouldBlockMountedTeleport() {
 		return config.getBoolean(KeyWordEnum.BLOCK_MOUNTED_TELEPORT.getValue(), false);
 	}
-	
+
 	public boolean shouldClaimOnTame() {
 		return config.getBoolean(KeyWordEnum.CLAIM_ON_TAME.getValue(), false);
 	}
-	
+
 	public boolean shouldLockOnClaim() {
 		return config.getBoolean(KeyWordEnum.LOCK_ON_CLAIM.getValue(), false);
 	}
-	
+
 	public boolean shouldProtectOnClaim() {
 		return config.getBoolean(KeyWordEnum.PROTECT_ON_CLAIM.getValue(), false);
 	}
-	
+
 	public boolean shouldRespawnMissingHorse() {
 		return config.getBoolean(KeyWordEnum.RESPAWN_MISSING_HORSE.getValue(), true);
 	}
-	
+
 	public boolean shouldRestoreInventory() {
 		return config.getBoolean(KeyWordEnum.RESTORE_INVENTORY.getValue(), true);
 	}
-	
+
 	public boolean shouldShareOnClaim() {
 		return config.getBoolean(KeyWordEnum.SHARE_ON_CLAIM.getValue(), false);
 	}
-	
+
 	public boolean shouldUseExactStats() {
 		return config.getBoolean(KeyWordEnum.USE_EXACT_STATS.getValue(), false);
 	}
-	
+
 	public boolean shouldUseVanillaStats() {
 		return config.getBoolean(KeyWordEnum.USE_VANILLA_STATS.getValue(), true);
 	}
-	
+
 	public boolean shouldUseOldTeleportMethod() {
 		return config.getBoolean(KeyWordEnum.USE_OLD_TELEPORT_METHOD.getValue(), false);
 	}
-	
+
 	public boolean shouldUseDefaultStable() {
 		return config.getBoolean(KeyWordEnum.USE_DEFAULT_STABLE.getValue(), false);
 	}
-	
+
 	private String getExactGroupName(String groupName) {
 		if (groupName != null) {
 			ConfigurationSection cs = config.getConfigurationSection(KeyWordEnum.GROUPS.getValue());
@@ -303,7 +307,7 @@ public class ConfigManager {
 		}
 		return groupName;
 	}
-	
+
 	private String getGroupName(UUID playerUUID) {
 		String groupName = null;
 		if (playerUUID != null) {
@@ -325,7 +329,7 @@ public class ConfigManager {
 		}
 		return groupName;
 	}
-	
+
 	private String getSurrogateGroupName(Player p) {
 		if (p != null) {
 			ConfigurationSection cs = config.getConfigurationSection(KeyWordEnum.GROUPS.getValue());

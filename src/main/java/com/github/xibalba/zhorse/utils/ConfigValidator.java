@@ -17,13 +17,13 @@ import com.github.xibalba.zhorse.managers.EventManager;
 import com.github.xibalba.zhorse.managers.MessageManager;
 
 public class ConfigValidator extends YamlResourceValidator {
-	
+
 	private static final int HORSE_NAME_LENGTH_LIMIT = 36; // Limited by DB
-	
+
 	public ConfigValidator(ZHorse zh, FileConfiguration config, FileConfiguration model, File configFile, String fileName) {
 		super(zh, config, model, configFile, fileName);
 	}
-	
+
 	public boolean validate() {
 		valid = true;
 		validateCommandsSection();
@@ -40,7 +40,7 @@ public class ConfigValidator extends YamlResourceValidator {
 		}
 		return true;
 	}
-	
+
 	private void validateCommandsSection() {
 		if (validateSectionSet(KeyWordEnum.COMMANDS.getValue())) {
 			ConfigurationSection cs = resource.getConfigurationSection(KeyWordEnum.COMMANDS.getValue());
@@ -83,7 +83,7 @@ public class ConfigValidator extends YamlResourceValidator {
 	        }
 		}
 	}
-	
+
 	private void validateGroupsSection() {
 		if (validateSectionSet(KeyWordEnum.GROUPS.getValue())) {
 			ConfigurationSection cs = resource.getConfigurationSection(KeyWordEnum.GROUPS.getValue());
@@ -101,7 +101,7 @@ public class ConfigValidator extends YamlResourceValidator {
 			}
 		}
 	}
-	
+
 	private void validateHorseNamesSection() {
 		if (validateSectionSet(KeyWordEnum.HORSENAMES.getValue())) {
 			int maximumHorseNameLength = 0;
@@ -140,7 +140,7 @@ public class ConfigValidator extends YamlResourceValidator {
 			}
 		}
 	}
-	
+
 	private void validateLanguagesSection() {
 		if (validateSectionSet(KeyWordEnum.LANGUAGES.getValue())) {
 			String defaultLanguage = null;
@@ -157,7 +157,7 @@ public class ConfigValidator extends YamlResourceValidator {
 			}
 		}
 	}
-	
+
 	private void validateProtectionsSection() {
 		if (validateSectionSet(KeyWordEnum.PROTECTIONS.getValue())) {
 			ConfigurationSection cs = resource.getConfigurationSection(KeyWordEnum.PROTECTIONS.getValue());
@@ -178,11 +178,12 @@ public class ConfigValidator extends YamlResourceValidator {
 			}
 		}
 	}
-	
+
 	private void validateSettingsSection() {
 		if (validateSectionSet(KeyWordEnum.SETTINGS.getValue())) {
 			validateOptionSet(KeyWordEnum.ALLOW_FOAL_RIDING.getValue());
 			validateOptionSet(KeyWordEnum.ALLOW_LEASH_ON_UNDEAD_HORSE.getValue());
+			validateOptionSet(KeyWordEnum.ALLOW_TAMING_OF_UNDEAD_HORSE.getValue());
 			validateOptionSet(KeyWordEnum.BLOCK_LEASHED_TELEPORT.getValue());
 			validateOptionSet(KeyWordEnum.BLOCK_MOUNTED_TELEPORT.getValue());
 			validateOptionSet(KeyWordEnum.CLAIM_ON_TAME.getValue());
@@ -223,7 +224,7 @@ public class ConfigValidator extends YamlResourceValidator {
 			}
 		}
 	}
-	
+
 	private void validateWorldsSection() {
 		if (validateSectionSet(KeyWordEnum.WORLDS.getValue())) {
 			ConfigurationSection cs = resource.getConfigurationSection(KeyWordEnum.WORLDS.getValue());

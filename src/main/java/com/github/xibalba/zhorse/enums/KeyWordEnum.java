@@ -1,16 +1,17 @@
 package com.github.xibalba.zhorse.enums;
 
 public enum KeyWordEnum {
-	
+
 	/* general keywords */
 	ADMIN_SUFFIX(".admin"),
 	DOT("."),
 	FREE_SUFFIX(".free"),
 	ZH_PREFIX("zh."),
-	
+
 	/* config.yml keywords */
 	ALLOW_FOAL_RIDING("Settings.allow-foal-riding"),
 	ALLOW_LEASH_ON_UNDEAD_HORSE("Settings.allow-leash-on-undead-horse"),
+	ALLOW_TAMING_OF_UNDEAD_HORSE("Settings.allow-taming-of-undead-horse"),
 	AVAILABLE_LANGUAGES("Languages.available"),
 	AUTO_ADMIN_SUFFIX(".auto-admin"),
 	BANNED_NAMES("HorseNames.banned-names"),
@@ -69,7 +70,7 @@ public enum KeyWordEnum {
 	USE_VANILLA_STATS("Settings.use-vanilla-stats"),
 	WORLDS("Worlds"),
 	WORLDS_PREFIX("Worlds."),
-	
+
 	/* locale_XX.yml keywords */
 	AMOUNT_FLAG("<amount>"),
 	CURRENCY_SYMBOL_FLAG("<currency>"),
@@ -80,18 +81,18 @@ public enum KeyWordEnum {
 	PERMISSION_FLAG("<perm>"),
 	PLAYER_NAME_FLAG("<player>"),
 	VALUE_FLAG("<value>"),
-	
+
 	/* LocaleEnum keywords */
 	DESCRIPTION("DESCRIPTION"),
 	SEPARATOR("_"),
 	USAGE("USAGE");
-	
+
 	private String value;
-	
+
 	KeyWordEnum(String value) {
 		this.value = value;
 	}
-	
+
 	public String getValue() {
 		return value;
 	}
