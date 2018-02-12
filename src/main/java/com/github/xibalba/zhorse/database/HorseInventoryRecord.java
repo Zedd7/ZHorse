@@ -22,11 +22,11 @@ public class HorseInventoryRecord {
 	}
 
 	public HorseInventoryRecord(String uuid) {
-		this(uuid, null);
+		this(uuid, "");
 	}
 
 	public HorseInventoryRecord() {
-		this(null, null);
+		this(null, "");
 	}
 
 	public HorseInventoryRecord(AbstractHorse horse) {
@@ -64,7 +64,7 @@ public class HorseInventoryRecord {
 			}
 			return items;
 		} catch (InvalidConfigurationException e) {
-			return null;
+			return new ItemStack[0];
 		}
 	}
 
