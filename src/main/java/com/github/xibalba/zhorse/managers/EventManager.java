@@ -55,6 +55,7 @@ import com.github.xibalba.zhorse.utils.ChunkLoad;
 import com.github.xibalba.zhorse.utils.ChunkUnload;
 import com.github.xibalba.zhorse.utils.MessageConfig;
 import com.github.xibalba.zhorse.utils.PlayerJoin;
+import com.github.xibalba.zhorse.utils.PlayerQuit;
 
 public class EventManager implements Listener {
 
@@ -315,16 +316,12 @@ public class EventManager implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerKick(PlayerKickEvent e) {
-		if (e.getPlayer().getVehicle() != null) {
-			e.getPlayer().getVehicle().eject();
-		}
+		new PlayerQuit(zh, e.getPlayer());
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerQuit(PlayerQuitEvent e) {
-		if (e.getPlayer().getVehicle() != null) {
-			e.getPlayer().getVehicle().eject();
-		}
+		new PlayerQuit(zh, e.getPlayer());
 	}
 
 	@EventHandler

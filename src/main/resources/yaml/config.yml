@@ -301,7 +301,7 @@ Settings:
   # Set to false to block players from taming undead horses.
   allow-taming-of-undead-horse: true
 
-  # Set to true to block /zh here on leashed horses.
+  # Set to true to block /zh here and /zh stable on leashed horses.
   block-leashed-teleport: false
 
   # Set to true to block /zh here on mounted horses.
@@ -348,22 +348,28 @@ Settings:
   rez-stack-size: 5
 
   # Set to true to make default stats display mode use unrounded horse stats.
-  # Does not affect actual horse stats, only apply to /zh spawn and /zh info.
+  # Does not affect actual horse stats, only applies to /zh spawn and /zh info.
   use-exact-stats: false
 
   # Set to false to use Bukkit thresholds for horse stats.
-  # Does not affect actual horse stats, only apply to /zh spawn and /zh info.
+  # Does not affect actual horse stats, only applies to /zh spawn and /zh info.
   use-vanilla-stats: true
 
-  # Set to true to switch to the teleportation method used in 1.4-.
+  # Set to true to switch to the teleportation method used in ZHorse 1.4-.
   # This is only recommended for servers using plugins that are
-  # incompatible with the new 1.5+ teleportation method.
-  # The new method remove horses and respawn them at destination.
+  # incompatible with the new ZHorse 1.5+ teleportation method.
+  # The new method removes horses and respawns them at destination.
   use-old-teleport-method: false
-
-  # Set to true to send all horses whose stable location has not been defined
-  # yet to the location defined by default-stable-location with /zh stable go.
+  
+  # Set to true to use the location defined by default-stable-location for
+  # horses whose stable has not been defined when using /zh stable go or
+  # when a player logout and send-to-stable-on-owner-logout is enabled.
   use-default-stable: false
+  
+  # Set to true to send horses to stable when their owner logout.
+  # This only works if a regular or default stable has been defined.
+  # Leashing horses and enabling block-leashed-teleport is recommended.
+  send-to-stable-on-owner-logout: false
 
   default-stable-location:
     world: world

@@ -57,6 +57,7 @@ public enum KeyWordEnum {
 	RESPAWN_MISSING_HORSE("Settings.respawn-missing-horse"),
 	RESTORE_INVENTORY("Settings.restore-inventory"),
 	REZ_STACK_SIZE("Settings.rez-stack-size"),
+	SEND_TO_STABLE_ON_OWNER_LOGOUT("Settings.send-to-stable-on-owner-logout"),
 	SETTINGS("Settings"),
 	SHARE_ON_CLAIM("Settings.share-on-claim"),
 	STABLE_MAX_RANGE("Settings.stable-max-range"),

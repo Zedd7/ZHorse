@@ -214,6 +214,7 @@ public class ConfigValidator extends YamlResourceValidator {
 			validateOptionSet(KeyWordEnum.USE_VANILLA_STATS.getValue());
 			validateOptionSet(KeyWordEnum.USE_OLD_TELEPORT_METHOD.getValue());
 			validateOptionSet(KeyWordEnum.USE_DEFAULT_STABLE.getValue());
+			validateOptionSet(KeyWordEnum.SEND_TO_STABLE_ON_OWNER_LOGOUT.getValue());
 			validateOptionSet(KeyWordEnum.DEFAULT_STABLE_LOCATION_WORLD.getValue());
 			validateOptionSet(KeyWordEnum.DEFAULT_STABLE_LOCATION_X.getValue());
 			validateOptionSet(KeyWordEnum.DEFAULT_STABLE_LOCATION_Y.getValue());

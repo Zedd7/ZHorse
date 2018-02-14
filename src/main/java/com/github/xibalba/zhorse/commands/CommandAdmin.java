@@ -20,7 +20,7 @@ import com.github.xibalba.zhorse.utils.MessageConfig;
 import net.md_5.bungee.api.ChatColor;
 
 public class CommandAdmin extends AbstractCommand {
-	
+
 	private String fullCommand;
 	private String subCommand;
 
@@ -70,7 +70,7 @@ public class CommandAdmin extends AbstractCommand {
 			sendSubCommandDescriptionList(AdminSubCommandEnum.class);
 		}
 	}
-	
+
 	private void burial() {
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (!idMode) {
@@ -122,14 +122,14 @@ public class CommandAdmin extends AbstractCommand {
 				samePlayer = playerCommand && p.getUniqueId().equals(targetUUID);
 			}
 			if (args.size() >= 3) {
-				idMode = true;					
+				idMode = true;
 				horseID = args.get(2);
 			}
 			if (targetMode) {
 				if (!idMode) {
 					if (isRegistered(targetUUID)) {
 						boolean success = true;
-						for (UUID horseUUID : zh.getDM().getHorseUUIDList(targetUUID)) {
+						for (UUID horseUUID : zh.getDM().getHorseUUIDList(targetUUID, true)) {
 							if (!variantMode || zh.getDM().isHorseOfType(horseUUID, variant)) {
 								int horseID = zh.getDM().getHorseID(horseUUID);
 								if (!clearLivingHorse(targetUUID, horseID, variantMode)) success = false;
@@ -167,7 +167,7 @@ public class CommandAdmin extends AbstractCommand {
 			}
 		}
 	}
-	
+
 	private boolean clearLivingHorse(UUID ownerUUID, int horseID, boolean updateHorseIDMapping) {
 		AbstractHorse horse = zh.getHM().getHorse(ownerUUID, horseID);
 		if (horse != null) {
@@ -178,7 +178,7 @@ public class CommandAdmin extends AbstractCommand {
 		zh.getHM().untrackHorse(horseUUID);
 		return zh.getDM().removeHorse(horseUUID, ownerUUID, updateHorseIDMapping ? horseID : null);
 	}
-	
+
 	private void importDB() {
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (args.size() >= 2) {
@@ -214,7 +214,7 @@ public class CommandAdmin extends AbstractCommand {
 			}
 		}
 	}
-	
+
 	private void displayAvailableDatabases(LocaleEnum index) {
 		DatabaseEnum[] availableDatabaseArray = DatabaseEnum.values();
 		String availableDatabasesMessage = "";

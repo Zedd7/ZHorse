@@ -274,6 +274,10 @@ public class ConfigManager {
 		return config.getBoolean(KeyWordEnum.RESTORE_INVENTORY.getValue(), true);
 	}
 
+	public boolean shouldSendToStableOnOwnerLogout() {
+		return config.getBoolean(KeyWordEnum.SEND_TO_STABLE_ON_OWNER_LOGOUT.getValue(), false);
+	}
+
 	public boolean shouldShareOnClaim() {
 		return config.getBoolean(KeyWordEnum.SHARE_ON_CLAIM.getValue(), false);
 	}

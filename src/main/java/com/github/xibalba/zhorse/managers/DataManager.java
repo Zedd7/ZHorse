@@ -167,8 +167,14 @@ public class DataManager {
 		return UUID.fromString(db.getStringResult(query));
 	}
 
-	public List<UUID> getHorseUUIDList(UUID ownerUUID) {
-		String query = String.format("SELECT uuid FROM prefix_horse WHERE owner = \"%s\"", ownerUUID);
+	public List<UUID> getHorseUUIDList(UUID ownerUUID, boolean includeDeadHorses) {
+		String query;
+		if (includeDeadHorses) {
+			query = String.format("SELECT uuid FROM prefix_horse WHERE owner = \"%s\" ORDER BY id ASC", ownerUUID);
+		}
+		else {
+			query = String.format("SELECT h.uuid FROM prefix_horse h WHERE h.owner = \"%s\" AND h.uuid NOT IN (SELECT hd.uuid FROM prefix_horse_death hd) ORDER BY h.id ASC", ownerUUID);
+		}
 		List<String> stringUUIDList = db.getStringResultList(query);
 		List<UUID> horseUUIDList = new ArrayList<>();
 		for (String stringUUID : stringUUIDList) {
@@ -293,7 +299,7 @@ public class DataManager {
 			query = String.format("SELECT * FROM prefix_horse WHERE owner = \"%s\" ORDER BY id ASC", ownerUUID);
 		}
 		else {
-			query = String.format("SELECT * FROM prefix_horse h WHERE owner = \"%s\" AND h.uuid NOT IN (SELECT hd.uuid FROM prefix_horse_death hd) ORDER BY h.id ASC", ownerUUID);
+			query = String.format("SELECT * FROM prefix_horse h WHERE h.owner = \"%s\" AND h.uuid NOT IN (SELECT hd.uuid FROM prefix_horse_death hd) ORDER BY h.id ASC", ownerUUID);
 		}
 		return db.getHorseRecordList(query);
 	}
