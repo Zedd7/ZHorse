@@ -28,7 +28,7 @@ import com.github.xibalba.zhorse.enums.DatabaseEnum;
 public class DataManager {
 
 	public static final String[] TABLE_ARRAY = {"player", "friend", "pending_message", "horse", "horse_death", "horse_inventory", "horse_stable", "horse_stats", "sale"};
-	public static final String[] PATCH_ARRAY = {"1.6.6"};
+	public static final String[] PATCH_ARRAY = {"1.6.6", "1.6.10"};
 
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 	private static final int DEFAULT_DEAD_HORSE_ID = -1;

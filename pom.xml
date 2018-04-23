@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.xibalba</groupId>
     <artifactId>ZHorse</artifactId>
-    <version>1.6.9</version>
+    <version>1.6.10 snapshot 1</version>
     <packaging>jar</packaging>
 
     <name>ZHorse</name>
