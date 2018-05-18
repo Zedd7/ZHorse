@@ -12,7 +12,7 @@ import com.github.xibalba.zhorse.enums.LocaleEnum;
 
 public class LocaleManager {
 	
-	public static final String[] PROVIDED_LANGUAGES = {"EN", "FR", "DE", "NL"};
+	public static final String[] PROVIDED_LANGUAGES = {"EN", "FR", "DE", "NL", "HU"};
 		
 	private ZHorse zh;
 	private Map<String, FileConfiguration> locales;	
