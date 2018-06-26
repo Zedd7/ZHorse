@@ -19,6 +19,10 @@ Commands:
     auto-admin: false
     cooldown: 0
     cost: 0
+  edit:
+    auto-admin: false
+    cooldown: 0
+    cost: 0
   free:
     auto-admin: false
     cooldown: 0
@@ -220,6 +224,8 @@ Languages:
   - FR
   - DE
   - NL
+  - ES
+  - HU
 
 Protections:
 

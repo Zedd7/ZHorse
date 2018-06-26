@@ -11,24 +11,24 @@ import com.github.xibalba.zhorse.ZHorse;
 import com.github.xibalba.zhorse.enums.LocaleEnum;
 
 public class LocaleManager {
-	
-	public static final String[] PROVIDED_LANGUAGES = {"EN", "FR", "DE", "NL", "HU"};
-		
+
+	public static final String[] PROVIDED_LANGUAGES = {"EN", "FR", "DE", "NL", "ES", "HU"};
+
 	private ZHorse zh;
-	private Map<String, FileConfiguration> locales;	
-	
+	private Map<String, FileConfiguration> locales;
+
 	public LocaleManager(ZHorse zh) {
 		this.zh = zh;
 	}
-	
+
 	public Map<String, FileConfiguration> getLocales() {
 		return locales;
 	}
-	
+
 	public void setLocales(Map<String, FileConfiguration> locales) {
 		this.locales = locales;
 	}
-    
+
     private FileConfiguration getLocale(String language) {
     	if (locales.containsKey(language)) {
     		return locales.get(language);
@@ -38,7 +38,7 @@ public class LocaleManager {
     	}
     	return locales.get(zh.getCM().getDefaultLanguage());
     }
-	
+
 	public String getMessage(String index, String language, boolean hidePrefix) {
         String message = getLocale(language).getString(index);
         if (message == null) {
@@ -55,7 +55,7 @@ public class LocaleManager {
         }
         return getMessage(LocaleEnum.PLUGIN_PREFIX.getIndex(), language, true) + " " + message;
 	}
-	
+
 	public boolean checkConformity() {
 		return true;
 	}

@@ -28,7 +28,7 @@ import com.github.xibalba.zhorse.utils.MessageConfig;
 import net.md_5.bungee.api.ChatColor;
 
 public abstract class AbstractCommand {
-	
+
 	protected ZHorse zh;
 	protected CommandSender s;
 	protected CommandSender console;
@@ -47,7 +47,7 @@ public abstract class AbstractCommand {
 	protected boolean useExactStats;
 	protected boolean useVanillaStats;
 	protected boolean playerCommand;
-	
+
 	protected boolean adminMode = false;
 	protected boolean idMode = false;
 	protected boolean targetMode = false;
@@ -55,7 +55,7 @@ public abstract class AbstractCommand {
 	protected boolean targetIsOwner = true;
 	protected boolean parsingError = false;
 	protected boolean samePlayer = false;
-	
+
 	public AbstractCommand(ZHorse zh, CommandSender s, String[] a) {
 		this.zh = zh;
 		this.a = a;
@@ -66,7 +66,7 @@ public abstract class AbstractCommand {
 		console = zh.getServer().getConsoleSender();
 		useVanillaStats = zh.getCM().shouldUseVanillaStats();
 	}
-	
+
 	protected boolean parseArguments() {
 		boolean valid;
 		for (int i = 1; i < a.length; i++) { // Start at 1 to skip the command
@@ -110,15 +110,15 @@ public abstract class AbstractCommand {
 		analyseModes();
 		return true;
 	}
-	
+
 	protected void analyseModes() {
 		analyseIDMode();
 		analyseTargetMode();
 		analyseVariantMode();
 	}
-	
+
 	private void analyseIDMode() {}
-	
+
 	protected void analyseTargetMode() {
 		if (targetMode) {
 			String fixedTargetName = zh.getDM().getPlayerName(targetName); // Fix potential case issues
@@ -136,7 +136,7 @@ public abstract class AbstractCommand {
 		adminMode |= zh.getCM().isAutoAdminModeEnabled(command) && hasPermissionAdmin(true);
 		samePlayer = !targetMode || (playerCommand && p.getUniqueId().equals(targetUUID));
 	}
-	
+
 	protected void analyseVariantMode() {
 		if (variantMode) {
 			for (HorseVariantEnum horseVariantEnum : HorseVariantEnum.values()) {
@@ -172,16 +172,16 @@ public abstract class AbstractCommand {
 		}
 		return true;
 	}
-	
+
 	protected enum ArgumentEnum {
-		
+
 		HORSE_ID, HORSE_NAME, PLAYER_NAME, PAGE_NUMBER;
-	
+
 	}
-	
+
 	protected void parseHorseName() {
 		if (idMode || args.isEmpty()) return;
-		
+
 		idMode = true;
 		UUID ownerUUID = targetIsOwner ? targetUUID : p.getUniqueId();
 		horseName = zh.getDM().getHorseName(ownerUUID, String.join(" ", args)); // Fix potential case issues
@@ -191,17 +191,17 @@ public abstract class AbstractCommand {
 			analyseIDMode();
 		}
 	}
-	
+
 	protected void parsePlayerName() {
 		if (targetMode) return;
-		
+
 		targetUUID = null;
 		targetMode = !args.isEmpty();
 		targetName = targetMode ? args.get(0) : "";
 		args.remove(targetName);
 		analyseTargetMode();
 	}
-	
+
 	protected boolean parsePageNumber(boolean hideConsole) {
 		if (!args.isEmpty()) {
 			try {
@@ -219,7 +219,7 @@ public abstract class AbstractCommand {
 		}
 		return true;
 	}
-	
+
 	protected void applyHorseName(UUID ownerUUID) {
 		String customHorseName;
 		String rawHorseName = String.join(" ", args);
@@ -233,17 +233,17 @@ public abstract class AbstractCommand {
 		}
 		horse.setCustomName(customHorseName);
 	}
-	
+
 	protected void applyHorsePrice(int price) {
 		String currencySymbol = zh.getMM().getMessage(console, new MessageConfig(LocaleEnum.CURRENCY_SYMBOL), true);
 		String horsePrice = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.HORSE_PRICE) {{ setAmount(price); setCurrencySymbol(currencySymbol); }}, true);
 		horse.setCustomName(horse.getCustomName() + ChatColor.RESET + horsePrice);
 	}
-	
+
 	protected boolean craftHorseName(boolean keepPreviousName) {
 		return craftHorseName(keepPreviousName, horse.getUniqueId());
 	}
-	
+
 	protected boolean craftHorseName(boolean keepPreviousName, UUID horseUUID) {
 		if (!args.isEmpty()) {
 			return craftCustomHorseName();
@@ -281,7 +281,7 @@ public abstract class AbstractCommand {
 		}
 		return false;
 	}
-	
+
 	private boolean craftPreviousHorseName(boolean keepPreviousName, UUID horseUUID) {
 		if (adminMode || !zh.getCM().isHorseNameRequired()) {
 			if (keepPreviousName && zh.getDM().isHorseRegistered(horseUUID)) {
@@ -302,7 +302,7 @@ public abstract class AbstractCommand {
 			return false;
 		}
 	}
-	
+
 	protected Location getGroundedLocation(Location baseLocation) {
 		Location groundedLocation = baseLocation;
 		if (p.isInsideVehicle()) {
@@ -315,7 +315,7 @@ public abstract class AbstractCommand {
 		groundedLocation.setY(Math.ceil(groundedLocation.getY()));
 		return groundedLocation;
 	}
-	
+
 	protected UUID getPlayerUUID(String playerName) {
 		if (zh.getDM().isPlayerRegistered(playerName)) {
 			return zh.getDM().getPlayerUUID(playerName);
@@ -324,22 +324,22 @@ public abstract class AbstractCommand {
 			return null;
 		}
 	}
-	
+
 	protected String getRemainingClaimsMessage(UUID playerUUID) {
 		int livingHorseCount = zh.getDM().getAliveHorseCount(playerUUID);
 		int maxClaims = zh.getCM().getClaimsLimit(playerUUID);
 		return zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.REMAINING_CLAIMS_FORMAT) {{ setAmount(livingHorseCount); setMax(maxClaims); }}, true);
 	}
-	
+
 	protected String getRemainingDeathsMessage(UUID playerUUID) {
 		int deadHorseCount = zh.getDM().getDeadHorseCount(playerUUID);
 		int maxDeadHorses = zh.getCM().getRezStackMaxSize();
 		return zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.REMAINING_CLAIMS_FORMAT) {{ setAmount(deadHorseCount); setMax(maxDeadHorses); }}, true);
 	}
-	
+
 	protected boolean hasReachedClaimsLimit(boolean useTargetList) {
 		if (adminMode) return false;
-		
+
 		UUID playerUUID = useTargetList ? targetUUID : p.getUniqueId();
 		int horseCount = zh.getDM().getAliveHorseCount(playerUUID);
 		int claimsLimit = zh.getCM().getClaimsLimit(playerUUID);
@@ -356,11 +356,11 @@ public abstract class AbstractCommand {
 			return true;
 		}
 	}
-	
+
 	protected boolean hasPermission() {
     	return (hasPermission(s, command, false, false));
 	}
-	
+
 	protected boolean hasPermission(UUID playerUUID, String command, boolean ignoreAdminMode, boolean hideConsole) {
 		if (isPlayerOnline(playerUUID, hideConsole)) {
     		CommandSender target = zh.getServer().getPlayer(playerUUID);
@@ -370,7 +370,7 @@ public abstract class AbstractCommand {
 			return false;
 		}
 	}
-	
+
 	protected boolean hasPermission(CommandSender s, String command, boolean ignoreAdminMode, boolean hideConsole) {
 		String permission = KeyWordEnum.ZH_PREFIX.getValue() + command;
     	if (adminMode && !ignoreAdminMode) {
@@ -386,11 +386,11 @@ public abstract class AbstractCommand {
     		return false;
     	}
 	}
-	
+
 	protected boolean hasPermissionAdmin(boolean hideConsole) {
     	return hasPermissionAdmin(s, command, hideConsole);
 	}
-	
+
 	protected boolean hasPermissionAdmin(UUID playerUUID, String command, boolean hideConsole) {
 		if (isPlayerOnline(playerUUID, hideConsole)) {
     		CommandSender target = zh.getServer().getPlayer(playerUUID);
@@ -400,7 +400,7 @@ public abstract class AbstractCommand {
 			return false;
 		}
 	}
-	
+
 	protected boolean hasPermissionAdmin(CommandSender s, String command, boolean hideConsole) {
 		String permission = KeyWordEnum.ZH_PREFIX.getValue() + command + KeyWordEnum.ADMIN_SUFFIX.getValue();
 		if (zh.getPM().has(s, permission)) {
@@ -413,11 +413,11 @@ public abstract class AbstractCommand {
         	return false;
         }
 	}
-	
+
 	protected boolean isClaimable() {
 		if (horse != null) {
 			if (adminMode) return true;
-				
+
 			if (!zh.getDM().isHorseRegistered(horse.getUniqueId())) {
 				if (horse.isTamed()) {
 					return true;
@@ -448,10 +448,10 @@ public abstract class AbstractCommand {
 		}
 		return false;
 	}
-	
+
 	protected boolean isCooldownElapsed() {
 		if (adminMode) return true;
-		
+
 		long remainingCooldown = zh.getCmdM().getRemainingCooldown(s, command);
 		if (remainingCooldown <= 0) {
 			return true;
@@ -461,30 +461,30 @@ public abstract class AbstractCommand {
 			return false;
 		}
 	}
-	
+
 	protected boolean isHorseInRangeHere() {
 		int maxRadius = zh.getCM().getMaximumRangeHere();
 		Location playerLocation = p.getLocation();
 		Location horseLocation = horse.getLocation();
 		return isHorseInRange(maxRadius, horseLocation, playerLocation);
 	}
-	
+
 	protected boolean isHorseInRangeStable(Location stableLocation) {
 		int maxRadius = zh.getCM().getMaximumRangeStable();
 		Location horseLocation = horse.getLocation();
 		return isHorseInRange(maxRadius, horseLocation, stableLocation);
 	}
-	
+
 	protected boolean isHorseInRangeTp() {
 		int maxRadius = zh.getCM().getMaximumRangeTp();
 		Location playerLocation = p.getLocation();
 		Location horseLocation = horse.getLocation();
 		return isHorseInRange(maxRadius, playerLocation, horseLocation);
 	}
-	
+
 	protected boolean isHorseInRange(int maxRadius, Location start, Location destination) {
 		if (adminMode) return true;
-		
+
 		int xDistance = Math.abs(Math.abs(start.getBlockX()) - Math.abs(destination.getBlockX()));
 		int zDistance = Math.abs(Math.abs(start.getBlockZ()) - Math.abs(destination.getBlockZ()));
 		double distance = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(zDistance, 2));
@@ -496,7 +496,7 @@ public abstract class AbstractCommand {
 			return false;
 		}
 	}
-	
+
 	protected boolean isHorseLeashed() {
 		boolean blockLeashedTeleport = zh.getCM().shouldBlockLeashedTeleport();
 		if (!horse.isLeashed()) {
@@ -515,9 +515,9 @@ public abstract class AbstractCommand {
 				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_LEASHED) {{ setHorseName(horseName); }});
 			}
 			return true;
-		}		
+		}
 	}
-	
+
 	protected boolean isHorseLoaded(boolean useTargetUUID) {
 		if (horse != null) {
 			return true;
@@ -529,7 +529,7 @@ public abstract class AbstractCommand {
 			return false;
 		}
 	}
-	
+
 	protected boolean isHorseMounted() {
 		boolean blockMountedTeleport = zh.getCM().shouldBlockMountedTeleport();
 		List<Entity> passengerList = horse.getPassengers();
@@ -539,7 +539,7 @@ public abstract class AbstractCommand {
 		else if (adminMode || !blockMountedTeleport) {
 			horse.eject();
 			return false;
-		}		
+		}
 		else {
 			Entity mainPassenger = passengerList.get(0);
 			String passengerName = mainPassenger instanceof Player ? ((Player) mainPassenger).getName() : "creature";
@@ -547,11 +547,11 @@ public abstract class AbstractCommand {
 			return true;
 		}
 	}
-	
+
 	protected boolean isNotOnHorse() {
 		return isNotOnHorse(false);
 	}
-	
+
 	protected boolean isNotOnHorse(boolean hideConsole) {
 		if (adminMode || p.getVehicle() != horse) {
 			return true;
@@ -563,7 +563,7 @@ public abstract class AbstractCommand {
 			return false;
 		}
 	}
-	
+
 	protected boolean isOnHorse(boolean hideConsole) {
 		if (p.isInsideVehicle() && p.getVehicle() instanceof AbstractHorse) {
 			return true;
@@ -575,19 +575,19 @@ public abstract class AbstractCommand {
 			return false;
 		}
 	}
-	
+
 	protected boolean isOwner() {
 		return isOwner(p.getUniqueId(), false, false, false);
 	}
-	
+
 	protected boolean isOwner(boolean considerFriendOwner) {
 		return isOwner(p.getUniqueId(), considerFriendOwner, false, false);
 	}
-	
+
 	protected boolean isOwner(boolean ignoreModes, boolean hideConsole) {
 		return isOwner(p.getUniqueId(), false, ignoreModes, hideConsole);
 	}
-	
+
 	protected boolean isOwner(UUID playerUUID, boolean considerFriendOwner, boolean ignoreModes, boolean hideConsole) {
 		if ((adminMode && !ignoreModes)
 				|| zh.getDM().isHorseOwnedBy(playerUUID, horse.getUniqueId())
@@ -602,11 +602,11 @@ public abstract class AbstractCommand {
 			return false;
 		}
 	}
-	
+
 	protected boolean isPlayer() {
 		return isPlayer(false);
 	}
-	
+
 	protected boolean isPlayer(boolean hideConsole) {
 		if (s instanceof Player) {
 			p = (Player) s;
@@ -626,7 +626,7 @@ public abstract class AbstractCommand {
 		}
 		return playerCommand;
 	}
-	
+
 	protected boolean isPlayerDifferent() {
 		if (adminMode || !samePlayer) {
 			return true;
@@ -636,7 +636,7 @@ public abstract class AbstractCommand {
 			return false;
 		}
 	}
-	
+
 	protected boolean isPlayerOnline(UUID playerUUID, boolean hideConsole) {
 		if (playerUUID != null && zh.getServer().getOfflinePlayer(playerUUID).isOnline()) {
 			return true;
@@ -648,7 +648,7 @@ public abstract class AbstractCommand {
 			return false;
 		}
 	}
-	
+
 	protected boolean isRegistered(AbstractHorse horse) {
 		if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
 			horseName = zh.getDM().getHorseName(horse.getUniqueId());
@@ -659,7 +659,7 @@ public abstract class AbstractCommand {
 			return false;
 		}
 	}
-	
+
 	protected boolean isRegistered(UUID targetUUID) {
 		if (targetUUID != null && zh.getDM().isPlayerRegistered(targetUUID)) {
 			return true;
@@ -669,7 +669,7 @@ public abstract class AbstractCommand {
 			return false;
 		}
 	}
-	
+
 	protected boolean isRegistered(UUID targetUUID, String horseID) {
 		if (horseID != null && targetUUID != null) {
 			try {
@@ -679,7 +679,7 @@ public abstract class AbstractCommand {
 				}
 			} catch (NumberFormatException e) {}
 		}
-		
+
 		if (targetUUID == null) {
 			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_PLAYER) {{ setPlayerName(targetName); }});
 		}
@@ -700,7 +700,7 @@ public abstract class AbstractCommand {
 		}
 		return false;
 	}
-	
+
 	protected boolean isRegistered(HorseVariantEnum horseVariant) {
 		if (horseVariant != null) {
 			variant = horseVariant.getEntityType().name();
@@ -712,7 +712,7 @@ public abstract class AbstractCommand {
 			return false;
 		}
 	}
-	
+
 	protected boolean isStatHealthValid(double health) {
 		double minHealth = HorseStatisticEnum.MIN_HEALTH.getValue(useVanillaStats);
 		double maxHealth = HorseStatisticEnum.MAX_HEALTH.getValue(useVanillaStats);
@@ -724,10 +724,10 @@ public abstract class AbstractCommand {
 			return false;
 		}
 	}
-	
+
 	protected boolean isStatSpeedValid(double speed) {
 		if (adminMode) return true;
-		
+
 		double minSpeed = HorseStatisticEnum.MIN_SPEED.getValue(useVanillaStats);
 		double maxSpeed = HorseStatisticEnum.MAX_SPEED.getValue(useVanillaStats);
 		if (useExactStats) {
@@ -746,13 +746,13 @@ public abstract class AbstractCommand {
 			else {
 				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.INVALID_SPEED_ARGUMENT) {{ setAmount(minSpeed / maxSpeed); setMax(1); setUsePercentage(true); }});
 				return false;
-			}		
+			}
 		}
 	}
-	
+
 	protected boolean isStatJumpStrengthValid(double jumpStrength) {
 		if (adminMode) return true;
-		
+
 		double minJumpStrength = HorseStatisticEnum.MIN_JUMP_STRENGTH.getValue(useVanillaStats);
 		double maxJumpStrength = HorseStatisticEnum.MAX_JUMP_STRENGTH.getValue(useVanillaStats);
 		if (useExactStats) {
@@ -774,7 +774,7 @@ public abstract class AbstractCommand {
 			}
 		}
 	}
-	
+
 	protected boolean isStatLlamaStrengthValid(int llamaStrenth) {
 		int minLlamaStrength = (int) HorseStatisticEnum.MIN_LLAMA_STRENGTH.getValue(useVanillaStats);
 		int maxLlamaStrength = (int) HorseStatisticEnum.MAX_LLAMA_STRENGTH.getValue(useVanillaStats);
@@ -786,7 +786,7 @@ public abstract class AbstractCommand {
 			return false;
 		}
 	}
-	
+
 	protected boolean isWorldCrossable(World world) {
 		if (adminMode || zh.getCM().isWorldCrossable(world)) {
 			return true;
@@ -806,7 +806,7 @@ public abstract class AbstractCommand {
 			return false;
 		}
 	}
-	
+
 	protected boolean ownsHorse(UUID playerUUID, boolean hideConsole) {
 		if (zh.getDM().getAliveHorseCount(playerUUID) > 0) {
 			return true;
@@ -824,7 +824,7 @@ public abstract class AbstractCommand {
 			return false;
 		}
 	}
-	
+
 	protected boolean ownsDeadHorse(UUID playerUUID) {
 		if (zh.getDM().getDeadHorseCount(playerUUID) > 0) {
 			return true;
@@ -841,7 +841,7 @@ public abstract class AbstractCommand {
 		}
 	}
 
-	protected void sendCommandDescriptionList() {		
+	protected void sendCommandDescriptionList() {
 		CompoundMessage compoundMessage = new CompoundMessage(true);
 		for (CommandEnum command : CommandEnum.values()) {
 			String commandName = command.name().toLowerCase();
@@ -856,7 +856,7 @@ public abstract class AbstractCommand {
 		compoundMessage.addHeader(headerMessage);
 		zh.getMM().sendMessage(s, zh.getMM().getMessage(compoundMessage, pageNumber));
 	}
-	
+
 	protected <T extends Enum<T>> void sendSubCommandDescriptionList(Class<T> enumType) {
 		String header = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.SUB_COMMAND_LIST_HEADER) {{ setValue(command); }}, true);
 		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HEADER_FORMAT) {{ setValue(header); }}, true);
@@ -864,13 +864,13 @@ public abstract class AbstractCommand {
 			sendSubCommandDescription(command.name().toLowerCase());
 		}
 	}
-	
+
 	protected void sendSubCommandDescription(String subCommandName) {
 		String permission = this.command + KeyWordEnum.DOT.getValue() + subCommandName;
 		String message = getCommandDescription(subCommandName, permission, true);
 		zh.getMM().sendMessage(s, message);
 	}
-	
+
 	protected String getCommandDescription(String command, String permission, boolean subCommand) {
 		String message = "";
 		boolean displayCommand = hasPermission(targetUUID, permission, true, true); // Display command if target player can use it
@@ -890,16 +890,18 @@ public abstract class AbstractCommand {
 				command = this.command;
 			}
 			message = zh.getMM().getMessage(s, new MessageConfig(commandDescription) {{ setSpaceCount(1); }}, true);
+
 			if (!zh.getEM().isCommandFree(p.getUniqueId(), command)) {
 				int cost = zh.getCM().getCommandCost(command);
 				LocaleEnum costColorCodeIndex = zh.getEM().canAffordCommand(p, command, true) ? LocaleEnum.AFFORDABLE_COLOR : LocaleEnum.UNAFFORDABLE_COLOR;
 				String costColorCode = zh.getMM().getMessage(s, new MessageConfig(costColorCodeIndex), true);
-				
+
 				String currencySymbol = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.CURRENCY_SYMBOL), true);
 				String costMessage = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.COMMAND_COST) {{ setAmount(cost); setCurrencySymbol(currencySymbol); }}, true);
-				
+
 				message = message + costColorCode + costMessage;
 			}
+
 			long remainingCooldown = zh.getCmdM().getRemainingCooldown(s, command);
 			if (remainingCooldown > 0) {
 				String cooldownMessage = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.COMMAND_COOLDOWN) {{ setAmount(remainingCooldown); }}, true);
@@ -908,16 +910,16 @@ public abstract class AbstractCommand {
 		}
 		return message;
 	}
-	
+
 	protected void sendCommandUsage() {
 		sendCommandUsage(command, false, false);
 	}
-	
+
 	protected void sendCommandUsage(String command, boolean subCommand, boolean hideError) {
 		if (!hideError) {
 			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.MISSING_ARGUMENTS));
 		}
-		
+
 		LocaleEnum commandUsage;
 		if (!subCommand) {
 			commandUsage = LocaleEnum.valueOf(command.toUpperCase() + KeyWordEnum.SEPARATOR.getValue() + KeyWordEnum.USAGE.getValue());
@@ -929,17 +931,17 @@ public abstract class AbstractCommand {
 				+ KeyWordEnum.SEPARATOR.getValue()
 				+ KeyWordEnum.USAGE.getValue();
 			commandUsage = LocaleEnum.valueOf(commandUsageIndex);
-		}			
+		}
 		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.COMMAND_WIKI_HEADER) {{ setSpaceCount(1); }}, true);
 		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.COMMAND_USAGE_HEADER) {{ setSpaceCount(1); }}, true);
 		String commandUsageMessage = zh.getMM().getMessage(s, new MessageConfig(commandUsage), true);
 		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.COMMAND_USAGE_FORMAT) {{ setSpaceCount(1); setValue(commandUsageMessage); }}, true);
 	}
-	
+
 	protected void sendHorseColorList() {
 		sendHorseOptionList(Horse.Color.values(), LocaleEnum.LIST_HORSE_COLOR);
 	}
-	
+
 	protected void sendLlamaColorList() {
 		sendHorseOptionList(Llama.Color.values(), LocaleEnum.LIST_LLAMA_COLOR);
 	}
@@ -951,12 +953,12 @@ public abstract class AbstractCommand {
 	protected void sendAbstractHorseVariantList() {
 		sendHorseOptionList(HorseVariantEnum.getAllCodeArray(), LocaleEnum.LIST_HORSE_VARIANT);
 	}
-	
+
 	protected <T> void sendHorseOptionList(T[] horseOptionArray, LocaleEnum index) {
 		String horseOptionsMessage = getHorseOptionList(horseOptionArray, index);
 		zh.getMM().sendMessage(s, new MessageConfig(index) {{ setSpaceCount(1); setValue(horseOptionsMessage); }}, true);
 	}
-	
+
 	protected <T> String getHorseOptionList(T[] horseOptionArray, LocaleEnum index) {
 		List<String> horseOptionMessageList = new ArrayList<>();
 		for (T t : horseOptionArray) {
