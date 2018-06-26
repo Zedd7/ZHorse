@@ -19,13 +19,14 @@ permissions:
       zh.*.admin: true
       zh.*.free: true
       zh.admin.*: true
+      zh.edit: true
       zh.reload: true
       zh.spawn: true
       zh.tame: true
       zh.use: true
 
   zh.use:
-    description: Grants access to all player commands
+    description: Grants access to all standard commands
     children:
       zh.buy: true
       zh.claim: true
@@ -87,6 +88,7 @@ permissions:
       zh.admin.admin: true
       zh.buy.admin: true
       zh.claim.admin: true
+      zh.edit.admin: true
       zh.free.admin: true
       zh.friend.admin: true
       zh.give.admin: true
@@ -115,6 +117,7 @@ permissions:
       zh.admin.free: true
       zh.buy.free: true
       zh.claim.free: true
+      zh.edit.free: true
       zh.free.free: true
       zh.friend.free: true
       zh.give.free: true

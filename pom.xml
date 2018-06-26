@@ -4,7 +4,7 @@
 	http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.github.xibalba</groupId>
+    <groupId>com.github.zedd7</groupId>
     <artifactId>ZHorse</artifactId>
     <version>1.6.10 snapshot 2</version>
     <packaging>jar</packaging>
@@ -15,7 +15,7 @@
 
     <properties>
         <author>Z3dd7</author>
-        <main-class>com.github.xibalba.zhorse.ZHorse</main-class>
+        <main-class>com.github.zedd7.zhorse.ZHorse</main-class>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
