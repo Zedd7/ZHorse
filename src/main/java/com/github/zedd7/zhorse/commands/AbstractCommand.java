@@ -17,7 +17,6 @@ import org.bukkit.entity.Player;
 import com.github.zedd7.zhorse.ZHorse;
 import com.github.zedd7.zhorse.database.PlayerRecord;
 import com.github.zedd7.zhorse.enums.CommandEnum;
-import com.github.zedd7.zhorse.enums.HorseStatisticEnum;
 import com.github.zedd7.zhorse.enums.HorseVariantEnum;
 import com.github.zedd7.zhorse.enums.KeyWordEnum;
 import com.github.zedd7.zhorse.enums.LocaleEnum;
@@ -576,10 +575,6 @@ public abstract class AbstractCommand {
 		}
 	}
 
-	protected boolean isOwner() {
-		return isOwner(p.getUniqueId(), false, false, false);
-	}
-
 	protected boolean isOwner(boolean considerFriendOwner) {
 		return isOwner(p.getUniqueId(), considerFriendOwner, false, false);
 	}
@@ -709,80 +704,6 @@ public abstract class AbstractCommand {
 		else {
 			String horseOptionsMessage = getHorseOptionList(HorseVariantEnum.getAllCodeArray(), LocaleEnum.LIST_HORSE_VARIANT);
 			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_VARIANT) {{ setValue(variant); setValue(horseOptionsMessage); }});
-			return false;
-		}
-	}
-
-	protected boolean isStatHealthValid(double health) {
-		double minHealth = HorseStatisticEnum.MIN_HEALTH.getValue(useVanillaStats);
-		double maxHealth = HorseStatisticEnum.MAX_HEALTH.getValue(useVanillaStats);
-		if (adminMode || (health >= minHealth && health <= maxHealth)) {
-			return true;
-		}
-		else {
-			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.INVALID_HEALTH_ARGUMENT) {{ setAmount((int) minHealth); setMax((int) maxHealth); }});
-			return false;
-		}
-	}
-
-	protected boolean isStatSpeedValid(double speed) {
-		if (adminMode) return true;
-
-		double minSpeed = HorseStatisticEnum.MIN_SPEED.getValue(useVanillaStats);
-		double maxSpeed = HorseStatisticEnum.MAX_SPEED.getValue(useVanillaStats);
-		if (useExactStats) {
-			if (speed >= minSpeed && speed <= maxSpeed) {
-				return true;
-			}
-			else {
-				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.INVALID_SPEED_ARGUMENT) {{ setAmount(minSpeed); setMax(maxSpeed); setArithmeticPrecision(3); }});
-				return false;
-			}
-		}
-		else {
-			if (speed >= (minSpeed / maxSpeed) * 100 && speed <= 100) {
-				return true;
-			}
-			else {
-				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.INVALID_SPEED_ARGUMENT) {{ setAmount(minSpeed / maxSpeed); setMax(1); setUsePercentage(true); }});
-				return false;
-			}
-		}
-	}
-
-	protected boolean isStatJumpStrengthValid(double jumpStrength) {
-		if (adminMode) return true;
-
-		double minJumpStrength = HorseStatisticEnum.MIN_JUMP_STRENGTH.getValue(useVanillaStats);
-		double maxJumpStrength = HorseStatisticEnum.MAX_JUMP_STRENGTH.getValue(useVanillaStats);
-		if (useExactStats) {
-			if (jumpStrength >= minJumpStrength && jumpStrength <= maxJumpStrength) {
-				return true;
-			}
-			else {
-				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.INVALID_JUMP_ARGUMENT) {{ setAmount(minJumpStrength); setMax(maxJumpStrength); setArithmeticPrecision(3); }});
-				return false;
-			}
-		}
-		else {
-			if (jumpStrength >= (minJumpStrength / maxJumpStrength) * 100 && jumpStrength <= 100) {
-				return true;
-			}
-			else {
-				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.INVALID_JUMP_ARGUMENT) {{ setAmount(minJumpStrength / maxJumpStrength); setMax(1); setUsePercentage(true); }});
-				return false;
-			}
-		}
-	}
-
-	protected boolean isStatLlamaStrengthValid(int llamaStrenth) {
-		int minLlamaStrength = (int) HorseStatisticEnum.MIN_LLAMA_STRENGTH.getValue(useVanillaStats);
-		int maxLlamaStrength = (int) HorseStatisticEnum.MAX_LLAMA_STRENGTH.getValue(useVanillaStats);
-		if (adminMode || (llamaStrenth >= minLlamaStrength && llamaStrenth <= maxLlamaStrength)) {
-			return true;
-		}
-		else {
-			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.INVALID_STRENGTH_ARGUMENT) {{ setAmount(minLlamaStrength); setMax(maxLlamaStrength); }});
 			return false;
 		}
 	}

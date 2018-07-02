@@ -40,7 +40,7 @@ public class CommandLock extends AbstractCommand {
 			}
 		}
 	}
-	
+
 	private void execute(UUID ownerUUID, String horseID) {
 		if (isRegistered(ownerUUID, horseID)) {
 			horse = zh.getHM().getHorse(ownerUUID, Integer.parseInt(horseID));
@@ -51,7 +51,7 @@ public class CommandLock extends AbstractCommand {
 	}
 
 	private void execute() {
-		if (isOwner()) {
+		if (isOwner(false)) {
 			if (!zh.getDM().isHorseLocked(horse.getUniqueId())) {
 				if (zh.getDM().isHorseShared(horse.getUniqueId())) {
 					zh.getDM().updateHorseShared(horse.getUniqueId(), false);

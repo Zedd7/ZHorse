@@ -41,7 +41,7 @@ public class CommandGive extends AbstractCommand {
 			}
 		}
 	}
-	
+
 	private void execute(UUID ownerUUID, String horseID) {
 		if (isRegistered(ownerUUID, horseID)) {
 			horse = zh.getHM().getHorse(ownerUUID, Integer.parseInt(horseID));
@@ -50,9 +50,9 @@ public class CommandGive extends AbstractCommand {
 			}
 		}
 	}
-	
+
 	private void execute() {
-		if (!hasReachedClaimsLimit(true) && isOwner() && isPlayerDifferent()) {
+		if (!hasReachedClaimsLimit(true) && isOwner(false) && isPlayerDifferent()) {
 			int previousHorseID = zh.getDM().getHorseID(horse.getUniqueId());
 			int horseID = zh.getDM().getNextHorseID(targetUUID);
 			horseName = zh.getDM().getHorseName(horse.getUniqueId());
@@ -71,7 +71,7 @@ public class CommandGive extends AbstractCommand {
 			if (success) {
 				applyHorseName(targetUUID);
 				horse.setOwner(zh.getServer().getOfflinePlayer(targetUUID));
-				
+
 				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_GIVEN) {{ setHorseName(horseName); setPlayerName(targetName); }});
 				zh.getMM().sendPendingMessage(targetUUID, new MessageConfig(LocaleEnum.HORSE_RECEIVED) {{ setHorseName(horseName); setPlayerName(p.getName()); }});
 				zh.getCmdM().updateCommandHistory(s, command);

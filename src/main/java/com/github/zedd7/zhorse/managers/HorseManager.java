@@ -215,7 +215,8 @@ public class HorseManager {
 		}
 	}
 
-	private void assignStats(AbstractHorse horse, HorseStatsRecord statsRecord, UUID ownerUUID) {
+	public void assignStats(AbstractHorse horse, HorseStatsRecord statsRecord, UUID ownerUUID) {
+		// DB stats
 		if (statsRecord.getAge() != null) horse.setAge(statsRecord.getAge());
 		if (statsRecord.canBreed() != null) horse.setBreed(statsRecord.canBreed());
 		if (statsRecord.canPickupItems() != null) horse.setCanPickupItems(statsRecord.canPickupItems());
@@ -225,7 +226,7 @@ public class HorseManager {
 		if (statsRecord.getFireTicks() != null) horse.setFireTicks(statsRecord.getFireTicks());
 		if (statsRecord.isGlowing() != null) horse.setGlowing(statsRecord.isGlowing());
 		if (statsRecord.getMaxHealth() != null) horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(statsRecord.getMaxHealth());
-		if (statsRecord.getHealth() != null) horse.setHealth(statsRecord.getHealth()); // Define maxHealt before actual health
+		if (statsRecord.getHealth() != null) horse.setHealth(statsRecord.getHealth()); // Define maxHealt before current health
 		if (statsRecord.getJumpStrength() != null) horse.setJumpStrength(statsRecord.getJumpStrength());
 		if (statsRecord.getNoDamageTicks() != null) horse.setNoDamageTicks(statsRecord.getNoDamageTicks());
 		if (statsRecord.getRemainingAir() != null) horse.setRemainingAir(statsRecord.getRemainingAir());
@@ -243,6 +244,7 @@ public class HorseManager {
 			}
 		}
 
+		// Entity stats
 		if (statsRecord.isAdult() != null && statsRecord.isAdult()) horse.setAdult();
 		if (statsRecord.isBaby() != null && statsRecord.isBaby()) horse.setBaby();
 		if (ownerUUID != null) horse.setOwner(zh.getServer().getOfflinePlayer(ownerUUID));
@@ -301,6 +303,7 @@ public class HorseManager {
 			if (claimedHorse) {
 				ownerUUID = zh.getDM().getOwnerUUID(oldHorseUUID);
 				zh.getDM().updateHorseUUID(oldHorseUUID, horse.getUniqueId());
+				zh.getDM().updateHorseLocation(horse.getUniqueId(), location, true);
 			}
 			assignStats(horse, statsRecord, ownerUUID);
 			assignInventory(horse, inventoryRecord, isCarryingChest);

@@ -7,7 +7,7 @@ import org.bukkit.entity.Horse;
 import org.bukkit.entity.Llama;
 
 public class HorseStatsRecord {
-	
+
 	/* DB data */
 	private String uuid;
 	private Integer age;
@@ -31,7 +31,7 @@ public class HorseStatsRecord {
 	private String style;
 	private Integer ticksLived;
 	private String type;
-	
+
 	/* Transient data */
 	private Boolean isBaby;
 	private Boolean isAdult;
@@ -83,7 +83,7 @@ public class HorseStatsRecord {
 		this.ticksLived = ticksLived;
 		this.type = type;
 	}
-	
+
 	public HorseStatsRecord(AbstractHorse horse) {
 		this.uuid = horse.getUniqueId().toString();
 		this.age = horse.getAge();
@@ -104,7 +104,7 @@ public class HorseStatsRecord {
 		this.speed = horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
 		this.ticksLived = horse.getTicksLived();
 		this.type = horse.getType().name();
-		
+
 		switch (horse.getType()) {
 		case HORSE:
 			this.color = ((Horse) horse).getColor().name();
@@ -117,7 +117,7 @@ public class HorseStatsRecord {
 			break;
 		}
 	}
-	
+
 	public String getUUID() {
 		return uuid;
 	}
@@ -137,7 +137,7 @@ public class HorseStatsRecord {
 	public String getColor() {
 		return color;
 	}
-	
+
 	public String getCustomName() {
 		return customName;
 	}
@@ -153,7 +153,7 @@ public class HorseStatsRecord {
 	public Double getHealth() {
 		return health;
 	}
-	
+
 	public Boolean isCarryingChest() {
 		return isCarryingChest;
 	}
@@ -205,19 +205,107 @@ public class HorseStatsRecord {
 	public String getType() {
 		return type;
 	}
-	
+
 	public Boolean isAdult() {
 		return isAdult;
 	}
-	
+
 	public void setAdult(Boolean isAdult) {
 		this.isAdult = isAdult;
 	}
-	
+
+	public void setUUID(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public void setAge(Integer age) {
+		this.age = age;
+	}
+
+	public void setCanBreed(Boolean canBreed) {
+		this.canBreed = canBreed;
+	}
+
+	public void setCanPickupItems(Boolean canPickupItems) {
+		this.canPickupItems = canPickupItems;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+
+	public void setCustomName(String customName) {
+		this.customName = customName;
+	}
+
+	public void setDomestication(Integer domestication) {
+		this.domestication = domestication;
+	}
+
+	public void setFireTicks(Integer fireTicks) {
+		this.fireTicks = fireTicks;
+	}
+
+	public void setHealth(Double health) {
+		this.health = health;
+	}
+
+	public void setCarryingChest(Boolean isCarryingChest) {
+		this.isCarryingChest = isCarryingChest;
+	}
+
+	public void setCustomNameVisible(Boolean isCustomNameVisible) {
+		this.isCustomNameVisible = isCustomNameVisible;
+	}
+
+	public void setGlowing(Boolean isGlowing) {
+		this.isGlowing = isGlowing;
+	}
+
+	public void setTamed(Boolean isTamed) {
+		this.isTamed = isTamed;
+	}
+
+	public void setJumpStrength(Double jumpStrength) {
+		this.jumpStrength = jumpStrength;
+	}
+
+	public void setMaxHealth(Double maxHealth) {
+		this.maxHealth = maxHealth;
+	}
+
+	public void setNoDamageTicks(Integer noDamageTicks) {
+		this.noDamageTicks = noDamageTicks;
+	}
+
+	public void setRemainingAir(Integer remainingAir) {
+		this.remainingAir = remainingAir;
+	}
+
+	public void setSpeed(Double speed) {
+		this.speed = speed;
+	}
+
+	public void setStrength(Integer strength) {
+		this.strength = strength;
+	}
+
+	public void setStyle(String style) {
+		this.style = style;
+	}
+
+	public void setTicksLived(Integer ticksLived) {
+		this.ticksLived = ticksLived;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 	public Boolean isBaby() {
 		return isBaby;
 	}
-	
+
 	public void setBaby(Boolean isBaby) {
 		this.isBaby = isBaby;
 	}

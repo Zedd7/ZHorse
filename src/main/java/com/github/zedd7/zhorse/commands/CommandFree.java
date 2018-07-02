@@ -38,7 +38,7 @@ public class CommandFree extends AbstractCommand {
 			}
 		}
 	}
-	
+
 	private void execute(UUID ownerUUID, String horseID) {
 		if (isRegistered(ownerUUID, horseID)) {
 			horse = zh.getHM().getHorse(ownerUUID, Integer.parseInt(horseID));
@@ -52,7 +52,7 @@ public class CommandFree extends AbstractCommand {
 	}
 
 	private void execute() {
-		if (isOwner()) {
+		if (isOwner(false)) {
 			zh.getHM().untrackHorse(horse.getUniqueId());
 			if (zh.getDM().removeHorse(horse.getUniqueId(), targetUUID)) {
 				horse.setCustomName(null);
@@ -63,7 +63,7 @@ public class CommandFree extends AbstractCommand {
 			}
 		}
 	}
-	
+
 	private void removeLostHorse() {
 		UUID horseUUID = zh.getDM().getHorseUUID(targetUUID, Integer.parseInt(horseID));
 		zh.getHM().untrackHorse(horseUUID);

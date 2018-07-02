@@ -38,7 +38,7 @@ public class CommandTame extends AbstractCommand {
 			}
 		}
 	}
-	
+
 	private void execute(UUID ownerUUID, String horseID) {
 		if (isRegistered(ownerUUID, horseID)) {
 			horse = zh.getHM().getHorse(ownerUUID, Integer.parseInt(horseID));
@@ -49,7 +49,7 @@ public class CommandTame extends AbstractCommand {
 	}
 
 	private void execute() {
-		if (isOwner()) {
+		if (isOwner(false)) {
 			boolean tamed = horse.isTamed();
 			if (!tamed) {
 				horse.setTamed(true);
@@ -63,6 +63,6 @@ public class CommandTame extends AbstractCommand {
 			zh.getEM().payCommand(p, command);
 		}
 	}
-		
+
 
 }

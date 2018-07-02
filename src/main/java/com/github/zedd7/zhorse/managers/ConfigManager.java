@@ -298,20 +298,6 @@ public class ConfigManager {
 		return config.getBoolean(KeyWordEnum.USE_DEFAULT_STABLE.getValue(), false);
 	}
 
-	private String getExactGroupName(String groupName) {
-		if (groupName != null) {
-			ConfigurationSection cs = config.getConfigurationSection(KeyWordEnum.GROUPS.getValue());
-			if (cs != null) {
-				for (String exactGroupName : cs.getKeys(false)) {
-					if (groupName.equalsIgnoreCase(exactGroupName)) {
-						return exactGroupName;
-					}
-				}
-			}
-		}
-		return groupName;
-	}
-
 	private String getGroupName(UUID playerUUID) {
 		String groupName = null;
 		if (playerUUID != null) {
@@ -329,6 +315,20 @@ public class ConfigManager {
 			groupName = getExactGroupName(groupName);
 			if (p != null && (groupName == null || !config.contains(KeyWordEnum.GROUPS_PREFIX.getValue() + groupName))) {
 				groupName = getSurrogateGroupName(p);
+			}
+		}
+		return groupName;
+	}
+
+	private String getExactGroupName(String groupName) {
+		if (groupName != null) {
+			ConfigurationSection cs = config.getConfigurationSection(KeyWordEnum.GROUPS.getValue());
+			if (cs != null) {
+				for (String exactGroupName : cs.getKeys(false)) {
+					if (groupName.equalsIgnoreCase(exactGroupName)) {
+						return exactGroupName;
+					}
+				}
 			}
 		}
 		return groupName;

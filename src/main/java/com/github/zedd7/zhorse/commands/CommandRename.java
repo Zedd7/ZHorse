@@ -37,7 +37,7 @@ public class CommandRename extends AbstractCommand {
 			}
 		}
 	}
-	
+
 	private void execute(UUID ownerUUID, String horseID) {
 		if (isRegistered(ownerUUID, horseID)) {
 			horse = zh.getHM().getHorse(ownerUUID, Integer.parseInt(horseID));
@@ -46,9 +46,9 @@ public class CommandRename extends AbstractCommand {
 			}
 		}
 	}
-	
+
 	private void execute() {
-		if (isOwner() && craftHorseName(false)) {
+		if (isOwner(false) && craftHorseName(false)) {
 			UUID ownerUUID = zh.getDM().getOwnerUUID(horse.getUniqueId());
 			applyHorseName(ownerUUID);
 			if (zh.getDM().isHorseForSale(horse.getUniqueId())) {
