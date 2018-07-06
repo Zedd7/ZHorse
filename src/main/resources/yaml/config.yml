@@ -1,5 +1,10 @@
 Version: ${version}
 
+# Please make sure to visit ZHorse's wiki if you encounter any issue: https://github.com/Zedd7/ZHorse/wiki/Commands
+# Commands usage tutorial: https://github.com/Zedd7/ZHorse/wiki/Commands
+# Permissions assignation tutorial: https://github.com/Zedd7/ZHorse/wiki/Permissions
+# Tips and tricks: tips: https://github.com/Zedd7/ZHorse/wiki/Tips-&-tricks
+
 Commands:
 
   # The list of ZHorse's commands. You can remove unused commands.
@@ -136,8 +141,8 @@ Groups:
   # Following formats are available : "&4", <4>, <dark_red>, <DARKRED>.
   # Set color-bypass to allow color tags in horse names.
   # The value of claims-limit defines how much horses a player can claim.
-  # The permission is optional if the group is defined in a perms plugin.
-  # Membership of the group is simulated for whoever has the permission.
+  # Assign and define the permission only if the group is not defined in a perms plugin.
+  # Membership of the (fake) group is simulated for whoever has the permission.
 
   visitor:
     color: <f>
@@ -223,8 +228,8 @@ Languages:
   - EN
   - FR
   - DE
-  - NL
   - ES
+  - NL
   - HU
 
 Protections:
