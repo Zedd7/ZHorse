@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.zedd7</groupId>
     <artifactId>ZHorse</artifactId>
-    <version>1.6.10 snapshot 2</version>
+    <version>1.7.0 for 1.12.2</version>
     <packaging>jar</packaging>
 
     <name>ZHorse</name>
