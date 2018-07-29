@@ -288,7 +288,7 @@ public class EventManager implements Listener {
 				interactionAllowed &= zh.getCM().isTamingOfUndeadHorseAllowed();
 			}
 			if (matchUseCase && interactionAllowed && horse.getPassengers().isEmpty()) {
-				if (!p.isSneaking() // Allows to give food, open inventory, put on leash or place chest
+				if (!p.isSneaking() // Allows to give food, open inventory, put on leash or place chest/saddle
 						&& !(horse.isLeashed() && horse.getLeashHolder().equals(p))
 						&& getHoldingHand(p, new ItemStack(Material.LEASH)).equals(HandEnum.NONE)
 						&& getHoldingHand(p, new ItemStack(Material.SADDLE)).equals(HandEnum.NONE)
