@@ -18,7 +18,7 @@ import com.github.zedd7.zhorse.managers.ResourceManager;
 import com.github.zedd7.zhorse.utils.Metrics;
 
 public class ZHorse extends JavaPlugin {
-	
+
 	private CommandManager commandManager;
 	private ConfigManager configManager;
 	private DataManager dataManager;
@@ -29,71 +29,71 @@ public class ZHorse extends JavaPlugin {
 	private MessageManager messageManager;
 	private PermissionManager permissionManager;
 	private ResourceManager resourceManager;
-	
+
 	@Override
 	public void onEnable() {
 		initDependencies();
 		initManagers();
 		initMetrics();
 	}
-	
+
 	@Override
     public void onDisable() {
 		horseManager.untrackHorses();
 		dataManager.closeDatabase();
     }
-	
+
 	public void disable() {
 		getServer().getPluginManager().disablePlugin(this);
 	}
-	
+
 	public boolean reload() {
 		eventManager.unregisterEvents();
 		horseManager.untrackHorses();
 		dataManager.closeDatabase();
 		return initManagers();
 	}
-	
+
 	public ConfigManager getCM() {
     	return configManager;
     }
-	
+
 	public CommandManager getCmdM() {
 		return commandManager;
 	}
-    
+
     public DataManager getDM() {
     	return dataManager;
     }
-	
+
 	public EconomyManager getEM() {
 		return economyManager;
 	}
-	
+
 	public EventManager getEvM() {
 		return eventManager;
 	}
-	
+
 	public HorseManager getHM() {
 		return horseManager;
 	}
-	
+
 	public LocaleManager getLM() {
 		return localeManager;
 	}
-	
+
 	public MessageManager getMM() {
 		return messageManager;
 	}
-	
+
 	public PermissionManager getPM() {
 		return permissionManager;
 	}
-	
+
 	public ResourceManager getRM() {
 		return resourceManager;
 	}
-	
+
 	private void initDependencies() {
 		Plugin vault = getServer().getPluginManager().getPlugin("Vault");
 		if (vault != null && !vault.isEnabled()) {
@@ -104,7 +104,7 @@ public class ZHorse extends JavaPlugin {
 			disable();
 		}
 	}
-    
+
     private boolean initManagers() {
     	commandManager = new CommandManager(this);
 		configManager = new ConfigManager(this);
@@ -116,38 +116,38 @@ public class ZHorse extends JavaPlugin {
 		messageManager = new MessageManager(this);
 		permissionManager = new PermissionManager(this);
 		resourceManager = new ResourceManager(this);
-		
+
 		boolean resourcesValid = resourceManager.validateResources();
-		
+
 		commandManager.loadCommandCooldowns();
 		dataManager.openDatabase();
 		horseManager.trackHorses();
 		messageManager.setDisplayConsole(!configManager.isConsoleMuted());
-		
+
 		return resourcesValid;
 	}
-    
+
     private void initMetrics() {
 		Metrics metrics = new Metrics(this);
-		
+
 		metrics.addCustomChart(new Metrics.SimplePie("database_type") {
-			
+
             @Override
             public String getValue() {
             	return configManager.getDatabaseType().getName();
             }
-            
+
         });
-		
+
 		metrics.addCustomChart(new Metrics.SimplePie("default_language") {
-			
+
             @Override
             public String getValue() {
                 return configManager.getDefaultLanguage();
             }
-            
+
         });
-		
+
 		metrics.addCustomChart(new Metrics.SimpleBarChart("owner_to_player_ratio_2") {
 
 			@Override
@@ -159,9 +159,9 @@ public class ZHorse extends JavaPlugin {
 				valueMap.put(binLabel, 1);
 				return valueMap;
 			}
-			
+
 		});
-		
+
 		metrics.addCustomChart(new Metrics.SimpleBarChart("total_horse_count_2") {
 
 			@Override
@@ -171,9 +171,9 @@ public class ZHorse extends JavaPlugin {
 				valueMap.put(binLabel, 1);
 				return valueMap;
 			}
-			
+
 		});
-		
+
 		metrics.addCustomChart(new Metrics.SimpleBarChart("horse_per_owner_average") {
 
 			@Override
@@ -185,11 +185,11 @@ public class ZHorse extends JavaPlugin {
 				valueMap.put(binLabel, 1);
 				return valueMap;
 			}
-			
+
 		});
-	
+
     }
-    
+
     private String getRatioBinLabel(int ownersToPlayersRatio) {
     	if (ownersToPlayersRatio < 1) {
     		return "0% - 1%";
@@ -216,7 +216,7 @@ public class ZHorse extends JavaPlugin {
     		return "80% - 100%";
     	}
     }
-    
+
     private String getCountBinLabel(int totalHorsesCount) {
     	if (totalHorsesCount < 1) {
     		return "0 - 1";

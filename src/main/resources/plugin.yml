@@ -5,6 +5,7 @@ description: ${description}
 website: ${url}
 author: ${author}
 main: ${main-class}
+api-version: 1.13
 
 commands:
   zhorse:

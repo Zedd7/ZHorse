@@ -263,7 +263,7 @@ public class EventManager implements Listener {
 			/* Manages leashing of undead horses */
 			if (horse instanceof SkeletonHorse || horse instanceof ZombieHorse) {
 				if (!horse.isLeashed() && zh.getCM().isLeashOnUndeadHorseAllowed()) {
-					HandEnum holdingHand = getHoldingHand(p, new ItemStack(Material.LEASH));
+					HandEnum holdingHand = getHoldingHand(p, new ItemStack(Material.LEAD));
 					if (!holdingHand.equals(HandEnum.NONE)) { // If player is holding a leash
 						cancelEvent(e, p, true, true);
 						PlayerLeashEntityEvent event = new PlayerLeashEntityEvent(horse, p, p);
@@ -290,12 +290,26 @@ public class EventManager implements Listener {
 			if (matchUseCase && interactionAllowed && horse.getPassengers().isEmpty()) {
 				if (!p.isSneaking() // Allows to give food, open inventory, put on leash or place chest/saddle
 						&& !(horse.isLeashed() && horse.getLeashHolder().equals(p))
-						&& getHoldingHand(p, new ItemStack(Material.LEASH)).equals(HandEnum.NONE)
+						&& getHoldingHand(p, new ItemStack(Material.LEAD)).equals(HandEnum.NONE)
 						&& getHoldingHand(p, new ItemStack(Material.SADDLE)).equals(HandEnum.NONE)
-						&& getHoldingHand(p, new ItemStack(Material.CARPET)).equals(HandEnum.NONE)
-						&& getHoldingHand(p, new ItemStack(Material.IRON_BARDING)).equals(HandEnum.NONE)
-						&& getHoldingHand(p, new ItemStack(Material.GOLD_BARDING)).equals(HandEnum.NONE)
-						&& getHoldingHand(p, new ItemStack(Material.DIAMOND_BARDING)).equals(HandEnum.NONE)
+						&& getHoldingHand(p, new ItemStack(Material.BLACK_CARPET)).equals(HandEnum.NONE)
+						&& getHoldingHand(p, new ItemStack(Material.BLUE_CARPET)).equals(HandEnum.NONE)
+						&& getHoldingHand(p, new ItemStack(Material.BROWN_CARPET)).equals(HandEnum.NONE)
+						&& getHoldingHand(p, new ItemStack(Material.CYAN_CARPET)).equals(HandEnum.NONE)
+						&& getHoldingHand(p, new ItemStack(Material.GRAY_CARPET)).equals(HandEnum.NONE)
+						&& getHoldingHand(p, new ItemStack(Material.GREEN_CARPET)).equals(HandEnum.NONE)
+						&& getHoldingHand(p, new ItemStack(Material.LIGHT_BLUE_CARPET)).equals(HandEnum.NONE)
+						&& getHoldingHand(p, new ItemStack(Material.LIGHT_GRAY_CARPET)).equals(HandEnum.NONE)
+						&& getHoldingHand(p, new ItemStack(Material.LIME_CARPET)).equals(HandEnum.NONE)
+						&& getHoldingHand(p, new ItemStack(Material.MAGENTA_CARPET)).equals(HandEnum.NONE)
+						&& getHoldingHand(p, new ItemStack(Material.ORANGE_CARPET)).equals(HandEnum.NONE)
+						&& getHoldingHand(p, new ItemStack(Material.PINK_CARPET)).equals(HandEnum.NONE)
+						&& getHoldingHand(p, new ItemStack(Material.PURPLE_CARPET)).equals(HandEnum.NONE)
+						&& getHoldingHand(p, new ItemStack(Material.RED_CARPET)).equals(HandEnum.NONE)
+						&& getHoldingHand(p, new ItemStack(Material.YELLOW_CARPET)).equals(HandEnum.NONE)
+						&& getHoldingHand(p, new ItemStack(Material.IRON_HORSE_ARMOR)).equals(HandEnum.NONE)
+						&& getHoldingHand(p, new ItemStack(Material.GOLDEN_HORSE_ARMOR)).equals(HandEnum.NONE)
+						&& getHoldingHand(p, new ItemStack(Material.DIAMOND_HORSE_ARMOR)).equals(HandEnum.NONE)
 						&& getHoldingHand(p, new ItemStack(Material.CHEST)).equals(HandEnum.NONE))
 				{
 					cancelEvent(e, p, true, true);
@@ -328,7 +342,7 @@ public class EventManager implements Listener {
 	public void onPlayerLeashEntity(PlayerLeashEntityEvent e) {
 		if (e.getLeashHolder() instanceof Player && e.getEntity() instanceof AbstractHorse) {
 			Player p = (Player) e.getPlayer();
-			ItemStack item = getItem(p, getHoldingHand(p, new ItemStack(Material.LEASH)));
+			ItemStack item = getItem(p, getHoldingHand(p, new ItemStack(Material.LEAD)));
 			int savedAmount = item.getAmount();
 			e.setCancelled(!isPlayerAllowedToInteract(p, (AbstractHorse) e.getEntity(), false));
 			if (e.isCancelled()) {
