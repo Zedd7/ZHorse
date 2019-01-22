@@ -1,13 +1,13 @@
 Version: ${version}
 
-# Please make sure to visit ZHorse's wiki if you encounter any issue: https://github.com/Zedd7/ZHorse/wiki/Commands
+# Please make sure to visit ZHorse Wiki if you encounter any issue: https://github.com/Zedd7/ZHorse/wiki/Commands
 # Commands usage tutorial: https://github.com/Zedd7/ZHorse/wiki/Commands
 # Permissions assignation tutorial: https://github.com/Zedd7/ZHorse/wiki/Permissions
-# Tips and tricks: tips: https://github.com/Zedd7/ZHorse/wiki/Tips-&-tricks
+# Tips and tricks: https://github.com/Zedd7/ZHorse/wiki/Tips-&-tricks
 
 Commands:
 
-  # The list of ZHorse's commands. You can remove unused commands.
+  # The list of ZHorse commands. You can remove unused commands.
   # Set auto-admin to true to force admin mode for authorized users.
   # The value of cooldown defines the delay between two executions in seconds.
   # The value of cost defines how much will be charged per use.
@@ -137,7 +137,7 @@ Databases:
 Groups:
 
   # The list of permission groups with which ZHorse tries to bind.
-  # The value of color is applied to the horse's name.
+  # The value of color is applied to the horse name.
   # Following formats are available : "&4", <4>, <dark_red>, <DARKRED>.
   # Set color-bypass to allow color tags in horse names.
   # The value of claims-limit defines how much horses a player can claim.
@@ -167,12 +167,12 @@ Groups:
 
 HorseNames:
 
-  # The maximum lenght of a horse's name.
+  # The maximum lenght of a horse name.
   # If set to 1-36, horse naming is optional.
   # If set to 0, horse naming is forbbiden.
   maximum-length: 36
 
-  # The minimum lenght of a horse's name.
+  # The minimum lenght of a horse name.
   # If set to more than 0, horse naming is mandatory.
   # If set to 0, horse naming is unrestricted.
   minimum-length: 0
@@ -212,7 +212,7 @@ HorseNames:
   - Windfola
   - Wise-nose
 
-  # The list of words which cannot be contained in horse's names.
+  # The list of words which cannot be contained in horse names.
   banned-names:
   - ExampleName
 
@@ -350,7 +350,7 @@ Settings:
 
   # Set to false to prevent items from being stored on horse death.
   # It will make them available for looting but they will not be
-  # restored in the horse's inventory when it gets resurrected.
+  # restored in the horse inventory when it gets resurrected.
   restore-inventory: true
 
   # The number of dead horses kept in the database for each player.

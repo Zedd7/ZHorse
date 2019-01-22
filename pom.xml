@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.zedd7</groupId>
     <artifactId>ZHorse</artifactId>
-    <version>1.7.1</version>
+    <version>1.7.2 snapshot 1</version>
     <packaging>jar</packaging>
 
     <name>ZHorse</name>
@@ -34,12 +34,12 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.13-R0.1-SNAPSHOT</version>
+            <version>1.13.2-R0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>VaultAPI</artifactId>
-            <version>1.6</version>
+            <version>1.7</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
