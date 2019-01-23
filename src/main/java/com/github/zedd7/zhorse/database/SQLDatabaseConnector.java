@@ -48,19 +48,19 @@ public abstract class SQLDatabaseConnector {
 		}
 	}
 
-	public String applyTablePrefix(String str) {
+	public String applyTablePrefix(String formatableQuery) {
 		if (!tablePrefix.isEmpty()) {
-			return str.replaceAll(PREFIX_CODE, tablePrefix + "_");
+			return formatableQuery.replaceAll(PREFIX_CODE, tablePrefix + "_");
 		}
 		else {
-			return str.replaceAll(PREFIX_CODE, "");
+			return formatableQuery.replaceAll(PREFIX_CODE, "");
 		}
 	}
 
-	public PreparedStatement getPreparedStatement(String query) throws SQLException {
+	public PreparedStatement getPreparedStatement(String formatableQuery) throws SQLException {
 		reconnect();
-		String prefixedQuery = applyTablePrefix(query);
-		return connection.prepareStatement(prefixedQuery);
+		String query = applyTablePrefix(formatableQuery);
+		return connection.prepareStatement(query);
 	}
 
 	public boolean executeUpdate(String update) {
@@ -68,16 +68,16 @@ public abstract class SQLDatabaseConnector {
 	}
 
 	public boolean executeUpdate(String update, boolean hideExceptions) {
-		boolean result = false;
+		boolean success = false;
 		try (PreparedStatement statement = getPreparedStatement(update)) {
 			statement.executeUpdate();
-			result = true;
+			success = true;
 		} catch (SQLException e) {
 			if (!hideExceptions) {
 				e.printStackTrace();
 			}
 		}
-		return result;
+		return success;
 	}
 
 	public boolean hasResult(String query) {
@@ -97,84 +97,97 @@ public abstract class SQLDatabaseConnector {
 		return getResult(query, resultSet -> getLocationResult(resultSet));
 	}
 
-	public List<String> getStringResultList(String query) {
-		return getResultList(query, resultSet -> getStringResult(resultSet));
-	}
-
 	public String getStringResult(String query) {
 		return getResult(query, resultSet -> getStringResult(resultSet));
 	}
 
-	public List<FriendRecord> getFriendRecordList(String query) {
-		return getResultList(query, resultSet -> getFriendRecord(resultSet));
+	public List<String> getStringResultList(String query) {
+		return getResultList(query, resultSet -> getStringResult(resultSet));
 	}
 
 	public FriendRecord getFriendRecord(String query) {
 		return getResult(query, resultSet -> getFriendRecord(resultSet));
 	}
 
-	public List<HorseRecord> getHorseRecordList(String query) {
-		return getResultList(query, resultSet -> getHorseRecord(resultSet));
+	public List<FriendRecord> getFriendRecordList(String query) {
+		return getResultList(query, resultSet -> getFriendRecord(resultSet));
 	}
 
 	public HorseRecord getHorseRecord(String query) {
 		return getResult(query, resultSet -> getHorseRecord(resultSet));
 	}
 
-	public List<HorseDeathRecord> getHorseDeathRecordList(String query) {
-		return getResultList(query, resultSet -> getHorseDeathRecord(resultSet));
+	public List<HorseRecord> getHorseRecordList(String query) {
+		return getResultList(query, resultSet -> getHorseRecord(resultSet));
 	}
 
 	public HorseDeathRecord getHorseDeathRecord(String query) {
 		return getResult(query, resultSet -> getHorseDeathRecord(resultSet));
 	}
 
-	public List<HorseInventoryRecord> getHorseInventoryRecordList(String query) {
-		return getResultList(query, resultSet -> getHorseInventoryRecord(resultSet));
+	public List<HorseDeathRecord> getHorseDeathRecordList(String query) {
+		return getResultList(query, resultSet -> getHorseDeathRecord(resultSet));
 	}
 
 	public HorseInventoryRecord getHorseInventoryRecord(String query) {
 		return getResult(query, resultSet -> getHorseInventoryRecord(resultSet));
 	}
 
-	public List<HorseStableRecord> getHorseStableRecordList(String query) {
-		return getResultList(query, resultSet -> getHorseStableRecord(resultSet));
+	public List<HorseInventoryRecord> getHorseInventoryRecordList(String query) {
+		return getResultList(query, resultSet -> getHorseInventoryRecord(resultSet));
 	}
 
 	public HorseStableRecord getHorseStableRecord(String query) {
 		return getResult(query, resultSet -> getHorseStableRecord(resultSet));
 	}
 
-	public List<HorseStatsRecord> getHorseStatsRecordList(String query) {
-		return getResultList(query, resultSet -> getHorseStatsRecord(resultSet));
+	public List<HorseStableRecord> getHorseStableRecordList(String query) {
+		return getResultList(query, resultSet -> getHorseStableRecord(resultSet));
 	}
 
 	public HorseStatsRecord getHorseStatsRecord(String query) {
 		return getResult(query, resultSet -> getHorseStatsRecord(resultSet));
 	}
 
-	public List<PendingMessageRecord> getPendingMessageRecordList(String query) {
-		return getResultList(query, resultSet -> getPendingMessageRecord(resultSet));
+	public List<HorseStatsRecord> getHorseStatsRecordList(String query) {
+		return getResultList(query, resultSet -> getHorseStatsRecord(resultSet));
 	}
 
 	public PendingMessageRecord getPendingMessageRecord(String query) {
 		return getResult(query, resultSet -> getPendingMessageRecord(resultSet));
 	}
 
-	public List<PlayerRecord> getPlayerRecordList(String query) {
-		return getResultList(query, resultSet -> getPlayerRecord(resultSet));
+	public List<PendingMessageRecord> getPendingMessageRecordList(String query) {
+		return getResultList(query, resultSet -> getPendingMessageRecord(resultSet));
 	}
 
 	public PlayerRecord getPlayerRecord(String query) {
 		return getResult(query, resultSet -> getPlayerRecord(resultSet));
 	}
 
-	public List<SaleRecord> getSaleRecordList(String query) {
-		return getResultList(query, resultSet -> getSaleRecord(resultSet));
+	public List<PlayerRecord> getPlayerRecordList(String query) {
+		return getResultList(query, resultSet -> getPlayerRecord(resultSet));
 	}
 
 	public SaleRecord getSaleRecord(String query) {
 		return getResult(query, resultSet -> getSaleRecord(resultSet));
+	}
+
+	public List<SaleRecord> getSaleRecordList(String query) {
+		return getResultList(query, resultSet -> getSaleRecord(resultSet));
+	}
+
+	private <T> T getResult(String query, CheckedFunction<ResultSet, T> mapper) {
+		T result = null;
+		try (PreparedStatement statement = getPreparedStatement(query)) {
+			ResultSet resultSet = statement.executeQuery();
+			if (resultSet.next()) {
+				result = mapper.apply(resultSet);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 	private <T> List<T> getResultList(String query, CheckedFunction<ResultSet, T> mapper) {
@@ -189,19 +202,6 @@ public abstract class SQLDatabaseConnector {
 			e.printStackTrace();
 		}
 		return resultList;
-	}
-
-	private <T> T getResult(String query, CheckedFunction<ResultSet, T> mapper) {
-		T result = null;
-		try (PreparedStatement statement = getPreparedStatement(query)) {
-			ResultSet resultSet = statement.executeQuery();
-			if (resultSet.next()) {
-				result = mapper.apply(resultSet);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return result;
 	}
 
 	@FunctionalInterface

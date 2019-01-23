@@ -19,6 +19,7 @@ public class PlayerQuit {
 		if (zh.getCM().shouldSendToStableOnOwnerLogout()) {
 			UUID playerUUID = player.getUniqueId();
 			boolean blockLeashedTeleport = zh.getCM().shouldBlockLeashedTeleport();
+
 			Bukkit.getScheduler().scheduleSyncDelayedTask(zh, new Runnable() {
 
 				@Override
