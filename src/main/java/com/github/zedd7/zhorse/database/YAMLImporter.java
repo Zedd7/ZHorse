@@ -10,7 +10,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import com.github.zedd7.zhorse.ZHorse;
 
 public class YAMLImporter {
-	
+
 	private static final String DB_FILE_NAME = "users.yml";
 
 	public static boolean importData(ZHorse zh) {
@@ -29,7 +29,7 @@ public class YAMLImporter {
 		}
 		return YamlConfiguration.loadConfiguration(dbFile);
 	}
-	
+
 	private static boolean importPlayers(ZHorse zh, FileConfiguration db) {
 		boolean success = true;
 		ConfigurationSection cs = db.getConfigurationSection("Players");
@@ -41,7 +41,7 @@ public class YAMLImporter {
 		}
 		return success;
 	}
-	
+
 	private static boolean importPlayer(ZHorse zh, FileConfiguration db, String playerUUID) {
 		if (zh.getDM().isPlayerRegistered(playerUUID)) {
 			return true;
@@ -52,14 +52,14 @@ public class YAMLImporter {
 		Integer favorite = favoriteString != null ? Integer.parseInt(favoriteString) : zh.getDM().getDefaultFavoriteHorseID();
 		boolean displayExactStats = zh.getCM().shouldUseExactStats();
 		PlayerRecord playerRecord = new PlayerRecord(playerUUID, playerName, language, favorite, displayExactStats);
-		return zh.getDM().registerPlayer(playerRecord);
+		return zh.getDM().registerPlayer(playerRecord, true, null);
 	}
 
 	private static String getPlayerData(FileConfiguration db, String playerUUID, String valuePath, String defaultValue) {
 		String dataPath = "Players" + "." + playerUUID + "." + valuePath;
 		return db.getString(dataPath, defaultValue);
 	}
-	
+
 	private static boolean importHorses(ZHorse zh, FileConfiguration db, String ownerUUID) {
 		boolean success = true;
 		String horsesPath = "Players" + "." + ownerUUID + "." + "Horses";
@@ -72,7 +72,7 @@ public class YAMLImporter {
 		}
 		return success;
 	}
-	
+
 	private static boolean importHorse(ZHorse zh, FileConfiguration db, String ownerUUID, int horseID) {
 		String horseUUID = getHorseStringData(db, ownerUUID, horseID, "UUID", null);
 		if (zh.getDM().isHorseRegistered(UUID.fromString(horseUUID))) {
@@ -87,9 +87,9 @@ public class YAMLImporter {
 		int locationY = Integer.parseInt(getHorseStringData(db, ownerUUID, horseID, "Location" + "." + "Y", null));
 		int locationZ = Integer.parseInt(getHorseStringData(db, ownerUUID, horseID, "Location" + "." + "Z", null));
 		HorseRecord horseRecord = new HorseRecord(horseUUID, ownerUUID, horseID, horseName, modeLocked, modeProtected, modeShared, locationWorld, locationX, locationY, locationZ);
-		return zh.getDM().registerHorse(horseRecord);
+		return zh.getDM().registerHorse(horseRecord, true, null);
 	}
-	
+
 	private static boolean getHorseBooleanData(FileConfiguration db, String playerUUID, int horseID, String valuePath, boolean defaultValue) {
 		String horsesPath = "Players" + "." + playerUUID + "." + "Horses";
 		String dataPath = horsesPath + "." + horseID + "." + valuePath;

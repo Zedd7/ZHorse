@@ -7,6 +7,8 @@ import org.bukkit.entity.AbstractHorse;
 
 import com.github.zedd7.zhorse.ZHorse;
 import com.github.zedd7.zhorse.enums.LocaleEnum;
+import com.github.zedd7.zhorse.utils.CallbackListener;
+import com.github.zedd7.zhorse.utils.CallbackResponse;
 import com.github.zedd7.zhorse.utils.MessageConfig;
 
 public class CommandRename extends AbstractCommand {
@@ -56,10 +58,18 @@ public class CommandRename extends AbstractCommand {
 				applyHorsePrice(price);
 			}
 			horse.setCustomNameVisible(true);
-			zh.getDM().updateHorseName(horse.getUniqueId(), horseName);
-			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_RENAMED) {{ setHorseName(horseName); }});
-			zh.getCmdM().updateCommandHistory(s, command);
-			zh.getEM().payCommand(p, command);
+			zh.getDM().updateHorseName(horse.getUniqueId(), horseName, false, new CallbackListener<Boolean>() {
+
+				@Override
+				public void callback(CallbackResponse<Boolean> response) {
+					if (response.getResult()) {
+						zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_RENAMED) {{ setHorseName(horseName); }});
+						zh.getCmdM().updateCommandHistory(s, command);
+						zh.getEM().payCommand(p, command);
+					}
+				}
+
+			});
 		}
 	}
 }

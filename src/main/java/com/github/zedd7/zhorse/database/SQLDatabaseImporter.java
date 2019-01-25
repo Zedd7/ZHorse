@@ -29,7 +29,7 @@ public abstract class SQLDatabaseImporter {
 		for (PlayerRecord playerRecord : playerRecordList) {
 			UUID playerUUID = UUID.fromString(playerRecord.getUUID());
 			if (!zh.getDM().isPlayerRegistered(playerUUID)) {
-				success = zh.getDM().registerPlayer(playerRecord) && success;
+				success = zh.getDM().registerPlayer(playerRecord, true, null) && success;
 			}
 		}
 		return success;
@@ -43,7 +43,7 @@ public abstract class SQLDatabaseImporter {
 			UUID requesterUUID = UUID.fromString(friendRecord.getRequester());
 			UUID recipientUUID = UUID.fromString(friendRecord.getRecipient());
 			if (!zh.getDM().isFriendOf(requesterUUID, recipientUUID)) {
-				success = zh.getDM().registerFriend(friendRecord) && success;
+				success = zh.getDM().registerFriend(friendRecord, true, null) && success;
 			}
 		}
 		return success;
@@ -57,7 +57,7 @@ public abstract class SQLDatabaseImporter {
 			UUID playerUUID = UUID.fromString(messageRecord.getUUID());
 			Date date = messageRecord.getDate();
 			if (!zh.getDM().isPendingMessageRegistered(playerUUID, date)) {
-				success = zh.getDM().registerPendingMessage(messageRecord) && success;
+				success = zh.getDM().registerPendingMessage(messageRecord, true, null) && success;
 			}
 		}
 		return success;
@@ -70,7 +70,7 @@ public abstract class SQLDatabaseImporter {
 		for (HorseRecord horseRecord : horseRecordList) {
 			UUID horseUUID = UUID.fromString(horseRecord.getUUID());
 			if (!zh.getDM().isHorseRegistered(horseUUID)) {
-				success = zh.getDM().registerHorse(horseRecord) && success;
+				success = zh.getDM().registerHorse(horseRecord, true, null) && success;
 			}
 		}
 		return success;
@@ -83,7 +83,7 @@ public abstract class SQLDatabaseImporter {
 		for (HorseDeathRecord horseDeathRecord : horseDeathRecordList) {
 			UUID horseUUID = UUID.fromString(horseDeathRecord.getUUID());
 			if (zh.getDM().isHorseRegistered(horseUUID) && !zh.getDM().isHorseDeathRegistered(horseUUID)) {
-				success = zh.getDM().registerHorseDeath(horseDeathRecord) && success;
+				success = zh.getDM().registerHorseDeath(horseDeathRecord, true, null) && success;
 			}
 		}
 		return success;
@@ -96,7 +96,7 @@ public abstract class SQLDatabaseImporter {
 		for (HorseStableRecord horseStableRecord : horseStableRecordList) {
 			UUID horseUUID = UUID.fromString(horseStableRecord.getUUID());
 			if (zh.getDM().isHorseRegistered(horseUUID) && !zh.getDM().isHorseStableRegistered(horseUUID)) {
-				success = zh.getDM().registerHorseStable(horseStableRecord) && success;
+				success = zh.getDM().registerHorseStable(horseStableRecord, true, null) && success;
 			}
 		}
 		return success;
@@ -109,7 +109,7 @@ public abstract class SQLDatabaseImporter {
 		for (HorseStatsRecord horseStatsRecord : horseStatsRecordList) {
 			UUID horseUUID = UUID.fromString(horseStatsRecord.getUUID());
 			if (zh.getDM().isHorseRegistered(horseUUID) && !zh.getDM().isHorseStatsRegistered(horseUUID)) {
-				success = zh.getDM().registerHorseStats(horseStatsRecord) && success;
+				success = zh.getDM().registerHorseStats(horseStatsRecord, true, null) && success;
 			}
 		}
 		return success;
@@ -122,7 +122,7 @@ public abstract class SQLDatabaseImporter {
 		for (HorseInventoryRecord horseInventoryRecord : horseInventoryRecordList) {
 			UUID horseUUID = UUID.fromString(horseInventoryRecord.getUUID());
 			if (zh.getDM().isHorseRegistered(horseUUID) && !zh.getDM().isHorseInventoryRegistered(horseUUID)) {
-				success = zh.getDM().registerHorseInventory(horseInventoryRecord) && success;
+				success = zh.getDM().registerHorseInventory(horseInventoryRecord, true, null) && success;
 			}
 		}
 		return success;
@@ -135,7 +135,7 @@ public abstract class SQLDatabaseImporter {
 		for (SaleRecord saleRecord : saleRecordList) {
 			UUID horseUUID = UUID.fromString(saleRecord.getUUID());
 			if (zh.getDM().isHorseRegistered(horseUUID) && !zh.getDM().isHorseForSale(horseUUID)) {
-				success = zh.getDM().registerSale(saleRecord) && success;
+				success = zh.getDM().registerSale(saleRecord, true, null) && success;
 			}
 		}
 		return success;

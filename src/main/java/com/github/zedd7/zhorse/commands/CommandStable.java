@@ -12,10 +12,12 @@ import com.github.zedd7.zhorse.database.HorseStableRecord;
 import com.github.zedd7.zhorse.enums.StableSubCommandEnum;
 import com.github.zedd7.zhorse.enums.KeyWordEnum;
 import com.github.zedd7.zhorse.enums.LocaleEnum;
+import com.github.zedd7.zhorse.utils.CallbackListener;
+import com.github.zedd7.zhorse.utils.CallbackResponse;
 import com.github.zedd7.zhorse.utils.MessageConfig;
 
 public class CommandStable extends AbstractCommand {
-	
+
 	private String fullCommand;
 	private String subCommand;
 
@@ -45,7 +47,7 @@ public class CommandStable extends AbstractCommand {
 			}
 		}
 	}
-	
+
 	private void execute(UUID ownerUUID, String horseID) {
 		if (isRegistered(ownerUUID, horseID)) {
 			horse = zh.getHM().getHorse(ownerUUID, Integer.parseInt(horseID));
@@ -54,7 +56,7 @@ public class CommandStable extends AbstractCommand {
 			}
 		}
 	}
-	
+
 	private void execute() {
 		if (!args.isEmpty()) {
 			subCommand = args.get(0);
@@ -99,7 +101,7 @@ public class CommandStable extends AbstractCommand {
 						zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_TELEPORTED_TO_STABLE) {{ setHorseName(horseName); }});
 						zh.getCmdM().updateCommandHistory(s, command);
 						zh.getEM().payCommand(p, command);
-					}	
+					}
 					else {
 						zh.getMM().sendMessage(s, ChatColor.RED + "It seems that horses cannot spawn here, please report this to the developer. (https://github.com/Zedd7/ZHorse/issues/new)");
 					}
@@ -111,15 +113,35 @@ public class CommandStable extends AbstractCommand {
 	private void setStableLocation() {
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (isOwner(true)) {
+				CallbackListener<Boolean> removeHorseStableListener = new CallbackListener<Boolean>() {
+
+					@Override
+					public void callback(CallbackResponse<Boolean> response) {
+						if (response.getResult()) {
+							Location playerLocation = getGroundedLocation(p.getLocation());
+							HorseStableRecord stableRecord = new HorseStableRecord(horse.getUniqueId().toString(), playerLocation);
+							zh.getDM().registerHorseStable(stableRecord, false, new CallbackListener<Boolean>() {
+
+								@Override
+								public void callback(CallbackResponse<Boolean> response) {
+									if (response.getResult()) {
+										zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STABLE_SET) {{ setHorseName(horseName); }});
+										zh.getCmdM().updateCommandHistory(s, command);
+										zh.getEM().payCommand(p, command);
+									}
+								}
+
+							});
+						}
+					}
+
+				};
 				if (zh.getDM().isHorseStableRegistered(horse.getUniqueId())) {
-					zh.getDM().removeHorseStable(horse.getUniqueId());
+					zh.getDM().removeHorseStable(horse.getUniqueId(), false, removeHorseStableListener);
 				}
-				Location playerLocation = getGroundedLocation(p.getLocation());
-				HorseStableRecord stableRecord = new HorseStableRecord(horse.getUniqueId().toString(), playerLocation);
-				zh.getDM().registerHorseStable(stableRecord);
-				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STABLE_SET) {{ setHorseName(horseName); }});
-				zh.getCmdM().updateCommandHistory(s, command);
-				zh.getEM().payCommand(p, command);
+				else {
+					removeHorseStableListener.callback(null);
+				}
 			}
 		}
 	}
@@ -128,10 +150,18 @@ public class CommandStable extends AbstractCommand {
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (isOwner(true)) {
 				if (zh.getDM().isHorseStableRegistered(horse.getUniqueId())) {
-					zh.getDM().removeHorseStable(horse.getUniqueId());
-					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STABLE_UNSET) {{ setHorseName(horseName); }});
-					zh.getCmdM().updateCommandHistory(s, command);
-					zh.getEM().payCommand(p, command);
+					zh.getDM().removeHorseStable(horse.getUniqueId(), false, new CallbackListener<Boolean>() {
+
+						@Override
+						public void callback(CallbackResponse<Boolean> response) {
+							if (response.getResult()) {
+								zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STABLE_UNSET) {{ setHorseName(horseName); }});
+								zh.getCmdM().updateCommandHistory(s, command);
+								zh.getEM().payCommand(p, command);
+							}
+						}
+
+					});
 				}
 				else {
 					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STABLE_NOT_SET) {{ setHorseName(horseName); }});

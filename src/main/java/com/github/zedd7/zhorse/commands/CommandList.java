@@ -16,7 +16,7 @@ import com.github.zedd7.zhorse.utils.CompoundMessage;
 import com.github.zedd7.zhorse.utils.MessageConfig;
 
 public class CommandList extends AbstractCommand {
-	
+
 	private int livingHorseListStartingPageNumber = CompoundMessage.FIRST_PAGE_NUMBER;
 	private int deadHorseListStartingPageNumber = CompoundMessage.FIRST_PAGE_NUMBER;
 	private boolean livingHorseListed = false;
@@ -39,20 +39,20 @@ public class CommandList extends AbstractCommand {
 
 	private void execute() {
 		CompoundMessage compoundMessage = new CompoundMessage(true);
-			
+
 		List<HorseRecord> aliveHorseList = zh.getDM().getHorseRecordList(targetUUID, false);
 		String remainingClaimsMessage = getRemainingClaimsMessage(targetUUID);
 		buildAliveHorseList(compoundMessage, aliveHorseList, remainingClaimsMessage);
-			
+
 		List<HorseDeathRecord> deathHorseList = zh.getDM().getHorseDeathRecordList(targetUUID);
 		String remainingDeathsMessage = getRemainingDeathsMessage(targetUUID);
 		buildDeadHorseList(compoundMessage, deathHorseList, remainingDeathsMessage);
-			
+
 		int maxPageNumber = compoundMessage.getPageCount();
 		String pageNumberMessage = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.PAGE_NUMBER_FORMAT) {{ setAmount(pageNumber); setMax(maxPageNumber); }}, true);
 		buildAliveHorseListHeader(compoundMessage, livingHorseListStartingPageNumber, remainingClaimsMessage, pageNumberMessage);
 		buildDeadHorseListHeader(compoundMessage, deadHorseListStartingPageNumber, remainingDeathsMessage, pageNumberMessage);
-			
+
 		String message = zh.getMM().getMessage(compoundMessage, pageNumber);
 		if (!message.isEmpty()) {
 			zh.getMM().sendMessage(s, message);
@@ -98,15 +98,15 @@ public class CommandList extends AbstractCommand {
 			}
 		}
 	}
-	
+
 	private int validateHorseID(UUID horseUUID, int horseID, int expectedHorseID) {
 		if (horseID < expectedHorseID) {
 			horseID = zh.getDM().getNextHorseID(targetUUID);
-			zh.getDM().updateHorseID(horseUUID, horseID);
+			zh.getDM().updateHorseID(horseUUID, horseID, false, null);
 		}
 		else if (horseID > expectedHorseID) {
 			horseID--;
-			zh.getDM().updateHorseID(horseUUID, horseID);
+			zh.getDM().updateHorseID(horseUUID, horseID, false, null);
 		}
 		return horseID;
 	}
@@ -175,7 +175,7 @@ public class CommandList extends AbstractCommand {
 			}
 		}
 	}
-	
+
 	private void createDeadHorsesPage(CompoundMessage compoundMessage) {
 		if (livingHorseListed) {
 			compoundMessage.addPage();
@@ -219,5 +219,5 @@ public class CommandList extends AbstractCommand {
 			compoundMessage.addHeader(headerMessage, startingPageNumber);
 		}
 	}
-	
+
 }

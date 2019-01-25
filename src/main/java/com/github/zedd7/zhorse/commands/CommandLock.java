@@ -9,6 +9,8 @@ import org.bukkit.entity.Player;
 
 import com.github.zedd7.zhorse.ZHorse;
 import com.github.zedd7.zhorse.enums.LocaleEnum;
+import com.github.zedd7.zhorse.utils.CallbackListener;
+import com.github.zedd7.zhorse.utils.CallbackResponse;
 import com.github.zedd7.zhorse.utils.MessageConfig;
 
 public class CommandLock extends AbstractCommand {
@@ -53,10 +55,6 @@ public class CommandLock extends AbstractCommand {
 	private void execute() {
 		if (isOwner(false)) {
 			if (!zh.getDM().isHorseLocked(horse.getUniqueId())) {
-				if (zh.getDM().isHorseShared(horse.getUniqueId())) {
-					zh.getDM().updateHorseShared(horse.getUniqueId(), false);
-					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_UNSHARED) {{ setHorseName(horseName); }});
-				}
 				for (Entity passenger : horse.getPassengers()) {
 					if (passenger instanceof Player) {
 						adminMode = false;
@@ -69,15 +67,37 @@ public class CommandLock extends AbstractCommand {
 						}
 					}
 				}
-				zh.getDM().updateHorseLocked(horse.getUniqueId(), true);
-				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_LOCKED) {{ setHorseName(horseName); }});
+				if (zh.getDM().isHorseShared(horse.getUniqueId())) {
+					zh.getDM().updateHorseShared(horse.getUniqueId(), false, false, null);
+					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_UNSHARED) {{ setHorseName(horseName); }});
+				}
+				zh.getDM().updateHorseLocked(horse.getUniqueId(), true, false, new CallbackListener<Boolean>() {
+
+					@Override
+					public void callback(CallbackResponse<Boolean> response) {
+						if (response.getResult()) {
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_LOCKED) {{ setHorseName(horseName); }});
+							zh.getCmdM().updateCommandHistory(s, command);
+							zh.getEM().payCommand(p, command);
+						}
+					}
+
+				});
 			}
 			else {
-				zh.getDM().updateHorseLocked(horse.getUniqueId(), false);
-				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_UNLOCKED) {{ setHorseName(horseName); }});
+				zh.getDM().updateHorseLocked(horse.getUniqueId(), false, false, new CallbackListener<Boolean>() {
+
+					@Override
+					public void callback(CallbackResponse<Boolean> response) {
+						if (response.getResult()) {
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_UNLOCKED) {{ setHorseName(horseName); }});
+							zh.getCmdM().updateCommandHistory(s, command);
+							zh.getEM().payCommand(p, command);
+						}
+					}
+
+				});
 			}
-			zh.getCmdM().updateCommandHistory(s, command);
-			zh.getEM().payCommand(p, command);
 		}
 	}
 

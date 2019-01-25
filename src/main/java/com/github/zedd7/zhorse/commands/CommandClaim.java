@@ -8,6 +8,8 @@ import com.github.zedd7.zhorse.database.HorseInventoryRecord;
 import com.github.zedd7.zhorse.database.HorseRecord;
 import com.github.zedd7.zhorse.database.HorseStatsRecord;
 import com.github.zedd7.zhorse.enums.LocaleEnum;
+import com.github.zedd7.zhorse.utils.CallbackListener;
+import com.github.zedd7.zhorse.utils.CallbackResponse;
 import com.github.zedd7.zhorse.utils.MessageConfig;
 
 public class CommandClaim extends AbstractCommand {
@@ -39,31 +41,50 @@ public class CommandClaim extends AbstractCommand {
 
 	private void execute() {
 		if (!hasReachedClaimsLimit(false) && isClaimable() && craftHorseName(true)) {
-			boolean lock = zh.getCM().shouldLockOnClaim();
-			boolean protect = zh.getCM().shouldProtectOnClaim();
-			boolean share = zh.getCM().shouldShareOnClaim();
-			boolean success = true;
+			CallbackListener<Boolean> listener = new CallbackListener<Boolean>() {
+
+				@Override
+				public void callback(CallbackResponse<Boolean> response) {
+					if (response.getResult()) {
+						int horseID = zh.getDM().getNextHorseID(p.getUniqueId());
+						boolean lock = zh.getCM().shouldLockOnClaim();
+						boolean protect = zh.getCM().shouldProtectOnClaim();
+						boolean share = zh.getCM().shouldShareOnClaim();
+						HorseRecord horseRecord = new HorseRecord(horse.getUniqueId().toString(), p.getUniqueId().toString(), horseID, horseName, lock, protect, share, horse.getLocation());
+						zh.getDM().registerHorse(horseRecord, false, new CallbackListener<Boolean>() {
+
+							@Override
+							public void callback(CallbackResponse<Boolean> response) {
+								if (response.getResult()) {
+									applyHorseName(p.getUniqueId());
+									horse.setCustomNameVisible(true);
+									horse.setOwner(zh.getServer().getOfflinePlayer(p.getUniqueId()));
+									horse.setTamed(true);
+
+									HorseInventoryRecord horseInventoryRecord = new HorseInventoryRecord(horse);
+									HorseStatsRecord horseStatsRecord = new HorseStatsRecord(horse);
+									zh.getDM().registerHorseInventory(horseInventoryRecord, false, null);
+									zh.getDM().registerHorseStats(horseStatsRecord, false, null);
+									zh.getHM().trackHorse(horse);
+
+									zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_CLAIMED) {{ setHorseName(horseName); }});
+									zh.getCmdM().updateCommandHistory(s, command);
+									zh.getEM().payCommand(p, command);
+								}
+							}
+
+						});
+
+					}
+				}
+
+			};
+
 			if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
-				success &= zh.getDM().removeHorse(horse.getUniqueId());
+				zh.getDM().removeHorse(horse.getUniqueId(), false, listener);
 			}
-			int horseID = zh.getDM().getNextHorseID(p.getUniqueId());
-			HorseRecord horseRecord = new HorseRecord(horse.getUniqueId().toString(), p.getUniqueId().toString(), horseID, horseName, lock, protect, share, horse.getLocation());
-			success &= zh.getDM().registerHorse(horseRecord);
-			if (success) {
-				applyHorseName(p.getUniqueId());
-				horse.setCustomNameVisible(true);
-				horse.setOwner(zh.getServer().getOfflinePlayer(p.getUniqueId()));
-				horse.setTamed(true);
-
-				HorseInventoryRecord horseInventoryRecord = new HorseInventoryRecord(horse);
-				HorseStatsRecord horseStatsRecord = new HorseStatsRecord(horse);
-				zh.getDM().registerHorseInventory(horseInventoryRecord);
-				zh.getDM().registerHorseStats(horseStatsRecord);
-				zh.getHM().trackHorse(horse);
-
-				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_CLAIMED) {{ setHorseName(horseName); }});
-				zh.getCmdM().updateCommandHistory(s, command);
-				zh.getEM().payCommand(p, command);
+			else {
+				listener.callback(new CallbackResponse<Boolean>(true));
 			}
 		}
 	}

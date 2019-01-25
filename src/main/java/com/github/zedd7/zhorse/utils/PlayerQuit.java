@@ -1,8 +1,8 @@
 package com.github.zedd7.zhorse.utils;
 
+import java.util.List;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Player;
@@ -19,12 +19,11 @@ public class PlayerQuit {
 		if (zh.getCM().shouldSendToStableOnOwnerLogout()) {
 			UUID playerUUID = player.getUniqueId();
 			boolean blockLeashedTeleport = zh.getCM().shouldBlockLeashedTeleport();
-
-			Bukkit.getScheduler().scheduleSyncDelayedTask(zh, new Runnable() {
+			zh.getDM().getHorseUUIDList(playerUUID, false, true, new CallbackListener<List<UUID>>() {
 
 				@Override
-				public void run() {
-					for (UUID horseUUID : zh.getDM().getHorseUUIDList(playerUUID, false)) {
+				public void callback(CallbackResponse<List<UUID>> response) {
+					for (UUID horseUUID : response.getResult()) {
 						int horseID = zh.getDM().getHorseID(horseUUID);
 						AbstractHorse horse = zh.getHM().getHorse(playerUUID, horseID);
 						if (!horse.isLeashed() || !blockLeashedTeleport) {
@@ -43,6 +42,7 @@ public class PlayerQuit {
 				}
 
 			});
+
 		}
 
 	}

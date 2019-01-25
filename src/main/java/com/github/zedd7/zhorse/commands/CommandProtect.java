@@ -7,6 +7,8 @@ import org.bukkit.entity.AbstractHorse;
 
 import com.github.zedd7.zhorse.ZHorse;
 import com.github.zedd7.zhorse.enums.LocaleEnum;
+import com.github.zedd7.zhorse.utils.CallbackListener;
+import com.github.zedd7.zhorse.utils.CallbackResponse;
 import com.github.zedd7.zhorse.utils.MessageConfig;
 
 public class CommandProtect extends AbstractCommand {
@@ -51,15 +53,33 @@ public class CommandProtect extends AbstractCommand {
 	private void execute() {
 		if (isOwner(false)) {
 			if (!zh.getDM().isHorseProtected(horse.getUniqueId())) {
-				zh.getDM().updateHorseProtected(horse.getUniqueId(), true);
-				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_PROTECTED) {{ setHorseName(horseName); }});
+				zh.getDM().updateHorseProtected(horse.getUniqueId(), true, false, new CallbackListener<Boolean>() {
+
+					@Override
+					public void callback(CallbackResponse<Boolean> response) {
+						if (response.getResult()) {
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_PROTECTED) {{ setHorseName(horseName); }});
+							zh.getCmdM().updateCommandHistory(s, command);
+							zh.getEM().payCommand(p, command);
+						}
+					}
+
+				});
 			}
 			else {
-				zh.getDM().updateHorseProtected(horse.getUniqueId(), false);
-				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_UNPROTECTED) {{ setHorseName(horseName); }});
+				zh.getDM().updateHorseProtected(horse.getUniqueId(), false, false, new CallbackListener<Boolean>() {
+
+					@Override
+					public void callback(CallbackResponse<Boolean> response) {
+						if (response.getResult()) {
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_UNPROTECTED) {{ setHorseName(horseName); }});
+							zh.getCmdM().updateCommandHistory(s, command);
+							zh.getEM().payCommand(p, command);
+						}
+					}
+
+				});
 			}
-			zh.getCmdM().updateCommandHistory(s, command);
-			zh.getEM().payCommand(p, command);
 		}
 	}
 

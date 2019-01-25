@@ -78,7 +78,7 @@ public class MessageManager {
 		}
 		else {
 			PendingMessageRecord messageRecord = new PendingMessageRecord(recipientUUID.toString(), message);
-			zh.getDM().registerPendingMessage(messageRecord);
+			zh.getDM().registerPendingMessage(messageRecord, false, null);
 		}
 	}
 

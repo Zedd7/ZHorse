@@ -4,9 +4,9 @@ import java.sql.Date;
 import java.util.List;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.github.zedd7.zhorse.ZHorse;
 import com.github.zedd7.zhorse.database.PendingMessageRecord;
@@ -14,7 +14,7 @@ import com.github.zedd7.zhorse.database.PlayerRecord;
 import com.github.zedd7.zhorse.managers.MessageManager;
 
 public class PlayerJoin {
-	
+
 	public PlayerJoin(ZHorse zh, Player player) {
 		UUID playerUUID = player.getUniqueId();
 		String playerName = player.getName();
@@ -23,48 +23,29 @@ public class PlayerJoin {
 			int favorite = zh.getDM().getDefaultFavoriteHorseID();
 			boolean displayExactStats = zh.getCM().shouldUseExactStats();
 			PlayerRecord playerRecord = new PlayerRecord(playerUUID.toString(), playerName, language, favorite, displayExactStats);
-			Bukkit.getScheduler().runTaskAsynchronously(zh, new Runnable() {
-
-				@Override
-				public void run() {
-					zh.getDM().registerPlayer(playerRecord);
-				}
-				
-			});
+			zh.getDM().registerPlayer(playerRecord, false, null);
 		}
 		else {
 			if (!playerName.equalsIgnoreCase(zh.getDM().getPlayerName(playerUUID))) {
-				Bukkit.getScheduler().runTaskAsynchronously(zh, new Runnable() {
-					
+				zh.getDM().updatePlayerName(playerUUID, playerName, false, null);
+			}
+
+			List<PendingMessageRecord> messageRecordList = zh.getDM().getPendingMessageRecordList(player.getUniqueId());
+			if (!messageRecordList.isEmpty()) {
+				new BukkitRunnable() {
+
 					@Override
 					public void run() {
-						zh.getDM().updatePlayerName(playerUUID, playerName);
-					}
-					
-				});
-			}
-			
-			Bukkit.getScheduler().runTaskAsynchronously(zh, new Runnable() {
-
-				@Override
-				public void run() {
-					List<PendingMessageRecord> messageRecordList = zh.getDM().getPendingMessageRecordList(player.getUniqueId());
-					zh.getDM().removePendingMessages(player.getUniqueId());
-					Bukkit.getScheduler().scheduleSyncDelayedTask(zh, new Runnable() {
-
-						@Override
-						public void run() {
-							for (PendingMessageRecord messageRecord : messageRecordList) {
-								String message = messageRecord.getMessage();
-								Date date = messageRecord.getDate();
-								zh.getMM().sendMessage(player, message + " " + ChatColor.RESET + MessageManager.DATE_FORMAT_TIMESTAMP.format(date));
-							}
+						for (PendingMessageRecord messageRecord : messageRecordList) {
+							String message = messageRecord.getMessage();
+							Date date = messageRecord.getDate();
+							zh.getMM().sendMessage(player, message + " " + ChatColor.RESET + MessageManager.DATE_FORMAT_TIMESTAMP.format(date));
 						}
-						
-					}, 5 * 20L);
-				}
-				
-			});
+					}
+
+				}.runTaskLater(zh, 5 * 20L);
+				zh.getDM().removePendingMessages(player.getUniqueId(), false, null);
+			}
 		}
 	}
 }

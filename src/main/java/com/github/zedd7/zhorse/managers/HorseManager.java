@@ -9,7 +9,6 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -29,6 +28,8 @@ import com.github.zedd7.zhorse.ZHorse;
 import com.github.zedd7.zhorse.database.HorseInventoryRecord;
 import com.github.zedd7.zhorse.database.HorseStatsRecord;
 import com.github.zedd7.zhorse.enums.HorseVariantEnum;
+import com.github.zedd7.zhorse.utils.CallbackListener;
+import com.github.zedd7.zhorse.utils.CallbackResponse;
 import com.github.zedd7.zhorse.utils.ChunkLoad;
 
 public class HorseManager {
@@ -61,7 +62,7 @@ public class HorseManager {
 							|| horse.getLocation().getBlockY() != location.getBlockY()
 							|| horse.getLocation().getBlockZ() != location.getBlockZ();
 					if (hasMoved) {
-						zh.getDM().updateHorseLocation(horseUUID, horse.getLocation(), false);
+						zh.getDM().updateHorseLocation(horseUUID, horse.getLocation(), false, false, null);
 					}
 				}
 				else if (zh.getCM().shouldRespawnMissingHorse()) {
@@ -160,39 +161,25 @@ public class HorseManager {
 		Iterator<Entry<UUID, AbstractHorse>> itr = trackedHorses.entrySet().iterator();
 		while (itr.hasNext()) {
 			AbstractHorse horse = itr.next().getValue();
-			zh.getDM().updateHorseLocation(horse.getUniqueId(), horse.getLocation(), true);
-			updateHorse(horse, true);
+			updateHorse(horse);
 			itr.remove();
 		}
 	}
 
-	public void updateHorse(AbstractHorse horse, boolean runSynchronously) {
+	public void updateHorse(AbstractHorse horse) {
 		UUID horseUUID = horse.getUniqueId();
 		Location horseLocation = horse.getLocation();
 		HorseInventoryRecord inventoryRecord = new HorseInventoryRecord(horse);
 		HorseStatsRecord statsRecord = new HorseStatsRecord(horse);
-		Runnable updateTask = new Runnable() {
-
-			@Override
-			public void run() {
-				zh.getDM().updateHorseLocation(horseUUID, horseLocation, true);
-				zh.getDM().updateHorseInventory(inventoryRecord);
-				zh.getDM().updateHorseStats(statsRecord);
-			}
-
-		};
-		if (runSynchronously) {
-			updateTask.run();
-		}
-		else {
-			Bukkit.getScheduler().runTaskAsynchronously(zh, updateTask);
-		}
+		zh.getDM().updateHorseLocation(horseUUID, horseLocation, true, false, null);
+		zh.getDM().updateHorseInventory(inventoryRecord, false, null);
+		zh.getDM().updateHorseStats(statsRecord, false, null);
 	}
 
 	public AbstractHorse teleportHorse(AbstractHorse sourceHorse, Location destination) {
 		if (zh.getCM().shouldUseOldTeleportMethod()) {
 			sourceHorse.teleport(destination);
-			zh.getDM().updateHorseLocation(sourceHorse.getUniqueId(), destination, false);
+			zh.getDM().updateHorseLocation(sourceHorse.getUniqueId(), destination, false, false, null);
 			return sourceHorse;
 		}
 		else {
@@ -201,8 +188,6 @@ public class HorseManager {
 				UUID oldHorseUUID = sourceHorse.getUniqueId();
 				UUID newHorseUUID = copyHorse.getUniqueId();
 				UUID ownerUUID = zh.getDM().getOwnerUUID(oldHorseUUID);
-				zh.getDM().updateHorseUUID(oldHorseUUID, newHorseUUID);
-				zh.getDM().updateHorseLocation(newHorseUUID, destination, true);
 				HorseStatsRecord statsRecord = new HorseStatsRecord(sourceHorse);
 				assignStats(copyHorse, statsRecord, ownerUUID);
 				copyInventory(sourceHorse, copyHorse, statsRecord.isCarryingChest());
@@ -210,6 +195,16 @@ public class HorseManager {
 				untrackHorse(sourceHorse.getUniqueId());
 				trackHorse(copyHorse);
 				removeHorse(sourceHorse);
+				zh.getDM().updateHorseUUID(oldHorseUUID, newHorseUUID, false, new CallbackListener<Boolean>() {
+
+					@Override
+					public void callback(CallbackResponse<Boolean> response) {
+						if (response.getResult()) {
+							zh.getDM().updateHorseLocation(newHorseUUID, destination, true, false, null);
+						}
+					}
+
+				});
 			}
 			return copyHorse;
 		}
@@ -302,8 +297,16 @@ public class HorseManager {
 			UUID ownerUUID = null;
 			if (claimedHorse) {
 				ownerUUID = zh.getDM().getOwnerUUID(oldHorseUUID);
-				zh.getDM().updateHorseUUID(oldHorseUUID, horse.getUniqueId());
-				zh.getDM().updateHorseLocation(horse.getUniqueId(), location, true);
+				zh.getDM().updateHorseUUID(oldHorseUUID, horse.getUniqueId(), false, new CallbackListener<Boolean>() {
+
+					@Override
+					public void callback(CallbackResponse<Boolean> response) {
+						if (response.getResult()) {
+							zh.getDM().updateHorseLocation(horse.getUniqueId(), location, true, false, null);
+						}
+					}
+
+				});
 			}
 			assignStats(horse, statsRecord, ownerUUID);
 			assignInventory(horse, inventoryRecord, isCarryingChest);

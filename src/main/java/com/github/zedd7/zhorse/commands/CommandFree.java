@@ -7,6 +7,8 @@ import org.bukkit.entity.AbstractHorse;
 
 import com.github.zedd7.zhorse.ZHorse;
 import com.github.zedd7.zhorse.enums.LocaleEnum;
+import com.github.zedd7.zhorse.utils.CallbackListener;
+import com.github.zedd7.zhorse.utils.CallbackResponse;
 import com.github.zedd7.zhorse.utils.MessageConfig;
 
 public class CommandFree extends AbstractCommand {
@@ -54,29 +56,41 @@ public class CommandFree extends AbstractCommand {
 	private void execute() {
 		if (isOwner(false)) {
 			zh.getHM().untrackHorse(horse.getUniqueId());
-			if (zh.getDM().removeHorse(horse.getUniqueId(), targetUUID)) {
-				horse.setCustomName(null);
-				horse.setCustomNameVisible(false);
-				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_FREED) {{ setHorseName(horseName); }});
-				zh.getCmdM().updateCommandHistory(s, command);
-				zh.getEM().payCommand(p, command);
-			}
+			zh.getDM().removeHorse(horse.getUniqueId(), targetUUID, false, new CallbackListener<Boolean>() {
+
+				@Override
+				public void callback(CallbackResponse<Boolean> response) {
+					if (response.getResult()) {
+						horse.setCustomName(null);
+						horse.setCustomNameVisible(false);
+						zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_FREED) {{ setHorseName(horseName); }});
+						zh.getCmdM().updateCommandHistory(s, command);
+						zh.getEM().payCommand(p, command);
+					}
+				}
+			});
 		}
 	}
 
 	private void removeLostHorse() {
 		UUID horseUUID = zh.getDM().getHorseUUID(targetUUID, Integer.parseInt(horseID));
 		zh.getHM().untrackHorse(horseUUID);
-		if (zh.getDM().removeHorse(horseUUID, targetUUID, Integer.parseInt(horseID))) {
-			if (samePlayer) {
-				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_CLEARED) {{ setHorseName(horseName); }});
+		zh.getDM().removeHorse(horseUUID, targetUUID, Integer.parseInt(horseID), false, new CallbackListener<Boolean>() {
+
+			@Override
+			public void callback(CallbackResponse<Boolean> response) {
+				if (response.getResult()) {
+					if (samePlayer) {
+						zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_CLEARED) {{ setHorseName(horseName); }});
+					}
+					else {
+						zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_CLEARED_OTHER) {{ setHorseName(horseName); setPlayerName(targetName); }});
+					}
+					zh.getCmdM().updateCommandHistory(s, command);
+					zh.getEM().payCommand(p, command);
+				}
 			}
-			else {
-				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_CLEARED_OTHER) {{ setHorseName(horseName); setPlayerName(targetName); }});
-			}
-			zh.getCmdM().updateCommandHistory(s, command);
-			zh.getEM().payCommand(p, command);
-		}
+		});
 	}
 
 }

@@ -2,7 +2,6 @@ package com.github.zedd7.zhorse.utils;
 
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.entity.AbstractHorse;
@@ -12,7 +11,7 @@ import com.github.zedd7.zhorse.ZHorse;
 import com.github.zedd7.zhorse.managers.HorseManager;
 
 public class ChunkLoad {
-	
+
 	public ChunkLoad(ZHorse zh, Chunk chunk) {
 		for (Entity entity : chunk.getEntities()) {
 			if (entity instanceof AbstractHorse) {
@@ -21,17 +20,10 @@ public class ChunkLoad {
 					horse.remove();
 				}
 				else if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
-					 zh.getHM().trackHorse(horse);					 
+					 zh.getHM().trackHorse(horse);
 					 UUID horseUUID = horse.getUniqueId();
 					 Location horseLocation = horse.getLocation();
-					 Bukkit.getScheduler().runTaskAsynchronously(zh, new Runnable() {
-
-						@Override
-						public void run() {
-							zh.getDM().updateHorseLocation(horseUUID, horseLocation, true);
-						}
-						 
-					 });
+					 zh.getDM().updateHorseLocation(horseUUID, horseLocation, true, false, null);
 				}
 			}
 		}

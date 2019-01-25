@@ -120,7 +120,7 @@ Databases:
   type: SQLite
 
   # Configuration section for MySQL. You can remove it if MySQL is disabled.
-  # The field table-prefix is optional and doesn't need to end with '_'.
+  # The field table-prefix is optional. Use it only in case of shared database.
   mysql-config:
     host: 127.0.0.1
     port: 3306
@@ -382,6 +382,8 @@ Settings:
   # Leashing horses and enabling block-leashed-teleport is recommended.
   send-to-stable-on-owner-logout: false
 
+  # The location of the default stable. It is only considered for horses
+  # whose own stable has not been defined with /zh stable set.
   default-stable-location:
     world: world
     x: 1

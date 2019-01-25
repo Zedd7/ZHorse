@@ -611,9 +611,12 @@ public abstract class AbstractCommand {
 				int favorite = zh.getDM().getDefaultFavoriteHorseID();
 				boolean displayExactStats = zh.getCM().shouldUseExactStats();
 				PlayerRecord playerRecord = new PlayerRecord(p.getUniqueId().toString(), p.getName(), language, favorite, displayExactStats);
-				zh.getDM().registerPlayer(playerRecord);
+				zh.getDM().registerPlayer(playerRecord, false, null);
+				useExactStats = displayExactStats;
 			}
-			useExactStats = zh.getDM().isPlayerDisplayingExactStats(p.getUniqueId());
+			else {
+				useExactStats = zh.getDM().isPlayerDisplayingExactStats(p.getUniqueId());
+			}
 		}
 		else if (!hideConsole) {
 			playerCommand = false;

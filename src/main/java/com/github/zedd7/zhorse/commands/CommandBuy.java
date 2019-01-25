@@ -46,19 +46,19 @@ public class CommandBuy extends AbstractCommand {
 						boolean lock = zh.getCM().shouldLockOnClaim();
 						boolean protect = zh.getCM().shouldProtectOnClaim();
 						boolean share = zh.getCM().shouldShareOnClaim();
-						boolean success = true;
-						success &= zh.getDM().removeSale(horse.getUniqueId());
-						success &= zh.getDM().updateHorseOwner(horse.getUniqueId(), p.getUniqueId());
-						success &= zh.getDM().updateHorseID(horse.getUniqueId(), horseID);
-						success &= zh.getDM().updateHorseName(horse.getUniqueId(), horseName);
-						success &= zh.getDM().updateHorseLocked(horse.getUniqueId(), lock);
-						success &= zh.getDM().updateHorseProtected(horse.getUniqueId(), protect);
-						success &= zh.getDM().updateHorseShared(horse.getUniqueId(), share);
+						boolean success = true; // Always true because of async updates
+						success &= zh.getDM().removeSale(horse.getUniqueId(), false, null);
+						success &= zh.getDM().updateHorseOwner(horse.getUniqueId(), p.getUniqueId(), false, null);
+						success &= zh.getDM().updateHorseID(horse.getUniqueId(), horseID, false, null);
+						success &= zh.getDM().updateHorseName(horse.getUniqueId(), horseName, false, null);
+						success &= zh.getDM().updateHorseLocked(horse.getUniqueId(), lock, false, null);
+						success &= zh.getDM().updateHorseProtected(horse.getUniqueId(), protect, false, null);
+						success &= zh.getDM().updateHorseShared(horse.getUniqueId(), share, false, null);
 						if (success) {
 							applyHorseName(p.getUniqueId());
 							horse.setOwner(zh.getServer().getOfflinePlayer(p.getUniqueId()));
 							zh.getEM().payPlayer(p, targetUUID, price);
-							
+
 							String buyerLanguage = zh.getDM().getPlayerLanguage(p.getUniqueId());
 							String sellerLanguage = zh.getDM().getPlayerLanguage(targetUUID);
 							String buyerCurrencySymbol = zh.getLM().getMessage(LocaleEnum.CURRENCY_SYMBOL.getIndex(), buyerLanguage, true);
@@ -71,7 +71,7 @@ public class CommandBuy extends AbstractCommand {
 							zh.getEM().payCommand(p, command);
 						}
 					}
-					
+
 				}
 			}
 			else {

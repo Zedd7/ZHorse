@@ -81,13 +81,13 @@ public class CommandAdmin extends AbstractCommand {
 					samePlayer = playerCommand && p.getUniqueId().equals(targetUUID);
 				}
 				if (targetMode) {
-					if (isRegistered(targetUUID)) {
-						boolean success = true;
+					if (isRegistered(targetUUID) && ownsDeadHorse(targetUUID)) {
+						boolean success = true; // Always true because of async updates
 						List<HorseDeathRecord> horseDeathRecordList = zh.getDM().getHorseDeathRecordList(targetUUID);
 						for (HorseDeathRecord deathRecord : horseDeathRecordList) {
 							UUID horseUUID = UUID.fromString(deathRecord.getUUID());
 							if (!variantMode || zh.getDM().isHorseOfType(horseUUID, variant)) {
-								if (!zh.getDM().removeHorse(horseUUID, targetUUID, null)) success = false;
+								if (!zh.getDM().removeHorse(horseUUID, targetUUID, null, false, null)) success = false;
 							}
 						}
 						if (success) {
@@ -128,8 +128,8 @@ public class CommandAdmin extends AbstractCommand {
 			if (targetMode) {
 				if (!idMode) {
 					if (isRegistered(targetUUID)) {
-						boolean success = true;
-						for (UUID horseUUID : zh.getDM().getHorseUUIDList(targetUUID, true)) {
+						boolean success = true; // Always true because of async updates
+						for (UUID horseUUID : zh.getDM().getHorseUUIDList(targetUUID, true, false, null)) {
 							if (!variantMode || zh.getDM().isHorseOfType(horseUUID, variant)) {
 								int horseID = zh.getDM().getHorseID(horseUUID);
 								if (!clearLivingHorse(targetUUID, horseID, variantMode)) success = false;
@@ -148,7 +148,8 @@ public class CommandAdmin extends AbstractCommand {
 					}
 				}
 				else if (isRegistered(targetUUID, horseID)) {
-					boolean success = clearLivingHorse(targetUUID, Integer.parseInt(horseID), true);
+					boolean success = true; // Always true because of async updates
+					success &= clearLivingHorse(targetUUID, Integer.parseInt(horseID), true);
 					if (success) {
 						if (samePlayer) {
 							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_CLEARED) {{ setHorseName(horseName); }});
@@ -176,7 +177,7 @@ public class CommandAdmin extends AbstractCommand {
 		}
 		UUID horseUUID = zh.getDM().getHorseUUID(ownerUUID, horseID);
 		zh.getHM().untrackHorse(horseUUID);
-		return zh.getDM().removeHorse(horseUUID, ownerUUID, updateHorseIDMapping ? horseID : null);
+		return zh.getDM().removeHorse(horseUUID, ownerUUID, updateHorseIDMapping ? horseID : null, false, null);
 	}
 
 	private void importDB() {

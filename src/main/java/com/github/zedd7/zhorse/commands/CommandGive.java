@@ -59,15 +59,15 @@ public class CommandGive extends AbstractCommand {
 			boolean lock = zh.getCM().shouldLockOnClaim();
 			boolean protect = zh.getCM().shouldProtectOnClaim();
 			boolean share = zh.getCM().shouldShareOnClaim();
-			boolean success = true;
-			success &= zh.getDM().removeSale(horse.getUniqueId());
-			success &= zh.getDM().updateHorseOwner(horse.getUniqueId(), targetUUID);
-			success &= zh.getDM().updateHorseID(horse.getUniqueId(), horseID);
-			success &= zh.getDM().updateHorseName(horse.getUniqueId(), horseName);
-			success &= zh.getDM().updateHorseLocked(horse.getUniqueId(), lock);
-			success &= zh.getDM().updateHorseProtected(horse.getUniqueId(), protect);
-			success &= zh.getDM().updateHorseShared(horse.getUniqueId(), share);
-			success &= zh.getDM().updateHorseIDMapping(p.getUniqueId(), previousHorseID);
+			boolean success = true; // Always true because of async updates
+			success &= zh.getDM().removeSale(horse.getUniqueId(), false, null);
+			success &= zh.getDM().updateHorseOwner(horse.getUniqueId(), targetUUID, false, null);
+			success &= zh.getDM().updateHorseID(horse.getUniqueId(), horseID, false, null);
+			success &= zh.getDM().updateHorseName(horse.getUniqueId(), horseName, false, null);
+			success &= zh.getDM().updateHorseLocked(horse.getUniqueId(), lock, false, null);
+			success &= zh.getDM().updateHorseProtected(horse.getUniqueId(), protect, false, null);
+			success &= zh.getDM().updateHorseShared(horse.getUniqueId(), share, false, null);
+			success &= zh.getDM().updateHorseIDMapping(p.getUniqueId(), previousHorseID, false, null);
 			if (success) {
 				applyHorseName(targetUUID);
 				horse.setOwner(zh.getServer().getOfflinePlayer(targetUUID));

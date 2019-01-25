@@ -39,7 +39,7 @@ public class CommandKill extends AbstractCommand {
 			}
 		}
 	}
-	
+
 	private void execute(UUID ownerUUID, String horseID) {
 		if (isRegistered(ownerUUID, horseID)) {
 			horse = zh.getHM().getHorse(ownerUUID, Integer.parseInt(horseID));
@@ -51,7 +51,7 @@ public class CommandKill extends AbstractCommand {
 
 	private void execute() {
 		if (isOwner(true)) {
-			zh.getDM().updateHorseIsCarryingChest(horse.getUniqueId(), horse instanceof ChestedHorse ? ((ChestedHorse) horse).isCarryingChest() : false);
+			zh.getDM().updateHorseIsCarryingChest(horse.getUniqueId(), horse instanceof ChestedHorse ? ((ChestedHorse) horse).isCarryingChest() : false, false, null);
 			horse.setHealth(0);
 			if (!samePlayer) {
 				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_DIED) {{ setHorseName(horseName); }});

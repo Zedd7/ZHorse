@@ -9,12 +9,14 @@ import com.github.zedd7.zhorse.database.FriendRecord;
 import com.github.zedd7.zhorse.enums.FriendSubCommandEnum;
 import com.github.zedd7.zhorse.enums.KeyWordEnum;
 import com.github.zedd7.zhorse.enums.LocaleEnum;
+import com.github.zedd7.zhorse.utils.CallbackListener;
+import com.github.zedd7.zhorse.utils.CallbackResponse;
 import com.github.zedd7.zhorse.utils.MessageConfig;
 
 import net.md_5.bungee.api.ChatColor;
 
 public class CommandFriend extends AbstractCommand {
-	
+
 	private String fullCommand;
 	private String subCommand;
 
@@ -29,7 +31,7 @@ public class CommandFriend extends AbstractCommand {
 			}
 		}
 	}
-	
+
 	private void execute() {
 		if (!args.isEmpty()) {
 			subCommand = args.get(0);
@@ -55,7 +57,7 @@ public class CommandFriend extends AbstractCommand {
 			sendSubCommandDescriptionList(FriendSubCommandEnum.class);
 		}
 	}
-	
+
 	private void addFriend() {
 		if (hasPermission(s, fullCommand , true, false)) {
 			parsePlayerName();
@@ -63,11 +65,19 @@ public class CommandFriend extends AbstractCommand {
 				if (isRegistered(targetUUID)) {
 					if (isPlayerDifferent()) {
 						if (!zh.getDM().isFriendOf(p.getUniqueId(), targetUUID)) {
-							zh.getDM().registerFriend(new FriendRecord(p.getUniqueId().toString(), targetUUID.toString()));
-							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.FRIEND_ADDED) {{ setPlayerName(targetName); }});
-							zh.getMM().sendPendingMessage(targetUUID, new MessageConfig(LocaleEnum.FRIEND_ADDED_REVERSE) {{ setPlayerName(p.getName()); }});
-							zh.getCmdM().updateCommandHistory(s, command);
-							zh.getEM().payCommand(p, command);
+							zh.getDM().registerFriend(new FriendRecord(p.getUniqueId().toString(), targetUUID.toString()), false, new CallbackListener<Boolean>() {
+
+								@Override
+								public void callback(CallbackResponse<Boolean> response) {
+									if (response.getResult()) {
+										zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.FRIEND_ADDED) {{ setPlayerName(targetName); }});
+										zh.getMM().sendPendingMessage(targetUUID, new MessageConfig(LocaleEnum.FRIEND_ADDED_REVERSE) {{ setPlayerName(p.getName()); }});
+										zh.getCmdM().updateCommandHistory(s, command);
+										zh.getEM().payCommand(p, command);
+									}
+								}
+
+							});
 						}
 						else {
 							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.FRIEND_ALREADY_ADDED) {{ setPlayerName(targetName); }});
@@ -80,7 +90,7 @@ public class CommandFriend extends AbstractCommand {
 			}
 		}
 	}
-	
+
 	private void removeFriend() {
 		if (hasPermission(s, fullCommand , true, false)) {
 			parsePlayerName();
@@ -88,11 +98,19 @@ public class CommandFriend extends AbstractCommand {
 				if (isRegistered(targetUUID)) {
 					if (isPlayerDifferent()) {
 						if (zh.getDM().isFriendOf(p.getUniqueId(), targetUUID)) {
-							zh.getDM().removeFriend(p.getUniqueId(), targetUUID);
-							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.FRIEND_REMOVED) {{ setPlayerName(targetName); }});
-							zh.getMM().sendPendingMessage(targetUUID, new MessageConfig(LocaleEnum.FRIEND_REMOVED_REVERSE) {{ setPlayerName(p.getName()); }});
-							zh.getCmdM().updateCommandHistory(s, command);
-							zh.getEM().payCommand(p, command);
+							zh.getDM().removeFriend(p.getUniqueId(), targetUUID, false, new CallbackListener<Boolean>() {
+
+								@Override
+								public void callback(CallbackResponse<Boolean> response) {
+									if (response.getResult()) {
+										zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.FRIEND_REMOVED) {{ setPlayerName(targetName); }});
+										zh.getMM().sendPendingMessage(targetUUID, new MessageConfig(LocaleEnum.FRIEND_REMOVED_REVERSE) {{ setPlayerName(p.getName()); }});
+										zh.getCmdM().updateCommandHistory(s, command);
+										zh.getEM().payCommand(p, command);
+									}
+								}
+
+							});
 						}
 						else {
 							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.UNKNOWN_FRIEND) {{ setPlayerName(targetName); }});
@@ -143,7 +161,7 @@ public class CommandFriend extends AbstractCommand {
 			zh.getEM().payCommand(p, command);
 		}
 	}
-	
+
 	private void displayFriendNames(LocaleEnum index, List<String> friendNameList) {
 		String friendNameListMessage = "";
 		for (int i = 0; i < friendNameList.size(); ++i) {
@@ -162,6 +180,6 @@ public class CommandFriend extends AbstractCommand {
 			zh.getMM().sendMessage(s, new MessageConfig(index) {{ setPlayerName(targetName); setValue(message); }});
 		}
 	}
-	
+
 
 }

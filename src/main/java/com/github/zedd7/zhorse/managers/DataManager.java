@@ -2,7 +2,6 @@ package com.github.zedd7.zhorse.managers;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -24,6 +23,8 @@ import com.github.zedd7.zhorse.database.SQLDatabaseConnector;
 import com.github.zedd7.zhorse.database.SQLiteConnector;
 import com.github.zedd7.zhorse.database.SaleRecord;
 import com.github.zedd7.zhorse.enums.DatabaseEnum;
+import com.github.zedd7.zhorse.utils.CallbackListener;
+import com.github.zedd7.zhorse.utils.CallbackResponse;
 
 public class DataManager {
 
@@ -59,7 +60,9 @@ public class DataManager {
 		}
 		connected = db != null && db.isConnected();
 		if (connected) {
-			executeScripts();
+			if (!executeScripts()) {
+				zh.getLogger().severe("An error occured when initializing the tables. Check that the database is not corrupted.");
+			}
 		}
 	}
 
@@ -74,18 +77,19 @@ public class DataManager {
 		this.patchScriptList = patchScriptList;
 	}
 
-	public void executeScripts() {
+	public boolean executeScripts() {
+		boolean success = true;
 		for (String tableScript : tableScriptList) {
-			executeSQLScript(tableScript, false);
+			success &= executeSQLScript(tableScript, false, true, null);
 		}
 		for (String patchScript : patchScriptList) {
-			executeSQLScript(patchScript, true);
+			success &= executeSQLScript(patchScript, true, true, null);
 		}
+		return success;
 	}
 
-	private void executeSQLScript(String update, boolean hideExceptions) {
-		String prefixedUpdate = db.applyTablePrefix(update);
-		db.executeUpdate(prefixedUpdate, hideExceptions);
+	private boolean executeSQLScript(String update, boolean hideExceptions, boolean sync, CallbackListener<Boolean> listener) {
+		return db.executeUpdate(update, hideExceptions, sync, listener);
 	}
 
 	public Integer getDefaultDeadHorseID() {
@@ -167,7 +171,7 @@ public class DataManager {
 		return UUID.fromString(db.getStringResult(query));
 	}
 
-	public List<UUID> getHorseUUIDList(UUID ownerUUID, boolean includeDeadHorses) {
+	public List<UUID> getHorseUUIDList(UUID ownerUUID, boolean includeDeadHorses, boolean sync, CallbackListener<List<UUID>> listener) {
 		String query;
 		if (includeDeadHorses) {
 			query = String.format("SELECT uuid FROM prefix_horse WHERE owner = \"%s\" ORDER BY id ASC", ownerUUID);
@@ -175,25 +179,15 @@ public class DataManager {
 		else {
 			query = String.format("SELECT h.uuid FROM prefix_horse h WHERE h.owner = \"%s\" AND h.uuid NOT IN (SELECT hd.uuid FROM prefix_horse_death hd) ORDER BY h.id ASC", ownerUUID);
 		}
-		List<String> stringUUIDList = db.getStringResultList(query);
-		List<UUID> horseUUIDList = new ArrayList<>();
-		for (String stringUUID : stringUUIDList) {
-			horseUUIDList.add(UUID.fromString(stringUUID));
-		}
-		return horseUUIDList;
+		return db.getUUIDResultList(query, sync, listener);
 	}
 
-	public List<UUID> getHorseUUIDList(Chunk chunk) {
+	public List<UUID> getHorseUUIDList(Chunk chunk, boolean sync, CallbackListener<List<UUID>> listener) {
 		Location NWCorner = chunk.getBlock(0, 0, 0).getLocation();
 		Location SECorner = chunk.getBlock(15, 0, 15).getLocation();
 		String query = String.format("SELECT uuid FROM prefix_horse WHERE locationX >= %d AND locationX <= %d AND locationZ >= %d AND locationZ <= %d",
 				NWCorner.getBlockX(), SECorner.getBlockX(), NWCorner.getBlockZ(), SECorner.getBlockZ());
-		List<String> stringUUIDList = db.getStringResultList(query);
-		List<UUID> horseUUIDList = new ArrayList<>();
-		for (String stringUUID : stringUUIDList) {
-			horseUUIDList.add(UUID.fromString(stringUUID));
-		}
-		return horseUUIDList;
+		return db.getUUIDResultList(query, sync, listener);
 	}
 
 	public Location getHorseStableLocation(UUID horseUUID) {
@@ -435,12 +429,12 @@ public class DataManager {
 		return db.hasResult(query);
 	}
 
-	public boolean registerFriend(FriendRecord friendRecord) {
+	public boolean registerFriend(FriendRecord friendRecord, boolean sync, CallbackListener<Boolean> listener) {
 		String update = String.format("INSERT INTO prefix_friend VALUES (\"%s\", \"%s\")", friendRecord.getRequester(), friendRecord.getRecipient());
-		return db.executeUpdate(update);
+		return db.executeUpdate(update, sync, listener);
 	}
 
-	public boolean registerHorse(HorseRecord horseRecord) {
+	public boolean registerHorse(HorseRecord horseRecord, boolean sync, CallbackListener<Boolean> listener) {
 		String update = String.format("INSERT INTO prefix_horse VALUES (\"%s\", \"%s\", %d, \"%s\", %d, %d, %d, \"%s\", %d, %d, %d)",
 			horseRecord.getUUID(),
 			horseRecord.getOwner(),
@@ -454,42 +448,42 @@ public class DataManager {
 			horseRecord.getLocationY(),
 			horseRecord.getLocationZ()
 		);
-		return db.executeUpdate(update);
+		return db.executeUpdate(update, sync, listener);
 	}
 
-	public boolean registerHorseDeath(HorseDeathRecord horseDeathRecord) {
-		boolean success = true;
+	public boolean registerHorseDeath(HorseDeathRecord horseDeathRecord, boolean sync, CallbackListener<Boolean> listener) {
 		UUID horseUUID = UUID.fromString(horseDeathRecord.getUUID());
 		UUID ownerUUID = getOwnerUUID(horseUUID);
 		int horseID = getHorseID(horseUUID);
 		int maxDeadHorseCount = zh.getCM().getRezStackMaxSize();
+		boolean success = true;
 		if (maxDeadHorseCount > 0) {
 			int deadHorseCount = getDeadHorseCount(ownerUUID);
 			if (deadHorseCount >= maxDeadHorseCount) {
 				UUID oldestHorseDeathUUID = getOldestHorseDeathUUID(ownerUUID);
-				success &= removeHorse(oldestHorseDeathUUID, ownerUUID);
+				success &= removeHorse(oldestHorseDeathUUID, ownerUUID, sync, null);
 			}
 			String horseUpdate = String.format("UPDATE prefix_horse SET id = %s WHERE uuid = \"%s\"", DEFAULT_DEAD_HORSE_ID, horseUUID);
 			String horseDeathUpdate = String.format("INSERT INTO prefix_horse_death VALUES (\"%s\", \"%s\")", horseDeathRecord.getUUID(), DATE_FORMAT.format(horseDeathRecord.getDate()));
-			success &= updateHorseIDMapping(ownerUUID, horseID);
-			success &= db.executeUpdate(horseUpdate);
-			success &= db.executeUpdate(horseDeathUpdate);
+			success &= updateHorseIDMapping(ownerUUID, horseID, sync, null);
+			success &= db.executeUpdate(horseUpdate, sync, null);
+			success &= db.executeUpdate(horseDeathUpdate, sync, listener);
 		}
 		else {
-			success &= removeHorse(horseUUID, ownerUUID, horseID);
+			success &= removeHorse(horseUUID, ownerUUID, horseID, sync, listener);
 		}
 		return success;
 	}
 
-	public boolean registerHorseInventory(HorseInventoryRecord horseInventoryRecord) {
+	public boolean registerHorseInventory(HorseInventoryRecord horseInventoryRecord, boolean sync, CallbackListener<Boolean> listener) {
 		String update = String.format("INSERT INTO prefix_horse_inventory VALUES (\"%s\", \"%s\")",
 			horseInventoryRecord.getUUID(),
 			horseInventoryRecord.getSerial()
 		);
-		return db.executeUpdate(update);
+		return db.executeUpdate(update, sync, listener);
 	}
 
-	public boolean registerHorseStable(HorseStableRecord horseStableRecord) {
+	public boolean registerHorseStable(HorseStableRecord horseStableRecord, boolean sync, CallbackListener<Boolean> listener) {
 		String update = String.format("INSERT INTO prefix_horse_stable VALUES (\"%s\", \"%s\", %d, %d, %d)",
 			horseStableRecord.getUUID(),
 			horseStableRecord.getLocationWorld(),
@@ -497,10 +491,10 @@ public class DataManager {
 			horseStableRecord.getLocationY(),
 			horseStableRecord.getLocationZ()
 		);
-		return db.executeUpdate(update);
+		return db.executeUpdate(update, sync, listener);
 	}
 
-	public boolean registerHorseStats(HorseStatsRecord horseStatsRecord) {
+	public boolean registerHorseStats(HorseStatsRecord horseStatsRecord, boolean sync, CallbackListener<Boolean> listener) {
 		String color = horseStatsRecord.getColor();
 		String style = horseStatsRecord.getStyle();
 		String update = String.format(Locale.US, "INSERT INTO prefix_horse_stats VALUES (\"%s\", %d, %d, %d, %s, \"%s\", %d, %d, %f, %d, %d, %d, %d, %f, %f, %d, %d, %f, %d, %s, %d, \"%s\")",
@@ -527,146 +521,187 @@ public class DataManager {
 			horseStatsRecord.getTicksLived(),
 			horseStatsRecord.getType()
 		);
-		return db.executeUpdate(update);
+		return db.executeUpdate(update, sync, listener);
 	}
 
-	public boolean registerPendingMessage(PendingMessageRecord messageRecord) {
+	public boolean registerPendingMessage(PendingMessageRecord messageRecord, boolean sync, CallbackListener<Boolean> listener) {
 		String update = String.format("INSERT INTO prefix_pending_message VALUES (\"%s\", \"%s\", \"%s\")",
 				messageRecord.getUUID(), DATE_FORMAT.format(messageRecord.getDate()), messageRecord.getMessage());
-		return db.executeUpdate(update);
+		return db.executeUpdate(update, sync, listener);
 	}
 
-	public boolean registerPlayer(PlayerRecord playerRecord) {
+	public boolean registerPlayer(PlayerRecord playerRecord, boolean sync, CallbackListener<Boolean> listener) {
 		String update = String.format("INSERT INTO prefix_player VALUES (\"%s\", \"%s\", \"%s\", %d, %d)",
 			playerRecord.getUUID(), playerRecord.getName(), playerRecord.getLanguage(), playerRecord.getFavorite(), playerRecord.displayExactStats() ? 1 : 0);
-		return db.executeUpdate(update);
+		return db.executeUpdate(update, sync, listener);
 	}
 
-	public boolean registerSale(SaleRecord saleRecord) {
+	public boolean registerSale(SaleRecord saleRecord, boolean sync, CallbackListener<Boolean> listener) {
 		String update = String.format("INSERT INTO prefix_sale VALUES (\"%s\", %d)", saleRecord.getUUID(), saleRecord.getPrice());
-		return db.executeUpdate(update);
+		return db.executeUpdate(update, sync, listener);
 	}
 
-	public boolean removeFriend(UUID requesterUUID, UUID recipientUUID) {
+	public boolean removeFriend(UUID requesterUUID, UUID recipientUUID, boolean sync, CallbackListener<Boolean> listener) {
 		String update = String.format("DELETE FROM prefix_friend WHERE requester = \"%s\" AND recipient = \"%s\"", requesterUUID, recipientUUID);
-		return db.executeUpdate(update);
+		return db.executeUpdate(update, sync, listener);
 	}
 
-	public boolean removeHorse(UUID horseUUID) {
+	public boolean removeHorse(UUID horseUUID, boolean sync, CallbackListener<Boolean> listener) {
 		UUID ownerUUID = getOwnerUUID(horseUUID);
 		int horseID = getHorseID(horseUUID);
-		return removeHorse(horseUUID, ownerUUID, horseID);
+		return removeHorse(horseUUID, ownerUUID, horseID, sync, listener);
 	}
 
-	public boolean removeHorse(UUID horseUUID, UUID ownerUUID) {
+	public boolean removeHorse(UUID horseUUID, UUID ownerUUID, boolean sync, CallbackListener<Boolean> listener) {
 		int horseID = getHorseID(horseUUID);
-		return removeHorse(horseUUID, ownerUUID, horseID);
+		return removeHorse(horseUUID, ownerUUID, horseID, sync, listener);
 	}
 
-	public boolean removeHorse(UUID horseUUID, UUID ownerUUID, Integer horseID) {
-		String update = String.format("DELETE FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
-		boolean success = true;
-		if (horseID != null) success &= updateHorseIDMapping(ownerUUID, horseID);
-		success &= removeHorseDeath(horseUUID);
-		success &= removeHorseInventory(horseUUID);
-		success &= removeHorseStable(horseUUID);
-		success &= removeHorseStats(horseUUID);
-		success &= removeSale(horseUUID);
-		success &= db.executeUpdate(update);
-		return success;
+	public boolean removeHorse(UUID horseUUID, UUID ownerUUID, Integer horseID, boolean sync, CallbackListener<Boolean> listener) {
+		final CallbackListener<Boolean> sourceListener = listener;
+
+		/* Chain callbacks to force sequencial execution of (a)sync updates and prevent foreign key violation */
+		final CallbackListener<Boolean> removeSaleListener = new CallbackListener<Boolean>() {
+			@Override
+			public void callback(CallbackResponse<Boolean> response) {
+				if (response.getResult()) {
+					String update = String.format("DELETE FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
+					db.executeUpdate(update, sync, sourceListener);
+				}
+			}
+		};
+		final CallbackListener<Boolean> removeHorseStatsListener = new CallbackListener<Boolean>() {
+			@Override
+			public void callback(CallbackResponse<Boolean> response) {
+				if (response.getResult()) removeHorseStats(horseUUID, sync, removeSaleListener);
+			}
+		};
+		final CallbackListener<Boolean> removeHorseStableListener = new CallbackListener<Boolean>() {
+			@Override
+			public void callback(CallbackResponse<Boolean> response) {
+				if (response.getResult()) removeHorseStats(horseUUID, sync, removeHorseStatsListener);
+			}
+		};
+		final CallbackListener<Boolean> removeHorseInventoryListener = new CallbackListener<Boolean>() {
+			@Override
+			public void callback(CallbackResponse<Boolean> response) {
+				if (response.getResult()) removeHorseStable(horseUUID, sync, removeHorseStableListener);
+			}
+		};
+		final CallbackListener<Boolean> removeHorseDeathListener = new CallbackListener<Boolean>() {
+			@Override
+			public void callback(CallbackResponse<Boolean> response) {
+				if (response.getResult()) removeHorseInventory(horseUUID, sync, removeHorseInventoryListener);
+			}
+		};
+		final CallbackListener<Boolean> updateHorseIDMappingListener = new CallbackListener<Boolean>() {
+			@Override
+			public void callback(CallbackResponse<Boolean> response) {
+				if (response.getResult()) removeHorseDeath(horseUUID, sync, removeHorseDeathListener);
+			}
+		};
+
+		if (horseID != null) {
+			updateHorseIDMapping(ownerUUID, horseID, sync, updateHorseIDMappingListener);
+		}
+		else {
+			updateHorseIDMappingListener.callback(null);
+		}
+
+		return true;
 	}
 
-	public boolean removeHorseDeath(UUID horseUUID) {
+	public boolean removeHorseDeath(UUID horseUUID, boolean sync, CallbackListener<Boolean> listener) {
 		String update = String.format("DELETE FROM prefix_horse_death WHERE uuid = \"%s\"", horseUUID);
-		return db.executeUpdate(update);
+		return db.executeUpdate(update, sync, listener);
 	}
 
-	public boolean removeHorseInventory(UUID horseUUID) {
+	public boolean removeHorseInventory(UUID horseUUID, boolean sync, CallbackListener<Boolean> listener) {
 		String update = String.format("DELETE FROM prefix_horse_inventory WHERE uuid = \"%s\"", horseUUID);
-		return db.executeUpdate(update);
+		return db.executeUpdate(update, sync, listener);
 	}
 
-	public boolean removeHorseStable(UUID horseUUID) {
+	public boolean removeHorseStable(UUID horseUUID, boolean sync, CallbackListener<Boolean> listener) {
 		String update = String.format("DELETE FROM prefix_horse_stable WHERE uuid = \"%s\"", horseUUID);
-		return db.executeUpdate(update);
+		return db.executeUpdate(update, sync, listener);
 	}
 
-	public boolean removeHorseStats(UUID horseUUID) {
+	public boolean removeHorseStats(UUID horseUUID, boolean sync, CallbackListener<Boolean> listener) {
 		String update = String.format("DELETE FROM prefix_horse_stats WHERE uuid = \"%s\"", horseUUID);
-		return db.executeUpdate(update);
+		return db.executeUpdate(update, sync, listener);
 	}
 
-	public boolean removePendingMessages(UUID playerUUID) {
+	public boolean removePendingMessages(UUID playerUUID, boolean sync, CallbackListener<Boolean> listener) {
 		String update = String.format("DELETE FROM prefix_pending_message WHERE uuid = \"%s\"", playerUUID);
-		return db.executeUpdate(update);
+		return db.executeUpdate(update, sync, listener);
 	}
 
-	public boolean removeSale(UUID horseUUID) {
+	public boolean removeSale(UUID horseUUID, boolean sync, CallbackListener<Boolean> listener) {
 		String update = String.format("DELETE FROM prefix_sale WHERE uuid = \"%s\"", horseUUID);
-		return db.executeUpdate(update);
+		return db.executeUpdate(update, sync, listener);
 	}
 
-	public boolean updateHorseID(UUID horseUUID, int horseID) {
+	public boolean updateHorseID(UUID horseUUID, int horseID, boolean sync, CallbackListener<Boolean> listener) {
 		String update = String.format("UPDATE prefix_horse SET id = %d WHERE uuid = \"%s\"", horseID, horseUUID);
-		return db.executeUpdate(update);
+		return db.executeUpdate(update, sync, listener);
 	}
 
-	public boolean updateHorseIDMapping(UUID ownerUUID, int removedHorseID) {
+	public boolean updateHorseIDMapping(UUID ownerUUID, int removedHorseID, boolean sync, CallbackListener<Boolean> listener) {
 		int favoriteHorseID = getPlayerFavoriteHorseID(ownerUUID);
 		if (removedHorseID == favoriteHorseID) {
-			updatePlayerFavoriteHorseID(ownerUUID, DEFAULT_FAVORITE_HORSE_ID);
+			updatePlayerFavoriteHorseID(ownerUUID, DEFAULT_FAVORITE_HORSE_ID, sync, null);
 		}
 		else if (removedHorseID < favoriteHorseID && removedHorseID != DEFAULT_DEAD_HORSE_ID) {
-			updatePlayerFavoriteHorseID(ownerUUID, favoriteHorseID - 1);
+			updatePlayerFavoriteHorseID(ownerUUID, favoriteHorseID - 1, sync, null);
 		}
 		String update = String.format("UPDATE prefix_horse SET id = id - 1 WHERE owner = \"%s\" AND id > %d AND %d <> %d", ownerUUID, removedHorseID, removedHorseID, DEFAULT_DEAD_HORSE_ID);
-		return db.executeUpdate(update);
+		return db.executeUpdate(update, sync, listener);
 	}
 
-	public boolean updateHorseIsCarryingChest(UUID horseUUID, boolean isCarryingChest) {
+	public boolean updateHorseIsCarryingChest(UUID horseUUID, boolean isCarryingChest, boolean sync, CallbackListener<Boolean> listener) {
 		int isCarryingChestFlag = isCarryingChest ? 1 : 0;
 		String update = String.format("UPDATE prefix_horse_stats SET isCarryingChest = %d WHERE uuid = \"%s\"", isCarryingChestFlag, horseUUID);
-		return db.executeUpdate(update);
+		return db.executeUpdate(update, sync, listener);
 	}
 
-	public boolean updateHorseLocation(UUID horseUUID, Location location, boolean checkForChanges) {
+	public boolean updateHorseLocation(UUID horseUUID, Location location, boolean checkForChanges, boolean sync, CallbackListener<Boolean> listener) {
 		if (checkForChanges && !hasLocationChanged(horseUUID, location)) {
 			return true;
 		}
 		String update = String.format("UPDATE prefix_horse SET locationWorld = \"%s\", locationX = %d, locationY = %d, locationZ = %d WHERE uuid = \"%s\"",
 				location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), horseUUID);
-		return db.executeUpdate(update);
+		return db.executeUpdate(update, sync, listener);
 	}
 
-	public boolean updateHorseLocked(UUID horseUUID, boolean locked) {
+	public boolean updateHorseLocked(UUID horseUUID, boolean locked, boolean sync, CallbackListener<Boolean> listener) {
 		int lockedFlag = locked ? 1 : 0;
 		String update = String.format("UPDATE prefix_horse SET locked = %d WHERE uuid = \"%s\"", lockedFlag, horseUUID);
-		return db.executeUpdate(update);
+		return db.executeUpdate(update, sync, listener);
 	}
 
-	public boolean updateHorseName(UUID horseUUID, String name) {
+	public boolean updateHorseName(UUID horseUUID, String name, boolean sync, CallbackListener<Boolean> listener) {
 		String update = String.format("UPDATE prefix_horse SET name = \"%s\" WHERE uuid = \"%s\"", name, horseUUID);
-		return db.executeUpdate(update);
+		return db.executeUpdate(update, sync, listener);
 	}
 
-	public boolean updateHorseOwner(UUID horseUUID, UUID ownerUUID) {
+	public boolean updateHorseOwner(UUID horseUUID, UUID ownerUUID, boolean sync, CallbackListener<Boolean> listener) {
 		String update = String.format("UPDATE prefix_horse SET owner = \"%s\" WHERE uuid = \"%s\"", ownerUUID, horseUUID);
-		return db.executeUpdate(update);
+		return db.executeUpdate(update, sync, listener);
 	}
 
-	public boolean updateHorseProtected(UUID horseUUID, boolean protected_) {
+	public boolean updateHorseProtected(UUID horseUUID, boolean protected_, boolean sync, CallbackListener<Boolean> listener) {
 		int protectedFlag = protected_ ? 1 : 0;
 		String update = String.format("UPDATE prefix_horse SET protected = %d WHERE uuid = \"%s\"", protectedFlag, horseUUID);
-		return db.executeUpdate(update);
+		return db.executeUpdate(update, sync, listener);
 	}
 
-	public boolean updateHorseShared(UUID horseUUID, boolean shared) {
+	public boolean updateHorseShared(UUID horseUUID, boolean shared, boolean sync, CallbackListener<Boolean> listener) {
 		int sharedFlag = shared ? 1 : 0;
 		String update = String.format("UPDATE prefix_horse SET shared = %d WHERE uuid = \"%s\"", sharedFlag, horseUUID);
-		return db.executeUpdate(update);
+		return db.executeUpdate(update, sync, listener);
 	}
 
-	public boolean updateHorseUUID(UUID oldHorseUUID, UUID newHorseUUID) {
+	public boolean updateHorseUUID(UUID oldHorseUUID, UUID newHorseUUID, boolean sync, CallbackListener<Boolean> listener) {
 		HorseRecord horseRecord = getHorseRecord(oldHorseUUID);
 		UUID ownerUUID = UUID.fromString(horseRecord.getOwner());
 		horseRecord.setUUID(newHorseUUID.toString());
@@ -675,49 +710,83 @@ public class DataManager {
 		String horseStableUpdate = String.format("UPDATE prefix_horse_stable SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
 		String horseStatsUpdate = String.format("UPDATE prefix_horse_stats SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
 		String saleUpdate = String.format("UPDATE prefix_sale SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
-		boolean success = true;
-		success &= registerHorse(horseRecord);
-		success &= db.executeUpdate(horseDeathUpdate);
-		success &= db.executeUpdate(horseInventoryUpdate);
-		success &= db.executeUpdate(horseStableUpdate);
-		success &= db.executeUpdate(horseStatsUpdate);
-		success &= db.executeUpdate(saleUpdate);
-		success &= removeHorse(oldHorseUUID, ownerUUID, null);
+
+		final CallbackListener<Boolean> fListener = listener;
+		boolean success = registerHorse(horseRecord, sync, new CallbackListener<Boolean>() {
+
+			@Override
+			public void callback(CallbackResponse<Boolean> response) {
+				if (response.getResult()) {
+					db.executeUpdate(horseDeathUpdate, sync, null);
+					db.executeUpdate(horseInventoryUpdate, sync, null);
+					db.executeUpdate(horseStableUpdate, sync, null);
+					db.executeUpdate(horseStatsUpdate, sync, null);
+					db.executeUpdate(saleUpdate, sync, null);
+					removeHorse(oldHorseUUID, ownerUUID, null, sync, fListener);
+				}
+			}
+
+		});
+
 		return success;
 	}
 
-	public boolean updateHorseInventory(HorseInventoryRecord horseInventoryRecord) {
+	public boolean updateHorseInventory(HorseInventoryRecord horseInventoryRecord, boolean sync, CallbackListener<Boolean> listener) {
+		final CallbackListener<Boolean> sourceListener = listener;
+		CallbackListener<Boolean> removeHorseInventoryListener = new CallbackListener<Boolean>() {
+
+			@Override
+			public void callback(CallbackResponse<Boolean> response) {
+				if (response.getResult()) registerHorseInventory(horseInventoryRecord, sync, sourceListener);
+			}
+
+		};
 		if (isHorseInventoryRegistered(UUID.fromString(horseInventoryRecord.getUUID()))) {
-			removeHorseInventory(UUID.fromString(horseInventoryRecord.getUUID()));
+			return removeHorseInventory(UUID.fromString(horseInventoryRecord.getUUID()), sync, removeHorseInventoryListener);
 		}
-		return registerHorseInventory(horseInventoryRecord);
+		else {
+			removeHorseInventoryListener.callback(null);
+			return true;
+		}
 	}
 
-	public boolean updateHorseStats(HorseStatsRecord horseStatsRecord) {
+	public boolean updateHorseStats(HorseStatsRecord horseStatsRecord, boolean sync, CallbackListener<Boolean> listener) {
+		final CallbackListener<Boolean> sourceListener = listener;
+		CallbackListener<Boolean> removeHorseStatsListener = new CallbackListener<Boolean>() {
+
+			@Override
+			public void callback(CallbackResponse<Boolean> response) {
+				if (response.getResult()) registerHorseStats(horseStatsRecord, sync, sourceListener);
+			}
+
+		};
 		if (isHorseStatsRegistered(UUID.fromString(horseStatsRecord.getUUID()))) {
-			removeHorseStats(UUID.fromString(horseStatsRecord.getUUID()));
+			return removeHorseStats(UUID.fromString(horseStatsRecord.getUUID()), sync, removeHorseStatsListener);
 		}
-		return registerHorseStats(horseStatsRecord);
+		else {
+			removeHorseStatsListener.callback(null);
+			return true;
+		}
 	}
 
-	public boolean updatePlayerDisplayExactStats(UUID playerUUID, boolean displayExactStats) {
+	public boolean updatePlayerDisplayExactStats(UUID playerUUID, boolean displayExactStats, boolean sync, CallbackListener<Boolean> listener) {
 		String update = String.format("UPDATE prefix_player SET display_exact_stats = %d WHERE uuid = \"%s\"", displayExactStats ? 1 : 0, playerUUID);
-		return db.executeUpdate(update);
+		return db.executeUpdate(update, sync, listener);
 	}
 
-	public boolean updatePlayerFavoriteHorseID(UUID playerUUID, int favorite) {
+	public boolean updatePlayerFavoriteHorseID(UUID playerUUID, int favorite, boolean sync, CallbackListener<Boolean> listener) {
 		String update = String.format("UPDATE prefix_player SET favorite = %d WHERE uuid = \"%s\"", favorite, playerUUID);
-		return db.executeUpdate(update);
+		return db.executeUpdate(update, sync, listener);
 	}
 
-	public boolean updatePlayerLanguage(UUID playerUUID, String language) {
+	public boolean updatePlayerLanguage(UUID playerUUID, String language, boolean sync, CallbackListener<Boolean> listener) {
 		String update = String.format("UPDATE prefix_player SET language = \"%s\" WHERE uuid = \"%s\"", language, playerUUID);
-		return db.executeUpdate(update);
+		return db.executeUpdate(update, sync, listener);
 	}
 
-	public boolean updatePlayerName(UUID playerUUID, String name) {
+	public boolean updatePlayerName(UUID playerUUID, String name, boolean sync, CallbackListener<Boolean> listener) {
 		String update = String.format("UPDATE prefix_player SET name = \"%s\" WHERE uuid = \"%s\"", name, playerUUID);
-		return db.executeUpdate(update);
+		return db.executeUpdate(update, sync, listener);
 	}
 
 }

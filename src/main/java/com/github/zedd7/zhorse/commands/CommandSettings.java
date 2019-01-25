@@ -11,18 +11,20 @@ import com.github.zedd7.zhorse.ZHorse;
 import com.github.zedd7.zhorse.enums.SettingsSubCommandEnum;
 import com.github.zedd7.zhorse.enums.KeyWordEnum;
 import com.github.zedd7.zhorse.enums.LocaleEnum;
+import com.github.zedd7.zhorse.utils.CallbackListener;
+import com.github.zedd7.zhorse.utils.CallbackResponse;
 import com.github.zedd7.zhorse.utils.MessageConfig;
 
 import net.md_5.bungee.api.ChatColor;
 
 public class CommandSettings extends AbstractCommand {
-	
+
 	private String fullCommand;
 	private String subCommand;
 
 	public CommandSettings(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (isPlayer() && zh.getEM().canAffordCommand(p, command) && parseArguments() && hasPermission() && isCooldownElapsed() && isWorldEnabled()) {			
+		if (isPlayer() && zh.getEM().canAffordCommand(p, command) && parseArguments() && hasPermission() && isCooldownElapsed() && isWorldEnabled()) {
 			if (!idMode) {
 				if (isOnHorse(true)) { // select the horse w/ or w/o target
 					horse = (AbstractHorse) p.getVehicle();
@@ -70,7 +72,7 @@ public class CommandSettings extends AbstractCommand {
 			}
 		}
 	}
-	
+
 	private void setFavorite() {
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (args.size() >= 2) {
@@ -80,15 +82,23 @@ public class CommandSettings extends AbstractCommand {
 			if (idMode) {
 				if (isRegistered(targetUUID, horseID)) {
 					if (!zh.getDM().getPlayerFavoriteHorseID(targetUUID).toString().equals(horseID)) {
-						zh.getDM().updatePlayerFavoriteHorseID(targetUUID, Integer.parseInt(horseID));
-						if (samePlayer) {
-							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.FAVORITE_SET) {{ setHorseName(horseName); }});
-						}
-						else {
-							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.FAVORITE_SET_OTHER) {{ setHorseName(horseName); setPlayerName(targetName); }});
-						}
-						zh.getCmdM().updateCommandHistory(s, command);
-						zh.getEM().payCommand(p, command);
+						zh.getDM().updatePlayerFavoriteHorseID(targetUUID, Integer.parseInt(horseID), false, new CallbackListener<Boolean>() {
+
+							@Override
+							public void callback(CallbackResponse<Boolean> response) {
+								if (response.getResult()) {
+									if (samePlayer) {
+										zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.FAVORITE_SET) {{ setHorseName(horseName); }});
+									}
+									else {
+										zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.FAVORITE_SET_OTHER) {{ setHorseName(horseName); setPlayerName(targetName); }});
+									}
+									zh.getCmdM().updateCommandHistory(s, command);
+									zh.getEM().payCommand(p, command);
+								}
+							}
+
+						});
 					}
 					else {
 						if (samePlayer) {
@@ -113,15 +123,23 @@ public class CommandSettings extends AbstractCommand {
 				String language = args.get(1).toUpperCase();
 				if (zh.getCM().isLanguageAvailable(language)) {
 					if (!zh.getDM().getPlayerLanguage(targetUUID).equals(language)) {
-						zh.getDM().updatePlayerLanguage(targetUUID, language);
-						if (samePlayer) {
-							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.LANGUAGE_SET) {{ setLanguage(language); }});
-						}
-						else {
-							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.LANGUAGE_SET_OTHER) {{ setLanguage(language); setPlayerName(targetName); }});
-						}
-						zh.getCmdM().updateCommandHistory(s, command);
-						zh.getEM().payCommand(p, command);
+						zh.getDM().updatePlayerLanguage(targetUUID, language, false, new CallbackListener<Boolean>() {
+
+							@Override
+							public void callback(CallbackResponse<Boolean> response) {
+								if (response.getResult()) {
+									if (samePlayer) {
+										zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.LANGUAGE_SET) {{ setLanguage(language); }});
+									}
+									else {
+										zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.LANGUAGE_SET_OTHER) {{ setLanguage(language); setPlayerName(targetName); }});
+									}
+									zh.getCmdM().updateCommandHistory(s, command);
+									zh.getEM().payCommand(p, command);
+								}
+							}
+
+						});
 					}
 					else {
 						if (samePlayer) {
@@ -142,7 +160,7 @@ public class CommandSettings extends AbstractCommand {
 			}
 		}
 	}
-	
+
 	private void setStatsDisplay() {
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (args.size() >= 2) {
@@ -159,15 +177,23 @@ public class CommandSettings extends AbstractCommand {
 				}
 				if (validDisplayMode) {
 					if (shouldDisplayExactStats ^ zh.getDM().isPlayerDisplayingExactStats(targetUUID)) { // XOR
-						zh.getDM().updatePlayerDisplayExactStats(targetUUID, shouldDisplayExactStats);
-						if (samePlayer) {
-							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STATS_DISPLAY_MODE_SET) {{ setValue(displayMode); }});
-						}
-						else {
-							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STATS_DISPLAY_MODE_SET_OTHER) {{ setValue(displayMode); setPlayerName(targetName); }});
-						}
-						zh.getCmdM().updateCommandHistory(s, command);
-						zh.getEM().payCommand(p, command);
+						zh.getDM().updatePlayerDisplayExactStats(targetUUID, shouldDisplayExactStats, false, new CallbackListener<Boolean>() {
+
+							@Override
+							public void callback(CallbackResponse<Boolean> response) {
+								if (response.getResult()) {
+									if (samePlayer) {
+										zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STATS_DISPLAY_MODE_SET) {{ setValue(displayMode); }});
+									}
+									else {
+										zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STATS_DISPLAY_MODE_SET_OTHER) {{ setValue(displayMode); setPlayerName(targetName); }});
+									}
+									zh.getCmdM().updateCommandHistory(s, command);
+									zh.getEM().payCommand(p, command);
+								}
+							}
+
+						});
 					}
 					else {
 						if (samePlayer) {
@@ -181,7 +207,7 @@ public class CommandSettings extends AbstractCommand {
 				else {
 					displayAvailableStatsDisplayMode(LocaleEnum.UNKNOWN_STATS_DISPLAY_MODE);
 				}
-				
+
 			}
 			else {
 				displayAvailableStatsDisplayMode(LocaleEnum.MISSING_STATS_DISPLAY_MODE);
@@ -189,7 +215,7 @@ public class CommandSettings extends AbstractCommand {
 			}
 		}
 	}
-	
+
 	private void swapIDs() {
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (args.size() >= 3) {
@@ -198,15 +224,15 @@ public class CommandSettings extends AbstractCommand {
 				if (isRegistered(targetUUID, horseID1) && isRegistered(targetUUID, horseID2)) {
 					int favoriteHorseID = zh.getDM().getPlayerFavoriteHorseID(targetUUID);
 					if (favoriteHorseID == Integer.parseInt(horseID1)) {
-						zh.getDM().updatePlayerFavoriteHorseID(targetUUID, Integer.parseInt(horseID2));
+						zh.getDM().updatePlayerFavoriteHorseID(targetUUID, Integer.parseInt(horseID2), false, null);
 					}
 					else if (favoriteHorseID == Integer.parseInt(horseID2)) {
-						zh.getDM().updatePlayerFavoriteHorseID(targetUUID, Integer.parseInt(horseID1));
+						zh.getDM().updatePlayerFavoriteHorseID(targetUUID, Integer.parseInt(horseID1), false, null);
 					}
 					UUID horseUUID1 = zh.getDM().getHorseUUID(targetUUID, Integer.parseInt(horseID1));
 					UUID horseUUID2 = zh.getDM().getHorseUUID(targetUUID, Integer.parseInt(horseID2));
-					zh.getDM().updateHorseID(horseUUID1, Integer.parseInt(horseID2));
-					zh.getDM().updateHorseID(horseUUID2, Integer.parseInt(horseID1));
+					zh.getDM().updateHorseID(horseUUID1, Integer.parseInt(horseID2), false, null);
+					zh.getDM().updateHorseID(horseUUID2, Integer.parseInt(horseID1), false, null);
 					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.IDS_SWAPPED));
 					zh.getCmdM().updateCommandHistory(s, command);
 					zh.getEM().payCommand(p, command);
@@ -218,11 +244,11 @@ public class CommandSettings extends AbstractCommand {
 			}
 		}
 	}
-	
+
 	private void displayAvailableLanguages(LocaleEnum index) {
 		displayAvailableLanguages(index, null);
 	}
-	
+
 	private void displayAvailableLanguages(LocaleEnum index, String language) {
 		List<String> availableLanguageList = zh.getCM().getAvailableLanguages();
 		List<String> availableLanguageMessageList = new ArrayList<>();
@@ -238,7 +264,7 @@ public class CommandSettings extends AbstractCommand {
 			zh.getMM().sendMessage(s, new MessageConfig(index) {{ setValue(availableLanguagesMessage); }});
 		}
 	}
-	
+
 	private void displayAvailableStatsDisplayMode(LocaleEnum index) {
 		List<String> availableStatsDisplayModeMessageList = new ArrayList<>();
 		for (StatsDisplayModeEnum statsDisplayMode : StatsDisplayModeEnum.values()) {
@@ -248,22 +274,22 @@ public class CommandSettings extends AbstractCommand {
 		String availableStatsDisplayModesMessage = String.join(", ", availableStatsDisplayModeMessageList) + ChatColor.RESET;
 		zh.getMM().sendMessage(s, new MessageConfig(index) {{ setValue(availableStatsDisplayModesMessage); }});
 	}
-	
+
 	private enum StatsDisplayModeEnum {
-		
+
 		EXACT("exact"),
 		ROUNDED("rounded");
-		
+
 		private String name;
-		
+
 		private StatsDisplayModeEnum(String name) {
 			this.name = name;
 		}
-		
+
 		private String getName() {
 			return name;
 		}
-		
+
 	}
 
 }

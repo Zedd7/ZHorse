@@ -98,7 +98,7 @@ public class EventManager implements Listener {
 					}
 				}
 				if (!e.isCancelled() && horse.getHealth() - e.getDamage() <= 0) {
-					zh.getDM().updateHorseIsCarryingChest(horse.getUniqueId(), horse instanceof ChestedHorse ? ((ChestedHorse) horse).isCarryingChest() : false);
+					zh.getDM().updateHorseIsCarryingChest(horse.getUniqueId(), horse instanceof ChestedHorse ? ((ChestedHorse) horse).isCarryingChest() : false, false, null);
 				}
 			}
 		}
@@ -123,7 +123,7 @@ public class EventManager implements Listener {
 					}
 				}
 				if (!e.isCancelled() && horse.getHealth() - e.getDamage() <= 0) {
-					zh.getDM().updateHorseIsCarryingChest(horse.getUniqueId(), horse instanceof ChestedHorse ? ((ChestedHorse) horse).isCarryingChest() : false);
+					zh.getDM().updateHorseIsCarryingChest(horse.getUniqueId(), horse instanceof ChestedHorse ? ((ChestedHorse) horse).isCarryingChest() : false, false, null);
 				}
 			}
 		}
@@ -155,8 +155,8 @@ public class EventManager implements Listener {
 				zh.getHM().untrackHorse(horse.getUniqueId());
 				/* isCarryingChest carried on before horse death as the chest is forcibly removed at the start of the event since Spigot 1.12 */
 				/* Do not update stats to keep health and ticksLived above 0 */
-				zh.getDM().updateHorseInventory(inventoryRecord);
-				zh.getDM().registerHorseDeath(new HorseDeathRecord(horse.getUniqueId().toString()));
+				zh.getDM().updateHorseInventory(inventoryRecord, false, null);
+				zh.getDM().registerHorseDeath(new HorseDeathRecord(horse.getUniqueId().toString()), false, null);
 			}
 		}
 	}

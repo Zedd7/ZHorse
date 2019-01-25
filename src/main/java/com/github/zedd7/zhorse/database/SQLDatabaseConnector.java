@@ -7,10 +7,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Location;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.github.zedd7.zhorse.ZHorse;
+import com.github.zedd7.zhorse.utils.CallbackListener;
+import com.github.zedd7.zhorse.utils.CallbackResponse;
 
 public abstract class SQLDatabaseConnector {
 
@@ -42,7 +46,7 @@ public abstract class SQLDatabaseConnector {
 		return connected;
 	}
 
-	protected void reconnect() throws SQLException {
+	protected void checkConnection() throws SQLException {
 		if (connection.isClosed()) {
 			openConnection();
 		}
@@ -58,26 +62,52 @@ public abstract class SQLDatabaseConnector {
 	}
 
 	public PreparedStatement getPreparedStatement(String formatableQuery) throws SQLException {
-		reconnect();
+		checkConnection();
 		String query = applyTablePrefix(formatableQuery);
 		return connection.prepareStatement(query);
 	}
 
-	public boolean executeUpdate(String update) {
-		return executeUpdate(update, false);
+	public boolean executeUpdate(String update, boolean sync, CallbackListener<Boolean> listener) {
+		return executeUpdate(update, false, sync, listener);
 	}
 
-	public boolean executeUpdate(String update, boolean hideExceptions) {
-		boolean success = false;
-		try (PreparedStatement statement = getPreparedStatement(update)) {
-			statement.executeUpdate();
-			success = true;
-		} catch (SQLException e) {
-			if (!hideExceptions) {
-				e.printStackTrace();
+	public boolean executeUpdate(final String update, final boolean hideExceptions, boolean sync, final CallbackListener<Boolean> listener) {
+		CallbackResponse<Boolean> response = new CallbackResponse<>();
+		BukkitRunnable task = new BukkitRunnable() {
+
+			@Override
+			public void run() {
+				boolean success = false;
+				try (PreparedStatement statement = getPreparedStatement(update)) {
+					statement.executeUpdate();
+					success = true;
+				} catch (SQLException e) {
+					if (!hideExceptions) {
+						e.printStackTrace();
+					}
+				}
+				response.setResult(success);
+				if (listener != null) {
+					new BukkitRunnable() { // Go back to main (sync) loop
+
+						@Override
+						public void run() {
+							listener.callback(response);
+						}
+
+					}.runTask(zh);
+				}
 			}
+
+		};
+		if (sync) {
+			task.run(); // Use run() instead of runTask() tu run on the same tick
+			return response.getResult();
 		}
-		return success;
+		else {
+			task.runTaskAsynchronously(zh);
+			return true;
+		}
 	}
 
 	public boolean hasResult(String query) {
@@ -103,6 +133,14 @@ public abstract class SQLDatabaseConnector {
 
 	public List<String> getStringResultList(String query) {
 		return getResultList(query, resultSet -> getStringResult(resultSet));
+	}
+
+	public UUID getUUIDResult(String query) {
+		return getResult(query, resultSet -> getUUIDResult(resultSet));
+	}
+
+	public List<UUID> getUUIDResultList(String query, boolean sync, CallbackListener<List<UUID>> listener) {
+		return getResultList(query, resultSet -> getUUIDResult(resultSet), sync, listener);
 	}
 
 	public FriendRecord getFriendRecord(String query) {
@@ -177,38 +215,6 @@ public abstract class SQLDatabaseConnector {
 		return getResultList(query, resultSet -> getSaleRecord(resultSet));
 	}
 
-	private <T> T getResult(String query, CheckedFunction<ResultSet, T> mapper) {
-		T result = null;
-		try (PreparedStatement statement = getPreparedStatement(query)) {
-			ResultSet resultSet = statement.executeQuery();
-			if (resultSet.next()) {
-				result = mapper.apply(resultSet);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
-
-	private <T> List<T> getResultList(String query, CheckedFunction<ResultSet, T> mapper) {
-		List<T> resultList = new ArrayList<>();
-		try (PreparedStatement statement = getPreparedStatement(query)) {
-			ResultSet resultSet = statement.executeQuery();
-			while (resultSet.next()) {
-				T result = mapper.apply(resultSet);
-				resultList.add(result);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return resultList;
-	}
-
-	@FunctionalInterface
-	private interface CheckedFunction<T, R> {
-	   R apply(T t) throws SQLException;
-	}
-
 	private Boolean getBooleanResult(ResultSet resultSet) throws SQLException {
 		return resultSet.getInt(1) == 1;
 	}
@@ -219,6 +225,10 @@ public abstract class SQLDatabaseConnector {
 
 	private String getStringResult(ResultSet resultSet) throws SQLException {
 		return resultSet.getString(1);
+	}
+
+	private UUID getUUIDResult(ResultSet resultSet) throws SQLException {
+		return UUID.fromString(resultSet.getString(1));
 	}
 
 	private Location getLocationResult(ResultSet resultSet) throws SQLException {
@@ -327,6 +337,79 @@ public abstract class SQLDatabaseConnector {
 			resultSet.getString("uuid"),
 			resultSet.getInt("price")
 		);
+	}
+
+	private <T> T getResult(String query, CheckedFunction<ResultSet, T> mapper) {
+		T result = null;
+		try (PreparedStatement statement = getPreparedStatement(query)) {
+			ResultSet resultSet = statement.executeQuery();
+			if (resultSet.next()) {
+				result = mapper.apply(resultSet);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	private <T> List<T> getResultList(String query, CheckedFunction<ResultSet, T> mapper) {
+		List<T> resultList = new ArrayList<>();
+		try (PreparedStatement statement = getPreparedStatement(query)) {
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next()) {
+				T result = mapper.apply(resultSet);
+				resultList.add(result);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultList;
+	}
+
+	private <T> List<T> getResultList(String query, CheckedFunction<ResultSet, T> mapper, boolean sync, CallbackListener<List<T>> listener) {
+		CallbackResponse<List<T>> response = new CallbackResponse<>();
+		BukkitRunnable task = new BukkitRunnable() {
+
+			@Override
+			public void run() {
+				List<T> resultList = new ArrayList<>();
+				try (PreparedStatement statement = getPreparedStatement(query)) {
+					ResultSet resultSet = statement.executeQuery();
+					while (resultSet.next()) {
+						T result = mapper.apply(resultSet);
+						resultList.add(result);
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				response.setResult(resultList);
+				if (listener != null) {
+					new BukkitRunnable() {
+
+						@Override
+						public void run() {
+							listener.callback(response);
+						}
+
+					}.runTask(zh);
+				}
+			}
+
+		};
+		if (sync) {
+			task.run(); // Use run() instead of runTask() tu run on the same tick
+			return response.getResult();
+		}
+		else {
+			task.runTaskAsynchronously(zh);
+			return null;
+		}
+
+	}
+
+	@FunctionalInterface
+	private interface CheckedFunction<T, R> {
+	   R apply(T t) throws SQLException;
 	}
 
 }

@@ -28,16 +28,16 @@ public class CommandRez extends AbstractCommand {
 			}
 		}
 	}
-	
+
 	private void execute() {
 		if (ownsDeadHorse(targetUUID) && !hasReachedClaimsLimit(true)) {
 			UUID horseUUID = zh.getDM().getLatestHorseDeathUUID(targetUUID);
 			int horseID = zh.getDM().getNextHorseID(targetUUID);
-			boolean success = true;
+			boolean success = true; // Only affected by craftHorseName() because of async updates
 			HorseInventoryRecord inventoryRecord = zh.getDM().getHorseInventoryRecord(horseUUID);
 			HorseStatsRecord statsRecord = zh.getDM().getHorseStatsRecord(horseUUID);
-			success &= zh.getDM().removeHorseDeath(horseUUID);
-			success &= zh.getDM().updateHorseID(horseUUID, horseID);
+			success &= zh.getDM().removeHorseDeath(horseUUID, false, null);
+			success &= zh.getDM().updateHorseID(horseUUID, horseID, false, null);
 			success &= craftHorseName(true, horseUUID);
 			if (success) {
 				Location destination = p.getLocation();
@@ -48,7 +48,7 @@ public class CommandRez extends AbstractCommand {
 				horse = zh.getHM().spawnHorse(destination, inventoryRecord, statsRecord, horseUUID, true);
 				if (horse != null) {
 					applyHorseName(targetUUID);
-					zh.getDM().updateHorseName(horse.getUniqueId(), horseName);
+					zh.getDM().updateHorseName(horse.getUniqueId(), horseName, false, null);
 					horse.setHealth(horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
 					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_RESURRECTED) {{ setHorseName(horseName); }});
 					zh.getCmdM().updateCommandHistory(s, command);

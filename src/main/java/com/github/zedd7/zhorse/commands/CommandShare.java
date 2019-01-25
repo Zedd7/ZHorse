@@ -7,6 +7,8 @@ import org.bukkit.entity.AbstractHorse;
 
 import com.github.zedd7.zhorse.ZHorse;
 import com.github.zedd7.zhorse.enums.LocaleEnum;
+import com.github.zedd7.zhorse.utils.CallbackListener;
+import com.github.zedd7.zhorse.utils.CallbackResponse;
 import com.github.zedd7.zhorse.utils.MessageConfig;
 
 public class CommandShare extends AbstractCommand {
@@ -52,18 +54,36 @@ public class CommandShare extends AbstractCommand {
 		if (isOwner(false)) {
 			if (!zh.getDM().isHorseShared(horse.getUniqueId())) {
 				if (zh.getDM().isHorseLocked(horse.getUniqueId())) {
-					zh.getDM().updateHorseLocked(horse.getUniqueId(), false);
+					zh.getDM().updateHorseLocked(horse.getUniqueId(), false, false, null);
 					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_UNLOCKED) {{ setHorseName(horseName); }});
 				}
-				zh.getDM().updateHorseShared(horse.getUniqueId(), true);
-				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_SHARED) {{ setHorseName(horseName); }});
+				zh.getDM().updateHorseShared(horse.getUniqueId(), true, false, new CallbackListener<Boolean>() {
+
+					@Override
+					public void callback(CallbackResponse<Boolean> response) {
+						if (response.getResult() ) {
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_SHARED) {{ setHorseName(horseName); }});
+							zh.getCmdM().updateCommandHistory(s, command);
+							zh.getEM().payCommand(p, command);
+						}
+					}
+
+				});
 			}
 			else {
-				zh.getDM().updateHorseShared(horse.getUniqueId(), false);
-				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_UNSHARED) {{ setHorseName(horseName); }});
+				zh.getDM().updateHorseShared(horse.getUniqueId(), false, false, new CallbackListener<Boolean>() {
+
+					@Override
+					public void callback(CallbackResponse<Boolean> response) {
+						if (response.getResult() ) {
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_UNSHARED) {{ setHorseName(horseName); }});
+							zh.getCmdM().updateCommandHistory(s, command);
+							zh.getEM().payCommand(p, command);
+						}
+					}
+
+				});
 			}
-			zh.getCmdM().updateCommandHistory(s, command);
-			zh.getEM().payCommand(p, command);
 		}
 	}
 
