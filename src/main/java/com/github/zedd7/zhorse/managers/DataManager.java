@@ -32,8 +32,9 @@ public class DataManager {
 	public static final String[] PATCH_ARRAY = {"1.6.6", "1.6.10"};
 
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+	private static final int DEFAULT_HORSE_ID = 1;
 	private static final int DEFAULT_DEAD_HORSE_ID = -1;
-	private static final int DEFAULT_FAVORITE_HORSE_ID = 1;
+	private static final int DEFAULT_FAVORITE_HORSE_ID = DEFAULT_HORSE_ID;
 
 	private ZHorse zh;
 	private SQLDatabaseConnector db;
@@ -90,6 +91,10 @@ public class DataManager {
 
 	private boolean executeSQLScript(String update, boolean hideExceptions, boolean sync, CallbackListener<Boolean> listener) {
 		return db.executeUpdate(update, hideExceptions, sync, listener);
+	}
+
+	public Integer getDefaultHorseID() {
+		return DEFAULT_HORSE_ID;
 	}
 
 	public Integer getDefaultDeadHorseID() {
@@ -193,10 +198,12 @@ public class DataManager {
 	public Integer getNextHorseID(UUID ownerUUID) {
 		String query = String.format("SELECT MAX(h.id) FROM prefix_horse h WHERE h.owner = \"%s\" AND h.uuid NOT IN (SELECT hd.uuid FROM prefix_horse_death hd)", ownerUUID);
 		Integer horseID = db.getIntegerResult(query);
-		if (horseID == null) {
-			horseID = 0;
+		if (horseID == null || horseID < DEFAULT_HORSE_ID) {
+			return DEFAULT_HORSE_ID;
 		}
-		return horseID + 1;
+		else {
+			return horseID + 1;
+		}
 	}
 
 	public UUID getLatestHorseDeathUUID(UUID ownerUUID) {

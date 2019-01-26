@@ -63,7 +63,7 @@ public class CommandList extends AbstractCommand {
 
 	private void buildAliveHorseList(CompoundMessage compoundMessage, List<HorseRecord> aliveHorseList, String remainingClaimsMessage) {
 		if (!aliveHorseList.isEmpty()) {
-			int expectedHorseID = zh.getDM().getDefaultFavoriteHorseID();
+			int expectedHorseID = zh.getDM().getDefaultHorseID();
 			int favoriteHorseID = zh.getDM().getPlayerFavoriteHorseID(targetUUID);
 			for (HorseRecord horseRecord : aliveHorseList) {
 				UUID horseUUID = UUID.fromString(horseRecord.getUUID());
