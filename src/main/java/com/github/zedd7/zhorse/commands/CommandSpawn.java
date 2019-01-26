@@ -72,7 +72,7 @@ public class CommandSpawn extends AttributeParsingCommand {
 				null, null, null, null, color, null, null, null, health, null, null, null, tamed, jumpStrength, health, null, null, speed, strength, style, null, variant
 		) {{ setAdult(adult); setBaby(baby); }} ;
 
-		return zh.getHM().spawnHorse(location, inventoryRecord, statsRecord, null, false);
+		return zh.getHM().spawnHorse(location, inventoryRecord, statsRecord, false, null, null, null);
 	}
 
 }

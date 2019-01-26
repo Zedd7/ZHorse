@@ -697,7 +697,7 @@ public class DataManager {
 	}
 
 	public boolean updateHorseUUID(UUID oldHorseUUID, UUID newHorseUUID, boolean sync, CallbackListener<Boolean> listener) {
-		HorseRecord horseRecord = getHorseRecord(oldHorseUUID); // TODO
+		HorseRecord horseRecord = getHorseRecord(oldHorseUUID); // TODO use sync
 		UUID ownerUUID = UUID.fromString(horseRecord.getOwner());
 		horseRecord.setUUID(newHorseUUID.toString());
 		String horseDeathUpdate = String.format("UPDATE prefix_horse_death SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);

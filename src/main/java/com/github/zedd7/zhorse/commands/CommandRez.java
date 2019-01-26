@@ -11,6 +11,8 @@ import com.github.zedd7.zhorse.ZHorse;
 import com.github.zedd7.zhorse.database.HorseInventoryRecord;
 import com.github.zedd7.zhorse.database.HorseStatsRecord;
 import com.github.zedd7.zhorse.enums.LocaleEnum;
+import com.github.zedd7.zhorse.utils.CallbackListener;
+import com.github.zedd7.zhorse.utils.CallbackResponse;
 import com.github.zedd7.zhorse.utils.MessageConfig;
 
 public class CommandRez extends AbstractCommand {
@@ -31,29 +33,33 @@ public class CommandRez extends AbstractCommand {
 
 	private void execute() {
 		if (ownsDeadHorse(targetUUID) && !hasReachedClaimsLimit(true)) {
-			UUID horseUUID = zh.getDM().getLatestHorseDeathUUID(targetUUID);
-			int horseID = zh.getDM().getNextHorseID(targetUUID);
-			boolean success = true; // Only affected by craftHorseName() because of async updates
-			HorseInventoryRecord inventoryRecord = zh.getDM().getHorseInventoryRecord(horseUUID);
-			HorseStatsRecord statsRecord = zh.getDM().getHorseStatsRecord(horseUUID);
-			success &= zh.getDM().removeHorseDeath(horseUUID, false, null);
-			success &= zh.getDM().updateHorseID(horseUUID, horseID, false, null);
-			success &= craftHorseName(true, horseUUID);
-			if (success) {
-				Location destination = p.getLocation();
-				if (p.isFlying()) {
-					Block block = destination.getWorld().getHighestBlockAt(destination);
-					destination = new Location(destination.getWorld(), block.getX(), block.getY(), block.getZ());
-				}
-				horse = zh.getHM().spawnHorse(destination, inventoryRecord, statsRecord, horseUUID, true);
-				if (horse != null) {
-					applyHorseName(targetUUID);
-					zh.getDM().updateHorseName(horse.getUniqueId(), horseName, false, null);
-					horse.setHealth(horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
-					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_RESURRECTED) {{ setHorseName(horseName); }});
-					zh.getCmdM().updateCommandHistory(s, command);
-					zh.getEM().payCommand(p, command);
-				}
+			UUID deadHorseUUID = zh.getDM().getLatestHorseDeathUUID(targetUUID);
+			HorseInventoryRecord inventoryRecord = zh.getDM().getHorseInventoryRecord(deadHorseUUID);
+			HorseStatsRecord statsRecord = zh.getDM().getHorseStatsRecord(deadHorseUUID);
+			if (craftHorseName(true, deadHorseUUID)) {
+				zh.getDM().removeHorseDeath(deadHorseUUID, false, new CallbackListener<Boolean>() {
+
+					@Override
+					public void callback(CallbackResponse<Boolean> response) {
+						if (response.getResult()) {
+							Location destination = p.getLocation();
+							if (p.isFlying()) {
+								Block block = destination.getWorld().getHighestBlockAt(destination);
+								destination = new Location(destination.getWorld(), block.getX(), block.getY(), block.getZ());
+							}
+							int horseID = zh.getDM().getNextHorseID(targetUUID);
+							horse = zh.getHM().spawnHorse(destination, inventoryRecord, statsRecord, true, deadHorseUUID, horseID, horseName);
+							if (horse != null) {
+								applyHorseName(targetUUID);
+								horse.setHealth(horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
+								zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_RESURRECTED) {{ setHorseName(horseName); }});
+								zh.getCmdM().updateCommandHistory(s, command);
+								zh.getEM().payCommand(p, command);
+							}
+						}
+					}
+
+				});
 			}
 		}
 	}

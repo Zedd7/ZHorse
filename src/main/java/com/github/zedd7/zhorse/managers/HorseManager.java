@@ -87,7 +87,7 @@ public class HorseManager {
 					HorseInventoryRecord inventoryRecord = zh.getDM().getHorseInventoryRecord(horseUUID); // TODO sync
 					HorseStatsRecord statsRecord = zh.getDM().getHorseStatsRecord(horseUUID);  // TODO sync
 					if (inventoryRecord != null && statsRecord != null) { // Do not spawn if exact copy is impossible
-						horse = spawnHorse(location, inventoryRecord, statsRecord, horseUUID, true);
+						horse = spawnHorse(location, inventoryRecord, statsRecord, true, horseUUID, horseRecord.getId(), horseRecord.getName());
 					}
 				}
 			}
@@ -291,14 +291,15 @@ public class HorseManager {
 
 	public void removeHorse(AbstractHorse horse) {
 		boolean chunkWasLoaded = loadChunk(horse.getLocation());
+		Location horseLocation = horse.getLocation();
 		horse.setMetadata(DUPLICATE_METADATA, new FixedMetadataValue(zh, horse.getUniqueId()));
 		horse.remove(); // Entity::remove would fail if the chunk was not loaded
 		if (!chunkWasLoaded) {
-			unloadChunk(horse.getLocation());
+			unloadChunk(horseLocation);
 		}
 	}
 
-	public AbstractHorse spawnHorse(Location location, HorseInventoryRecord inventoryRecord, HorseStatsRecord statsRecord, UUID oldHorseUUID, boolean claimedHorse) {
+	public AbstractHorse spawnHorse(Location location, HorseInventoryRecord inventoryRecord, HorseStatsRecord statsRecord, boolean claimedHorse, UUID oldHorseUUID, Integer horseID, String horseName) {
 		EntityType type;
 		if (statsRecord.getType() != null) {
 			type = EntityType.valueOf(statsRecord.getType());
@@ -320,6 +321,8 @@ public class HorseManager {
 					@Override
 					public void callback(CallbackResponse<Boolean> response) {
 						if (response.getResult()) {
+							zh.getDM().updateHorseID(horse.getUniqueId(), horseID, false, null);
+							zh.getDM().updateHorseName(horse.getUniqueId(), horseName, false, null);
 							zh.getDM().updateHorseLocation(horse.getUniqueId(), location, true, false, null);
 						}
 					}
