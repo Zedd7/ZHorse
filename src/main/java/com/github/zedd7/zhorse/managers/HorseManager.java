@@ -179,19 +179,19 @@ public class HorseManager {
 		Iterator<Entry<UUID, AbstractHorse>> itr = trackedHorses.entrySet().iterator();
 		while (itr.hasNext()) {
 			AbstractHorse horse = itr.next().getValue();
-			updateHorse(horse);
+			updateHorse(horse, true);
 			itr.remove();
 		}
 	}
 
-	public void updateHorse(AbstractHorse horse) {
+	public void updateHorse(AbstractHorse horse, boolean sync) {
 		UUID horseUUID = horse.getUniqueId();
 		Location horseLocation = horse.getLocation();
 		HorseInventoryRecord inventoryRecord = new HorseInventoryRecord(horse);
 		HorseStatsRecord statsRecord = new HorseStatsRecord(horse);
-		zh.getDM().updateHorseLocation(horseUUID, horseLocation, true, false, null);
-		zh.getDM().updateHorseInventory(inventoryRecord, false, null);
-		zh.getDM().updateHorseStats(statsRecord, false, null);
+		zh.getDM().updateHorseLocation(horseUUID, horseLocation, true, sync, null);
+		zh.getDM().updateHorseInventory(inventoryRecord, sync, null);
+		zh.getDM().updateHorseStats(statsRecord, sync, null);
 	}
 
 	public AbstractHorse teleportHorse(AbstractHorse sourceHorse, Location destination) {

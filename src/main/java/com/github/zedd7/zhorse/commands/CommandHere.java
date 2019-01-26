@@ -30,7 +30,7 @@ public class CommandHere extends AbstractCommand {
 			}
 		}
 	}
-	
+
 	private void execute(UUID ownerUUID, String horseID) {
 		if (isRegistered(ownerUUID, horseID)) {
 			horse = zh.getHM().getHorse(ownerUUID, Integer.parseInt(horseID));
@@ -39,7 +39,7 @@ public class CommandHere extends AbstractCommand {
 			}
 		}
 	}
-	
+
 	private void execute() {
 		if (isOwner(true) && isWorldCrossable(p.getWorld()) && isNotOnHorse() && !isHorseMounted() && !isHorseLeashed() && isHorseInRangeHere()) {
 			Location playerLocation = getGroundedLocation(p.getLocation());
@@ -50,7 +50,7 @@ public class CommandHere extends AbstractCommand {
 				zh.getEM().payCommand(p, command);
 			}
 			else {
-				zh.getMM().sendMessage(s, ChatColor.RED + "It seems that horses cannot spawn here, please report this to the developer. (https://github.com/Zedd7/ZHorse/issues/new)");
+				zh.getMM().sendMessage(s, ChatColor.RED + "It seems that horses cannot spawn here, please report this to your server's staff.");
 			}
 		}
 	}

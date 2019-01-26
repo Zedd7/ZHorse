@@ -88,20 +88,13 @@ public abstract class SQLDatabaseConnector {
 				}
 				response.setResult(success);
 				if (listener != null) {
-					new BukkitRunnable() { // Go back to main (sync) loop
-
-						@Override
-						public void run() {
-							listener.callback(response);
-						}
-
-					}.runTask(zh);
+					performCallback(response, sync, listener);
 				}
 			}
 
 		};
 		if (sync) {
-			task.run(); // Use run() instead of runTask() tu run on the same tick
+			task.run(); // Use run() instead of runTask() to run on the same tick
 			return response.getResult();
 		}
 		else {
@@ -385,20 +378,13 @@ public abstract class SQLDatabaseConnector {
 				}
 				response.setResult(result);
 				if (listener != null) {
-					new BukkitRunnable() {
-
-						@Override
-						public void run() {
-							listener.callback(response);
-						}
-
-					}.runTask(zh);
+					performCallback(response, sync, listener);
 				}
 			}
 
 		};
 		if (sync) {
-			task.run(); // Use run() instead of runTask() tu run on the same tick
+			task.run(); // Use run() instead of runTask() to run on the same tick
 			return response.getResult();
 		}
 		else {
@@ -440,20 +426,13 @@ public abstract class SQLDatabaseConnector {
 				}
 				response.setResult(resultList);
 				if (listener != null) {
-					new BukkitRunnable() {
-
-						@Override
-						public void run() {
-							listener.callback(response);
-						}
-
-					}.runTask(zh);
+					performCallback(response, sync, listener);
 				}
 			}
 
 		};
 		if (sync) {
-			task.run(); // Use run() instead of runTask() tu run on the same tick
+			task.run(); // Use run() instead of runTask() to run on the same tick
 			return response.getResult();
 		}
 		else {
@@ -461,6 +440,23 @@ public abstract class SQLDatabaseConnector {
 			return null;
 		}
 
+	}
+
+	private <T> void performCallback(CallbackResponse<T> response, boolean sync, CallbackListener<T> listener) {
+		BukkitRunnable task = new BukkitRunnable() { // Go back to main (sync) loop
+
+			@Override
+			public void run() {
+				listener.callback(response);
+			}
+
+		};
+		if (sync) {
+			task.run(); // Use run() to stay on the same tick
+		}
+		else {
+			task.runTask(zh); // Use runTask() to sync with the next tick
+		}
 	}
 
 	@FunctionalInterface

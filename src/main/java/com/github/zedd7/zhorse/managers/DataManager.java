@@ -697,7 +697,7 @@ public class DataManager {
 	}
 
 	public boolean updateHorseUUID(UUID oldHorseUUID, UUID newHorseUUID, boolean sync, CallbackListener<Boolean> listener) {
-		HorseRecord horseRecord = getHorseRecord(oldHorseUUID);
+		HorseRecord horseRecord = getHorseRecord(oldHorseUUID); // TODO
 		UUID ownerUUID = UUID.fromString(horseRecord.getOwner());
 		horseRecord.setUUID(newHorseUUID.toString());
 		String horseDeathUpdate = String.format("UPDATE prefix_horse_death SET uuid = \"%s\" WHERE uuid = \"%s\"", newHorseUUID, oldHorseUUID);
@@ -736,8 +736,9 @@ public class DataManager {
 			}
 
 		};
-		if (isHorseInventoryRegistered(UUID.fromString(horseInventoryRecord.getUUID()))) {
-			return removeHorseInventory(UUID.fromString(horseInventoryRecord.getUUID()), sync, removeHorseInventoryListener);
+		UUID horseUUID = UUID.fromString(horseInventoryRecord.getUUID());
+		if (isHorseInventoryRegistered(horseUUID)) {
+			return removeHorseInventory(horseUUID, sync, removeHorseInventoryListener);
 		}
 		else {
 			removeHorseInventoryListener.callback(new CallbackResponse<>(true));
