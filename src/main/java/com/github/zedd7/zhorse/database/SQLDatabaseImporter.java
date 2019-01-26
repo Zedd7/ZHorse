@@ -66,7 +66,7 @@ public abstract class SQLDatabaseImporter {
 	private static boolean importHorses(ZHorse zh, SQLDatabaseConnector db) {
 		boolean success = true;
 		String query = "SELECT * FROM prefix_horse";
-		List<HorseRecord> horseRecordList = db.getHorseRecordList(query);
+		List<HorseRecord> horseRecordList = db.getHorseRecordList(query, true, null);
 		for (HorseRecord horseRecord : horseRecordList) {
 			UUID horseUUID = UUID.fromString(horseRecord.getUUID());
 			if (!zh.getDM().isHorseRegistered(horseUUID)) {
@@ -95,7 +95,7 @@ public abstract class SQLDatabaseImporter {
 		List<HorseStableRecord> horseStableRecordList = db.getHorseStableRecordList(query);
 		for (HorseStableRecord horseStableRecord : horseStableRecordList) {
 			UUID horseUUID = UUID.fromString(horseStableRecord.getUUID());
-			if (zh.getDM().isHorseRegistered(horseUUID) && !zh.getDM().isHorseStableRegistered(horseUUID)) {
+			if (zh.getDM().isHorseRegistered(horseUUID) && !zh.getDM().isHorseStableRegistered(horseUUID, true, null)) {
 				success = zh.getDM().registerHorseStable(horseStableRecord, true, null) && success;
 			}
 		}

@@ -40,7 +40,7 @@ public class CommandList extends AbstractCommand {
 	private void execute() {
 		CompoundMessage compoundMessage = new CompoundMessage(true);
 
-		List<HorseRecord> aliveHorseList = zh.getDM().getHorseRecordList(targetUUID, false);
+		List<HorseRecord> aliveHorseList = zh.getDM().getHorseRecordList(targetUUID, false, true, null);
 		String remainingClaimsMessage = getRemainingClaimsMessage(targetUUID);
 		buildAliveHorseList(compoundMessage, aliveHorseList, remainingClaimsMessage);
 

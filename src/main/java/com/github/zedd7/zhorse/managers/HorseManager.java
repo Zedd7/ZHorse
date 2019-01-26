@@ -26,6 +26,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 import com.github.zedd7.zhorse.ZHorse;
 import com.github.zedd7.zhorse.database.HorseInventoryRecord;
+import com.github.zedd7.zhorse.database.HorseRecord;
 import com.github.zedd7.zhorse.database.HorseStatsRecord;
 import com.github.zedd7.zhorse.enums.HorseVariantEnum;
 import com.github.zedd7.zhorse.utils.CallbackListener;
@@ -51,23 +52,40 @@ public class HorseManager {
 		AbstractHorse horse = null;
 		if (playerUUID != null && horseID != null) {
 			UUID horseUUID = zh.getDM().getHorseUUID(playerUUID, horseID);
+			HorseRecord horseRecord = zh.getDM().getHorseRecord(horseUUID);
+			horse = getHorse(horseRecord);
+		}
+		return horse;
+	}
+
+	public AbstractHorse getHorse(HorseRecord horseRecord) {
+		AbstractHorse horse = null;
+		if (horseRecord != null) {
+			UUID horseUUID = UUID.fromString(horseRecord.getUUID());
 			if (isHorseTracked(horseUUID)) {
 				horse = getTrackedHorse(horseUUID);
 			}
 			else {
-				Location location = zh.getDM().getHorseLocation(playerUUID, horseID);
+				Location location = new Location(
+						zh.getServer().getWorld(horseRecord.getLocationWorld()),
+						horseRecord.getLocationX(),
+						horseRecord.getLocationY(),
+						horseRecord.getLocationY()
+				);
 				horse = getHorseFromLocation(horseUUID, location);
 				if (horse != null) {
-					boolean hasMoved = horse.getLocation().getBlockX() != location.getBlockX()
-							|| horse.getLocation().getBlockY() != location.getBlockY()
-							|| horse.getLocation().getBlockZ() != location.getBlockZ();
+					boolean hasMoved = (
+						horse.getLocation().getBlockX() != location.getBlockX() ||
+						horse.getLocation().getBlockY() != location.getBlockY() ||
+						horse.getLocation().getBlockZ() != location.getBlockZ()
+					);
 					if (hasMoved) {
 						zh.getDM().updateHorseLocation(horseUUID, horse.getLocation(), false, false, null);
 					}
 				}
 				else if (zh.getCM().shouldRespawnMissingHorse()) {
-					HorseInventoryRecord inventoryRecord = zh.getDM().getHorseInventoryRecord(horseUUID);
-					HorseStatsRecord statsRecord = zh.getDM().getHorseStatsRecord(horseUUID);
+					HorseInventoryRecord inventoryRecord = zh.getDM().getHorseInventoryRecord(horseUUID); // TODO sync
+					HorseStatsRecord statsRecord = zh.getDM().getHorseStatsRecord(horseUUID);  // TODO sync
 					if (inventoryRecord != null && statsRecord != null) { // Do not spawn if exact copy is impossible
 						horse = spawnHorse(location, inventoryRecord, statsRecord, horseUUID, true);
 					}

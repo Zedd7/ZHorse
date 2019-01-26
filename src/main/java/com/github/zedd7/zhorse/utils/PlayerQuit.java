@@ -8,6 +8,7 @@ import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Player;
 
 import com.github.zedd7.zhorse.ZHorse;
+import com.github.zedd7.zhorse.database.HorseRecord;
 
 public class PlayerQuit {
 
@@ -18,25 +19,42 @@ public class PlayerQuit {
 
 		if (zh.getCM().shouldSendToStableOnOwnerLogout()) {
 			UUID playerUUID = player.getUniqueId();
-			boolean blockLeashedTeleport = zh.getCM().shouldBlockLeashedTeleport();
-			zh.getDM().getHorseUUIDList(playerUUID, false, true, new CallbackListener<List<UUID>>() {
+			zh.getDM().getHorseRecordList(playerUUID, false, false, new CallbackListener<List<HorseRecord>>() {
 
 				@Override
-				public void callback(CallbackResponse<List<UUID>> response) {
-					for (UUID horseUUID : response.getResult()) {
-						int horseID = zh.getDM().getHorseID(horseUUID);
-						AbstractHorse horse = zh.getHM().getHorse(playerUUID, horseID);
+				public void callback(CallbackResponse<List<HorseRecord>> response) {
+					boolean blockLeashedTeleport = zh.getCM().shouldBlockLeashedTeleport();
+					for (HorseRecord horseRecord : response.getResult()) {
+						UUID horseUUID = UUID.fromString(horseRecord.getUUID());
+						AbstractHorse horse = zh.getHM().getHorse(horseRecord);
 						if (!horse.isLeashed() || !blockLeashedTeleport) {
-							Location stableLocation = null;
-							if (zh.getDM().isHorseStableRegistered(horseUUID)) {
-								stableLocation = zh.getDM().getHorseStableLocation(horseUUID);
-							}
-							else if (zh.getCM().shouldUseDefaultStable()) {
-								stableLocation = zh.getCM().getDefaultStableLocation();
-							}
-							if (stableLocation != null && zh.getCM().isWorldCrossable(stableLocation.getWorld())) {
-								zh.getHM().teleportHorse(horse, stableLocation);
-							}
+							zh.getDM().isHorseStableRegistered(horseUUID, false, new CallbackListener<Boolean>() {
+
+								@Override
+								public void callback(CallbackResponse<Boolean> response) {
+									CallbackListener<Location> getHorseStableLocationListener = new CallbackListener<Location>() {
+
+										@Override
+										public void callback(CallbackResponse<Location> response) {
+											Location stableLocation = response.getResult();
+											if (stableLocation != null && zh.getCM().isWorldCrossable(stableLocation.getWorld())) {
+												zh.getHM().teleportHorse(horse, stableLocation);
+											}
+										}
+
+									};
+									if (response.getResult() != null && response.getResult()) { // Check if response null because of async call
+										zh.getDM().getHorseStableLocation(horseUUID, false, getHorseStableLocationListener);
+									}
+									else if (zh.getCM().shouldUseDefaultStable()) {
+										getHorseStableLocationListener.callback(new CallbackResponse<>(zh.getCM().getDefaultStableLocation()));
+									}
+									else {
+										/* Keep horse where it is */
+									}
+								}
+
+							});
 						}
 					}
 				}

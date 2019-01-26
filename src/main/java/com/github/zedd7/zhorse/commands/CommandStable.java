@@ -86,8 +86,8 @@ public class CommandStable extends AbstractCommand {
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (isOwner(true) && !isHorseMounted() && !isHorseLeashed()) {
 				Location stableLocation = null;
-				if (zh.getDM().isHorseStableRegistered(horse.getUniqueId())) {
-					stableLocation = zh.getDM().getHorseStableLocation(horse.getUniqueId());
+				if (zh.getDM().isHorseStableRegistered(horse.getUniqueId(), true, null)) {
+					stableLocation = zh.getDM().getHorseStableLocation(horse.getUniqueId(), true, null);
 				}
 				else if (zh.getCM().shouldUseDefaultStable()) {
 					stableLocation = zh.getCM().getDefaultStableLocation();
@@ -136,11 +136,11 @@ public class CommandStable extends AbstractCommand {
 					}
 
 				};
-				if (zh.getDM().isHorseStableRegistered(horse.getUniqueId())) {
+				if (zh.getDM().isHorseStableRegistered(horse.getUniqueId(), true, null)) {
 					zh.getDM().removeHorseStable(horse.getUniqueId(), false, removeHorseStableListener);
 				}
 				else {
-					removeHorseStableListener.callback(null);
+					removeHorseStableListener.callback(new CallbackResponse<>(true));
 				}
 			}
 		}
@@ -149,7 +149,7 @@ public class CommandStable extends AbstractCommand {
 	private void unsetStableLocation() {
 		if (hasPermission(s, fullCommand , true, false)) {
 			if (isOwner(true)) {
-				if (zh.getDM().isHorseStableRegistered(horse.getUniqueId())) {
+				if (zh.getDM().isHorseStableRegistered(horse.getUniqueId(), true, null)) {
 					zh.getDM().removeHorseStable(horse.getUniqueId(), false, new CallbackListener<Boolean>() {
 
 						@Override

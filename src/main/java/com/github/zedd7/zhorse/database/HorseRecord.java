@@ -3,7 +3,7 @@ package com.github.zedd7.zhorse.database;
 import org.bukkit.Location;
 
 public class HorseRecord {
-	
+
 	private String uuid;
 	private String owner;
 	private Integer id;
@@ -15,7 +15,7 @@ public class HorseRecord {
 	private Integer locationX;
 	private Integer locationY;
 	private Integer locationZ;
-	
+
 	public HorseRecord(
 		String uuid,
 		String owner,
@@ -41,7 +41,7 @@ public class HorseRecord {
 		this.locationY = locationY;
 		this.locationZ = locationZ;
 	}
-	
+
 	public HorseRecord(
 		String uuid,
 		String owner,
@@ -58,7 +58,7 @@ public class HorseRecord {
 	public String getUUID() {
 		return uuid;
 	}
-	
+
 	public void setUUID(String uuid) {
 		this.uuid = uuid;
 	}

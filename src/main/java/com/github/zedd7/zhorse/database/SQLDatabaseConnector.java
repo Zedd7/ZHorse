@@ -110,9 +110,15 @@ public abstract class SQLDatabaseConnector {
 		}
 	}
 
+	@Deprecated
 	public boolean hasResult(String query) {
 		Boolean result = getResult(query, resultSet -> true);
 		return result != null && result;
+	}
+
+	public boolean hasResult(String query, boolean sync, CallbackListener<Boolean> listener) {
+		Boolean result = getResult(query, resultSet -> hasResult(resultSet), sync, listener);
+		return result != null && result; // Must be checked by caller if async
 	}
 
 	public Boolean getBooleanResult(String query) {
@@ -123,8 +129,13 @@ public abstract class SQLDatabaseConnector {
 		return getResult(query, resultSet -> getIntegerResult(resultSet));
 	}
 
+	@Deprecated
 	public Location getLocationResult(String query) {
 		return getResult(query, resultSet -> getLocationResult(resultSet));
+	}
+
+	public Location getLocationResult(String query, boolean sync, CallbackListener<Location> listener) {
+		return getResult(query, resultSet -> getLocationResult(resultSet), sync, listener);
 	}
 
 	public String getStringResult(String query) {
@@ -155,8 +166,8 @@ public abstract class SQLDatabaseConnector {
 		return getResult(query, resultSet -> getHorseRecord(resultSet));
 	}
 
-	public List<HorseRecord> getHorseRecordList(String query) {
-		return getResultList(query, resultSet -> getHorseRecord(resultSet));
+	public List<HorseRecord> getHorseRecordList(String query, boolean sync, CallbackListener<List<HorseRecord>> listener) {
+		return getResultList(query, resultSet -> getHorseRecord(resultSet), sync, listener);
 	}
 
 	public HorseDeathRecord getHorseDeathRecord(String query) {
@@ -213,6 +224,10 @@ public abstract class SQLDatabaseConnector {
 
 	public List<SaleRecord> getSaleRecordList(String query) {
 		return getResultList(query, resultSet -> getSaleRecord(resultSet));
+	}
+
+	private Boolean hasResult(ResultSet resultSet) throws SQLException {
+		return true;
 	}
 
 	private Boolean getBooleanResult(ResultSet resultSet) throws SQLException {
@@ -339,6 +354,7 @@ public abstract class SQLDatabaseConnector {
 		);
 	}
 
+	@Deprecated
 	private <T> T getResult(String query, CheckedFunction<ResultSet, T> mapper) {
 		T result = null;
 		try (PreparedStatement statement = getPreparedStatement(query)) {
@@ -352,6 +368,46 @@ public abstract class SQLDatabaseConnector {
 		return result;
 	}
 
+	private <T> T getResult(String query, CheckedFunction<ResultSet, T> mapper, boolean sync, CallbackListener<T> listener) { // TODO merge with getResultList()
+		CallbackResponse<T> response = new CallbackResponse<>();
+		BukkitRunnable task = new BukkitRunnable() {
+
+			@Override
+			public void run() {
+				T result = null;
+				try (PreparedStatement statement = getPreparedStatement(query)) {
+					ResultSet resultSet = statement.executeQuery();
+					if (resultSet.next()) {
+						result = mapper.apply(resultSet);
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				response.setResult(result);
+				if (listener != null) {
+					new BukkitRunnable() {
+
+						@Override
+						public void run() {
+							listener.callback(response);
+						}
+
+					}.runTask(zh);
+				}
+			}
+
+		};
+		if (sync) {
+			task.run(); // Use run() instead of runTask() tu run on the same tick
+			return response.getResult();
+		}
+		else {
+			task.runTaskAsynchronously(zh);
+			return null;
+		}
+	}
+
+	@Deprecated
 	private <T> List<T> getResultList(String query, CheckedFunction<ResultSet, T> mapper) {
 		List<T> resultList = new ArrayList<>();
 		try (PreparedStatement statement = getPreparedStatement(query)) {
@@ -366,7 +422,7 @@ public abstract class SQLDatabaseConnector {
 		return resultList;
 	}
 
-	private <T> List<T> getResultList(String query, CheckedFunction<ResultSet, T> mapper, boolean sync, CallbackListener<List<T>> listener) {
+	private <T> List<T> getResultList(String query, CheckedFunction<ResultSet, T> mapper, boolean sync, CallbackListener<List<T>> listener) { // TODO merge with getResult()
 		CallbackResponse<List<T>> response = new CallbackResponse<>();
 		BukkitRunnable task = new BukkitRunnable() {
 

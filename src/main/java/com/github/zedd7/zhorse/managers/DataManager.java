@@ -83,7 +83,7 @@ public class DataManager {
 			success &= executeSQLScript(tableScript, false, true, null);
 		}
 		for (String patchScript : patchScriptList) {
-			success &= executeSQLScript(patchScript, true, true, null);
+			executeSQLScript(patchScript, true, true, null); // Always return false if patch already applied
 		}
 		return success;
 	}
@@ -133,11 +133,6 @@ public class DataManager {
 	public Location getHorseLocation(UUID horseUUID) {
 		String query = String.format("SELECT locationWorld, locationX, locationY, locationZ FROM prefix_horse WHERE uuid = \"%s\"", horseUUID);
 		return db.getLocationResult(query);
-	}
-
-	public Location getHorseLocation(UUID ownerUUID, Integer horseID) {
-		UUID horseUUID = getHorseUUID(ownerUUID, horseID);
-		return getHorseLocation(horseUUID);
 	}
 
 	public String getHorseName(UUID horseUUID) {
@@ -190,9 +185,9 @@ public class DataManager {
 		return db.getUUIDResultList(query, sync, listener);
 	}
 
-	public Location getHorseStableLocation(UUID horseUUID) {
+	public Location getHorseStableLocation(UUID horseUUID, boolean sync, CallbackListener<Location> listener) {
 		String query = String.format("SELECT locationWorld, locationX, locationY, locationZ FROM prefix_horse_stable WHERE uuid = \"%s\"", horseUUID);
-		return db.getLocationResult(query);
+		return db.getLocationResult(query, sync, listener);
 	}
 
 	public Integer getNextHorseID(UUID ownerUUID) {
@@ -287,7 +282,7 @@ public class DataManager {
 		return db.getHorseRecord(query);
 	}
 
-	public List<HorseRecord> getHorseRecordList(UUID ownerUUID, boolean includeDeadHorses) {
+	public List<HorseRecord> getHorseRecordList(UUID ownerUUID, boolean includeDeadHorses, boolean sync, CallbackListener<List<HorseRecord>> listener) {
 		String query;
 		if (includeDeadHorses) {
 			query = String.format("SELECT * FROM prefix_horse WHERE owner = \"%s\" ORDER BY id ASC", ownerUUID);
@@ -295,7 +290,7 @@ public class DataManager {
 		else {
 			query = String.format("SELECT * FROM prefix_horse h WHERE h.owner = \"%s\" AND h.uuid NOT IN (SELECT hd.uuid FROM prefix_horse_death hd) ORDER BY h.id ASC", ownerUUID);
 		}
-		return db.getHorseRecordList(query);
+		return db.getHorseRecordList(query, sync, listener);
 	}
 
 	public List<HorseDeathRecord> getHorseDeathRecordList(UUID ownerUUID) {
@@ -399,9 +394,9 @@ public class DataManager {
 		return db.hasResult(query);
 	}
 
-	public boolean isHorseStableRegistered(UUID horseUUID) {
+	public boolean isHorseStableRegistered(UUID horseUUID, boolean sync, CallbackListener<Boolean> listener) {
 		String query = String.format("SELECT 1 FROM prefix_horse_stable WHERE uuid = \"%s\"", horseUUID);
-		return db.hasResult(query);
+		return db.hasResult(query, sync, listener);
 	}
 
 	public boolean isHorseStatsRegistered(UUID horseUUID) {
@@ -605,7 +600,7 @@ public class DataManager {
 			updateHorseIDMapping(ownerUUID, horseID, sync, updateHorseIDMappingListener);
 		}
 		else {
-			updateHorseIDMappingListener.callback(null);
+			updateHorseIDMappingListener.callback(new CallbackResponse<>(true));
 		}
 
 		return true;
@@ -745,7 +740,7 @@ public class DataManager {
 			return removeHorseInventory(UUID.fromString(horseInventoryRecord.getUUID()), sync, removeHorseInventoryListener);
 		}
 		else {
-			removeHorseInventoryListener.callback(null);
+			removeHorseInventoryListener.callback(new CallbackResponse<>(true));
 			return true;
 		}
 	}
@@ -764,7 +759,7 @@ public class DataManager {
 			return removeHorseStats(UUID.fromString(horseStatsRecord.getUUID()), sync, removeHorseStatsListener);
 		}
 		else {
-			removeHorseStatsListener.callback(null);
+			removeHorseStatsListener.callback(new CallbackResponse<>(true));
 			return true;
 		}
 	}
