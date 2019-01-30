@@ -12,9 +12,11 @@ public class ChunkUnload {
 		for (Entity entity : chunk.getEntities()) {
 			if (entity instanceof AbstractHorse) {
 				AbstractHorse horse = (AbstractHorse) entity;
-				if (zh.getHM().isHorseTracked(horse.getUniqueId())) {
-					zh.getHM().untrackHorse(horse.getUniqueId());
-					zh.getHM().updateHorse(horse, false);
+				synchronized(ChunkUnload.class) { // Synchronize with HorseManager::teleport to avoid updating outdated horse
+					if (zh.getHM().isHorseTracked(horse.getUniqueId())) {
+						zh.getHM().untrackHorse(horse.getUniqueId());
+						zh.getHM().updateHorse(horse, false);
+					}
 				}
 			}
 		}

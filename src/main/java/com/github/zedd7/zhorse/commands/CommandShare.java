@@ -27,7 +27,7 @@ public class CommandShare extends AbstractCommand {
 						}
 					}
 					else if (ownsHorse) {
-						horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId()).toString();
+						horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId(), true, null).toString();
 						execute(p.getUniqueId(), horseID);
 					}
 				}
@@ -52,8 +52,8 @@ public class CommandShare extends AbstractCommand {
 
 	private void execute() {
 		if (isOwner(false)) {
-			if (!zh.getDM().isHorseShared(horse.getUniqueId())) {
-				if (zh.getDM().isHorseLocked(horse.getUniqueId())) {
+			if (!zh.getDM().isHorseShared(horse.getUniqueId(), true, null)) {
+				if (zh.getDM().isHorseLocked(horse.getUniqueId(), true, null)) {
 					zh.getDM().updateHorseLocked(horse.getUniqueId(), false, false, null);
 					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_UNLOCKED) {{ setHorseName(horseName); }});
 				}

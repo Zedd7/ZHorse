@@ -33,9 +33,9 @@ public class CommandRez extends AbstractCommand {
 
 	private void execute() {
 		if (ownsDeadHorse(targetUUID) && !hasReachedClaimsLimit(true)) {
-			UUID deadHorseUUID = zh.getDM().getLatestHorseDeathUUID(targetUUID);
-			HorseInventoryRecord inventoryRecord = zh.getDM().getHorseInventoryRecord(deadHorseUUID);
-			HorseStatsRecord statsRecord = zh.getDM().getHorseStatsRecord(deadHorseUUID);
+			UUID deadHorseUUID = zh.getDM().getLatestHorseDeathUUID(targetUUID, true, null);
+			HorseInventoryRecord inventoryRecord = zh.getDM().getHorseInventoryRecord(deadHorseUUID, true, null);
+			HorseStatsRecord statsRecord = zh.getDM().getHorseStatsRecord(deadHorseUUID, true, null);
 			if (craftHorseName(true, deadHorseUUID)) {
 				zh.getDM().removeHorseDeath(deadHorseUUID, false, new CallbackListener<Boolean>() {
 

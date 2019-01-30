@@ -30,7 +30,7 @@ public class CommandGive extends AbstractCommand {
 							}
 						}
 						else if (ownsHorse) {
-							horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId()).toString();
+							horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId(), true, null).toString();
 							execute(p.getUniqueId(), horseID);
 						}
 					}
@@ -53,9 +53,9 @@ public class CommandGive extends AbstractCommand {
 
 	private void execute() {
 		if (!hasReachedClaimsLimit(true) && isOwner(false) && isPlayerDifferent()) {
-			int previousHorseID = zh.getDM().getHorseID(horse.getUniqueId());
+			int previousHorseID = zh.getDM().getHorseID(horse.getUniqueId(), true, null);
 			int horseID = zh.getDM().getNextHorseID(targetUUID);
-			horseName = zh.getDM().getHorseName(horse.getUniqueId());
+			horseName = zh.getDM().getHorseName(horse.getUniqueId(), true, null);
 			boolean lock = zh.getCM().shouldLockOnClaim();
 			boolean protect = zh.getCM().shouldProtectOnClaim();
 			boolean share = zh.getCM().shouldShareOnClaim();

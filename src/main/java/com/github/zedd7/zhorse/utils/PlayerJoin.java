@@ -18,7 +18,7 @@ public class PlayerJoin {
 	public PlayerJoin(ZHorse zh, Player player) {
 		UUID playerUUID = player.getUniqueId();
 		String playerName = player.getName();
-		if (!zh.getDM().isPlayerRegistered(player.getUniqueId())) {
+		if (!zh.getDM().isPlayerRegistered(player.getUniqueId(), true, null)) {
 			String language = zh.getCM().getDefaultLanguage();
 			int favorite = zh.getDM().getDefaultFavoriteHorseID();
 			boolean displayExactStats = zh.getCM().shouldUseExactStats();
@@ -26,26 +26,35 @@ public class PlayerJoin {
 			zh.getDM().registerPlayer(playerRecord, false, null);
 		}
 		else {
-			if (!playerName.equalsIgnoreCase(zh.getDM().getPlayerName(playerUUID))) {
+			if (!playerName.equalsIgnoreCase(zh.getDM().getPlayerName(playerUUID, true, null))) {
 				zh.getDM().updatePlayerName(playerUUID, playerName, false, null);
 			}
 
-			List<PendingMessageRecord> messageRecordList = zh.getDM().getPendingMessageRecordList(player.getUniqueId());
-			if (!messageRecordList.isEmpty()) {
-				new BukkitRunnable() {
+			zh.getDM().getPendingMessageRecordList(player.getUniqueId(), false, new CallbackListener<List<PendingMessageRecord>>() {
 
-					@Override
-					public void run() {
-						for (PendingMessageRecord messageRecord : messageRecordList) {
-							String message = messageRecord.getMessage();
-							Date date = messageRecord.getDate();
-							zh.getMM().sendMessage(player, message + " " + ChatColor.RESET + MessageManager.DATE_FORMAT_TIMESTAMP.format(date));
+				@Override
+				public void callback(CallbackResponse<List<PendingMessageRecord>> response) {
+					if (response.getResult() != null) {
+						List<PendingMessageRecord> messageRecordList = response.getResult();
+						if (!messageRecordList.isEmpty()) {
+							new BukkitRunnable() {
+
+								@Override
+								public void run() {
+									for (PendingMessageRecord messageRecord : messageRecordList) {
+										String message = messageRecord.getMessage();
+										Date date = messageRecord.getDate();
+										zh.getMM().sendMessage(player, message + " " + ChatColor.RESET + MessageManager.DATE_FORMAT_TIMESTAMP.format(date));
+									}
+								}
+
+							}.runTaskLater(zh, 5 * 20L);
+							zh.getDM().removePendingMessages(player.getUniqueId(), false, null);
 						}
 					}
+				}
 
-				}.runTaskLater(zh, 5 * 20L);
-				zh.getDM().removePendingMessages(player.getUniqueId(), false, null);
-			}
+			});
 		}
 	}
 }

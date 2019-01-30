@@ -34,7 +34,7 @@ public class CommandStable extends AbstractCommand {
 						}
 					}
 					else if (ownsHorse) {
-						horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId()).toString();
+						horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId(), true, null).toString();
 						execute(p.getUniqueId(), horseID);
 					}
 				}
@@ -96,7 +96,7 @@ public class CommandStable extends AbstractCommand {
 					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STABLE_NOT_SET) {{ setHorseName(horseName); }});
 				}
 				if (stableLocation != null && isWorldCrossable(stableLocation.getWorld()) && isHorseInRangeStable(stableLocation)) {
-					horse = zh.getHM().teleportHorse(horse, stableLocation);
+					horse = zh.getHM().teleportHorse(horse, stableLocation, true);
 					if (horse != null) {
 						zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_TELEPORTED_TO_STABLE) {{ setHorseName(horseName); }});
 						zh.getCmdM().updateCommandHistory(s, command);

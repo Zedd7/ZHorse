@@ -112,7 +112,7 @@ public class MessageManager {
 	}
 
 	private String getLanguage(UUID recipientUUID) {
-		return zh.getDM().getPlayerLanguage(recipientUUID);
+		return zh.getDM().getPlayerLanguage(recipientUUID, true, null);
 	}
 
 	private String getRawMessage(MessageConfig messageConfig, String language, boolean hidePrefix) {

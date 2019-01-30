@@ -30,7 +30,7 @@ public class CommandSettings extends AbstractCommand {
 					horse = (AbstractHorse) p.getVehicle();
 					if (isOwner(targetUUID, false, true, true)) {
 						idMode = true;
-						Integer horseIDInt = zh.getDM().getHorseID(horse.getUniqueId());
+						Integer horseIDInt = zh.getDM().getHorseID(horse.getUniqueId(), true, null);
 						horseID = horseIDInt != null ? horseIDInt.toString() : null;
 					}
 				}
@@ -81,7 +81,7 @@ public class CommandSettings extends AbstractCommand {
 			}
 			if (idMode) {
 				if (isRegistered(targetUUID, horseID)) {
-					if (!zh.getDM().getPlayerFavoriteHorseID(targetUUID).toString().equals(horseID)) {
+					if (!zh.getDM().getPlayerFavoriteHorseID(targetUUID, true, null).toString().equals(horseID)) {
 						zh.getDM().updatePlayerFavoriteHorseID(targetUUID, Integer.parseInt(horseID), false, new CallbackListener<Boolean>() {
 
 							@Override
@@ -122,7 +122,7 @@ public class CommandSettings extends AbstractCommand {
 			if (args.size() >= 2) {
 				String language = args.get(1).toUpperCase();
 				if (zh.getCM().isLanguageAvailable(language)) {
-					if (!zh.getDM().getPlayerLanguage(targetUUID).equals(language)) {
+					if (!zh.getDM().getPlayerLanguage(targetUUID, true, null).equals(language)) {
 						zh.getDM().updatePlayerLanguage(targetUUID, language, false, new CallbackListener<Boolean>() {
 
 							@Override
@@ -176,7 +176,7 @@ public class CommandSettings extends AbstractCommand {
 					shouldDisplayExactStats = false;
 				}
 				if (validDisplayMode) {
-					if (shouldDisplayExactStats ^ zh.getDM().isPlayerDisplayingExactStats(targetUUID)) { // XOR
+					if (shouldDisplayExactStats ^ zh.getDM().isPlayerDisplayingExactStats(targetUUID, true, null)) { // XOR
 						zh.getDM().updatePlayerDisplayExactStats(targetUUID, shouldDisplayExactStats, false, new CallbackListener<Boolean>() {
 
 							@Override
@@ -222,15 +222,15 @@ public class CommandSettings extends AbstractCommand {
 				String horseID1 = args.get(1);
 				String horseID2 = args.get(2);
 				if (isRegistered(targetUUID, horseID1) && isRegistered(targetUUID, horseID2)) {
-					int favoriteHorseID = zh.getDM().getPlayerFavoriteHorseID(targetUUID);
+					int favoriteHorseID = zh.getDM().getPlayerFavoriteHorseID(targetUUID, true, null);
 					if (favoriteHorseID == Integer.parseInt(horseID1)) {
 						zh.getDM().updatePlayerFavoriteHorseID(targetUUID, Integer.parseInt(horseID2), false, null);
 					}
 					else if (favoriteHorseID == Integer.parseInt(horseID2)) {
 						zh.getDM().updatePlayerFavoriteHorseID(targetUUID, Integer.parseInt(horseID1), false, null);
 					}
-					UUID horseUUID1 = zh.getDM().getHorseUUID(targetUUID, Integer.parseInt(horseID1));
-					UUID horseUUID2 = zh.getDM().getHorseUUID(targetUUID, Integer.parseInt(horseID2));
+					UUID horseUUID1 = zh.getDM().getHorseUUID(targetUUID, Integer.parseInt(horseID1), true, null);
+					UUID horseUUID2 = zh.getDM().getHorseUUID(targetUUID, Integer.parseInt(horseID2), true, null);
 					zh.getDM().updateHorseID(horseUUID1, Integer.parseInt(horseID2), false, null);
 					zh.getDM().updateHorseID(horseUUID2, Integer.parseInt(horseID1), false, null);
 					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.IDS_SWAPPED));

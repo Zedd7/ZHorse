@@ -25,7 +25,7 @@ public class CommandTame extends AbstractCommand {
 						}
 					}
 					else if (ownsHorse) {
-						horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId()).toString();
+						horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId(), true, null).toString();
 						execute(p.getUniqueId(), horseID);
 					}
 				}

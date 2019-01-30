@@ -27,7 +27,7 @@ public class CommandProtect extends AbstractCommand {
 						}
 					}
 					else if (ownsHorse) {
-						horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId()).toString();
+						horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId(), true, null).toString();
 						execute(p.getUniqueId(), horseID);
 					}
 				}
@@ -52,7 +52,7 @@ public class CommandProtect extends AbstractCommand {
 
 	private void execute() {
 		if (isOwner(false)) {
-			if (!zh.getDM().isHorseProtected(horse.getUniqueId())) {
+			if (!zh.getDM().isHorseProtected(horse.getUniqueId(), true, null)) {
 				zh.getDM().updateHorseProtected(horse.getUniqueId(), true, false, new CallbackListener<Boolean>() {
 
 					@Override

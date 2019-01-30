@@ -103,120 +103,109 @@ public abstract class SQLDatabaseConnector {
 		}
 	}
 
-	@Deprecated
-	public boolean hasResult(String query) {
-		Boolean result = getResult(query, resultSet -> true);
-		return result != null && result;
-	}
-
 	public boolean hasResult(String query, boolean sync, CallbackListener<Boolean> listener) {
 		Boolean result = getResult(query, resultSet -> hasResult(resultSet), sync, listener);
 		return result != null && result; // Must be checked by caller if async
 	}
 
-	public Boolean getBooleanResult(String query) {
-		return getResult(query, resultSet -> getBooleanResult(resultSet));
+	public Boolean getBooleanResult(String query, boolean sync, CallbackListener<Boolean> listener) {
+		return getResult(query, resultSet -> getBooleanResult(resultSet), sync, listener);
 	}
 
-	public Integer getIntegerResult(String query) {
-		return getResult(query, resultSet -> getIntegerResult(resultSet));
-	}
-
-	@Deprecated
-	public Location getLocationResult(String query) {
-		return getResult(query, resultSet -> getLocationResult(resultSet));
+	public Integer getIntegerResult(String query, boolean sync, CallbackListener<Integer> listener) {
+		return getResult(query, resultSet -> getIntegerResult(resultSet), sync, listener);
 	}
 
 	public Location getLocationResult(String query, boolean sync, CallbackListener<Location> listener) {
 		return getResult(query, resultSet -> getLocationResult(resultSet), sync, listener);
 	}
 
-	public String getStringResult(String query) {
-		return getResult(query, resultSet -> getStringResult(resultSet));
+	public String getStringResult(String query, boolean sync, CallbackListener<String> listener) {
+		return getResult(query, resultSet -> getStringResult(resultSet), sync, listener);
 	}
 
-	public List<String> getStringResultList(String query) {
-		return getResultList(query, resultSet -> getStringResult(resultSet));
+	public List<String> getStringResultList(String query, boolean sync, CallbackListener<List<String>> listener) {
+		return getResultList(query, resultSet -> getStringResult(resultSet), sync, listener);
 	}
 
-	public UUID getUUIDResult(String query) {
-		return getResult(query, resultSet -> getUUIDResult(resultSet));
+	public UUID getUUIDResult(String query, boolean sync, CallbackListener<UUID> listener) {
+		return getResult(query, resultSet -> getUUIDResult(resultSet), sync, listener);
 	}
 
 	public List<UUID> getUUIDResultList(String query, boolean sync, CallbackListener<List<UUID>> listener) {
 		return getResultList(query, resultSet -> getUUIDResult(resultSet), sync, listener);
 	}
 
-	public FriendRecord getFriendRecord(String query) {
-		return getResult(query, resultSet -> getFriendRecord(resultSet));
+	public FriendRecord getFriendRecord(String query, boolean sync, CallbackListener<FriendRecord> listener) {
+		return getResult(query, resultSet -> getFriendRecord(resultSet), sync, listener);
 	}
 
-	public List<FriendRecord> getFriendRecordList(String query) {
-		return getResultList(query, resultSet -> getFriendRecord(resultSet));
+	public List<FriendRecord> getFriendRecordList(String query, boolean sync, CallbackListener<List<FriendRecord>> listener) {
+		return getResultList(query, resultSet -> getFriendRecord(resultSet), sync, listener);
 	}
 
-	public HorseRecord getHorseRecord(String query) {
-		return getResult(query, resultSet -> getHorseRecord(resultSet));
+	public HorseRecord getHorseRecord(String query, boolean sync, CallbackListener<HorseRecord> listener) {
+		return getResult(query, resultSet -> getHorseRecord(resultSet), sync, listener);
 	}
 
 	public List<HorseRecord> getHorseRecordList(String query, boolean sync, CallbackListener<List<HorseRecord>> listener) {
 		return getResultList(query, resultSet -> getHorseRecord(resultSet), sync, listener);
 	}
 
-	public HorseDeathRecord getHorseDeathRecord(String query) {
-		return getResult(query, resultSet -> getHorseDeathRecord(resultSet));
+	public HorseDeathRecord getHorseDeathRecord(String query, boolean sync, CallbackListener<HorseDeathRecord> listener) {
+		return getResult(query, resultSet -> getHorseDeathRecord(resultSet), sync, listener);
 	}
 
-	public List<HorseDeathRecord> getHorseDeathRecordList(String query) {
-		return getResultList(query, resultSet -> getHorseDeathRecord(resultSet));
+	public List<HorseDeathRecord> getHorseDeathRecordList(String query, boolean sync, CallbackListener<List<HorseDeathRecord>> listener) {
+		return getResultList(query, resultSet -> getHorseDeathRecord(resultSet), sync, listener);
 	}
 
-	public HorseInventoryRecord getHorseInventoryRecord(String query) {
-		return getResult(query, resultSet -> getHorseInventoryRecord(resultSet));
+	public HorseInventoryRecord getHorseInventoryRecord(String query, boolean sync, CallbackListener<HorseInventoryRecord> listener) {
+		return getResult(query, resultSet -> getHorseInventoryRecord(resultSet), sync, listener);
 	}
 
-	public List<HorseInventoryRecord> getHorseInventoryRecordList(String query) {
-		return getResultList(query, resultSet -> getHorseInventoryRecord(resultSet));
+	public List<HorseInventoryRecord> getHorseInventoryRecordList(String query, boolean sync, CallbackListener<List<HorseInventoryRecord>> listener) {
+		return getResultList(query, resultSet -> getHorseInventoryRecord(resultSet), sync, listener);
 	}
 
-	public HorseStableRecord getHorseStableRecord(String query) {
-		return getResult(query, resultSet -> getHorseStableRecord(resultSet));
+	public HorseStableRecord getHorseStableRecord(String query, boolean sync, CallbackListener<HorseStableRecord> listener) {
+		return getResult(query, resultSet -> getHorseStableRecord(resultSet), sync, listener);
 	}
 
-	public List<HorseStableRecord> getHorseStableRecordList(String query) {
-		return getResultList(query, resultSet -> getHorseStableRecord(resultSet));
+	public List<HorseStableRecord> getHorseStableRecordList(String query, boolean sync, CallbackListener<List<HorseStableRecord>> listener) {
+		return getResultList(query, resultSet -> getHorseStableRecord(resultSet), sync, listener);
 	}
 
-	public HorseStatsRecord getHorseStatsRecord(String query) {
-		return getResult(query, resultSet -> getHorseStatsRecord(resultSet));
+	public HorseStatsRecord getHorseStatsRecord(String query, boolean sync, CallbackListener<HorseStatsRecord> listener) {
+		return getResult(query, resultSet -> getHorseStatsRecord(resultSet), sync, listener);
 	}
 
-	public List<HorseStatsRecord> getHorseStatsRecordList(String query) {
-		return getResultList(query, resultSet -> getHorseStatsRecord(resultSet));
+	public List<HorseStatsRecord> getHorseStatsRecordList(String query, boolean sync, CallbackListener<List<HorseStatsRecord>> listener) {
+		return getResultList(query, resultSet -> getHorseStatsRecord(resultSet), sync, listener);
 	}
 
-	public PendingMessageRecord getPendingMessageRecord(String query) {
-		return getResult(query, resultSet -> getPendingMessageRecord(resultSet));
+	public PendingMessageRecord getPendingMessageRecord(String query, boolean sync, CallbackListener<PendingMessageRecord> listener) {
+		return getResult(query, resultSet -> getPendingMessageRecord(resultSet), sync, listener);
 	}
 
-	public List<PendingMessageRecord> getPendingMessageRecordList(String query) {
-		return getResultList(query, resultSet -> getPendingMessageRecord(resultSet));
+	public List<PendingMessageRecord> getPendingMessageRecordList(String query, boolean sync, CallbackListener<List<PendingMessageRecord>> listener) {
+		return getResultList(query, resultSet -> getPendingMessageRecord(resultSet), sync, listener);
 	}
 
-	public PlayerRecord getPlayerRecord(String query) {
-		return getResult(query, resultSet -> getPlayerRecord(resultSet));
+	public PlayerRecord getPlayerRecord(String query, boolean sync, CallbackListener<PlayerRecord> listener) {
+		return getResult(query, resultSet -> getPlayerRecord(resultSet), sync, listener);
 	}
 
-	public List<PlayerRecord> getPlayerRecordList(String query) {
-		return getResultList(query, resultSet -> getPlayerRecord(resultSet));
+	public List<PlayerRecord> getPlayerRecordList(String query, boolean sync, CallbackListener<List<PlayerRecord>> listener) {
+		return getResultList(query, resultSet -> getPlayerRecord(resultSet), sync, listener);
 	}
 
-	public SaleRecord getSaleRecord(String query) {
-		return getResult(query, resultSet -> getSaleRecord(resultSet));
+	public SaleRecord getSaleRecord(String query, boolean sync, CallbackListener<SaleRecord> listener) {
+		return getResult(query, resultSet -> getSaleRecord(resultSet), sync, listener);
 	}
 
-	public List<SaleRecord> getSaleRecordList(String query) {
-		return getResultList(query, resultSet -> getSaleRecord(resultSet));
+	public List<SaleRecord> getSaleRecordList(String query, boolean sync, CallbackListener<List<SaleRecord>> listener) {
+		return getResultList(query, resultSet -> getSaleRecord(resultSet), sync, listener);
 	}
 
 	private Boolean hasResult(ResultSet resultSet) throws SQLException {
@@ -236,7 +225,8 @@ public abstract class SQLDatabaseConnector {
 	}
 
 	private UUID getUUIDResult(ResultSet resultSet) throws SQLException {
-		return UUID.fromString(resultSet.getString(1));
+		String stringUUID = resultSet.getString(1);
+		return stringUUID != null ? UUID.fromString(stringUUID) : null;
 	}
 
 	private Location getLocationResult(ResultSet resultSet) throws SQLException {
@@ -347,20 +337,6 @@ public abstract class SQLDatabaseConnector {
 		);
 	}
 
-	@Deprecated
-	private <T> T getResult(String query, CheckedFunction<ResultSet, T> mapper) {
-		T result = null;
-		try (PreparedStatement statement = getPreparedStatement(query)) {
-			ResultSet resultSet = statement.executeQuery();
-			if (resultSet.next()) {
-				result = mapper.apply(resultSet);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
-
 	private <T> T getResult(String query, CheckedFunction<ResultSet, T> mapper, boolean sync, CallbackListener<T> listener) { // TODO merge with getResultList()
 		CallbackResponse<T> response = new CallbackResponse<>();
 		BukkitRunnable task = new BukkitRunnable() {
@@ -391,21 +367,6 @@ public abstract class SQLDatabaseConnector {
 			task.runTaskAsynchronously(zh);
 			return null;
 		}
-	}
-
-	@Deprecated
-	private <T> List<T> getResultList(String query, CheckedFunction<ResultSet, T> mapper) {
-		List<T> resultList = new ArrayList<>();
-		try (PreparedStatement statement = getPreparedStatement(query)) {
-			ResultSet resultSet = statement.executeQuery();
-			while (resultSet.next()) {
-				T result = mapper.apply(resultSet);
-				resultList.add(result);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return resultList;
 	}
 
 	private <T> List<T> getResultList(String query, CheckedFunction<ResultSet, T> mapper, boolean sync, CallbackListener<List<T>> listener) { // TODO merge with getResult()

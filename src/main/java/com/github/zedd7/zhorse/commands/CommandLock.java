@@ -29,7 +29,7 @@ public class CommandLock extends AbstractCommand {
 						}
 					}
 					else if (ownsHorse) {
-						horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId()).toString();
+						horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId(), true, null).toString();
 						execute(p.getUniqueId(), horseID);
 					}
 				}
@@ -54,7 +54,7 @@ public class CommandLock extends AbstractCommand {
 
 	private void execute() {
 		if (isOwner(false)) {
-			if (!zh.getDM().isHorseLocked(horse.getUniqueId())) {
+			if (!zh.getDM().isHorseLocked(horse.getUniqueId(), true, null)) {
 				for (Entity passenger : horse.getPassengers()) {
 					if (passenger instanceof Player) {
 						adminMode = false;
@@ -62,12 +62,12 @@ public class CommandLock extends AbstractCommand {
 						boolean passengerHasPerm = hasPermissionAdmin(passenger.getUniqueId(), command, true);
 						if (!passengerIsOwner && !passengerHasPerm) {
 							horse.removePassenger(passenger);
-							String ownerName = zh.getDM().getOwnerName(horse.getUniqueId());
+							String ownerName = zh.getDM().getOwnerName(horse.getUniqueId(), true, null);
 							zh.getMM().sendMessage(passenger, new MessageConfig(LocaleEnum.HORSE_BELONGS_TO) {{ setPlayerName(ownerName); }});
 						}
 					}
 				}
-				if (zh.getDM().isHorseShared(horse.getUniqueId())) {
+				if (zh.getDM().isHorseShared(horse.getUniqueId(), true, null)) {
 					zh.getDM().updateHorseShared(horse.getUniqueId(), false, false, null);
 					zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_UNSHARED) {{ setHorseName(horseName); }});
 				}

@@ -19,11 +19,23 @@ public class ChunkLoad {
 				if (!horse.getMetadata(HorseManager.DUPLICATE_METADATA).isEmpty()) {
 					horse.remove();
 				}
-				else if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
-					 zh.getHM().trackHorse(horse);
-					 UUID horseUUID = horse.getUniqueId();
-					 Location horseLocation = horse.getLocation();
-					 zh.getDM().updateHorseLocation(horseUUID, horseLocation, true, false, null);
+				else {
+					zh.getDM().isHorseRegistered(horse.getUniqueId(), false, new CallbackListener<Boolean>() {
+
+						@Override
+						public void callback(CallbackResponse<Boolean> response) {
+							if (response.getResult() != null) {
+								boolean horseRegistered = response.getResult();
+								if (horseRegistered) {
+									 zh.getHM().trackHorse(horse);
+									 UUID horseUUID = horse.getUniqueId();
+									 Location horseLocation = horse.getLocation();
+									 zh.getDM().updateHorseLocation(horseUUID, horseLocation, false, false, null);
+								}
+							}
+						}
+
+					});
 				}
 			}
 		}

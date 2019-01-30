@@ -26,7 +26,7 @@ public class CommandRename extends AbstractCommand {
 						}
 					}
 					else if (ownsHorse) {
-						horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId()).toString();
+						horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId(), true, null).toString();
 						execute(p.getUniqueId(), horseID);
 					}
 				}
@@ -51,10 +51,10 @@ public class CommandRename extends AbstractCommand {
 
 	private void execute() {
 		if (isOwner(false) && craftHorseName(false)) {
-			UUID ownerUUID = zh.getDM().getOwnerUUID(horse.getUniqueId());
+			UUID ownerUUID = zh.getDM().getOwnerUUID(horse.getUniqueId(), true, null);
 			applyHorseName(ownerUUID);
-			if (zh.getDM().isHorseForSale(horse.getUniqueId())) {
-				int price = zh.getDM().getSalePrice(horse.getUniqueId());
+			if (zh.getDM().isHorseForSale(horse.getUniqueId(), true, null)) {
+				int price = zh.getDM().getSalePrice(horse.getUniqueId(), true, null);
 				applyHorsePrice(price);
 			}
 			horse.setCustomNameVisible(true);

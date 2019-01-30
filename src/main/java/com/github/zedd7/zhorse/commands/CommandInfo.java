@@ -19,7 +19,7 @@ import com.github.zedd7.zhorse.enums.LocaleEnum;
 import com.github.zedd7.zhorse.utils.MessageConfig;
 
 public class CommandInfo extends AbstractCommand {
-	
+
 	private static final int CHEST_SIZE_MULTIPLICATOR = 3;
 
 	public CommandInfo(ZHorse zh, CommandSender s, String[] a) {
@@ -36,7 +36,7 @@ public class CommandInfo extends AbstractCommand {
 						}
 					}
 					else if (ownsHorse) {
-						horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId()).toString();
+						horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId(), true, null).toString();
 						execute(p.getUniqueId(), horseID);
 					}
 				}
@@ -49,7 +49,7 @@ public class CommandInfo extends AbstractCommand {
 			}
 		}
 	}
-	
+
 	private void execute(UUID ownerUUID, String horseID) {
 		if (isRegistered(ownerUUID, horseID)) {
 			horse = zh.getHM().getHorse(ownerUUID, Integer.parseInt(horseID));
@@ -60,11 +60,11 @@ public class CommandInfo extends AbstractCommand {
 	}
 
 	private void execute() {
-		HorseRecord horseRecord = zh.getDM().getHorseRecord(horse.getUniqueId());
-		HorseStableRecord stableRecord = zh.getDM().getHorseStableRecord(horse.getUniqueId());
+		HorseRecord horseRecord = zh.getDM().getHorseRecord(horse.getUniqueId(), true, null);
+		HorseStableRecord stableRecord = zh.getDM().getHorseStableRecord(horse.getUniqueId(), true, null);
 		HorseStatsRecord statsRecord = new HorseStatsRecord(horse);
-		PlayerRecord ownerRecord = zh.getDM().getPlayerRecord(UUID.fromString(horseRecord.getOwner()));
-		
+		PlayerRecord ownerRecord = zh.getDM().getPlayerRecord(UUID.fromString(horseRecord.getOwner()), true, null);
+
 		displayInfoHeader(zh, s);
 		displayHorseID(zh, s, horseRecord);
 		displayNames(zh, s, horseRecord, ownerRecord);
@@ -77,43 +77,43 @@ public class CommandInfo extends AbstractCommand {
 		displayStableLocation(zh, s, stableRecord);
 		displayStatus(zh, s, horseRecord);
 		displayPrice(zh, s, horse);
-			
+
 		zh.getCmdM().updateCommandHistory(s, command);
 		zh.getEM().payCommand(p, command);
 	}
-	
+
 	public static void displayInfoHeader(ZHorse zh, CommandSender s) {
 		String rawHeader = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.HORSE_INFO_HEADER), true);
 		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HEADER_FORMAT) {{ setValue(rawHeader); }}, true);
 	}
-	
+
 	private void displayHorseID(ZHorse zh, CommandSender s, HorseRecord horseRecord) {
 		if (isOwner(false, true)) {
 			String horseID = horseRecord.getId().toString();
 			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.ID) {{ setHorseID(horseID); setSpaceCount(1); }}, true);
 		}
 	}
-	
+
 	private void displayNames(ZHorse zh, CommandSender s, HorseRecord horseRecord, PlayerRecord ownerRecord) {
 		String ownerName = ownerRecord.getName();
 		String horseName = horseRecord.getName();
 		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.OWNER) {{ setPlayerName(ownerName); setSpaceCount(1); }}, true);
 		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.NAME) {{ setHorseName(horseName); setSpaceCount(1); }}, true);
 	}
-	
+
 	public static void displayVariant(ZHorse zh, CommandSender s, AbstractHorse horse, HorseStatsRecord statsRecord) {
 		EntityType horseType = EntityType.valueOf(statsRecord.getType());
 		HorseVariantEnum horseVariant = HorseVariantEnum.from(horseType);
 		String variant = horseVariant.name().substring(0, 1).toUpperCase() + horseVariant.name().substring(1).toLowerCase();
 		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.VARIANT) {{ setValue(variant); setSpaceCount(1); }}, true);
 	}
-	
+
 	public static void displayHealth(ZHorse zh, CommandSender s, HorseStatsRecord statsRecord) {
 		int health = statsRecord.getHealth().intValue();
 		int maxHealth = statsRecord.getMaxHealth().intValue();
 		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HEALTH) {{ setAmount(health); setMax(maxHealth); setSpaceCount(1); }}, true);
 	}
-	
+
 	public static void displaySpeed(ZHorse zh, CommandSender s, HorseStatsRecord statsRecord, boolean useExactStats, boolean useVanillaStats) {
 		Double speed = statsRecord.getSpeed();
 		if (!useExactStats) {
@@ -125,7 +125,7 @@ public class CommandInfo extends AbstractCommand {
 			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.SPEED) {{ setAmount(speed); setSpaceCount(1); setArithmeticPrecision(3); }}, true);
 		}
 	}
-	
+
 	public static void displayJumpStrength(ZHorse zh, CommandSender s, HorseStatsRecord statsRecord, boolean useExactStats, boolean useVanillaStats) {
 		Double jumpStrength = statsRecord.getJumpStrength();
 		if (!useExactStats) {
@@ -137,7 +137,7 @@ public class CommandInfo extends AbstractCommand {
 			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.JUMP) {{ setAmount(jumpStrength); setSpaceCount(1); setArithmeticPrecision(3); }}, true);
 		}
 	}
-	
+
 	public static void displayChestSize(ZHorse zh, CommandSender s, AbstractHorse horse, HorseStatsRecord statsRecord) {
 		if (horse instanceof ChestedHorse && statsRecord.isCarryingChest()) {
 			int strength = horse instanceof Llama ? statsRecord.getStrength() : (int) HorseStatisticEnum.MAX_LLAMA_STRENGTH.getValue();
@@ -145,7 +145,7 @@ public class CommandInfo extends AbstractCommand {
 			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STRENGTH) {{ setAmount(chestSize); setSpaceCount(1); }}, true);
 		}
 	}
-	
+
 	private void displayLocation(ZHorse zh, CommandSender s, HorseRecord horseRecord) {
 		if (isNotOnHorse(true)) {
 			int x = (int) Math.floor(horseRecord.getLocationX());
@@ -156,7 +156,7 @@ public class CommandInfo extends AbstractCommand {
 			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.LOCATION) {{ setSpaceCount(1); setValue(location); }}, true);
 		}
 	}
-	
+
 	private void displayStableLocation(ZHorse zh, CommandSender s, HorseStableRecord stableRecord) {
 		if (stableRecord != null) {
 			int x = (int) Math.floor(stableRecord.getLocationX());
@@ -167,9 +167,9 @@ public class CommandInfo extends AbstractCommand {
 			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STABLE) {{ setSpaceCount(1); setValue(location); }}, true);
 		}
 	}
-	
+
 	private void displayStatus(ZHorse zh, CommandSender s, HorseRecord horseRecord) {
-		String status = "";		
+		String status = "";
 		if (horseRecord.isLocked()) {
 			status += zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.LOCKED) {{ setSpaceCount(0); }}, true);
 		}
@@ -186,13 +186,13 @@ public class CommandInfo extends AbstractCommand {
 		final String message = status;
 		zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.STATUS) {{ setSpaceCount(1); setValue(message); }}, true);
 	}
-	
+
 	public static void displayPrice(ZHorse zh, CommandSender s, AbstractHorse horse) {
-		if (zh.getDM().isHorseForSale(horse.getUniqueId())) {
-			int price = zh.getDM().getSalePrice(horse.getUniqueId());
+		if (zh.getDM().isHorseForSale(horse.getUniqueId(), true, null)) {
+			int price = zh.getDM().getSalePrice(horse.getUniqueId(), true, null);
 			String currencySymbol = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.CURRENCY_SYMBOL), true);
 			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.PRICE) {{ setAmount(price); setCurrencySymbol(currencySymbol); setSpaceCount(1); }}, true);
 		}
 	}
-	
+
 }

@@ -64,7 +64,7 @@ public class CommandFriend extends AbstractCommand {
 			if (targetMode) {
 				if (isRegistered(targetUUID)) {
 					if (isPlayerDifferent()) {
-						if (!zh.getDM().isFriendOf(p.getUniqueId(), targetUUID)) {
+						if (!zh.getDM().isFriendOf(p.getUniqueId(), targetUUID, true, null)) {
 							zh.getDM().registerFriend(new FriendRecord(p.getUniqueId().toString(), targetUUID.toString()), false, new CallbackListener<Boolean>() {
 
 								@Override
@@ -97,7 +97,7 @@ public class CommandFriend extends AbstractCommand {
 			if (targetMode) {
 				if (isRegistered(targetUUID)) {
 					if (isPlayerDifferent()) {
-						if (zh.getDM().isFriendOf(p.getUniqueId(), targetUUID)) {
+						if (zh.getDM().isFriendOf(p.getUniqueId(), targetUUID, true, null)) {
 							zh.getDM().removeFriend(p.getUniqueId(), targetUUID, false, new CallbackListener<Boolean>() {
 
 								@Override
@@ -127,8 +127,8 @@ public class CommandFriend extends AbstractCommand {
 	private void sendFriendList() {
 		if (hasPermission(s, fullCommand , true, false)) {
 			parsePlayerName();
-			List<String> friendNameList = zh.getDM().getFriendNameList(targetUUID);
-			List<String> friendNameReverseList = zh.getDM().getFriendNameReverseList(targetUUID);
+			List<String> friendNameList = zh.getDM().getFriendNameList(targetUUID, true, null);
+			List<String> friendNameReverseList = zh.getDM().getFriendNameReverseList(targetUUID, true, null);
 			if (samePlayer) {
 				if (friendNameList.size() > 0) {
 					displayFriendNames(LocaleEnum.FRIEND_LIST, friendNameList);

@@ -80,7 +80,7 @@ public class CommandClaim extends AbstractCommand {
 
 			};
 
-			if (zh.getDM().isHorseRegistered(horse.getUniqueId())) {
+			if (zh.getDM().isHorseRegistered(horse.getUniqueId(), true, null)) {
 				zh.getDM().removeHorse(horse.getUniqueId(), false, listener);
 			}
 			else {

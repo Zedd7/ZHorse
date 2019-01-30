@@ -26,7 +26,7 @@ public class CommandHeal extends AbstractCommand {
 						}
 					}
 					else if (ownsHorse) {
-						horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId()).toString();
+						horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId(), true, null).toString();
 						execute(p.getUniqueId(), horseID);
 					}
 				}
@@ -39,7 +39,7 @@ public class CommandHeal extends AbstractCommand {
 			}
 		}
 	}
-	
+
 	private void execute(UUID ownerUUID, String horseID) {
 		if (isRegistered(ownerUUID, horseID)) {
 			horse = zh.getHM().getHorse(ownerUUID, Integer.parseInt(horseID));

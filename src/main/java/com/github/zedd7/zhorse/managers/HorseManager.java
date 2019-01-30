@@ -32,27 +32,28 @@ import com.github.zedd7.zhorse.enums.HorseVariantEnum;
 import com.github.zedd7.zhorse.utils.CallbackListener;
 import com.github.zedd7.zhorse.utils.CallbackResponse;
 import com.github.zedd7.zhorse.utils.ChunkLoad;
+import com.github.zedd7.zhorse.utils.ChunkUnload;
 
 public class HorseManager {
 
 	public static final String DUPLICATE_METADATA = "zhorse_duplicate";
 
 	private ZHorse zh;
-	private Map<UUID, AbstractHorse> trackedHorses = new HashMap<>();
+	private Map<UUID, AbstractHorse> trackedHorses = new HashMap<>(); // Horses standing in a loaded chunk
 
 	public HorseManager(ZHorse zh) {
 		this.zh = zh;
 	}
 
 	public AbstractHorse getFavoriteHorse(UUID playerUUID) {
-		return getHorse(playerUUID, zh.getDM().getPlayerFavoriteHorseID(playerUUID));
+		return getHorse(playerUUID, zh.getDM().getPlayerFavoriteHorseID(playerUUID, true, null));
 	}
 
 	public AbstractHorse getHorse(UUID playerUUID, Integer horseID) {
 		AbstractHorse horse = null;
 		if (playerUUID != null && horseID != null) {
-			UUID horseUUID = zh.getDM().getHorseUUID(playerUUID, horseID);
-			HorseRecord horseRecord = zh.getDM().getHorseRecord(horseUUID);
+			UUID horseUUID = zh.getDM().getHorseUUID(playerUUID, horseID, true, null);
+			HorseRecord horseRecord = zh.getDM().getHorseRecord(horseUUID, true, null);
 			horse = getHorse(horseRecord);
 		}
 		return horse;
@@ -70,7 +71,7 @@ public class HorseManager {
 						zh.getServer().getWorld(horseRecord.getLocationWorld()),
 						horseRecord.getLocationX(),
 						horseRecord.getLocationY(),
-						horseRecord.getLocationY()
+						horseRecord.getLocationZ()
 				);
 				horse = getHorseFromLocation(horseUUID, location);
 				if (horse != null) {
@@ -84,8 +85,8 @@ public class HorseManager {
 					}
 				}
 				else if (zh.getCM().shouldRespawnMissingHorse()) {
-					HorseInventoryRecord inventoryRecord = zh.getDM().getHorseInventoryRecord(horseUUID); // TODO sync
-					HorseStatsRecord statsRecord = zh.getDM().getHorseStatsRecord(horseUUID);  // TODO sync
+					HorseInventoryRecord inventoryRecord = zh.getDM().getHorseInventoryRecord(horseUUID, true, null);
+					HorseStatsRecord statsRecord = zh.getDM().getHorseStatsRecord(horseUUID, true, null);
 					if (inventoryRecord != null && statsRecord != null) { // Do not spawn if exact copy is impossible
 						horse = spawnHorse(location, inventoryRecord, statsRecord, true, horseUUID, horseRecord.getId(), horseRecord.getName());
 					}
@@ -194,37 +195,49 @@ public class HorseManager {
 		zh.getDM().updateHorseStats(statsRecord, sync, null);
 	}
 
-	public AbstractHorse teleportHorse(AbstractHorse sourceHorse, Location destination) {
+	public AbstractHorse teleportHorse(AbstractHorse sourceHorse, Location destination, boolean sync) {
 		if (zh.getCM().shouldUseOldTeleportMethod()) {
 			sourceHorse.teleport(destination);
+			System.out.println("teleported : " + sourceHorse.getUniqueId());///
 			zh.getDM().updateHorseLocation(sourceHorse.getUniqueId(), destination, false, false, null);
 			return sourceHorse;
 		}
 		else {
-			AbstractHorse copyHorse = (AbstractHorse) destination.getWorld().spawnEntity(destination, sourceHorse.getType());
-			if (copyHorse != null) {
-				UUID oldHorseUUID = sourceHorse.getUniqueId();
-				UUID newHorseUUID = copyHorse.getUniqueId();
-				UUID ownerUUID = zh.getDM().getOwnerUUID(oldHorseUUID);
-				HorseStatsRecord statsRecord = new HorseStatsRecord(sourceHorse);
-				assignStats(copyHorse, statsRecord, ownerUUID);
-				copyInventory(sourceHorse, copyHorse, statsRecord.isCarryingChest());
-				removeLeash(sourceHorse);
-				untrackHorse(sourceHorse.getUniqueId());
-				trackHorse(copyHorse);
-				removeHorse(sourceHorse);
-				zh.getDM().updateHorseUUID(oldHorseUUID, newHorseUUID, false, new CallbackListener<Boolean>() {
+			synchronized(ChunkUnload.class) { // Synchronize with HorseManager::teleport to avoid updating outdated horse
+				AbstractHorse copyHorse = (AbstractHorse) destination.getWorld().spawnEntity(destination, sourceHorse.getType());
+				if (copyHorse != null) {
+					UUID oldHorseUUID = sourceHorse.getUniqueId();
+					UUID newHorseUUID = copyHorse.getUniqueId();
+					zh.getDM().getOwnerUUID(oldHorseUUID, false, new CallbackListener<UUID>() {
 
-					@Override
-					public void callback(CallbackResponse<Boolean> response) {
-						if (response.getResult()) {
-							zh.getDM().updateHorseLocation(newHorseUUID, destination, true, false, null);
+						@Override
+						public void callback(CallbackResponse<UUID> response) {
+							if (response.getResult() != null) {
+								UUID ownerUUID = response.getResult();
+								HorseStatsRecord statsRecord = new HorseStatsRecord(sourceHorse);
+								assignStats(copyHorse, statsRecord, ownerUUID);
+								copyInventory(sourceHorse, copyHorse, statsRecord.isCarryingChest());
+								removeLeash(sourceHorse);
+								untrackHorse(sourceHorse.getUniqueId());
+								trackHorse(copyHorse);
+								removeHorse(sourceHorse);
+								zh.getDM().updateHorseUUID(oldHorseUUID, newHorseUUID, false, new CallbackListener<Boolean>() {
+
+									@Override
+									public void callback(CallbackResponse<Boolean> response) {
+										if (response.getResult()) {
+											zh.getDM().updateHorseLocation(newHorseUUID, destination, false, false, null);
+										}
+									}
+
+								});
+							}
 						}
-					}
 
-				});
+					});
+				}
+				return copyHorse;
 			}
-			return copyHorse;
 		}
 	}
 
@@ -315,7 +328,7 @@ public class HorseManager {
 		if (horse != null) {
 			UUID ownerUUID = null;
 			if (claimedHorse) {
-				ownerUUID = zh.getDM().getOwnerUUID(oldHorseUUID);
+				ownerUUID = zh.getDM().getOwnerUUID(oldHorseUUID, true, null);
 				zh.getDM().updateHorseUUID(oldHorseUUID, horse.getUniqueId(), false, new CallbackListener<Boolean>() {
 
 					@Override

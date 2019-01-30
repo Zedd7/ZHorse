@@ -27,7 +27,7 @@ public class CommandFree extends AbstractCommand {
 						}
 					}
 					else if (ownsHorse) {
-						horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId()).toString();
+						horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId(), true, null).toString();
 						execute(p.getUniqueId(), horseID);
 					}
 				}
@@ -73,7 +73,7 @@ public class CommandFree extends AbstractCommand {
 	}
 
 	private void removeLostHorse() {
-		UUID horseUUID = zh.getDM().getHorseUUID(targetUUID, Integer.parseInt(horseID));
+		UUID horseUUID = zh.getDM().getHorseUUID(targetUUID, Integer.parseInt(horseID), true, null);
 		zh.getHM().untrackHorse(horseUUID);
 		zh.getDM().removeHorse(horseUUID, targetUUID, Integer.parseInt(horseID), false, new CallbackListener<Boolean>() {
 

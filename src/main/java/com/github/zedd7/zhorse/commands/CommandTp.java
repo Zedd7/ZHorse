@@ -16,7 +16,7 @@ public class CommandTp extends AbstractCommand {
 				&& parseArgument(ArgumentEnum.HORSE_NAME, ArgumentEnum.PLAYER_NAME)) {
 			if (!idMode) {
 				if (!targetMode) {
-					horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId()).toString();
+					horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId(), true, null).toString();
 					execute(p.getUniqueId(), horseID);
 				}
 				else {
@@ -28,7 +28,7 @@ public class CommandTp extends AbstractCommand {
 			}
 		}
 	}
-	
+
 	private void execute(UUID ownerUUID, String horseID) {
 		if (isRegistered(ownerUUID, horseID)) {
 			horse = zh.getHM().getHorse(ownerUUID, Integer.parseInt(horseID));
@@ -37,7 +37,7 @@ public class CommandTp extends AbstractCommand {
 			}
 		}
 	}
-	
+
 	private void execute() {
 		if (isOwner(true) && isWorldCrossable(p.getWorld()) && isWorldCrossable(horse.getWorld()) && isNotOnHorse() && isHorseInRangeTp()) {
 			p.teleport(horse);

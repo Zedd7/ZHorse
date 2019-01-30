@@ -27,7 +27,7 @@ public class CommandSell extends AbstractCommand {
 						}
 					}
 					else if (ownsHorse) {
-						horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId()).toString();
+						horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId(), true, null).toString();
 						execute(p.getUniqueId(), horseID);
 					}
 				}
@@ -52,7 +52,7 @@ public class CommandSell extends AbstractCommand {
 
 	private void execute() {
 		if (isOwner(false)) {
-			if (!zh.getDM().isHorseForSale(horse.getUniqueId())) {
+			if (!zh.getDM().isHorseForSale(horse.getUniqueId(), true, null)) {
 				try {
 					if (args.size() != 1) {
 						throw new NumberFormatException();
@@ -90,7 +90,7 @@ public class CommandSell extends AbstractCommand {
 						@Override
 						public void callback(CallbackResponse<Boolean> response) {
 							if (response.getResult()) {
-								horseName = zh.getDM().getHorseName(horse.getUniqueId());
+								horseName = zh.getDM().getHorseName(horse.getUniqueId(), true, null);
 								applyHorseName(targetUUID);
 								zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_WITHDRAWN_FROM_SALE) {{ setHorseName(horseName); }});
 								zh.getCmdM().updateCommandHistory(s, command);

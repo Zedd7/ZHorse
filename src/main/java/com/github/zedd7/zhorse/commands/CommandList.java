@@ -44,7 +44,7 @@ public class CommandList extends AbstractCommand {
 		String remainingClaimsMessage = getRemainingClaimsMessage(targetUUID);
 		buildAliveHorseList(compoundMessage, aliveHorseList, remainingClaimsMessage);
 
-		List<HorseDeathRecord> deathHorseList = zh.getDM().getHorseDeathRecordList(targetUUID);
+		List<HorseDeathRecord> deathHorseList = zh.getDM().getHorseDeathRecordList(targetUUID, true, null);
 		String remainingDeathsMessage = getRemainingDeathsMessage(targetUUID);
 		buildDeadHorseList(compoundMessage, deathHorseList, remainingDeathsMessage);
 
@@ -64,10 +64,10 @@ public class CommandList extends AbstractCommand {
 	private void buildAliveHorseList(CompoundMessage compoundMessage, List<HorseRecord> aliveHorseList, String remainingClaimsMessage) {
 		if (!aliveHorseList.isEmpty()) {
 			int expectedHorseID = zh.getDM().getDefaultHorseID();
-			int favoriteHorseID = zh.getDM().getPlayerFavoriteHorseID(targetUUID);
+			int favoriteHorseID = zh.getDM().getPlayerFavoriteHorseID(targetUUID, true, null);
 			for (HorseRecord horseRecord : aliveHorseList) {
 				UUID horseUUID = UUID.fromString(horseRecord.getUUID());
-				if (!variantMode || zh.getDM().isHorseOfType(horseUUID, variant)) {
+				if (!variantMode || zh.getDM().isHorseOfType(horseUUID, variant, true, null)) {
 					livingHorseListed = true;
 					int horseID = validateHorseID(horseUUID, horseRecord.getId(), expectedHorseID); // Order assured by DataManager
 					String horseName = horseRecord.getName();
@@ -113,7 +113,7 @@ public class CommandList extends AbstractCommand {
 
 	private String buildVariantMessage(UUID horseUUID) {
 		String variantMessage = "";
-		EntityType horseType = EntityType.valueOf(zh.getDM().getHorseType(horseUUID));
+		EntityType horseType = EntityType.valueOf(zh.getDM().getHorseType(horseUUID, true, null));
 		HorseVariantEnum horseVariant = HorseVariantEnum.from(horseType);
 		switch (horseVariant) {
 		case HORSE:
@@ -159,12 +159,12 @@ public class CommandList extends AbstractCommand {
 		if (!deathHorseList.isEmpty()) {
 			for (HorseDeathRecord deathRecord : deathHorseList) {
 				UUID horseUUID = UUID.fromString(deathRecord.getUUID());
-				if (!variantMode || zh.getDM().isHorseOfType(horseUUID, variant)) {
+				if (!variantMode || zh.getDM().isHorseOfType(horseUUID, variant, true, null)) {
 					deadHorseListed = true;
 					if (!deadHorsesPageCreated) {
 						createDeadHorsesPage(compoundMessage);
 					}
-					String horseName = zh.getDM().getHorseName(horseUUID);
+					String horseName = zh.getDM().getHorseName(horseUUID, true, null);
 					String variantMessage = buildVariantMessage(horseUUID);
 					String deathDate = MessageManager.DATE_FORMAT_SHORT.format(deathRecord.getDate());
 					String message = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.DEAD_HORSE_LIST_FORMAT) {{

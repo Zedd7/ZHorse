@@ -43,7 +43,7 @@ public class YAMLImporter {
 	}
 
 	private static boolean importPlayer(ZHorse zh, FileConfiguration db, String playerUUID) {
-		if (zh.getDM().isPlayerRegistered(playerUUID)) {
+		if (zh.getDM().isPlayerRegistered(playerUUID, true, null)) {
 			return true;
 		}
 		String playerName = getPlayerData(db, playerUUID, "Name", null);
@@ -75,7 +75,7 @@ public class YAMLImporter {
 
 	private static boolean importHorse(ZHorse zh, FileConfiguration db, String ownerUUID, int horseID) {
 		String horseUUID = getHorseStringData(db, ownerUUID, horseID, "UUID", null);
-		if (zh.getDM().isHorseRegistered(UUID.fromString(horseUUID))) {
+		if (zh.getDM().isHorseRegistered(UUID.fromString(horseUUID), true, null)) {
 			return true;
 		}
 		String horseName = getHorseStringData(db, ownerUUID, horseID, "Name", null);

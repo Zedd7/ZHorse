@@ -18,7 +18,7 @@ public class CommandHere extends AbstractCommand {
 				&& parseArgument(ArgumentEnum.HORSE_NAME, ArgumentEnum.PLAYER_NAME)) {
 			if (!idMode) {
 				if (!targetMode) {
-					horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId()).toString();
+					horseID = zh.getDM().getPlayerFavoriteHorseID(p.getUniqueId(), true, null).toString();
 					execute(p.getUniqueId(), horseID);
 				}
 				else {
@@ -43,7 +43,7 @@ public class CommandHere extends AbstractCommand {
 	private void execute() {
 		if (isOwner(true) && isWorldCrossable(p.getWorld()) && isNotOnHorse() && !isHorseMounted() && !isHorseLeashed() && isHorseInRangeHere()) {
 			Location playerLocation = getGroundedLocation(p.getLocation());
-			horse = zh.getHM().teleportHorse(horse, playerLocation);
+			horse = zh.getHM().teleportHorse(horse, playerLocation, true);
 			if (horse != null) {
 				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_TELEPORTED) {{ setHorseName(horseName); }});
 				zh.getCmdM().updateCommandHistory(s, command);

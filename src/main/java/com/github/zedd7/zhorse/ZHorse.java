@@ -152,8 +152,8 @@ public class ZHorse extends JavaPlugin {
 
 			@Override
 			public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
-				int totalOwnersCount = dataManager.getTotalOwnersCount();
-				int totalPlayersCount = dataManager.getTotalPlayersCount();
+				int totalOwnersCount = dataManager.getTotalOwnersCount(true, null);
+				int totalPlayersCount = dataManager.getTotalPlayersCount(true, null);
 				int ownersToPlayersRatio = (int) ((totalOwnersCount / (double) totalPlayersCount) * 100);
 				String binLabel = getRatioBinLabel(ownersToPlayersRatio);
 				valueMap.put(binLabel, 1);
@@ -166,7 +166,7 @@ public class ZHorse extends JavaPlugin {
 
 			@Override
 			public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
-				int totalHorsesCount = dataManager.getTotalHorsesCount();
+				int totalHorsesCount = dataManager.getTotalHorsesCount(true, null);
 				String binLabel = getCountBinLabel(totalHorsesCount);
 				valueMap.put(binLabel, 1);
 				return valueMap;
@@ -178,8 +178,8 @@ public class ZHorse extends JavaPlugin {
 
 			@Override
 			public HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap) {
-				int totalHorsesCount = dataManager.getTotalHorsesCount();
-				int totalOwnersCount = dataManager.getTotalOwnersCount();
+				int totalHorsesCount = dataManager.getTotalHorsesCount(true, null);
+				int totalOwnersCount = dataManager.getTotalOwnersCount(true, null);
 				int horsesPerOwnersAverage = totalOwnersCount != 0 ? totalHorsesCount / totalOwnersCount : 0;
 				String binLabel = getCountBinLabel(horsesPerOwnersAverage);
 				valueMap.put(binLabel, 1);

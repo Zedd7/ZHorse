@@ -35,12 +35,12 @@ public class CommandBuy extends AbstractCommand {
 	}
 
 	private void execute() {
-		String previousHorseName = zh.getDM().getHorseName(horse.getUniqueId());
-		if (zh.getDM().isHorseForSale(horse.getUniqueId())) {
-			targetUUID = zh.getDM().getOwnerUUID(horse.getUniqueId());
+		String previousHorseName = zh.getDM().getHorseName(horse.getUniqueId(), true, null);
+		if (zh.getDM().isHorseForSale(horse.getUniqueId(), true, null)) {
+			targetUUID = zh.getDM().getOwnerUUID(horse.getUniqueId(), true, null);
 			if (!p.getUniqueId().equals(targetUUID)) {
 				if (!hasReachedClaimsLimit(false) && craftHorseName(true)) {
-					int price = zh.getDM().getSalePrice(horse.getUniqueId());
+					int price = zh.getDM().getSalePrice(horse.getUniqueId(), true, null);
 					if (zh.getEM().canAffordPayment(p, price)) {
 						int horseID = zh.getDM().getNextHorseID(p.getUniqueId());
 						boolean lock = zh.getCM().shouldLockOnClaim();
@@ -59,8 +59,8 @@ public class CommandBuy extends AbstractCommand {
 							horse.setOwner(zh.getServer().getOfflinePlayer(p.getUniqueId()));
 							zh.getEM().payPlayer(p, targetUUID, price);
 
-							String buyerLanguage = zh.getDM().getPlayerLanguage(p.getUniqueId());
-							String sellerLanguage = zh.getDM().getPlayerLanguage(targetUUID);
+							String buyerLanguage = zh.getDM().getPlayerLanguage(p.getUniqueId(), true, null);
+							String sellerLanguage = zh.getDM().getPlayerLanguage(targetUUID, true, null);
 							String buyerCurrencySymbol = zh.getLM().getMessage(LocaleEnum.CURRENCY_SYMBOL.getIndex(), buyerLanguage, true);
 							String sellerCurrencySymbol = zh.getLM().getMessage(LocaleEnum.CURRENCY_SYMBOL.getIndex(), sellerLanguage, true);
 							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_BOUGHT) {{ setAmount(price); setCurrencySymbol(buyerCurrencySymbol); setHorseName(horseName); }});

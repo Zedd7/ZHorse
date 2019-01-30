@@ -33,7 +33,7 @@ public class CommandAdmin extends AbstractCommand {
 						horse = (AbstractHorse) p.getVehicle();
 						if (isOwner(targetUUID, false, true, true)) {
 							idMode = true;
-							Integer horseIDInt = zh.getDM().getHorseID(horse.getUniqueId());
+							Integer horseIDInt = zh.getDM().getHorseID(horse.getUniqueId(), true, null);
 							horseID = horseIDInt != null ? horseIDInt.toString() : null;
 						}
 					}
@@ -82,24 +82,21 @@ public class CommandAdmin extends AbstractCommand {
 				}
 				if (targetMode) {
 					if (isRegistered(targetUUID) && ownsDeadHorse(targetUUID)) {
-						boolean success = true; // Always true because of async updates
-						List<HorseDeathRecord> horseDeathRecordList = zh.getDM().getHorseDeathRecordList(targetUUID);
+						List<HorseDeathRecord> horseDeathRecordList = zh.getDM().getHorseDeathRecordList(targetUUID, true, null);
 						for (HorseDeathRecord deathRecord : horseDeathRecordList) {
 							UUID horseUUID = UUID.fromString(deathRecord.getUUID());
-							if (!variantMode || zh.getDM().isHorseOfType(horseUUID, variant)) {
-								if (!zh.getDM().removeHorse(horseUUID, targetUUID, null, false, null)) success = false;
+							if (!variantMode || zh.getDM().isHorseOfType(horseUUID, variant, true, null)) {
+								zh.getDM().removeHorse(horseUUID, targetUUID, null, false, null);
 							}
 						}
-						if (success) {
-							if (samePlayer) {
-								zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.DEAD_HORSES_CLEARED));
-							}
-							else {
-								zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.DEAD_HORSES_CLEARED_OTHER) {{ setPlayerName(targetName); }});
-							}
-							zh.getCmdM().updateCommandHistory(s, command);
-							zh.getEM().payCommand(p, command);
+						if (samePlayer) {
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.DEAD_HORSES_CLEARED));
 						}
+						else {
+							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.DEAD_HORSES_CLEARED_OTHER) {{ setPlayerName(targetName); }});
+						}
+						zh.getCmdM().updateCommandHistory(s, command);
+						zh.getEM().payCommand(p, command);
 					}
 				}
 				else {
@@ -129,10 +126,10 @@ public class CommandAdmin extends AbstractCommand {
 				if (!idMode) {
 					if (isRegistered(targetUUID)) {
 						boolean success = true; // Always true because of async updates
-						for (UUID horseUUID : zh.getDM().getHorseUUIDList(targetUUID, true, false, null)) {
-							if (!variantMode || zh.getDM().isHorseOfType(horseUUID, variant)) {
-								int horseID = zh.getDM().getHorseID(horseUUID);
-								if (!clearLivingHorse(targetUUID, horseID, variantMode)) success = false;
+						for (UUID horseUUID : zh.getDM().getHorseUUIDList(targetUUID, true, true, null)) {
+							if (!variantMode || zh.getDM().isHorseOfType(horseUUID, variant, true, null)) {
+								int horseID = zh.getDM().getHorseID(horseUUID, true, null);
+								clearLivingHorse(targetUUID, horseID, variantMode);
 							}
 						}
 						if (success) {
@@ -148,18 +145,15 @@ public class CommandAdmin extends AbstractCommand {
 					}
 				}
 				else if (isRegistered(targetUUID, horseID)) {
-					boolean success = true; // Always true because of async updates
-					success &= clearLivingHorse(targetUUID, Integer.parseInt(horseID), true);
-					if (success) {
-						if (samePlayer) {
-							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_CLEARED) {{ setHorseName(horseName); }});
-						}
-						else {
-							zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_CLEARED_OTHER) {{ setHorseName(horseName); setPlayerName(targetName); }});
-						}
-						zh.getCmdM().updateCommandHistory(s, command);
-						zh.getEM().payCommand(p, command);
+					clearLivingHorse(targetUUID, Integer.parseInt(horseID), true);
+					if (samePlayer) {
+						zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_CLEARED) {{ setHorseName(horseName); }});
 					}
+					else {
+						zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_CLEARED_OTHER) {{ setHorseName(horseName); setPlayerName(targetName); }});
+					}
+					zh.getCmdM().updateCommandHistory(s, command);
+					zh.getEM().payCommand(p, command);
 				}
 			}
 			else {
@@ -169,15 +163,15 @@ public class CommandAdmin extends AbstractCommand {
 		}
 	}
 
-	private boolean clearLivingHorse(UUID ownerUUID, int horseID, boolean updateHorseIDMapping) {
+	private void clearLivingHorse(UUID ownerUUID, int horseID, boolean updateHorseIDMapping) {
 		AbstractHorse horse = zh.getHM().getHorse(ownerUUID, horseID);
 		if (horse != null) {
 			horse.setCustomName(null);
 			horse.setCustomNameVisible(false);
 		}
-		UUID horseUUID = zh.getDM().getHorseUUID(ownerUUID, horseID);
+		UUID horseUUID = zh.getDM().getHorseUUID(ownerUUID, horseID, true, null);
 		zh.getHM().untrackHorse(horseUUID);
-		return zh.getDM().removeHorse(horseUUID, ownerUUID, updateHorseIDMapping ? horseID : null, false, null);
+		zh.getDM().removeHorse(horseUUID, ownerUUID, updateHorseIDMapping ? horseID : null, false, null);
 	}
 
 	private void importDB() {
