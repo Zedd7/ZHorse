@@ -51,7 +51,9 @@ public class CommandHeal extends AbstractCommand {
 
 	private void execute() {
 		if (isOwner(true)) {
-			horse.setHealth(horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
+			double health = horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
+			horse.setHealth(health);
+			zh.getDM().updateHorseHealth(horse.getUniqueId(), health, false, null);
 			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_HEALED) {{ setHorseName(horseName); }});
 			zh.getCmdM().updateCommandHistory(s, command);
 			zh.getEM().payCommand(p, command);

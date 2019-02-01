@@ -5,7 +5,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Horse;
 
 import com.github.zedd7.zhorse.ZHorse;
-import com.github.zedd7.zhorse.database.HorseStatsRecord;
 import com.github.zedd7.zhorse.enums.HorseStatisticEnum;
 import com.github.zedd7.zhorse.enums.HorseVariantEnum;
 import com.github.zedd7.zhorse.enums.LocaleEnum;
@@ -24,7 +23,6 @@ public class AttributeParsingCommand extends AbstractCommand {
 	protected Double speed = null;
 	protected Double jumpStrength = null;
 	protected Integer strength = null;
-	protected HorseStatsRecord statsRecord = null;
 
 	public AttributeParsingCommand(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);

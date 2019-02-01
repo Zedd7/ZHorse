@@ -71,19 +71,21 @@ public abstract class SQLDatabaseConnector {
 		return executeUpdate(update, false, sync, listener);
 	}
 
-	public boolean executeUpdate(final String update, final boolean hideExceptions, boolean sync, final CallbackListener<Boolean> listener) {
+	public boolean executeUpdate(final String formatableUpdate, final boolean hideExceptions, boolean sync, final CallbackListener<Boolean> listener) {
 		CallbackResponse<Boolean> response = new CallbackResponse<>();
 		BukkitRunnable task = new BukkitRunnable() {
 
 			@Override
 			public void run() {
 				boolean success = false;
-				try (PreparedStatement statement = getPreparedStatement(update)) {
+				try (PreparedStatement statement = getPreparedStatement(formatableUpdate)) {
 					statement.executeUpdate();
 					success = true;
 				} catch (SQLException e) {
 					if (!hideExceptions) {
 						e.printStackTrace();
+						String update = applyTablePrefix(formatableUpdate);
+						zh.getLogger().warning(String.format("SQLException caught on following (%s) execution attempt : %s", sync ? "sync" : "async", update));
 					}
 				}
 				response.setResult(success);
@@ -337,20 +339,22 @@ public abstract class SQLDatabaseConnector {
 		);
 	}
 
-	private <T> T getResult(String query, CheckedFunction<ResultSet, T> mapper, boolean sync, CallbackListener<T> listener) { // TODO merge with getResultList()
+	private <T> T getResult(String formatableQuery, CheckedFunction<ResultSet, T> mapper, boolean sync, CallbackListener<T> listener) { // TODO merge with getResultList()
 		CallbackResponse<T> response = new CallbackResponse<>();
 		BukkitRunnable task = new BukkitRunnable() {
 
 			@Override
 			public void run() {
 				T result = null;
-				try (PreparedStatement statement = getPreparedStatement(query)) {
+				try (PreparedStatement statement = getPreparedStatement(formatableQuery)) {
 					ResultSet resultSet = statement.executeQuery();
 					if (resultSet.next()) {
 						result = mapper.apply(resultSet);
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
+					String query = applyTablePrefix(formatableQuery);
+					zh.getLogger().warning(String.format("SQLException caught on following (%s) execution attempt : %s", sync ? "sync" : "async", query));
 				}
 				response.setResult(result);
 				if (listener != null) {

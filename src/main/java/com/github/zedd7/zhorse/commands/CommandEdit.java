@@ -52,6 +52,8 @@ public class CommandEdit extends AttributeParsingCommand {
 		if (isOwner(false)) {
 			if (parseEditArguments()) {
 				editHorse();
+				HorseStatsRecord statsRecord = new HorseStatsRecord(horse);
+				zh.getDM().updateHorseStats(statsRecord, false, null);
 				zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.HORSE_EDITED) {{ setHorseName(horseName); }});
 				zh.getCmdM().updateCommandHistory(s, command);
 				zh.getEM().payCommand(p, command);
@@ -84,11 +86,11 @@ public class CommandEdit extends AttributeParsingCommand {
 	}
 
 	private void editHorse() {
-		HorseStatsRecord statsRecord = new HorseStatsRecord(
+		HorseStatsRecord statsRecordPatch = new HorseStatsRecord(
 			null, null, null, null, null, null, null, null, health, null, null, null, tamed, jumpStrength, health, null, null, speed, null, null, null, null
 		) {{ setAdult(adult); setBaby(baby); }} ;
 
-		zh.getHM().assignStats(horse, statsRecord, null);
+		zh.getHM().assignStats(horse, statsRecordPatch, null);
 	}
 
 }

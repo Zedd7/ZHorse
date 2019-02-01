@@ -684,6 +684,11 @@ public class DataManager {
 		return db.executeUpdate(update, sync, listener);
 	}
 
+	public boolean updateHorseHealth(UUID horseUUID, double health, boolean sync, CallbackListener<Boolean> listener) {
+		String update = String.format("UPDATE prefix_horse_stats SET health = %f WHERE uuid = \"%s\"", health, horseUUID); /// TODO fix
+		return db.executeUpdate(update, sync, listener);
+	}
+
 	public boolean updateHorseID(UUID horseUUID, int horseID, boolean sync, CallbackListener<Boolean> listener) {
 		String update = String.format("UPDATE prefix_horse SET id = %d WHERE uuid = \"%s\"", horseID, horseUUID);
 		return db.executeUpdate(update, sync, listener);
