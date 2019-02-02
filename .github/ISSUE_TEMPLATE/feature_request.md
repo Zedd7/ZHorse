@@ -1,13 +1,7 @@
 ---
 name: Feature request
 about: Suggest an idea for the plugin
-
 ---
-
-# Please be aware that ZHorse developement and maintenance is put on hold for the moment.
-# However, this issue page remains open for questions and quick support.
-# If your ticket requires modifications of the code, you will have to wait until either me or another developer resumes the project.
-
 
 ## Feature request
 
