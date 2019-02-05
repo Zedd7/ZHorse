@@ -36,16 +36,16 @@ public class CommandFriend extends AbstractCommand {
 		if (!args.isEmpty()) {
 			subCommand = args.get(0);
 			args.remove(0); // Remove sub-command to allow parsing of playerName
-			if (subCommand.equalsIgnoreCase(FriendSubCommandEnum.ADD.name())) {
-				fullCommand = command + KeyWordEnum.DOT.getValue() + FriendSubCommandEnum.ADD.name().toLowerCase();
+			if (subCommand.equalsIgnoreCase(FriendSubCommandEnum.ADD.getName())) {
+				fullCommand = command + KeyWordEnum.DOT.getValue() + FriendSubCommandEnum.ADD.getName();
 				addFriend();
 			}
-			else if (subCommand.equalsIgnoreCase(FriendSubCommandEnum.LIST.name())) {
-				fullCommand = command + KeyWordEnum.DOT.getValue() + FriendSubCommandEnum.LIST.name().toLowerCase();
+			else if (subCommand.equalsIgnoreCase(FriendSubCommandEnum.LIST.getName())) {
+				fullCommand = command + KeyWordEnum.DOT.getValue() + FriendSubCommandEnum.LIST.getName();
 				sendFriendList();
 			}
-			else if (subCommand.equalsIgnoreCase(FriendSubCommandEnum.REMOVE.name())) {
-				fullCommand = command + KeyWordEnum.DOT.getValue() + FriendSubCommandEnum.REMOVE.name().toLowerCase();
+			else if (subCommand.equalsIgnoreCase(FriendSubCommandEnum.REMOVE.getName())) {
+				fullCommand = command + KeyWordEnum.DOT.getValue() + FriendSubCommandEnum.REMOVE.getName();
 				removeFriend();
 			}
 			else {

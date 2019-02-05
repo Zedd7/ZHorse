@@ -46,20 +46,20 @@ public class CommandSettings extends AbstractCommand {
 		if ((!targetMode || samePlayer || hasPermissionAdmin(false))) {
 			if (!args.isEmpty()) {
 				subCommand = args.get(0);
-				if (subCommand.equalsIgnoreCase(SettingsSubCommandEnum.FAVORITE.name())) {
-					fullCommand = command + KeyWordEnum.DOT.getValue() + SettingsSubCommandEnum.LANGUAGE.name().toLowerCase();
+				if (subCommand.equalsIgnoreCase(SettingsSubCommandEnum.FAVORITE.getName())) {
+					fullCommand = command + KeyWordEnum.DOT.getValue() + SettingsSubCommandEnum.LANGUAGE.getName();
 					setFavorite();
 				}
-				else if (subCommand.equalsIgnoreCase(SettingsSubCommandEnum.LANGUAGE.name())) {
-					fullCommand = command + KeyWordEnum.DOT.getValue() + SettingsSubCommandEnum.FAVORITE.name().toLowerCase();
+				else if (subCommand.equalsIgnoreCase(SettingsSubCommandEnum.LANGUAGE.getName())) {
+					fullCommand = command + KeyWordEnum.DOT.getValue() + SettingsSubCommandEnum.FAVORITE.getName();
 					setLanguage();
 				}
-				else if (subCommand.equalsIgnoreCase(SettingsSubCommandEnum.STATS.name())) {
-					fullCommand = command + KeyWordEnum.DOT.getValue() + SettingsSubCommandEnum.STATS.name().toLowerCase();
+				else if (subCommand.equalsIgnoreCase(SettingsSubCommandEnum.STATS.getName())) {
+					fullCommand = command + KeyWordEnum.DOT.getValue() + SettingsSubCommandEnum.STATS.getName();
 					setStatsDisplay();
 				}
-				else if (subCommand.equalsIgnoreCase(SettingsSubCommandEnum.SWAP.name())) {
-					fullCommand = command + KeyWordEnum.DOT.getValue() + SettingsSubCommandEnum.SWAP.name().toLowerCase();
+				else if (subCommand.equalsIgnoreCase(SettingsSubCommandEnum.SWAP.getName())) {
+					fullCommand = command + KeyWordEnum.DOT.getValue() + SettingsSubCommandEnum.SWAP.getName();
 					swapIDs();
 				}
 				else {

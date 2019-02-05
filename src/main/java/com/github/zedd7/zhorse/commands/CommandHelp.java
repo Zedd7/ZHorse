@@ -11,7 +11,8 @@ public class CommandHelp extends AbstractCommand {
 
 	public CommandHelp(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (isPlayer() && zh.getEM().canAffordCommand(p, command) && parseArguments() && hasPermission() && isCooldownElapsed() && isWorldEnabled()) {
+		if ((!isPlayer(true) && parseArguments()) ||
+			(zh.getEM().canAffordCommand(p, command) && parseArguments() && hasPermission() && isCooldownElapsed() && isWorldEnabled())) {
 			if (!idMode) {
 				if (!targetMode || (isRegistered(targetUUID) && isPlayerOnline(targetUUID, false))) {
 					execute();
@@ -27,13 +28,15 @@ public class CommandHelp extends AbstractCommand {
 		if (parsePageNumber(true)) {
 			sendCommandDescriptionList();
 			zh.getCmdM().updateCommandHistory(s, command);
-			zh.getEM().payCommand(p, command);
+			if (senderIsPlayer) {
+				zh.getEM().payCommand(p, command);
+			}
 		}
 		else {
 			String command = args.get(0).toLowerCase();
-			if (CommandEnum.getCommandNameList().contains(command)) {
+			if (CommandEnum.getNameList().contains(command)) {
 				sendCommandUsage(command, false, true);
-				if (command.equalsIgnoreCase(CommandEnum.SPAWN.name())) {
+				if (command.equalsIgnoreCase(CommandEnum.SPAWN.getName())) {
 					sendAbstractHorseVariantList();
 					sendHorseStyleList();
 					sendHorseColorList();

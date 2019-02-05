@@ -10,7 +10,8 @@ public class CommandReload extends AbstractCommand {
 
 	public CommandReload(ZHorse zh, CommandSender s, String[] a) {
 		super(zh, s, a);
-		if (!isPlayer(true) || (zh.getEM().canAffordCommand(p, command) && parseArguments() && hasPermission() && isCooldownElapsed() && isWorldEnabled())) {
+		if ((!isPlayer(true) && parseArguments()) ||
+			(zh.getEM().canAffordCommand(p, command) && parseArguments() && hasPermission() && isCooldownElapsed() && isWorldEnabled())) {
 			if (!idMode && !targetMode) {
 				execute();
 			}
@@ -28,7 +29,7 @@ public class CommandReload extends AbstractCommand {
 			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.PLUGIN_RELOADED_WITH_ERRORS) {{ setValue(zh.getDescription().getFullName()); }});
 		}
 		zh.getCmdM().updateCommandHistory(s, command);
-		if (playerCommand) {
+		if (senderIsPlayer) {
 			zh.getEM().payCommand(p, command);
 		}
 	}

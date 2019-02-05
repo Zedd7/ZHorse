@@ -166,10 +166,10 @@ public class EventManager implements Listener {
 		if (e.getOwner() instanceof Player && e.getEntity() instanceof AbstractHorse) {
 			if (zh.getCM().shouldClaimOnTame()) {
 				((AbstractHorse) e.getEntity()).setTamed(true);
-				String[] a = {CommandEnum.CLAIM.name().toLowerCase()};
+				String[] a = {CommandEnum.CLAIM.getName()};
 				new CommandClaim(zh, (CommandSender) e.getOwner(), a);
 			}
-			else if (zh.getPM().has((Player) e.getOwner(), KeyWordEnum.ZH_PREFIX.getValue() + CommandEnum.CLAIM.name().toLowerCase())) {
+			else if (zh.getPM().has((Player) e.getOwner(), KeyWordEnum.ZH_PREFIX.getValue() + CommandEnum.CLAIM.getName())) {
 				zh.getMM().sendMessage((Player) e.getOwner(), new MessageConfig(LocaleEnum.HORSE_MANUALLY_TAMED));
 			}
 		}
@@ -438,7 +438,7 @@ public class EventManager implements Listener {
 			boolean isOwner = zh.getDM().isHorseOwnedBy(p.getUniqueId(), horse.getUniqueId(), true, null);
 			boolean isOwnerAttackBlocked = zh.getCM().isProtectionEnabled(CustomAttackType.OWNER.getCode());
 			boolean isFriend = zh.getDM().isFriendOf(p.getUniqueId(), ownerUUID, true, null);
-			boolean hasAdminPerm = zh.getPM().has(p, KeyWordEnum.ZH_PREFIX.getValue() + CommandEnum.PROTECT.name().toLowerCase() + KeyWordEnum.ADMIN_SUFFIX.getValue());
+			boolean hasAdminPerm = zh.getPM().has(p, KeyWordEnum.ZH_PREFIX.getValue() + CommandEnum.PROTECT.getName() + KeyWordEnum.ADMIN_SUFFIX.getValue());
 			if ((!(isOwner || isFriend) || isOwnerAttackBlocked) && !hasAdminPerm) {
 				String horseName = zh.getDM().getHorseName(horse.getUniqueId(), true, null);
 				zh.getMM().sendMessage(p, new MessageConfig(LocaleEnum.HORSE_IS_PROTECTED) {{ setHorseName(horseName); }});
@@ -453,7 +453,7 @@ public class EventManager implements Listener {
 			UUID ownerUUID = zh.getDM().getOwnerUUID(horse.getUniqueId(), true, null);
 			boolean isOwner = zh.getDM().isHorseOwnedBy(p.getUniqueId(), horse.getUniqueId(), true, null);
 			boolean isFriend = zh.getDM().isFriendOf(p.getUniqueId(), ownerUUID, true, null);
-			boolean hasAdminPerm = zh.getPM().has(p, KeyWordEnum.ZH_PREFIX.getValue() + CommandEnum.LOCK.name().toLowerCase() + KeyWordEnum.ADMIN_SUFFIX.getValue());
+			boolean hasAdminPerm = zh.getPM().has(p, KeyWordEnum.ZH_PREFIX.getValue() + CommandEnum.LOCK.getName() + KeyWordEnum.ADMIN_SUFFIX.getValue());
 			if (!isOwner && !isFriend && !hasAdminPerm) {
 				if (zh.getDM().isHorseLocked(horse.getUniqueId(), true, null) || (!zh.getDM().isHorseShared(horse.getUniqueId(), true, null) && (!horse.isEmpty() || mustBeShared))) {
 					String ownerName = zh.getDM().getOwnerName(horse.getUniqueId(), true, null);

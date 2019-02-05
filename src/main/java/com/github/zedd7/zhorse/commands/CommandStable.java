@@ -60,16 +60,16 @@ public class CommandStable extends AbstractCommand {
 	private void execute() {
 		if (!args.isEmpty()) {
 			subCommand = args.get(0);
-			if (subCommand.equalsIgnoreCase(StableSubCommandEnum.GO.name())) {
-				fullCommand = command + KeyWordEnum.DOT.getValue() + StableSubCommandEnum.GO.name().toLowerCase();
+			if (subCommand.equalsIgnoreCase(StableSubCommandEnum.GO.getName())) {
+				fullCommand = command + KeyWordEnum.DOT.getValue() + StableSubCommandEnum.GO.getName();
 				teleportToStable();
 			}
-			else if (subCommand.equalsIgnoreCase(StableSubCommandEnum.SET.name())) {
-				fullCommand = command + KeyWordEnum.DOT.getValue() + StableSubCommandEnum.SET.name().toLowerCase();
+			else if (subCommand.equalsIgnoreCase(StableSubCommandEnum.SET.getName())) {
+				fullCommand = command + KeyWordEnum.DOT.getValue() + StableSubCommandEnum.SET.getName();
 				setStableLocation();
 			}
-			else if (subCommand.equalsIgnoreCase(StableSubCommandEnum.UNSET.name())) {
-				fullCommand = command + KeyWordEnum.DOT.getValue() + StableSubCommandEnum.UNSET.name().toLowerCase();
+			else if (subCommand.equalsIgnoreCase(StableSubCommandEnum.UNSET.getName())) {
+				fullCommand = command + KeyWordEnum.DOT.getValue() + StableSubCommandEnum.UNSET.getName();
 				unsetStableLocation();
 			}
 			else {

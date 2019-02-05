@@ -49,16 +49,16 @@ public class CommandAdmin extends AbstractCommand {
 	private void execute() {
 		if (!args.isEmpty()) {
 			subCommand = args.get(0);
-			if (subCommand.equalsIgnoreCase(AdminSubCommandEnum.BURIAL.name())) {
-				fullCommand = command + KeyWordEnum.DOT.getValue() + AdminSubCommandEnum.BURIAL.name().toLowerCase();
+			if (subCommand.equalsIgnoreCase(AdminSubCommandEnum.BURIAL.getName())) {
+				fullCommand = command + KeyWordEnum.DOT.getValue() + AdminSubCommandEnum.BURIAL.getName();
 				burial();
 			}
-			else if (subCommand.equalsIgnoreCase(AdminSubCommandEnum.CLEAR.name())) {
-				fullCommand = command + KeyWordEnum.DOT.getValue() + AdminSubCommandEnum.CLEAR.name().toLowerCase();
+			else if (subCommand.equalsIgnoreCase(AdminSubCommandEnum.CLEAR.getName())) {
+				fullCommand = command + KeyWordEnum.DOT.getValue() + AdminSubCommandEnum.CLEAR.getName();
 				clear();
 			}
-			else if (subCommand.equalsIgnoreCase(AdminSubCommandEnum.IMPORT.name())) {
-				fullCommand = command + KeyWordEnum.DOT.getValue() + AdminSubCommandEnum.IMPORT.name().toLowerCase();
+			else if (subCommand.equalsIgnoreCase(AdminSubCommandEnum.IMPORT.getName())) {
+				fullCommand = command + KeyWordEnum.DOT.getValue() + AdminSubCommandEnum.IMPORT.getName();
 				importDB();
 			}
 			else {
@@ -78,7 +78,7 @@ public class CommandAdmin extends AbstractCommand {
 					targetMode = true;
 					targetName = args.get(1);
 					targetUUID = getPlayerUUID(targetName);
-					samePlayer = playerCommand && p.getUniqueId().equals(targetUUID);
+					samePlayer = senderIsPlayer && p.getUniqueId().equals(targetUUID);
 				}
 				if (targetMode) {
 					if (isRegistered(targetUUID) && ownsDeadHorse(targetUUID)) {
@@ -116,7 +116,7 @@ public class CommandAdmin extends AbstractCommand {
 				targetMode = true;
 				targetName = args.get(1);
 				targetUUID = getPlayerUUID(targetName);
-				samePlayer = playerCommand && p.getUniqueId().equals(targetUUID);
+				samePlayer = senderIsPlayer && p.getUniqueId().equals(targetUUID);
 			}
 			if (args.size() >= 3) {
 				idMode = true;

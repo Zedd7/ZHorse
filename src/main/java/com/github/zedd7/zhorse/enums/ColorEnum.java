@@ -3,7 +3,7 @@ package com.github.zedd7.zhorse.enums;
 import org.bukkit.ChatColor;
 
 public enum ColorEnum {
-	
+
 	AQUA(ChatColor.AQUA, "&b", "<b>", "<aqua>"),
 	BLACK(ChatColor.BLACK, "&0", "<0>", "<black>"),
 	BLUE(ChatColor.BLUE, "&9", "<9>", "<blue>"),
@@ -26,19 +26,19 @@ public enum ColorEnum {
 	UNDERLINE(ChatColor.UNDERLINE, "&n", "<n>", "<underline>"),
 	WHITE(ChatColor.WHITE, "&f", "<f>", "<white>"),
 	YELLOW(ChatColor.YELLOW, "&e", "<e>", "<yellow>");
-	
+
 	private ChatColor color;
 	private String[] codeArray;
-	
+
 	ColorEnum(ChatColor color, String... codeArray) {
 		this.color = color;
 		this.codeArray = codeArray;
 	}
-	
+
 	public ChatColor getColor() {
 		return color;
 	}
-	
+
 	public String[] getCodeArray() {
 		return codeArray;
 	}

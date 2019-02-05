@@ -45,7 +45,7 @@ public abstract class AbstractCommand {
 	protected int pageNumber;
 	protected boolean useExactStats;
 	protected boolean useVanillaStats;
-	protected boolean playerCommand;
+	protected boolean senderIsPlayer;
 
 	protected boolean adminMode = false;
 	protected boolean idMode = false;
@@ -127,13 +127,13 @@ public abstract class AbstractCommand {
 			}
 		}
 		else {
-			if (playerCommand) {
+			if (senderIsPlayer) {
 				targetUUID = p.getUniqueId();
 			}
 			targetName = s.getName();
 		}
 		adminMode |= zh.getCM().isAutoAdminModeEnabled(command) && hasPermissionAdmin(true);
-		samePlayer = !targetMode || (playerCommand && p.getUniqueId().equals(targetUUID));
+		samePlayer = !targetMode || (senderIsPlayer && p.getUniqueId().equals(targetUUID));
 	}
 
 	protected void analyseVariantMode() {
@@ -606,7 +606,7 @@ public abstract class AbstractCommand {
 	protected boolean isPlayer(boolean hideConsole) {
 		if (s instanceof Player) {
 			p = (Player) s;
-			playerCommand = true;
+			senderIsPlayer = true;
 			if (!zh.getDM().isPlayerRegistered(p.getUniqueId(), true, null)) {
 				String language = zh.getCM().getDefaultLanguage();
 				int favorite = zh.getDM().getDefaultFavoriteHorseID();
@@ -620,10 +620,10 @@ public abstract class AbstractCommand {
 			}
 		}
 		else if (!hideConsole) {
-			playerCommand = false;
+			senderIsPlayer = false;
 			zh.getMM().sendMessage(s, new MessageConfig(LocaleEnum.PLAYER_COMMAND));
 		}
-		return playerCommand;
+		return senderIsPlayer;
 	}
 
 	protected boolean isPlayerDifferent() {
@@ -768,11 +768,12 @@ public abstract class AbstractCommand {
 
 	protected void sendCommandDescriptionList() {
 		CompoundMessage compoundMessage = new CompoundMessage(true);
-		for (CommandEnum command : CommandEnum.values()) {
-			String commandName = command.name().toLowerCase();
+		for (String commandName : CommandEnum.getNameList()) {
 			String permission = commandName;
 			String commandDescription = getCommandDescription(commandName, permission, false);
-			compoundMessage.addLine(commandDescription);
+			if (!commandDescription.isEmpty()) {
+				compoundMessage.addLine(commandDescription);
+			}
 		}
 		int maxPageNumber = compoundMessage.getPageCount();
 		String pageNumberMessage = zh.getMM().getMessage(s, new MessageConfig(LocaleEnum.PAGE_NUMBER_FORMAT) {{ setAmount(pageNumber); setMax(maxPageNumber); }}, true);
@@ -798,8 +799,13 @@ public abstract class AbstractCommand {
 
 	protected String getCommandDescription(String command, String permission, boolean subCommand) {
 		String message = "";
-		boolean displayCommand = hasPermission(targetUUID, permission, true, true); // Display command if target player can use it
-		displayCommand &= samePlayer ? true : hasPermission(p.getUniqueId(), permission, true, true); // But hide it if command sender can't use it
+		boolean displayCommand = true;
+		if (senderIsPlayer || targetMode) { // Don't check permission for console without target
+			displayCommand &= hasPermission(targetUUID, permission, true, true); // Display command if target player can use it
+			if (senderIsPlayer) {
+				displayCommand &= samePlayer ? true : hasPermission(p.getUniqueId(), permission, true, true); // But hide it if command sender can't use it
+			}
+		}
 		if (displayCommand) {
 			LocaleEnum commandDescription;
 			if (!subCommand) {
@@ -816,7 +822,7 @@ public abstract class AbstractCommand {
 			}
 			message = zh.getMM().getMessage(s, new MessageConfig(commandDescription) {{ setSpaceCount(1); }}, true);
 
-			if (!zh.getEM().isCommandFree(p.getUniqueId(), command)) {
+			if (senderIsPlayer && !zh.getEM().isCommandFree(p.getUniqueId(), command)) {
 				int cost = zh.getCM().getCommandCost(command);
 				LocaleEnum costColorCodeIndex = zh.getEM().canAffordCommand(p, command, true) ? LocaleEnum.AFFORDABLE_COLOR : LocaleEnum.UNAFFORDABLE_COLOR;
 				String costColorCode = zh.getMM().getMessage(s, new MessageConfig(costColorCodeIndex), true);

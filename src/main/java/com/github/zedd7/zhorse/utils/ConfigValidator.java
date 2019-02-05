@@ -44,7 +44,7 @@ public class ConfigValidator extends YamlResourceValidator {
 	private void validateCommandsSection() {
 		if (validateSectionSet(KeyWordEnum.COMMANDS.getValue())) {
 			ConfigurationSection cs = resource.getConfigurationSection(KeyWordEnum.COMMANDS.getValue());
-			List<String> exactCommandList = CommandEnum.getCommandNameList();
+			List<String> exactCommandList = CommandEnum.getNameList();
 			for (String command : cs.getKeys(false)) {
 				if (exactCommandList.contains(command)) {
 					validateOptionSet(KeyWordEnum.COMMANDS_PREFIX.getValue() + command + KeyWordEnum.AUTO_ADMIN_SUFFIX.getValue());
