@@ -18,7 +18,7 @@ import com.github.zedd7.zhorse.managers.MessageManager;
 
 public class ConfigValidator extends YamlResourceValidator {
 
-	private static final int HORSE_NAME_LENGTH_LIMIT = 36; // Limited by DB
+	private static final int HORSE_NAME_LENGTH_LIMIT = 36; // As defined in 'horse' SQL table
 
 	public ConfigValidator(ZHorse zh, FileConfiguration config, FileConfiguration model, File configFile, String fileName) {
 		super(zh, config, model, configFile, fileName);

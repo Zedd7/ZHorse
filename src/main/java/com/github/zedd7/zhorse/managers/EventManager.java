@@ -80,7 +80,7 @@ public class EventManager implements Listener {
 		new ChunkUnload(zh, e.getChunk());
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onEntityDamage(EntityDamageEvent e) {
 		if (e.getEntity() instanceof AbstractHorse) {
 			AbstractHorse horse = (AbstractHorse) e.getEntity();
@@ -104,7 +104,7 @@ public class EventManager implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
 		if (e.getEntity() instanceof AbstractHorse) {
 			AbstractHorse horse = (AbstractHorse) e.getEntity();
@@ -129,7 +129,7 @@ public class EventManager implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onEntityDeath(EntityDeathEvent e) {
 		if (e.getEntity() instanceof AbstractHorse) {
 			AbstractHorse horse = (AbstractHorse) e.getEntity();
@@ -161,7 +161,7 @@ public class EventManager implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onEntityTame(EntityTameEvent e) {
 		if (e.getOwner() instanceof Player && e.getEntity() instanceof AbstractHorse) {
 			if (zh.getCM().shouldClaimOnTame()) {
@@ -175,7 +175,7 @@ public class EventManager implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onEntityPortal(EntityPortalEvent e) {
 		if (e.getEntity() instanceof AbstractHorse) {
 			AbstractHorse horse = (AbstractHorse) e.getEntity();
@@ -189,7 +189,7 @@ public class EventManager implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onEntityTeleport(EntityTeleportEvent e) {
 		if (e.getEntity() instanceof AbstractHorse) {
 			AbstractHorse horse = (AbstractHorse) e.getEntity();
@@ -202,7 +202,7 @@ public class EventManager implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onHangingBreak(HangingBreakEvent e) {
 		RemoveCause removeCause = e.getCause();
 		if (!removeCause.equals(RemoveCause.ENTITY)) { // If not already handled by onHangingBreakByEntity
@@ -221,7 +221,7 @@ public class EventManager implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onHangingBreakByEntity(HangingBreakByEntityEvent e) {
 		if (e.getEntity() instanceof LeashHitch) {
 			LeashHitch leashHitch = (LeashHitch) e.getEntity();
@@ -242,7 +242,7 @@ public class EventManager implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onInventoryClick(InventoryClickEvent e) {
 		if (e.getWhoClicked() instanceof Player && e.getInventory().getHolder() instanceof AbstractHorse) {
 			e.setCancelled(!isPlayerAllowedToInteract((Player) e.getWhoClicked(), (AbstractHorse) e.getInventory().getHolder(), true));
@@ -289,6 +289,7 @@ public class EventManager implements Listener {
 			}
 			if (matchUseCase && interactionAllowed && horse.getPassengers().isEmpty()) {
 				if (!p.isSneaking() // Allows to give food, open inventory, put on leash or place chest/saddle
+						// TODO refactor
 						&& !(horse.isLeashed() && horse.getLeashHolder().equals(p))
 						&& getHoldingHand(p, new ItemStack(Material.LEAD)).equals(HandEnum.NONE)
 						&& getHoldingHand(p, new ItemStack(Material.SADDLE)).equals(HandEnum.NONE)
@@ -338,7 +339,7 @@ public class EventManager implements Listener {
 		new PlayerQuit(zh, e.getPlayer());
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onPlayerLeashEntity(PlayerLeashEntityEvent e) {
 		if (e.getLeashHolder() instanceof Player && e.getEntity() instanceof AbstractHorse) {
 			Player p = (Player) e.getPlayer();
@@ -352,14 +353,14 @@ public class EventManager implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onPlayerUnleashEntity(PlayerUnleashEntityEvent e) {
 		if (e.getEntity() instanceof AbstractHorse) {
 			e.setCancelled(!isPlayerAllowedToInteract(e.getPlayer(), (AbstractHorse) e.getEntity(), false));
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onVehicleEnter(VehicleEnterEvent e) {
 		if (e.getEntered() instanceof Player && e.getVehicle() instanceof AbstractHorse) {
 			Player p = (Player) e.getEntered();
