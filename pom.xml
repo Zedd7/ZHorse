@@ -7,7 +7,7 @@
 
     <groupId>com.github.zedd7</groupId>
     <artifactId>ZHorse</artifactId>
-    <version>1.8.0 snapshot 1</version>
+    <version>1.8.0</version>
     <packaging>jar</packaging>
 
     <name>ZHorse</name>
@@ -91,13 +91,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.6</version>
-                <configuration>
-            	    <archive>
-            		    <manifestEntries>
-            			    <Built-By></Built-By>
-            		    </manifestEntries>
-            	    </archive>
-                </configuration>
             </plugin>
         </plugins>
     </build>
