@@ -53,6 +53,7 @@ public class ResourceManager {
 			YamlResourceValidator localeValidator = new LocaleValidator(zh, locale, localeModel, localeFile, localeFileName);
 			if (!localeValidator.validate()) localesValid = false;
 		}
+
 		return configValid && localesValid;
 	}
 	

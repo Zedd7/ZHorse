@@ -1,21 +1,11 @@
 package com.github.zedd7.zhorse;
 
-import java.util.HashMap;
-
+import com.github.zedd7.zhorse.managers.*;
+import com.github.zedd7.zhorse.utils.Metrics;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.zedd7.zhorse.managers.CommandManager;
-import com.github.zedd7.zhorse.managers.ConfigManager;
-import com.github.zedd7.zhorse.managers.DataManager;
-import com.github.zedd7.zhorse.managers.EconomyManager;
-import com.github.zedd7.zhorse.managers.EventManager;
-import com.github.zedd7.zhorse.managers.HorseManager;
-import com.github.zedd7.zhorse.managers.LocaleManager;
-import com.github.zedd7.zhorse.managers.MessageManager;
-import com.github.zedd7.zhorse.managers.PermissionManager;
-import com.github.zedd7.zhorse.managers.ResourceManager;
-import com.github.zedd7.zhorse.utils.Metrics;
+import java.util.HashMap;
 
 public class ZHorse extends JavaPlugin {
 
@@ -29,9 +19,11 @@ public class ZHorse extends JavaPlugin {
 	private MessageManager messageManager;
 	private PermissionManager permissionManager;
 	private ResourceManager resourceManager;
+	private VersionManager versionManager;
 
 	@Override
 	public void onEnable() {
+		// https://api.spiget.org/v2/resources/3384/versions?size=1&sort=-id&fields=name
 		initDependencies();
 		initManagers();
 		initMetrics();
@@ -43,7 +35,7 @@ public class ZHorse extends JavaPlugin {
 		dataManager.closeDatabase();
     }
 
-	public void disable() {
+	private void disable() {
 		getServer().getPluginManager().disablePlugin(this);
 	}
 
@@ -94,6 +86,10 @@ public class ZHorse extends JavaPlugin {
 		return resourceManager;
 	}
 
+	public VersionManager getVM() {
+		return versionManager;
+	}
+
 	private void initDependencies() {
 		Plugin vault = getServer().getPluginManager().getPlugin("Vault");
 		if (vault != null && !vault.isEnabled()) {
@@ -116,13 +112,14 @@ public class ZHorse extends JavaPlugin {
 		messageManager = new MessageManager(this);
 		permissionManager = new PermissionManager(this);
 		resourceManager = new ResourceManager(this);
+	    versionManager = new VersionManager(this);
 
 		boolean resourcesValid = resourceManager.validateResources();
-
 		commandManager.loadCommandCooldowns();
 		dataManager.openDatabase();
 		horseManager.trackHorses();
 		messageManager.setDisplayConsole(!configManager.isConsoleMuted());
+	    versionManager.checkForUpdates();
 
 		return resourcesValid;
 	}
