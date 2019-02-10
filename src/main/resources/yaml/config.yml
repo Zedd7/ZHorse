@@ -119,6 +119,11 @@ Databases:
   # Available databases types are MySQL, SQLite.
   type: SQLite
 
+  # Configuration section for SQLite. You can remove it if SQLite is disabled.
+  sqlite-config:
+    # The name of the database file without extension
+    filename: zhorse
+
   # Configuration section for MySQL. You can remove it if MySQL is disabled.
   # The field table-prefix is optional. Use it only in case of shared database.
   mysql-config:
@@ -128,11 +133,6 @@ Databases:
     password: ''
     database: zhorse
     table-prefix: ''
-
-  # Configuration section for SQLite. You can remove it if SQLite is disabled.
-  sqlite-config:
-    # The name of the database file without extension
-    filename: zhorse
 
 Groups:
 
@@ -167,12 +167,12 @@ Groups:
 
 HorseNames:
 
-  # The maximum lenght of a horse name.
+  # The maximum length of a horse name.
   # If set to 1-36, horse naming is optional.
-  # If set to 0, horse naming is forbbiden.
+  # If set to 0, horse naming is forbidden.
   maximum-length: 36
 
-  # The minimum lenght of a horse name.
+  # The minimum length of a horse name.
   # If set to more than 0, horse naming is mandatory.
   # If set to 0, horse naming is unrestricted.
   minimum-length: 0
@@ -312,10 +312,10 @@ Settings:
   # Set to false to block players from taming undead horses.
   allow-taming-of-undead-horse: true
 
-  # Set to true to block /zh here and /zh stable on leashed horses.
+  # Set to true to block teleportation of leashed horses.
   block-leashed-teleport: false
 
-  # Set to true to block /zh here on mounted horses.
+  # Set to true to block teleportation of mounted horses.
   block-mounted-teleport: false
 
   # Set to true to make player execute /zh claim on horse tame.
@@ -362,7 +362,7 @@ Settings:
   # Does not affect actual horse stats, only applies to /zh spawn and /zh info.
   use-exact-stats: false
 
-  # Set to false to use Bukkit thresholds for horse stats.
+  # Set to false to use vanilla thresholds for horse stats.
   # Does not affect actual horse stats, only applies to /zh spawn and /zh info.
   use-vanilla-stats: true
 
@@ -389,6 +389,9 @@ Settings:
     x: 1
     y: 64
     z: -1
+
+  # Set to false to disable the update checker searching for new releases.
+  check-for-update: true
 
   # Set to true to hide all ZHorse messages in chat.
   mute-console: false

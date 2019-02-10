@@ -1,22 +1,21 @@
 package com.github.zedd7.zhorse.managers;
 
-import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import com.github.zedd7.zhorse.ZHorse;
 import com.github.zedd7.zhorse.database.PendingMessageRecord;
 import com.github.zedd7.zhorse.enums.ColorEnum;
 import com.github.zedd7.zhorse.enums.KeyWordEnum;
 import com.github.zedd7.zhorse.utils.CompoundMessage;
 import com.github.zedd7.zhorse.utils.MessageConfig;
+import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MessageManager {
 
@@ -67,19 +66,24 @@ public class MessageManager {
 		}
 	}
 
+	public void sendPendingMessage(OfflinePlayer recipient, String message) {
+		if (!isEmpty(message)) {
+			if (recipient.isOnline()) {
+				((Player) recipient).sendMessage(message);
+			}
+			else {
+				UUID recipientUUID = recipient.getUniqueId();
+				PendingMessageRecord messageRecord = new PendingMessageRecord(recipientUUID.toString(), message);
+				zh.getDM().registerPendingMessage(messageRecord, false, null);
+			}
+		}
+	}
+
 	public void sendPendingMessage(UUID recipientUUID, MessageConfig messageConfig) {
 		String language = getLanguage(recipientUUID);
 		String message = getMessage(language, messageConfig, false);
 		OfflinePlayer recipient = zh.getServer().getOfflinePlayer(recipientUUID);
-		if (recipient.isOnline()) {
-			if (!isEmpty(message)) {
-				((Player) recipient).sendMessage(message);
-			}
-		}
-		else {
-			PendingMessageRecord messageRecord = new PendingMessageRecord(recipientUUID.toString(), message);
-			zh.getDM().registerPendingMessage(messageRecord, false, null);
-		}
+		sendPendingMessage(recipient, message);
 	}
 
 	public String getMessage(CommandSender recipient, MessageConfig messageConfig, boolean hidePrefix) {

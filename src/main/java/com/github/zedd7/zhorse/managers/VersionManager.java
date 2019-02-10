@@ -23,31 +23,33 @@ public class VersionManager {
 	}
 
 	public void checkForUpdates() {
-		new BukkitRunnable() {
+		if (zh.getCM().shouldCheckForUpdate()) {
+			new BukkitRunnable() {
 
-			@Override
-			public void run() {
-				String currentVersionDescription = zh.getDescription().getVersion();
-				String[] currentVersionParameters = currentVersionDescription.split(" ");
-				String currentVersionName = currentVersionParameters[0];
-				boolean isCurrentVersionSnapshot = currentVersionParameters.length > 1;
+				@Override
+				public void run() {
+					String currentVersionDescription = zh.getDescription().getVersion();
+					String[] currentVersionParameters = currentVersionDescription.split(" ");
+					String currentVersionName = currentVersionParameters[0];
+					boolean isCurrentVersionSnapshot = currentVersionParameters.length > 1;
 
-				try {
-					LinkedHashMap<String, Date> versionDates = getVersionDates();
-					String latestVersionName = versionDates.keySet().iterator().next(); // First key
-					Date latestVersionDate = versionDates.get(latestVersionName);
-					Date currentVersionDate = versionDates.get(currentVersionName);
-					if (latestVersionDate.after(currentVersionDate) || (latestVersionDate.equals(currentVersionDate) && isCurrentVersionSnapshot)) {
-						String updateAvailableMessage = String.format(
-								"This server is still running ZHorse %s. Please update to ZHorse %s (released on %s).",
-								currentVersionDescription, latestVersionName, new SimpleDateFormat("MMM'' dd, yyyy").format(latestVersionDate)
-						);
-						zh.getLogger().warning(updateAvailableMessage);
-					}
-				} catch (Exception e) {}
-			}
+					try {
+						LinkedHashMap<String, Date> versionDates = getVersionDates();
+						String latestVersionName = versionDates.keySet().iterator().next(); // First key
+						Date latestVersionDate = versionDates.get(latestVersionName);
+						Date currentVersionDate = versionDates.get(currentVersionName);
+						if (latestVersionDate.after(currentVersionDate) || (latestVersionDate.equals(currentVersionDate) && isCurrentVersionSnapshot)) {
+							String updateAvailableMessage = String.format(
+									"This server is still running ZHorse %s. Please update to ZHorse %s (released on %s).",
+									currentVersionDescription, latestVersionName, new SimpleDateFormat("MMM'' dd, yyyy").format(latestVersionDate)
+							);
+							zh.getLogger().warning(updateAvailableMessage);
+						}
+					} catch (Exception e) {}
+				}
 
-		}.runTaskLaterAsynchronously(zh, 10 * 20); // 10 seconds
+			}.runTaskLaterAsynchronously(zh, 30 * 20); // 30 seconds
+		}
 	}
 
 	private LinkedHashMap<String, Date> getVersionDates() {

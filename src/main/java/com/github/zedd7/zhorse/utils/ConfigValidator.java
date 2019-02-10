@@ -1,20 +1,19 @@
 package com.github.zedd7.zhorse.utils;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-
 import com.github.zedd7.zhorse.ZHorse;
 import com.github.zedd7.zhorse.enums.CommandEnum;
 import com.github.zedd7.zhorse.enums.DatabaseEnum;
 import com.github.zedd7.zhorse.enums.KeyWordEnum;
 import com.github.zedd7.zhorse.managers.EventManager;
 import com.github.zedd7.zhorse.managers.MessageManager;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class ConfigValidator extends YamlResourceValidator {
 
@@ -78,7 +77,7 @@ public class ConfigValidator extends YamlResourceValidator {
 					validateOptionSet(KeyWordEnum.FILE_NAME.getValue());
 				}
 				else {
-					invalidate("The database type must be MySQL or SQLite !", true);
+					invalidate("The database type must be SQLite & MySQL !", true);
 				}
 	        }
 		}
@@ -117,7 +116,7 @@ public class ConfigValidator extends YamlResourceValidator {
 				validatePositive(KeyWordEnum.MINIMUM_LENGTH.getValue());
 			}
 			if (valid && maximumHorseNameLength < minimumHorseNameLength) {
-				invalidate(String.format("The %s must be greater than the %s !", KeyWordEnum.MAXIMUM_LENGTH.getValue(), KeyWordEnum.MINIMUM_LENGTH.getValue()), true);
+				invalidate(String.format("The value of %s must be greater than the value of %s !", KeyWordEnum.MAXIMUM_LENGTH.getValue(), KeyWordEnum.MINIMUM_LENGTH.getValue()), true);
 			}
 			validateOptionSet(KeyWordEnum.DEFAULT_NAME.getValue());
 			boolean randomHorseNameEnabled = false;
@@ -134,7 +133,7 @@ public class ConfigValidator extends YamlResourceValidator {
 			if (validateListSet(KeyWordEnum.BANNED_NAMES.getValue())) {
 				for (String bannedName : resource.getStringList(KeyWordEnum.BANNED_NAMES.getValue())) {
 					if (randomNameList.contains(bannedName)) {
-						invalidate(String.format("The banned name %s cannot be part of the %s list !", bannedName, KeyWordEnum.RANDOM_NAMES.getValue()), true);
+						invalidate(String.format("The banned name %s cannot be part of the list %s !", bannedName, KeyWordEnum.RANDOM_NAMES.getValue()), true);
 					}
 				}
 			}
@@ -151,7 +150,7 @@ public class ConfigValidator extends YamlResourceValidator {
 				List<String> availableLanguageList = resource.getStringList(KeyWordEnum.AVAILABLE_LANGUAGES.getValue());
 				if (validateListNotEmpty(KeyWordEnum.AVAILABLE_LANGUAGES.getValue())) {
 					if (defaultLanguage != null && !availableLanguageList.contains(defaultLanguage)) {
-						invalidate(String.format("The %s list must contain the default language !", KeyWordEnum.AVAILABLE_LANGUAGES.getValue()), true);
+						invalidate(String.format("The list %s must contain the default language !", KeyWordEnum.AVAILABLE_LANGUAGES.getValue()), true);
 					}
 				}
 			}
@@ -162,7 +161,7 @@ public class ConfigValidator extends YamlResourceValidator {
 		if (validateSectionSet(KeyWordEnum.PROTECTIONS.getValue())) {
 			ConfigurationSection cs = resource.getConfigurationSection(KeyWordEnum.PROTECTIONS.getValue());
 			Set<String> registeredDamageCauseList = cs.getKeys(false);
-			List<String> existingDamageCauseList = new ArrayList<String>();
+			List<String> existingDamageCauseList = new ArrayList<>();
 			for (DamageCause existingDamageCause : DamageCause.values()) {
 				existingDamageCauseList.add(existingDamageCause.name());
 			}
@@ -186,6 +185,7 @@ public class ConfigValidator extends YamlResourceValidator {
 			validateOptionSet(KeyWordEnum.ALLOW_TAMING_OF_UNDEAD_HORSE.getValue());
 			validateOptionSet(KeyWordEnum.BLOCK_LEASHED_TELEPORT.getValue());
 			validateOptionSet(KeyWordEnum.BLOCK_MOUNTED_TELEPORT.getValue());
+			validateOptionSet(KeyWordEnum.CHECK_FOR_UPDATE.getValue());
 			validateOptionSet(KeyWordEnum.CLAIM_ON_TAME.getValue());
 			boolean lockOnClaim = false;
 			if (validateOptionSet(KeyWordEnum.LOCK_ON_CLAIM.getValue())) {

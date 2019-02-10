@@ -1,47 +1,5 @@
 package com.github.zedd7.zhorse.managers;
 
-import java.util.UUID;
-
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.AbstractHorse;
-import org.bukkit.entity.ChestedHorse;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LeashHitch;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.SkeletonHorse;
-import org.bukkit.entity.ZombieHorse;
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityPortalEvent;
-import org.bukkit.event.entity.EntityTameEvent;
-import org.bukkit.event.entity.EntityTeleportEvent;
-import org.bukkit.event.entity.PlayerLeashEntityEvent;
-import org.bukkit.event.hanging.HangingBreakByEntityEvent;
-import org.bukkit.event.hanging.HangingBreakEvent;
-import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerUnleashEntityEvent;
-import org.bukkit.event.vehicle.VehicleEnterEvent;
-import org.bukkit.event.world.ChunkLoadEvent;
-import org.bukkit.event.world.ChunkUnloadEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import com.github.zedd7.zhorse.ZHorse;
 import com.github.zedd7.zhorse.commands.CommandClaim;
 import com.github.zedd7.zhorse.commands.CommandInfo;
@@ -51,11 +9,27 @@ import com.github.zedd7.zhorse.database.HorseStatsRecord;
 import com.github.zedd7.zhorse.enums.CommandEnum;
 import com.github.zedd7.zhorse.enums.KeyWordEnum;
 import com.github.zedd7.zhorse.enums.LocaleEnum;
-import com.github.zedd7.zhorse.utils.ChunkLoad;
-import com.github.zedd7.zhorse.utils.ChunkUnload;
-import com.github.zedd7.zhorse.utils.MessageConfig;
-import com.github.zedd7.zhorse.utils.PlayerJoin;
-import com.github.zedd7.zhorse.utils.PlayerQuit;
+import com.github.zedd7.zhorse.utils.*;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.*;
+import org.bukkit.event.*;
+import org.bukkit.event.entity.*;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.hanging.HangingBreakEvent;
+import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.*;
+import org.bukkit.event.vehicle.VehicleEnterEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.UUID;
 
 public class EventManager implements Listener {
 
@@ -98,7 +72,8 @@ public class EventManager implements Listener {
 					}
 				}
 				if (!e.isCancelled() && horse.getHealth() - e.getDamage() <= 0) {
-					zh.getDM().updateHorseIsCarryingChest(horse.getUniqueId(), horse instanceof ChestedHorse ? ((ChestedHorse) horse).isCarryingChest() : false, false, null);
+					boolean isCarryingChest = horse instanceof ChestedHorse ? ((ChestedHorse) horse).isCarryingChest() : false;
+					zh.getDM().updateHorseIsCarryingChest(horse.getUniqueId(), isCarryingChest, false, null);
 				}
 			}
 		}
@@ -123,7 +98,8 @@ public class EventManager implements Listener {
 					}
 				}
 				if (!e.isCancelled() && horse.getHealth() - e.getDamage() <= 0) {
-					zh.getDM().updateHorseIsCarryingChest(horse.getUniqueId(), horse instanceof ChestedHorse ? ((ChestedHorse) horse).isCarryingChest() : false, false, null);
+					boolean isCarryingChest = horse instanceof ChestedHorse ? ((ChestedHorse) horse).isCarryingChest() : false;
+					zh.getDM().updateHorseIsCarryingChest(horse.getUniqueId(), isCarryingChest, false, null);
 				}
 			}
 		}
@@ -153,7 +129,7 @@ public class EventManager implements Listener {
 				}
 				e.setDroppedExp(0);
 				zh.getHM().untrackHorse(horse.getUniqueId());
-				/* isCarryingChest carried on before horse death as the chest is forcibly removed at the start of the event since Spigot 1.12 */
+				/* Do not update isCarryingChest as the chest is forcibly removed from the horse at the start of the event since MC 1.12 */
 				/* Do not update stats to keep health and ticksLived above 0 */
 				zh.getDM().updateHorseInventory(inventoryRecord, false, null);
 				zh.getDM().registerHorseDeath(new HorseDeathRecord(horse.getUniqueId().toString()), false, null);
@@ -397,12 +373,12 @@ public class EventManager implements Listener {
 		HorseStatsRecord statsRecord = new HorseStatsRecord(horse);
 		boolean useExactStats = zh.getCM().shouldUseExactStats();
 		boolean useVanillaStats = zh.getCM().shouldUseVanillaStats();
-		CommandInfo.displayInfoHeader(zh, (CommandSender) p);
-		CommandInfo.displayHealth(zh, (CommandSender) p, statsRecord);
-		CommandInfo.displaySpeed(zh, (CommandSender) p, statsRecord, useExactStats, useVanillaStats);
-		CommandInfo.displayJumpStrength(zh, (CommandSender) p, statsRecord, useExactStats, useVanillaStats);
-		CommandInfo.displayChestSize(zh, (CommandSender) p, horse, statsRecord);
-		CommandInfo.displayPrice(zh, (CommandSender) p, horse);
+		CommandInfo.displayInfoHeader(zh, p);
+		CommandInfo.displayHealth(zh, p, statsRecord);
+		CommandInfo.displaySpeed(zh, p, statsRecord, useExactStats, useVanillaStats);
+		CommandInfo.displayJumpStrength(zh, p, statsRecord, useExactStats, useVanillaStats);
+		CommandInfo.displayChestSize(zh, p, horse, statsRecord);
+		CommandInfo.displayPrice(zh, p, horse);
 	}
 
 	private HandEnum getHoldingHand(Player p, ItemStack item) {
@@ -480,7 +456,7 @@ public class EventManager implements Listener {
 
 		MAIN,
 		OFF,
-		NONE;
+		NONE
 
 	}
 
@@ -491,7 +467,7 @@ public class EventManager implements Listener {
 
 		String code;
 
-		private CustomAttackType(String code) {
+		CustomAttackType(String code) {
 			this.code = code;
 		}
 

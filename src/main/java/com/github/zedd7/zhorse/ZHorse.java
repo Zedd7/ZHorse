@@ -23,7 +23,6 @@ public class ZHorse extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		// https://api.spiget.org/v2/resources/3384/versions?size=1&sort=-id&fields=name
 		initDependencies();
 		initManagers();
 		initMetrics();

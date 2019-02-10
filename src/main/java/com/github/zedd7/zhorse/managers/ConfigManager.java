@@ -1,10 +1,8 @@
 package com.github.zedd7.zhorse.managers;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
-
+import com.github.zedd7.zhorse.ZHorse;
+import com.github.zedd7.zhorse.enums.DatabaseEnum;
+import com.github.zedd7.zhorse.enums.KeyWordEnum;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -12,9 +10,10 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-import com.github.zedd7.zhorse.ZHorse;
-import com.github.zedd7.zhorse.enums.DatabaseEnum;
-import com.github.zedd7.zhorse.enums.KeyWordEnum;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 
 public class ConfigManager {
 
@@ -36,7 +35,7 @@ public class ConfigManager {
 	public List<String> getAvailableLanguages() {
 		List<String> availableLanguages = config.getStringList(KeyWordEnum.AVAILABLE_LANGUAGES.getValue());
 		if (availableLanguages == null || availableLanguages.isEmpty()) {
-			availableLanguages = new ArrayList<String>();
+			availableLanguages = new ArrayList<>();
 			availableLanguages.add(getDefaultLanguage());
 		}
 		return availableLanguages;
@@ -100,11 +99,9 @@ public class ConfigManager {
 		String databaseType = config.getString(KeyWordEnum.TYPE.getValue());
 		if (databaseType.equalsIgnoreCase(DatabaseEnum.MYSQL.getName())) {
 			return DatabaseEnum.MYSQL;
-		}
-		else if (databaseType.equalsIgnoreCase(DatabaseEnum.SQLITE.getName())) {
+		} else if (databaseType.equalsIgnoreCase(DatabaseEnum.SQLITE.getName())) {
 			return DatabaseEnum.SQLITE;
-		}
-		else if (databaseType.equalsIgnoreCase(DatabaseEnum.YAML.getName())) {
+		} else if (databaseType.equalsIgnoreCase(DatabaseEnum.YAML.getName())) {
 			return DatabaseEnum.YAML;
 		}
 		return null;
@@ -137,7 +134,7 @@ public class ConfigManager {
 			String groupName = getGroupName(playerUUID);
 			if (groupName != null) {
 				colorCode = config.getString(KeyWordEnum.GROUPS_PREFIX.getValue() + groupName + KeyWordEnum.COLOR_SUFFIX.getValue(), colorCode);
-		    }
+			}
 		}
 		return colorCode;
 	}
@@ -254,6 +251,10 @@ public class ConfigManager {
 		return config.getBoolean(KeyWordEnum.BLOCK_MOUNTED_TELEPORT.getValue(), false);
 	}
 
+	public boolean shouldCheckForUpdate() {
+		return config.getBoolean(KeyWordEnum.CHECK_FOR_UPDATE.getValue(), true);
+	}
+
 	public boolean shouldClaimOnTame() {
 		return config.getBoolean(KeyWordEnum.CLAIM_ON_TAME.getValue(), false);
 	}
@@ -304,8 +305,7 @@ public class ConfigManager {
 			Player p = zh.getServer().getPlayer(playerUUID);
 			if (p != null) {
 				groupName = zh.getPM().getPrimaryGroup(p);
-			}
-			else {
+			} else {
 				OfflinePlayer op = zh.getServer().getOfflinePlayer(playerUUID);
 				if (op.hasPlayedBefore()) {
 					String world = zh.getServer().getWorlds().get(0).getName();

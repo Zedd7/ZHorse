@@ -1,11 +1,10 @@
 package com.github.zedd7.zhorse.utils;
 
-import java.io.File;
-import java.util.List;
-
+import com.github.zedd7.zhorse.ZHorse;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import com.github.zedd7.zhorse.ZHorse;
+import java.io.File;
+import java.util.List;
 
 public abstract class YamlResourceValidator {
 	
@@ -28,7 +27,7 @@ public abstract class YamlResourceValidator {
 	
 	protected boolean validateListSet(String index) {
 		if (!resource.isList(index)) {
-			zh.getLogger().severe(String.format("The %s list is missing from %s !", index, fileName));
+			zh.getLogger().severe(String.format("The list %s is missing from %s !", index, fileName));
         	valid = false;
         	return false;
 		}
@@ -37,7 +36,7 @@ public abstract class YamlResourceValidator {
 	
 	protected boolean validateOptionSet(String index) {
 		if (!resource.isSet(index)) {
-			zh.getLogger().severe(String.format("The %s option is missing from %s !", index, fileName));
+			zh.getLogger().severe(String.format("The %s is missing from %s !", index, fileName));
         	valid = false;
         	return false;
         }
@@ -46,7 +45,7 @@ public abstract class YamlResourceValidator {
 	
 	protected boolean validateSectionSet(String index) {
 		if (!resource.isConfigurationSection(index)) {
-			zh.getLogger().severe(String.format("The %s section is missing from %s !", index, fileName));
+			zh.getLogger().severe(String.format("The section %s is missing from %s !", index, fileName));
         	valid = false;
         	return false;
 		}
@@ -96,7 +95,7 @@ public abstract class YamlResourceValidator {
 	protected boolean validateListNotEmpty(String index) {
 		List<String> list = resource.getStringList(index);
 		if (list.isEmpty()) {
-			zh.getLogger().severe(String.format("The %s list cannot be empty in %s !", index, fileName));
+			zh.getLogger().severe(String.format("The list %s cannot be empty in %s !", index, fileName));
 			valid = false;
 			return false;
 		}

@@ -15,7 +15,7 @@ commands:
 
 permissions:
   zh.*:
-    description: Grants full access to ZHorse
+    description: Grant full access to ZHorse
     children:
       zh.*.admin: true
       zh.*.free: true
@@ -27,7 +27,7 @@ permissions:
       zh.use: true
 
   zh.use:
-    description: Grants access to all standard commands
+    description: Grant access to all standard commands
     children:
       zh.buy: true
       zh.claim: true
@@ -51,7 +51,7 @@ permissions:
       zh.tp: true
 
   zh.admin.*:
-    description: Grants access to all admin sub-commands
+    description: Grant access to all admin sub-commands
     children:
       zh.admin: true
       zh.admin.burial: true
@@ -59,7 +59,7 @@ permissions:
       zh.admin.import: true
 
   zh.friend.*:
-    description: Grants access to all friend sub-commands
+    description: Grant access to all friend sub-commands
     children:
       zh.friend: true
       zh.friend.add: true
@@ -67,7 +67,7 @@ permissions:
       zh.friend.remove: true
 
   zh.settings.*:
-    description: Grants access to all settings sub-commands
+    description: Grant access to all settings sub-commands
     children:
       zh.settings: true
       zh.settings.favorite: true
@@ -76,7 +76,7 @@ permissions:
       zh.settings.swap: true
 
   zh.stable.*:
-    description: Grants access to all stable sub-commands
+    description: Grant access to all stable sub-commands
     children:
       zh.stable: true
       zh.stable.go: true
@@ -84,7 +84,7 @@ permissions:
       zh.stable.unset: true
 
   zh.*.admin:
-    description: Grants admin access to all commands
+    description: Grant admin access to all commands
     children:
       zh.admin.admin: true
       zh.buy.admin: true
@@ -113,7 +113,7 @@ permissions:
       zh.tp.admin: true
 
   zh.*.free:
-    description: Grants free access to all commands
+    description: Grant free access to all commands
     children:
       zh.admin.free: true
       zh.buy.free: true

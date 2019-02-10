@@ -17,6 +17,7 @@ public enum KeyWordEnum {
 	BANNED_NAMES("HorseNames.banned-names"),
 	BLOCK_LEASHED_TELEPORT("Settings.block-leashed-teleport"),
 	BLOCK_MOUNTED_TELEPORT("Settings.block-mounted-teleport"),
+	CHECK_FOR_UPDATE("Settings.check-for-update"),
 	CLAIMS_LIMIT_SUFFIX(".claims-limit"),
 	CLAIM_ON_TAME("Settings.claim-on-tame"),
 	COLOR_BYPASS_SUFFIX(".color-bypass"),
