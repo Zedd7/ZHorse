@@ -5,40 +5,44 @@ import java.util.List;
 
 public enum CommandEnum {
 
-	ADMIN("admin", true),
-	BUY("buy", true),
-	CLAIM("claim", true),
-	EDIT("edit", true),
-	FREE("free", true),
-	FRIEND("friend", true),
-	GIVE("give", true),
-	HEAL("heal", true),
-	HELP("help", true),
-	HERE("here", true),
-	INFO("info", true),
-	KILL("kill", true),
-	LIST("list", true),
-	LOCK("lock", true),
-	PROTECT("protect", true),
-	RELOAD("reload", false),
-	RENAME("rename", true),
-	REZ("rez", true),
-	SELL("sell", true),
-	SETTINGS("settings", true),
-	SHARE("share", true),
-	SPAWN("spawn", true),
-	STABLE("stable", true),
-	TAME("tame", true),
-	TP("tp", true);
+	ADMIN("admin", true,true),
+	BUY("buy", false,true),
+	CLAIM("claim", false,true),
+	EDIT("edit", false,true),
+	FREE("free", false,true),
+	FRIEND("friend", true,true),
+	GIVE("give", false,true),
+	HEAL("heal", false,true),
+	HELP("help",false,false),
+	HERE("here", false,true),
+	INFO("info", false,true),
+	KILL("kill", false,true),
+	LIST("list", false,true),
+	LOCK("lock", false,true),
+	PROTECT("protect", false,true),
+	RELOAD("reload",false,false),
+	RENAME("rename", false,true),
+	REZ("rez", false,true),
+	SELL("sell", false,true),
+	SETTINGS("settings", true,true),
+	SHARE("share", false,true),
+	SPAWN("spawn", false,true),
+	STABLE("stable", true,true),
+	TAME("tame", false,true),
+	TP("tp", false,true);
 
-	private static final String PACKAGE = "com.github.zedd7.zhorse.commands";
+	private static final String COMMANDS_PACKAGE = "com.github.zedd7.zhorse.commands";
+	private static final String ENUMS_PACKAGE = "com.github.zedd7.zhorse.enums";
 	private static final String CLASS_NAME_FORMAT = "Command%s";
+	private static final String SUB_COMMANDS_ENUM_FORMAT = "%sSubCommandEnum";
 
 	private String name;
+	private boolean isComplex;
 	private boolean isPlayerOnly;
 
-	CommandEnum(String name, boolean isPlayerOnly) {
+	CommandEnum(String name, boolean isComplex, boolean isPlayerOnly) {
 		this.name = name;
+		this.isComplex = isComplex;
 		this.isPlayerOnly = isPlayerOnly;
 	}
 
@@ -46,12 +50,28 @@ public enum CommandEnum {
 		return name;
 	}
 
+	public boolean isComplex() {
+		return isComplex;
+	}
+
 	public boolean isPlayerOnly() {
 		return isPlayerOnly;
 	}
 
-	public String getClassPath() {
-		return PACKAGE + "." + String.format(CLASS_NAME_FORMAT, name.substring(0, 1).toUpperCase() + name.substring(1));
+	public static boolean isComplex(String name) {
+		return CommandEnum.valueOf(name).isComplex();
+	}
+
+	public static boolean isPlayerOnly(String name) {
+		return CommandEnum.valueOf(name).isPlayerOnly();
+	}
+
+	public static CommandEnum getCommand(String name) {
+		CommandEnum command = null;
+		try {
+			command = CommandEnum.valueOf(name.toUpperCase());
+		} catch (IllegalArgumentException e) {}
+		return command;
 	}
 
 	public static List<String> getNameList() {
@@ -61,4 +81,13 @@ public enum CommandEnum {
 		}
 		return commandNameList;
 	}
+
+	public static String getCommandClassPath(String name) {
+		return COMMANDS_PACKAGE + "." + String.format(CLASS_NAME_FORMAT, name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase());
+	}
+
+	public static String getSubCommandEnumPath(String name) {
+		return ENUMS_PACKAGE + "." + String.format(SUB_COMMANDS_ENUM_FORMAT, name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase());
+	}
+
 }
