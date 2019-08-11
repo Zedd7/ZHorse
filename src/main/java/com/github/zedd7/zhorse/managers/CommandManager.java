@@ -1,10 +1,9 @@
 package com.github.zedd7.zhorse.managers;
 
-import com.github.zedd7.zhorse.ZHorse;
-import com.github.zedd7.zhorse.enums.CommandEnum;
-import com.github.zedd7.zhorse.enums.KeyWordEnum;
-import com.github.zedd7.zhorse.enums.LocaleEnum;
-import com.github.zedd7.zhorse.utils.MessageConfig;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.*;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -12,9 +11,11 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.*;
+import com.github.zedd7.zhorse.ZHorse;
+import com.github.zedd7.zhorse.enums.CommandEnum;
+import com.github.zedd7.zhorse.enums.KeyWordEnum;
+import com.github.zedd7.zhorse.enums.LocaleEnum;
+import com.github.zedd7.zhorse.utils.MessageConfig;
 
 public class CommandManager implements CommandExecutor, TabCompleter {
 
@@ -57,14 +58,14 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 	@Override
 	public List<String> onTabComplete(CommandSender s, Command c, String alias, String[] a) {
 		List<String> tabSuggestionList = new ArrayList<>();
-		if (a.length <= 1) { // No command provided or first argument is empty
-			for (String command : CommandEnum.getNameList()) {
-				String permission = KeyWordEnum.ZH_PREFIX.getValue() + command;
-				if (zh.getPM().has(s, permission)) {
-					tabSuggestionList.add(command);
+		if (a.length <= 1) { // No command provided or filling first argument
+			for (String commandName : CommandEnum.getNameList()) {
+				String permission = KeyWordEnum.ZH_PREFIX.getValue() + commandName;
+				if ((a.length == 0 || commandName.startsWith(a[0].toLowerCase())) && zh.getPM().has(s, permission)) {
+					tabSuggestionList.add(commandName);
 				}
 			}
-		} else if (a.length == 2) { // Instance of a command and second argument is empty
+		} else if (a.length == 2) { // Filling second argument
 			CommandEnum command = CommandEnum.getCommand(a[0]);
 			if (command != null && command.isComplex()) {
 				String subCommandEnumPath = CommandEnum.getSubCommandEnumPath(command.getName());
@@ -72,7 +73,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 					Enum[] subCommands = (Enum[]) Class.forName(subCommandEnumPath).getEnumConstants();
 					for (Enum subCommand : subCommands) {
 						String permission = KeyWordEnum.ZH_PREFIX.getValue() + command + KeyWordEnum.DOT.getValue() + subCommand;
-						if (zh.getPM().has(s, permission)) {
+						if (subCommand.name().toLowerCase().startsWith(a[1].toLowerCase()) && zh.getPM().has(s, permission)) {
 							tabSuggestionList.add(subCommand.name().toLowerCase());
 						}
 					}

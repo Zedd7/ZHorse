@@ -7,7 +7,7 @@
 
     <groupId>com.github.zedd7</groupId>
     <artifactId>ZHorse</artifactId>
-    <version>1.8.1 snapshot 3</version>
+    <version>1.8.1 snapshot 4</version>
     <packaging>jar</packaging>
 
     <name>ZHorse</name>
@@ -47,7 +47,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.14.1-R0.1-SNAPSHOT</version>
+            <version>1.14.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

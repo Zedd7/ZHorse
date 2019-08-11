@@ -12,7 +12,7 @@ import com.github.zedd7.zhorse.enums.LocaleEnum;
 
 public class LocaleManager {
 
-	public static final String[] PROVIDED_LANGUAGES = {"DE", "EN", "ES", "FR", "HU", "NL", "PL"};
+	public static final String[] PROVIDED_LANGUAGES = {"CN", "DE", "EN", "ES", "FR", "HU", "NL", "PL"};
 
 	private ZHorse zh;
 	private Map<String, FileConfiguration> locales;

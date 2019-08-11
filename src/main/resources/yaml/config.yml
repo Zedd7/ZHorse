@@ -225,6 +225,7 @@ Languages:
   # The list of languages in which players can display ZHorse.
   # You can add other languages if you create a valid locale_XX.yml file.
   available:
+  - CN
   - DE
   - EN
   - ES
