@@ -1,5 +1,15 @@
 package com.github.zedd7.zhorse.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.*;
+
 import com.github.zedd7.zhorse.ZHorse;
 import com.github.zedd7.zhorse.database.PlayerRecord;
 import com.github.zedd7.zhorse.enums.CommandEnum;
@@ -9,16 +19,8 @@ import com.github.zedd7.zhorse.enums.LocaleEnum;
 import com.github.zedd7.zhorse.managers.MessageManager;
 import com.github.zedd7.zhorse.utils.CompoundMessage;
 import com.github.zedd7.zhorse.utils.MessageConfig;
-import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import net.md_5.bungee.api.ChatColor;
 
 public abstract class AbstractCommand {
 
@@ -221,7 +223,6 @@ public abstract class AbstractCommand {
 		}
 		else {
 			String groupColorCode = zh.getCM().getGroupColorCode(ownerUUID);
-			zh.getMM();
 			customHorseName = MessageManager.applyColors(horseName, groupColorCode);
 		}
 		horse.setCustomName(customHorseName);

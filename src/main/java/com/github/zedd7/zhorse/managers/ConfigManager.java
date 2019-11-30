@@ -1,19 +1,19 @@
 package com.github.zedd7.zhorse.managers;
 
-import com.github.zedd7.zhorse.ZHorse;
-import com.github.zedd7.zhorse.enums.DatabaseEnum;
-import com.github.zedd7.zhorse.enums.KeyWordEnum;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
+
 import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import com.github.zedd7.zhorse.ZHorse;
+import com.github.zedd7.zhorse.enums.DatabaseEnum;
+import com.github.zedd7.zhorse.enums.KeyWordEnum;
 
 public class ConfigManager {
 
@@ -303,18 +303,12 @@ public class ConfigManager {
 		String groupName = null;
 		if (playerUUID != null) {
 			Player p = zh.getServer().getPlayer(playerUUID);
-			if (p != null) {
+			if (p != null) {  // Player is online
 				groupName = zh.getPM().getPrimaryGroup(p);
-			} else {
-				OfflinePlayer op = zh.getServer().getOfflinePlayer(playerUUID);
-				if (op.hasPlayedBefore()) {
-					String world = zh.getServer().getWorlds().get(0).getName();
-					groupName = zh.getPM().getPrimaryGroup(world, op);
+				groupName = getExactGroupName(groupName);
+				if (groupName == null || !config.contains(KeyWordEnum.GROUPS_PREFIX.getValue() + groupName)) {
+					groupName = getSurrogateGroupName(p);
 				}
-			}
-			groupName = getExactGroupName(groupName);
-			if (p != null && (groupName == null || !config.contains(KeyWordEnum.GROUPS_PREFIX.getValue() + groupName))) {
-				groupName = getSurrogateGroupName(p);
 			}
 		}
 		return groupName;
