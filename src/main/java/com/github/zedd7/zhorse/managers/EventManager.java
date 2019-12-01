@@ -1,15 +1,7 @@
 package com.github.zedd7.zhorse.managers;
 
-import com.github.zedd7.zhorse.ZHorse;
-import com.github.zedd7.zhorse.commands.CommandClaim;
-import com.github.zedd7.zhorse.commands.CommandInfo;
-import com.github.zedd7.zhorse.database.HorseDeathRecord;
-import com.github.zedd7.zhorse.database.HorseInventoryRecord;
-import com.github.zedd7.zhorse.database.HorseStatsRecord;
-import com.github.zedd7.zhorse.enums.CommandEnum;
-import com.github.zedd7.zhorse.enums.KeyWordEnum;
-import com.github.zedd7.zhorse.enums.LocaleEnum;
-import com.github.zedd7.zhorse.utils.*;
+import java.util.UUID;
+
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -29,7 +21,16 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.UUID;
+import com.github.zedd7.zhorse.ZHorse;
+import com.github.zedd7.zhorse.commands.CommandClaim;
+import com.github.zedd7.zhorse.commands.CommandInfo;
+import com.github.zedd7.zhorse.database.HorseDeathRecord;
+import com.github.zedd7.zhorse.database.HorseInventoryRecord;
+import com.github.zedd7.zhorse.database.HorseStatsRecord;
+import com.github.zedd7.zhorse.enums.CommandEnum;
+import com.github.zedd7.zhorse.enums.KeyWordEnum;
+import com.github.zedd7.zhorse.enums.LocaleEnum;
+import com.github.zedd7.zhorse.utils.*;
 
 public class EventManager implements Listener {
 
@@ -428,7 +429,7 @@ public class EventManager implements Listener {
 		if (zh.getDM().isHorseRegistered(horse.getUniqueId(), true, null)) {
 			UUID ownerUUID = zh.getDM().getOwnerUUID(horse.getUniqueId(), true, null);
 			boolean isOwner = zh.getDM().isHorseOwnedBy(p.getUniqueId(), horse.getUniqueId(), true, null);
-			boolean isFriend = zh.getDM().isFriendOf(p.getUniqueId(), ownerUUID, true, null);
+			boolean isFriend = zh.getDM().isFriendOf(ownerUUID, p.getUniqueId(), true, null);
 			boolean hasAdminPerm = zh.getPM().has(p, KeyWordEnum.ZH_PREFIX.getValue() + CommandEnum.LOCK.getName() + KeyWordEnum.ADMIN_SUFFIX.getValue());
 			if (!isOwner && !isFriend && !hasAdminPerm) {
 				if (zh.getDM().isHorseLocked(horse.getUniqueId(), true, null) || (!zh.getDM().isHorseShared(horse.getUniqueId(), true, null) && (!horse.isEmpty() || mustBeShared))) {
